@@ -1,12 +1,12 @@
-# Checklist Sprint 1.3B
+# Checklist Sprint 1.4A
 
-- [ ] Sitios carga correctamente.
+- [ ] Acciones carga.
 - [ ] Resumen dinámico funciona.
 - [ ] Filtros funcionan.
-- [ ] Mapa esquemático responde.
-- [ ] Detalle cambia al seleccionar.
-- [ ] Crear sitio funciona.
-- [ ] Editar sitio funciona.
-- [ ] Eliminar sitio funciona.
+- [ ] Detalle funciona.
+- [ ] Crear acción funciona.
+- [ ] Editar acción funciona.
+- [ ] Eliminar acción funciona.
+- [ ] Avance se limita entre 0 y 100.
 - [ ] LocalStorage conserva cambios.
 - [ ] CSV se descarga.

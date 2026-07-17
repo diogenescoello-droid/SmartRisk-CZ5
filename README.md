@@ -1,17 +1,17 @@
-# SmartRisk CZ5 — Sprint 1.3B
+# SmartRisk CZ5 — Sprint 1.4A
 
-Versión `v2.2.0-beta`.
+Versión `v2.3.0-alpha`.
 
-Este paquete incorpora el módulo funcional **Sitios de interés**:
+Este paquete incorpora el módulo funcional **Acciones**:
 
-- Registro de puntos, tramos y áreas.
-- Clasificación por evento y nivel de riesgo.
+- Registro de acciones de análisis, fortalecimiento y respuesta.
+- Relación con provincias, cantones, instituciones y sitios.
+- Estado, prioridad, responsable, fechas y porcentaje de avance.
+- Registro de evidencias y observaciones.
 - Filtros combinados.
-- Mapa esquemático interactivo.
-- Detalle territorial y recomendaciones.
+- Vista de detalle y próximos hitos.
 - Creación, edición y eliminación.
 - Persistencia mediante LocalStorage.
 - Exportación CSV.
-- Base preparada para KoboToolbox, ArcGIS y Google Sheets.
 
-Abra `frontend/index.html` o utilice Live Server en VS Code.
+La plataforma ya cuenta con cuatro módulos operativos: Territorios, Instituciones, Sitios y Acciones.
