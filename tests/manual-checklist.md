@@ -1,13 +1,14 @@
-# Checklist Sprint 1.7A
+# Checklist Sprint 1.7B
 
-- [ ] KoboToolbox aparece en la navegación.
-- [ ] La configuración se conserva al recargar.
-- [ ] El token puede ocultarse y mostrarse.
-- [ ] La vista previa consulta el formulario.
-- [ ] Los errores de autenticación son legibles.
-- [ ] El mapeo de campos es editable.
-- [ ] Las observaciones de calidad aparecen.
-- [ ] La importación crea sitios.
-- [ ] La importación crea acciones.
-- [ ] La importación fusiona registros por ID.
-- [ ] El historial registra la operación.
+- [ ] ArcGIS Online aparece en navegación.
+- [ ] El Item ID inicial está configurado.
+- [ ] Se consultan metadatos.
+- [ ] Se detecta el tipo de elemento.
+- [ ] El mapa o aplicación carga.
+- [ ] La búsqueda funciona.
+- [ ] La leyenda y las capas aparecen.
+- [ ] Se muestran coordenadas.
+- [ ] Los sitios SmartRisk pueden incorporarse.
+- [ ] El enlace externo funciona.
+- [ ] Los errores se comunican claramente.
+- [ ] No existen credenciales en el código.
