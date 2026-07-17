@@ -1,18 +1,17 @@
-# SmartRisk CZ5 — Sprint 1.3A
+# SmartRisk CZ5 — Sprint 1.3B
 
-Versión `v2.2.0-alpha`.
+Versión `v2.2.0-beta`.
 
-Este paquete incorpora el módulo funcional **Instituciones**:
+Este paquete incorpora el módulo funcional **Sitios de interés**:
 
-- Directorio institucional.
-- Registro de responsables y contactos.
-- Competencias institucionales.
-- Mesas técnicas y grupos de trabajo.
-- Filtros por texto, tipo y estado.
-- Vista de detalle.
-- Creación, edición y eliminación local.
+- Registro de puntos, tramos y áreas.
+- Clasificación por evento y nivel de riesgo.
+- Filtros combinados.
+- Mapa esquemático interactivo.
+- Detalle territorial y recomendaciones.
+- Creación, edición y eliminación.
 - Persistencia mediante LocalStorage.
 - Exportación CSV.
-- Base preparada para Google Sheets y Apps Script.
+- Base preparada para KoboToolbox, ArcGIS y Google Sheets.
 
-Abra `frontend/index.html` o use Live Server en VS Code.
+Abra `frontend/index.html` o utilice Live Server en VS Code.

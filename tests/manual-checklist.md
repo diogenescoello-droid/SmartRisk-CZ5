@@ -1,11 +1,12 @@
-# Checklist Sprint 1.3A
+# Checklist Sprint 1.3B
 
-- [ ] Directorio carga.
+- [ ] Sitios carga correctamente.
+- [ ] Resumen dinámico funciona.
 - [ ] Filtros funcionan.
-- [ ] Detalle funciona.
-- [ ] Crear institución funciona.
-- [ ] Editar funciona.
-- [ ] Eliminar funciona.
-- [ ] LocalStorage conserva datos.
+- [ ] Mapa esquemático responde.
+- [ ] Detalle cambia al seleccionar.
+- [ ] Crear sitio funciona.
+- [ ] Editar sitio funciona.
+- [ ] Eliminar sitio funciona.
+- [ ] LocalStorage conserva cambios.
 - [ ] CSV se descarga.
-- [ ] Responsive correcto.

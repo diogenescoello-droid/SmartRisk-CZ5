@@ -1,17 +1,16 @@
 # Changelog
 
+## v2.2.0-beta — Sprint 1.3B
+
+- Nuevo módulo funcional Sitios.
+- Soporte para geometrías Punto, Tramo y Área.
+- Clasificación por amenaza y nivel de riesgo.
+- Mapa esquemático de registros.
+- CRUD local y persistencia.
+- Filtros por evento, geometría y riesgo.
+- Exportación CSV.
+- Detalle técnico y recomendaciones.
+
 ## v2.2.0-alpha — Sprint 1.3A
 
-- Nuevo módulo Instituciones.
-- CRUD local de instituciones.
-- Directorio de responsables.
-- Catálogo de competencias.
-- Registro de MTT y grupos.
-- Filtros combinados.
-- Persistencia en LocalStorage.
-- Exportación CSV.
-- Vista de detalle institucional.
-
-## v2.1.0-beta — Sprint 1.2B
-
-- Módulo Territorios.
+- Módulo Instituciones y directorio institucional.
