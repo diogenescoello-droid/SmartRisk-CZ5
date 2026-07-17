@@ -1,35 +1,18 @@
-# SmartRisk CZ5
+# SmartRisk CZ5 — Sprint 1.3A
 
-Plataforma institucional para la gestión territorial del riesgo en la Coordinación Zonal 5.
+Versión `v2.2.0-alpha`.
 
-## Versión
+Este paquete incorpora el módulo funcional **Instituciones**:
 
-`v2.1.0-alpha` — Sprint 1.2A.
+- Directorio institucional.
+- Registro de responsables y contactos.
+- Competencias institucionales.
+- Mesas técnicas y grupos de trabajo.
+- Filtros por texto, tipo y estado.
+- Vista de detalle.
+- Creación, edición y eliminación local.
+- Persistencia mediante LocalStorage.
+- Exportación CSV.
+- Base preparada para Google Sheets y Apps Script.
 
-## Ejecución
-
-Abra:
-
-```text
-frontend/index.html
-```
-
-También puede utilizar **Live Server** en VS Code.
-
-## Incluye
-
-- Dashboard institucional rediseñado.
-- Sidebar con iconografía SVG.
-- Navbar con fecha, perfil, notificaciones y selector de tema.
-- Tema claro/oscuro persistente.
-- Tarjetas KPI.
-- Gráfico SVG de tendencia.
-- Visualización tipo donut.
-- Tabla con búsqueda y ordenamiento.
-- Modal, loader y notificaciones.
-- Diseño responsive.
-- Navegación SPA sin dependencias externas.
-
-## Alcance
-
-Los datos siguen siendo demostrativos. Las integraciones con Google Sheets, Apps Script, KoboToolbox y ArcGIS se incorporarán en sprints posteriores.
+Abra `frontend/index.html` o use Live Server en VS Code.

@@ -1,13 +1,11 @@
-# Checklist Sprint 1.2A
+# Checklist Sprint 1.3A
 
-- [ ] Dashboard carga sin errores.
-- [ ] Tema claro/oscuro funciona.
-- [ ] Tema persiste.
-- [ ] Sidebar colapsa.
-- [ ] Sidebar persiste.
-- [ ] Tabla busca.
-- [ ] Tabla ordena.
-- [ ] Modal funciona.
-- [ ] Toast funciona.
-- [ ] Navegación funciona.
-- [ ] Vista móvil correcta.
+- [ ] Directorio carga.
+- [ ] Filtros funcionan.
+- [ ] Detalle funciona.
+- [ ] Crear institución funciona.
+- [ ] Editar funciona.
+- [ ] Eliminar funciona.
+- [ ] LocalStorage conserva datos.
+- [ ] CSV se descarga.
+- [ ] Responsive correcto.

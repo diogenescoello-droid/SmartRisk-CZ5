@@ -1,46 +1,13 @@
-(function () {
-  "use strict";
-
-  window.SmartRisk = window.SmartRisk || {};
-
-  window.SmartRisk.MockData = Object.freeze({
-    metrics: [
-      { label: "Cantones priorizados", value: 49, note: "Cobertura referencial de Zona 5", icon: "map", trend: "+6 este mes" },
-      { label: "Planes en seguimiento", value: 32, note: "Planes con revisión activa", icon: "document", trend: "+4 actualizados" },
-      { label: "Acciones registradas", value: 186, note: "Acciones preparatorias y operativas", icon: "check", trend: "+18 verificadas" },
-      { label: "Alertas operativas", value: 7, note: "Requieren atención prioritaria", icon: "alert", trend: "3 críticas" }
-    ],
-
-    progress: [
-      { label: "Análisis de riesgos", value: 78 },
-      { label: "Fortalecimiento", value: 64 },
-      { label: "Preparación y respuesta", value: 71 },
-      { label: "Seguimiento documental", value: 83 }
-    ],
-
-    trend: [
-      { label: "Ene", value: 42 },
-      { label: "Feb", value: 48 },
-      { label: "Mar", value: 55 },
-      { label: "Abr", value: 61 },
-      { label: "May", value: 68 },
-      { label: "Jun", value: 76 },
-      { label: "Jul", value: 82 }
-    ],
-
-    territories: [
-      { provincia: "Guayas", cantones: 25, planes: 16, avance: 86, estado: "Seguimiento" },
-      { provincia: "Los Ríos", cantones: 13, planes: 8, avance: 72, estado: "Seguimiento" },
-      { provincia: "Santa Elena", cantones: 3, planes: 3, avance: 61, estado: "Ajustes" },
-      { provincia: "Bolívar", cantones: 7, planes: 4, avance: 55, estado: "Ajustes" },
-      { provincia: "Galápagos", cantones: 3, planes: 1, avance: 68, estado: "Seguimiento" }
-    ],
-
-    activities: [
-      { text: "Se actualizó el seguimiento documental de Guayas.", time: "Hace 18 minutos" },
-      { text: "Se registraron nuevas acciones para Los Ríos.", time: "Hace 1 hora" },
-      { text: "Se identificaron ajustes pendientes en Santa Elena.", time: "Hace 3 horas" },
-      { text: "El núcleo visual del Sprint 1.2A fue instalado.", time: "Hoy" }
-    ]
-  });
-})();
+window.SmartRisk=window.SmartRisk||{};SmartRisk.MockData={
+metrics:[{label:"Cantones priorizados",value:49,note:"Cobertura referencial",icon:"map",trend:"+6"},{label:"Instituciones",value:12,note:"Directorio inicial",icon:"building",trend:"+3"},{label:"Acciones",value:186,note:"Preparación y respuesta",icon:"check",trend:"+18"},{label:"Alertas",value:7,note:"Atención prioritaria",icon:"alert",trend:"3 críticas"}],
+territories:[{id:"GYE",provincia:"Guayas",capital:"Guayaquil",cantones:25,planes:16,avance:86,estado:"Seguimiento",prioridad:"Alta"},{id:"LRI",provincia:"Los Ríos",capital:"Babahoyo",cantones:13,planes:8,avance:72,estado:"Seguimiento",prioridad:"Alta"},{id:"STE",provincia:"Santa Elena",capital:"Santa Elena",cantones:3,planes:3,avance:61,estado:"Ajustes",prioridad:"Media"},{id:"BOL",provincia:"Bolívar",capital:"Guaranda",cantones:7,planes:4,avance:55,estado:"Ajustes",prioridad:"Media"},{id:"GAL",provincia:"Galápagos",capital:"Puerto Baquerizo Moreno",cantones:3,planes:1,avance:68,estado:"Seguimiento",prioridad:"Especial"}],
+institutions:[
+{id:"INS-001",nombre:"Secretaría Nacional de Gestión de Riesgos",sigla:"SNGR",tipo:"Gobierno central",provincia:"Zonal",estado:"Operativa",mtt:"MTT 4",responsable:"Coordinación Zonal 5",cargo:"Coordinador/a Zonal",telefono:"04-000-0000",correo:"coordinacion.z5@gestionderiesgos.gob.ec",competencias:["Coordinación del sistema","Asistencia técnica","Monitoreo"],observaciones:"Institución rectora del sistema."},
+{id:"INS-002",nombre:"Asociación de Municipalidades Ecuatorianas",sigla:"AME",tipo:"Entidad asociativa",provincia:"Guayas",estado:"Operativa",mtt:"Apoyo transversal",responsable:"Coordinación Regional 5",cargo:"Coordinador/a Regional",telefono:"04-000-0001",correo:"regional5@ame.gob.ec",competencias:["Asistencia a GAD","Fortalecimiento municipal"],observaciones:"Apoyo al seguimiento cantonal."},
+{id:"INS-003",nombre:"Ministerio de Salud Pública",sigla:"MSP",tipo:"Gobierno central",provincia:"Zonal",estado:"Operativa",mtt:"MTT 2",responsable:"Coordinación Zonal de Salud",cargo:"Delegado/a institucional",telefono:"04-000-0002",correo:"zonal5@msp.gob.ec",competencias:["Salud","Vigilancia epidemiológica","Atención prehospitalaria"],observaciones:"Responsable sectorial de salud."},
+{id:"INS-004",nombre:"Ministerio de Transporte y Obras Públicas",sigla:"MTOP",tipo:"Gobierno central",provincia:"Zonal",estado:"Operativa",mtt:"MTT 3",responsable:"Dirección Distrital",cargo:"Director/a Distrital",telefono:"04-000-0003",correo:"distrital5@mtop.gob.ec",competencias:["Vialidad","Infraestructura","Maquinaria"],observaciones:"Intervención en red vial estatal."},
+{id:"INS-005",nombre:"Gobierno Provincial del Guayas",sigla:"GPG",tipo:"GAD provincial",provincia:"Guayas",estado:"En coordinación",mtt:"MTT 3",responsable:"Dirección de Gestión de Riesgos",cargo:"Director/a",telefono:"04-000-0004",correo:"riesgos@guayas.gob.ec",competencias:["Vialidad provincial","Drenaje","Apoyo logístico"],observaciones:"Requiere actualización de delegados."},
+{id:"INS-006",nombre:"Gobierno Municipal de Guayaquil",sigla:"GADMG",tipo:"GAD cantonal",provincia:"Guayas",estado:"Operativa",mtt:"COE Cantonal",responsable:"Unidad de Gestión de Riesgos",cargo:"Jefe/a UGR",telefono:"04-000-0005",correo:"riesgos@guayaquil.gob.ec",competencias:["Gestión cantonal","Respuesta local","Alojamiento temporal"],observaciones:"Institución de alta capacidad operativa."},
+{id:"INS-007",nombre:"Cuerpo de Bomberos de Babahoyo",sigla:"CBB",tipo:"Entidad de respuesta",provincia:"Los Ríos",estado:"Operativa",mtt:"GT 1",responsable:"Comandancia",cargo:"Primer Jefe",telefono:"05-000-0006",correo:"comandancia@bomberosbabahoyo.gob.ec",competencias:["Incendios","Rescate","Primera respuesta"],observaciones:"Cobertura urbana y rural."},
+{id:"INS-008",nombre:"Cruz Roja Ecuatoriana - Junta Provincial",sigla:"CRE",tipo:"Organización humanitaria",provincia:"Santa Elena",estado:"En coordinación",mtt:"MTT 2",responsable:"Coordinación Provincial",cargo:"Coordinador/a",telefono:"04-000-0007",correo:"santaelena@cruzroja.org.ec",competencias:["Primeros auxilios","Apoyo humanitario"],observaciones:"Capacidad sujeta a activación."}
+]};
