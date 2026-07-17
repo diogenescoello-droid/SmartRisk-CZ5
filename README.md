@@ -1,19 +1,25 @@
-# SmartRisk CZ5 — Sprint 1.6A
+# SmartRisk CZ5 — Sprint 1.6B
 
-Versión `v2.6.0-alpha`.
+Versión `v2.7.0-alpha`.
 
-Este paquete incorpora el módulo **Reportes Institucionales**:
+## Conector Google Sheets
 
-- Selección del tipo de reporte.
-- Filtros por provincia, cantón e institución.
-- Definición de período y responsable.
-- Vista previa institucional.
-- Resumen ejecutivo automático.
-- Indicadores consolidados.
-- Matriz de acciones.
-- Matriz de sitios.
-- Recomendaciones automáticas.
-- Exportación a Word compatible.
-- Impresión directa para guardar como PDF.
+Este paquete incorpora el Centro de Sincronización y deja precargada la matriz real `Matriz_ENOS_CZ5_COMPLETA_GoogleSheets`.
 
-La exportación PDF utiliza el diálogo de impresión del navegador. Esto permite seleccionar “Guardar como PDF” sin incorporar dependencias externas.
+ID configurado: `14pw4tCwW2gp0Vn_xd9dxOmjj84_4-m6m2qXpbrGkxPw`
+
+Funciones principales:
+
+- Configuración editable del Spreadsheet y las pestañas.
+- Consulta de `BASE_LIMPIA` mediante la salida CSV de Google Visualization.
+- Vista previa antes de modificar la caché local.
+- Validación de columnas, identificadores duplicados, provincia y cantón.
+- Mapeo de registros a Territorios, Instituciones y Acciones.
+- Importación segura a `localStorage`.
+- Historial de sincronizaciones.
+- Registro de observaciones.
+- Integración con Dashboard, Territorios, Indicadores y Reportes.
+
+## Condición de acceso
+
+La hoja debe permitir lectura mediante enlace compartido. No se almacena contraseña ni credencial dentro del proyecto. Si la política institucional impide el acceso público, la integración deberá migrarse en una versión posterior a OAuth 2.0 o Apps Script como proxy autenticado.

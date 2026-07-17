@@ -1,12 +1,14 @@
-# Checklist Sprint 1.6A
+# Checklist Sprint 1.6B
 
-- [ ] Reportes aparece en navegación.
-- [ ] Filtros funcionan.
-- [ ] Vista previa se genera.
-- [ ] Indicadores se calculan.
-- [ ] Tabla de acciones carga.
-- [ ] Tabla de sitios carga.
-- [ ] Recomendaciones se generan.
-- [ ] Word se descarga.
-- [ ] Imprimir / PDF funciona.
-- [ ] Vista móvil es legible.
+- [ ] Sincronización aparece en el menú.
+- [ ] Configuración se guarda.
+- [ ] Vista previa consulta BASE_LIMPIA.
+- [ ] Columnas obligatorias se validan.
+- [ ] Duplicados se reportan.
+- [ ] Importación requiere vista previa previa.
+- [ ] Territorios se actualizan.
+- [ ] Acciones se actualizan.
+- [ ] Instituciones se actualizan.
+- [ ] Historial se registra.
+- [ ] Dashboard refleja datos importados.
+- [ ] Reportes usan datos importados.
