@@ -1,12 +1,12 @@
-# Checklist Sprint 1.2B
+# Checklist Sprint 1.5B
 
-- [ ] Territorios carga.
-- [ ] Filtro de texto funciona.
-- [ ] Filtro de estado funciona.
-- [ ] Filtro de prioridad funciona.
-- [ ] Resumen se actualiza.
-- [ ] Mapa responde.
-- [ ] Tabla ordena.
-- [ ] Detalle cambia.
-- [ ] CSV se descarga.
-- [ ] Responsive correcto.
+- [ ] Módulo Indicadores abre.
+- [ ] Índice global se calcula.
+- [ ] Indicadores principales cargan.
+- [ ] Consolidado provincial carga.
+- [ ] Clasificación automática funciona.
+- [ ] Recomendaciones cambian según datos.
+- [ ] Recalcular funciona.
+- [ ] Exportación CSV funciona.
+- [ ] Navegación al módulo funciona.
+- [ ] Vista móvil es legible.

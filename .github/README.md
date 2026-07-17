@@ -1,21 +1,20 @@
-# SmartRisk CZ5
+# SmartRisk CZ5 — Sprint 1.5B
 
-## Sprint 1.2B — v2.1.0-beta
+Versión `v2.5.0-alpha`.
 
-Esta versión incorpora el primer módulo funcional de la plataforma: **Territorios**.
+Este paquete incorpora el **Motor de Indicadores**:
 
-### Incluye
+- Índice global de gestión.
+- Avance promedio de acciones.
+- Acciones con responsable.
+- Acciones con evidencias.
+- Cumplimiento de plazos.
+- Instituciones con contacto.
+- Sitios validados.
+- Cobertura cantonal.
+- Consolidado provincial.
+- Clasificación automática en Alto, Medio y Bajo.
+- Lectura ejecutiva y recomendaciones.
+- Exportación CSV de la matriz.
 
-- Filtros por texto, estado y prioridad.
-- Resumen dinámico de provincias, cantones, planes y avance.
-- Mapa esquemático interactivo de la Zona 5.
-- Tabla ordenable.
-- Vista de detalle provincial.
-- Exportación de resultados visibles a CSV.
-- Modal de ayuda.
-- Integración con el dashboard institucional.
-- Tema claro/oscuro y navegación SPA.
-
-### Ejecución
-
-Abra `frontend/index.html` o use Live Server en VS Code.
+El cálculo usa los datos locales actuales y se actualiza al modificar los módulos operativos.

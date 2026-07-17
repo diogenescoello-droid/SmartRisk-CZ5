@@ -1,16 +1,15 @@
 # Changelog
 
-## v2.1.0-beta — Sprint 1.2B
+## v2.5.0-alpha — Sprint 1.5B
 
-- Se implementó el módulo funcional Territorios.
-- Se agregaron filtros combinados.
-- Se agregó resumen dinámico.
-- Se agregó mapa esquemático interactivo.
-- Se agregó detalle provincial.
-- Se habilitó exportación CSV.
-- Se mejoró el dashboard para enlazar al módulo territorial.
-- Se actualizó la versión del núcleo.
+- Motor de Indicadores.
+- Índice global automático.
+- Indicadores de calidad y cumplimiento.
+- Consolidado provincial.
+- Clasificación por rangos.
+- Recomendaciones ejecutivas.
+- Exportación CSV.
 
-## v2.1.0-alpha — Sprint 1.2A
+## v2.4.0-alpha — Sprint 1.5A
 
-- Dashboard institucional, temas, iconografía y tabla avanzada.
+- Dashboard Ejecutivo.
