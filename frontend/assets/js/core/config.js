@@ -1,1 +1,23 @@
-window.SmartRisk=window.SmartRisk||{};SmartRisk.Config={defaultRoute:"/dashboard",currentUser:{name:"Daniel Coello",role:"Administrador",initials:"DC"},navigation:[{path:"/dashboard",label:"Dashboard",icon:"▦"},{path:"/territorios",label:"Territorios",icon:"⌖"},{path:"/instituciones",label:"Instituciones",icon:"▤"},{path:"/sitios",label:"Sitios",icon:"●"},{path:"/acciones",label:"Acciones",icon:"✓"}]};
+(function () {
+  "use strict";
+
+  window.SmartRisk = window.SmartRisk || {};
+
+  window.SmartRisk.Config = Object.freeze({
+    environment: "development",
+    defaultRoute: "/dashboard",
+    organization: "Coordinación Zonal 5",
+    currentUser: Object.freeze({
+      name: "Daniel Coello",
+      role: "Administrador",
+      initials: "DC"
+    }),
+    navigation: Object.freeze([
+      { path: "/dashboard", label: "Dashboard", icon: "dashboard" },
+      { path: "/territorios", label: "Territorios", icon: "map" },
+      { path: "/instituciones", label: "Instituciones", icon: "building" },
+      { path: "/sitios", label: "Sitios", icon: "pin" },
+      { path: "/acciones", label: "Acciones", icon: "check" }
+    ])
+  });
+})();

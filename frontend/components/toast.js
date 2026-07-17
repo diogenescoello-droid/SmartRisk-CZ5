@@ -1,1 +1,18 @@
-window.SmartRisk=window.SmartRisk||{};SmartRisk.Toast={show(m,t="info"){const r=document.getElementById("app-toast-region"),e=document.createElement("div");e.className="toast "+t;e.textContent=m;r.appendChild(e);setTimeout(()=>e.remove(),3000)}};
+(function () {
+  "use strict";
+
+  window.SmartRisk = window.SmartRisk || {};
+
+  window.SmartRisk.Toast = {
+    show(message, type = "info", duration = 3200) {
+      const region = document.getElementById("app-toast-region");
+      const toast = document.createElement("div");
+
+      toast.className = `toast toast-${type}`;
+      toast.textContent = message;
+      region.appendChild(toast);
+
+      setTimeout(() => toast.remove(), duration);
+    }
+  };
+})();

@@ -1,1 +1,28 @@
-window.SmartRisk=window.SmartRisk||{};SmartRisk.Storage={get(n,f=null){try{const v=localStorage.getItem("smartrisk.cz5."+n);return v===null?f:JSON.parse(v)}catch{return f}},set(n,v){localStorage.setItem("smartrisk.cz5."+n,JSON.stringify(v))}};
+(function () {
+  "use strict";
+
+  window.SmartRisk = window.SmartRisk || {};
+
+  const prefix = window.SmartRisk.Constants.STORAGE_PREFIX;
+  const makeKey = name => `${prefix}.${name}`;
+
+  window.SmartRisk.Storage = {
+    get(name, fallback = null) {
+      try {
+        const raw = localStorage.getItem(makeKey(name));
+        return raw === null ? fallback : JSON.parse(raw);
+      } catch {
+        return fallback;
+      }
+    },
+
+    set(name, value) {
+      try {
+        localStorage.setItem(makeKey(name), JSON.stringify(value));
+        return true;
+      } catch {
+        return false;
+      }
+    }
+  };
+})();

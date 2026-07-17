@@ -1,36 +1,45 @@
-# Arquitectura — Sprint 1.1B
+# Arquitectura — Sprint 1.2A
 
-SmartRisk CZ5 utiliza una arquitectura frontend modular sin dependencias externas.
+SmartRisk CZ5 mantiene una arquitectura frontend modular sin dependencias externas.
 
-## Capas
+## Core
 
-1. **Core**
-   - `constants.js`
-   - `config.js`
-   - `events.js`
-   - `storage.js`
-   - `utils.js`
-   - `router.js`
+- constants
+- config
+- storage
+- utils
+- theme
+- router
 
-2. **Componentes**
-   - Sidebar
-   - Navbar
-   - Toast
+## Datos
 
-3. **Módulos**
-   - Dashboard
-   - Territorios
-   - Instituciones
-   - Sitios
-   - Acciones
+- mock-data
 
-4. **Bootstrap**
-   - `app.js`
+## Componentes
 
-## Decisión técnica
+- icon
+- button
+- card
+- table
+- chart
+- modal
+- loader
+- toast
+- sidebar
+- navbar
 
-Se utiliza enrutamiento por hash (`#/dashboard`) para mantener compatibilidad con:
+## Módulos
 
-- apertura directa del archivo HTML;
-- GitHub Pages;
-- servidores estáticos sin configuración de reescritura.
+- dashboard
+- territorios
+- instituciones
+- sitios
+- acciones
+
+## Decisiones técnicas
+
+- Enrutamiento por hash para compatibilidad con GitHub Pages.
+- SVG embebido para evitar dependencias.
+- CSS variables para temas.
+- LocalStorage para preferencias visuales.
+- Datos demostrativos desacoplados en `mock-data.js`.

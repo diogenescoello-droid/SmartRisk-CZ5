@@ -1,7 +1,13 @@
-- [ ] Dashboard carga.
+# Checklist Sprint 1.2A
+
+- [ ] Dashboard carga sin errores.
+- [ ] Tema claro/oscuro funciona.
+- [ ] Tema persiste.
+- [ ] Sidebar colapsa.
+- [ ] Sidebar persiste.
+- [ ] Tabla busca.
+- [ ] Tabla ordena.
 - [ ] Modal funciona.
 - [ ] Toast funciona.
-- [ ] Loader funciona.
 - [ ] Navegación funciona.
-- [ ] Sidebar persiste.
-- [ ] Responsive correcto.
+- [ ] Vista móvil correcta.
