@@ -1,14 +1,13 @@
-# Checklist Sprint 1.6B
+# Checklist Sprint 1.7A
 
-- [ ] Sincronización aparece en el menú.
-- [ ] Configuración se guarda.
-- [ ] Vista previa consulta BASE_LIMPIA.
-- [ ] Columnas obligatorias se validan.
-- [ ] Duplicados se reportan.
-- [ ] Importación requiere vista previa previa.
-- [ ] Territorios se actualizan.
-- [ ] Acciones se actualizan.
-- [ ] Instituciones se actualizan.
-- [ ] Historial se registra.
-- [ ] Dashboard refleja datos importados.
-- [ ] Reportes usan datos importados.
+- [ ] KoboToolbox aparece en la navegación.
+- [ ] La configuración se conserva al recargar.
+- [ ] El token puede ocultarse y mostrarse.
+- [ ] La vista previa consulta el formulario.
+- [ ] Los errores de autenticación son legibles.
+- [ ] El mapeo de campos es editable.
+- [ ] Las observaciones de calidad aparecen.
+- [ ] La importación crea sitios.
+- [ ] La importación crea acciones.
+- [ ] La importación fusiona registros por ID.
+- [ ] El historial registra la operación.
