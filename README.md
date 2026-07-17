@@ -1,17 +1,27 @@
-# SmartRisk CZ5 — Sprint 1.4A
+# SmartRisk CZ5 — Sprint 1.5A
 
-Versión `v2.3.0-alpha`.
+Versión `v2.4.0-alpha`.
 
-Este paquete incorpora el módulo funcional **Acciones**:
+Este paquete incorpora el **Dashboard Ejecutivo** sin modificar la arquitectura actual.
 
-- Registro de acciones de análisis, fortalecimiento y respuesta.
-- Relación con provincias, cantones, instituciones y sitios.
-- Estado, prioridad, responsable, fechas y porcentaje de avance.
-- Registro de evidencias y observaciones.
-- Filtros combinados.
-- Vista de detalle y próximos hitos.
-- Creación, edición y eliminación.
-- Persistencia mediante LocalStorage.
-- Exportación CSV.
+Funciones incluidas:
 
-La plataforma ya cuenta con cuatro módulos operativos: Territorios, Instituciones, Sitios y Acciones.
+- KPIs calculados con los datos locales.
+- Avance operativo promedio.
+- Alertas por acciones bloqueadas y vencidas.
+- Identificación de sitios prioritarios.
+- Avance consolidado por provincia.
+- Ranking de cantones que requieren seguimiento.
+- Distribución de acciones por estado.
+- Actividad reciente.
+- Accesos rápidos a módulos.
+- Exportación CSV del resumen ejecutivo.
+- Backlog oficial posterior a la versión 1.0.
+
+Módulos operativos disponibles:
+
+- Dashboard Ejecutivo.
+- Territorios.
+- Instituciones.
+- Sitios.
+- Acciones.

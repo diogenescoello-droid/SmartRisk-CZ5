@@ -1,12 +1,13 @@
-# Checklist Sprint 1.4A
+# Checklist Sprint 1.5A
 
-- [ ] Acciones carga.
-- [ ] Resumen dinámico funciona.
-- [ ] Filtros funcionan.
-- [ ] Detalle funciona.
-- [ ] Crear acción funciona.
-- [ ] Editar acción funciona.
-- [ ] Eliminar acción funciona.
-- [ ] Avance se limita entre 0 y 100.
-- [ ] LocalStorage conserva cambios.
-- [ ] CSV se descarga.
+- [ ] Dashboard carga como inicio.
+- [ ] KPIs reflejan datos existentes.
+- [ ] Avance provincial funciona.
+- [ ] Ranking cantonal funciona.
+- [ ] Alertas se muestran.
+- [ ] Semaforización funciona.
+- [ ] Actividad reciente se muestra.
+- [ ] Accesos rápidos funcionan.
+- [ ] Exportación CSV funciona.
+- [ ] Backlog está incluido.
+- [ ] Vista móvil es legible.
