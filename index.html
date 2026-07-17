@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SmartRisk CZ5</title><link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="login" class="login-shell">
+  <section class="login-card">
+    <div class="brand-mark">SR</div>
+    <h1>SmartRisk CZ5</h1>
+    <p>Seguimiento territorial de gestión de riesgos</p>
+    <form id="loginForm">
+      <label>Correo</label><input id="email" type="email" value="admin@smartrisk.cz5" required>
+      <label>Contraseña</label><input id="password" type="password" value="SmartRisk2026!" required>
+      <button>Ingresar</button><div id="loginError" class="error"></div>
+    </form>
+    <small>Acceso demostrativo: admin@smartrisk.cz5 / SmartRisk2026!</small>
+  </section>
+</div>
+<div id="app" class="app hidden">
+  <aside>
+    <div class="brand"><b>SmartRisk</b><span>CZ5 · v1.0 MVP</span></div>
+    <nav id="nav"></nav>
+    <button id="logout" class="logout">Cerrar sesión</button>
+  </aside>
+  <main>
+    <header><div><h2 id="pageTitle">Panel principal</h2><p id="pageSubtitle">Estado operativo de la plataforma</p></div><span class="pill">Administrador CZ5</span></header>
+    <section id="content"></section>
+  </main>
+</div>
+<script src="data.js"></script><script src="app.js"></script>
+</body></html>
