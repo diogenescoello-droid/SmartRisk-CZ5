@@ -1,1 +1,1 @@
-console.log('SmartRisk CZ5 v2.0.0-alpha');
+document.addEventListener("DOMContentLoaded",()=>{SmartRisk.Sidebar.init();SmartRisk.Config.navigation.forEach(i=>{});[SmartRisk.DashboardModule,SmartRisk.TerritoriosModule,SmartRisk.InstitucionesModule,SmartRisk.SitiosModule,SmartRisk.AccionesModule].forEach(m=>SmartRisk.Router.register(m.route));SmartRisk.Router.start()});

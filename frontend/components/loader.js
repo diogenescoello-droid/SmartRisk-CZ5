@@ -1,0 +1,1 @@
+window.SmartRisk=window.SmartRisk||{};SmartRisk.Loader={show(m="Procesando…"){document.getElementById("app-loader-root").innerHTML=`<div class="global-loader"><div class="loader-card"><div class="spinner"></div><strong>${m}</strong></div></div>`},hide(){document.getElementById("app-loader-root").innerHTML=""}};

@@ -1,13 +1,44 @@
-<!doctype html><html lang="es"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SmartRisk CZ5</title>
+<link rel="stylesheet" href="assets/css/variables.css">
 <link rel="stylesheet" href="assets/css/app.css">
-</head><body>
-<div class="sidebar"><h2>SmartRisk CZ5</h2><ul><li>Dashboard</li><li>Territorios</li><li>Instituciones</li></ul></div>
-<div class="content"><header>Dashboard</header>
-<div class="cards">
-<div class="card"><h3>Estado</h3><p>Sprint 1.1A</p></div>
-<div class="card"><h3>Arquitectura</h3><p>Preparada para crecer.</p></div>
-</div></div>
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/css/dashboard.css">
+</head>
+<body>
+<div id="app" class="app-shell">
+  <aside id="app-sidebar" class="sidebar"></aside>
+  <div class="app-main">
+    <header id="app-navbar" class="navbar"></header>
+    <main id="app-content" class="app-content"></main>
+  </div>
+</div>
+<div id="app-modal-root"></div>
+<div id="app-loader-root"></div>
+<div id="app-toast-region" class="toast-region"></div>
+
+<script src="assets/js/core/constants.js"></script>
+<script src="assets/js/core/config.js"></script>
+<script src="assets/js/core/storage.js"></script>
+<script src="assets/js/core/utils.js"></script>
+<script src="assets/js/core/router.js"></script>
+<script src="components/button.js"></script>
+<script src="components/card.js"></script>
+<script src="components/table.js"></script>
+<script src="components/modal.js"></script>
+<script src="components/loader.js"></script>
+<script src="components/toast.js"></script>
+<script src="components/sidebar.js"></script>
+<script src="components/navbar.js"></script>
+<script src="modules/dashboard/dashboard.js"></script>
+<script src="modules/territorios/territorios.js"></script>
+<script src="modules/instituciones/instituciones.js"></script>
+<script src="modules/sitios/sitios.js"></script>
+<script src="modules/acciones/acciones.js"></script>
 <script src="assets/js/app.js"></script>
-</body></html>
+</body>
+</html>

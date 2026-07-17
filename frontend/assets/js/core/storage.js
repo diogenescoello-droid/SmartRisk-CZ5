@@ -1,0 +1,1 @@
+window.SmartRisk=window.SmartRisk||{};SmartRisk.Storage={get(n,f=null){try{const v=localStorage.getItem("smartrisk.cz5."+n);return v===null?f:JSON.parse(v)}catch{return f}},set(n,v){localStorage.setItem("smartrisk.cz5."+n,JSON.stringify(v))}};

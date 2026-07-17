@@ -1,0 +1,7 @@
+- [ ] Dashboard carga.
+- [ ] Modal funciona.
+- [ ] Toast funciona.
+- [ ] Loader funciona.
+- [ ] Navegación funciona.
+- [ ] Sidebar persiste.
+- [ ] Responsive correcto.

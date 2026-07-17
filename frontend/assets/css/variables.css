@@ -1,3 +1,5 @@
 :root{
---primary:#0b5cab;--bg:#f4f7fb;--sidebar:#17324d;--text:#223;--card:#fff;
+--primary-900:#102f49;--primary-800:#173f60;--primary-700:#1c527d;--primary-600:#1769a6;--primary-500:#1683c8;
+--accent:#ec941f;--success:#198754;--danger:#c0392b;--bg:#f3f6fa;--surface:#fff;--muted:#637180;--border:#dce4ec;
+--text:#1d2a36;--sidebar:264px;--sidebar-small:78px;--radius:14px;--shadow:0 10px 28px rgba(17,42,66,.10)
 }

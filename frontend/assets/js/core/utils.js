@@ -1,0 +1,1 @@
+window.SmartRisk=window.SmartRisk||{};SmartRisk.Utils={formatDate(){return new Intl.DateTimeFormat("es-EC",{dateStyle:"long"}).format(new Date())},setTitle(t){document.title=t+" | SmartRisk CZ5"}};

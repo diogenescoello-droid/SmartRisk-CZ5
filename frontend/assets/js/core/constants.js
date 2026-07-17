@@ -1,0 +1,1 @@
+window.SmartRisk=window.SmartRisk||{};SmartRisk.Constants={APP_NAME:"SmartRisk CZ5",APP_VERSION:"2.0.0-rc1",STORAGE_PREFIX:"smartrisk.cz5"};

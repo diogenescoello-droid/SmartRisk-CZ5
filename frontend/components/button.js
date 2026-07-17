@@ -1,0 +1,1 @@
+window.SmartRisk=window.SmartRisk||{};SmartRisk.Button={render({id="",label,variant="primary"}){return `<button ${id?`id="${id}"`:""} class="btn btn-${variant}" type="button">${label}</button>`}};
