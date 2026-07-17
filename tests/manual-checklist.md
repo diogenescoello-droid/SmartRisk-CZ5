@@ -1,13 +1,12 @@
-# Checklist Sprint 1.5A
+# Checklist Sprint 1.6A
 
-- [ ] Dashboard carga como inicio.
-- [ ] KPIs reflejan datos existentes.
-- [ ] Avance provincial funciona.
-- [ ] Ranking cantonal funciona.
-- [ ] Alertas se muestran.
-- [ ] Semaforización funciona.
-- [ ] Actividad reciente se muestra.
-- [ ] Accesos rápidos funcionan.
-- [ ] Exportación CSV funciona.
-- [ ] Backlog está incluido.
+- [ ] Reportes aparece en navegación.
+- [ ] Filtros funcionan.
+- [ ] Vista previa se genera.
+- [ ] Indicadores se calculan.
+- [ ] Tabla de acciones carga.
+- [ ] Tabla de sitios carga.
+- [ ] Recomendaciones se generan.
+- [ ] Word se descarga.
+- [ ] Imprimir / PDF funciona.
 - [ ] Vista móvil es legible.

@@ -1,17 +1,16 @@
 # Changelog
 
-## v2.4.0-alpha — Sprint 1.5A
+## v2.6.0-alpha — Sprint 1.6A
 
-- Dashboard Ejecutivo dinámico.
-- KPIs consolidados.
-- Alertas operativas.
-- Avance por provincia.
-- Ranking cantonal.
-- Semaforización de acciones.
-- Actividad reciente.
-- Exportación de resumen CSV.
-- Backlog posterior a v1.0.
+- Nuevo módulo Reportes Institucionales.
+- Constructor de reportes.
+- Filtros territoriales e institucionales.
+- Vista previa automática.
+- Tablas de acciones y sitios.
+- Recomendaciones automáticas.
+- Exportación Word.
+- Impresión y guardado PDF.
 
-## v2.3.0-alpha — Sprint 1.4A
+## v2.5.0-alpha — Sprint 1.5B
 
-- Módulo Acciones.
+- Motor de Indicadores.

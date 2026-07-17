@@ -1,0 +1,30 @@
+
+.report-builder{display:grid;grid-template-columns:minmax(320px,.8fr) minmax(0,1.6fr);gap:20px}
+.report-form{display:grid;gap:14px}
+.report-preview{background:#fff;color:#1d2530;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-sm);overflow:hidden}
+.report-document{padding:34px;min-height:900px}
+.report-header{display:flex;justify-content:space-between;gap:24px;padding-bottom:20px;border-bottom:3px solid #244f72}
+.report-brand h1{margin:0;font-size:1.65rem;color:#193c59}
+.report-brand p{margin:5px 0 0;color:#5b6874}
+.report-meta{text-align:right;font-size:.82rem;color:#5b6874}
+.report-section{margin-top:24px}
+.report-section h2{margin:0 0 12px;font-size:1.08rem;color:#193c59;border-bottom:1px solid #d9e0e6;padding-bottom:7px}
+.report-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.report-kpi{padding:12px;border:1px solid #d9e0e6;border-radius:8px;background:#f7f9fb}
+.report-kpi span{display:block;font-size:.72rem;color:#64717d;text-transform:uppercase;font-weight:700}
+.report-kpi strong{display:block;margin-top:4px;font-size:1.35rem}
+.report-table{width:100%;border-collapse:collapse;font-size:.78rem}
+.report-table th,.report-table td{padding:8px;border:1px solid #d9e0e6;text-align:left;vertical-align:top}
+.report-table th{background:#edf2f6;color:#29475f}
+.report-note{padding:12px;background:#f7f9fb;border-left:4px solid #244f72;line-height:1.5}
+.report-footer{margin-top:28px;padding-top:12px;border-top:1px solid #d9e0e6;font-size:.72rem;color:#67737f}
+.report-empty{padding:40px;text-align:center;color:#6e7882}
+@media(max-width:1050px){.report-builder{grid-template-columns:1fr}}
+@media(max-width:700px){.report-kpis{grid-template-columns:1fr 1fr}.report-document{padding:18px}}
+@media print{
+body *{visibility:hidden!important}
+#report-preview-root,#report-preview-root *{visibility:visible!important}
+#report-preview-root{position:absolute;left:0;top:0;width:100%;border:0;box-shadow:none}
+.report-document{padding:18mm;min-height:auto}
+.app-sidebar,.app-header,.page-header,.panel:first-child{display:none!important}
+}
