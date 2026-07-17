@@ -1,0 +1,12 @@
+window.SmartRisk=window.SmartRisk||{};SmartRisk.MockData=Object.freeze({
+metrics:[{label:"Cantones priorizados",value:49,note:"Cobertura referencial de Zona 5",icon:"map",trend:"+6 este mes"},{label:"Planes en seguimiento",value:32,note:"Planes con revisión activa",icon:"document",trend:"+4 actualizados"},{label:"Acciones registradas",value:186,note:"Acciones preparatorias y operativas",icon:"check",trend:"+18 verificadas"},{label:"Alertas operativas",value:7,note:"Requieren atención prioritaria",icon:"alert",trend:"3 críticas"}],
+progress:[{label:"Análisis de riesgos",value:78},{label:"Fortalecimiento",value:64},{label:"Preparación y respuesta",value:71},{label:"Seguimiento documental",value:83}],
+trend:[{label:"Ene",value:42},{label:"Feb",value:48},{label:"Mar",value:55},{label:"Abr",value:61},{label:"May",value:68},{label:"Jun",value:76},{label:"Jul",value:82}],
+activities:[{text:"Se actualizó el seguimiento documental de Guayas.",time:"Hace 18 minutos"},{text:"Se registraron nuevas acciones para Los Ríos.",time:"Hace 1 hora"},{text:"Se identificaron ajustes pendientes en Santa Elena.",time:"Hace 3 horas"},{text:"El módulo territorial fue habilitado.",time:"Hoy"}],
+territories:[
+{id:"GYE",provincia:"Guayas",capital:"Guayaquil",cantones:25,planes:16,avance:86,estado:"Seguimiento",prioridad:"Alta",poblacion:"4,4 millones",coordinador:"Equipo Zonal Guayas",cantonesLista:["Guayaquil","Durán","Daule","Milagro","Samborondón","Salitre","Nobol","Yaguachi"]},
+{id:"LRI",provincia:"Los Ríos",capital:"Babahoyo",cantones:13,planes:8,avance:72,estado:"Seguimiento",prioridad:"Alta",poblacion:"921 mil",coordinador:"Equipo Zonal Los Ríos",cantonesLista:["Babahoyo","Quevedo","Vinces","Mocache","Montalvo","Baba","Ventanas"]},
+{id:"STE",provincia:"Santa Elena",capital:"Santa Elena",cantones:3,planes:3,avance:61,estado:"Ajustes",prioridad:"Media",poblacion:"401 mil",coordinador:"Equipo Zonal Santa Elena",cantonesLista:["Santa Elena","La Libertad","Salinas"]},
+{id:"BOL",provincia:"Bolívar",capital:"Guaranda",cantones:7,planes:4,avance:55,estado:"Ajustes",prioridad:"Media",poblacion:"210 mil",coordinador:"Equipo Zonal Bolívar",cantonesLista:["Guaranda","Chillanes","San Miguel","Echeandía","Caluma","Chimbo","Las Naves"]},
+{id:"GAL",provincia:"Galápagos",capital:"Puerto Baquerizo Moreno",cantones:3,planes:1,avance:68,estado:"Seguimiento",prioridad:"Especial",poblacion:"33 mil",coordinador:"Equipo Zonal Galápagos",cantonesLista:["San Cristóbal","Santa Cruz","Isabela"]}
+]});

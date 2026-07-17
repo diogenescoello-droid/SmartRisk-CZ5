@@ -1,0 +1,1 @@
+document.addEventListener("DOMContentLoaded",()=>{SmartRisk.Theme.init();SmartRisk.Sidebar.init();[SmartRisk.DashboardModule,SmartRisk.TerritoriosModule,SmartRisk.InstitucionesModule,SmartRisk.SitiosModule,SmartRisk.AccionesModule].forEach(m=>SmartRisk.Router.register(m.route));SmartRisk.Router.start()});
