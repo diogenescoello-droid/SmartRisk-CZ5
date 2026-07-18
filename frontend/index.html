@@ -10,7 +10,6 @@
   <link rel="stylesheet" href="assets/css/base.css">
   <link rel="stylesheet" href="assets/css/layout.css">
   <link rel="stylesheet" href="assets/css/components.css">
-  <link rel="stylesheet" href="assets/css/drawer.css">
   <link rel="stylesheet" href="assets/css/dashboard.css">
   <link rel="stylesheet" href="assets/css/territorios.css">
   <link rel="stylesheet" href="assets/css/instituciones.css">
@@ -22,6 +21,8 @@
   <link rel="stylesheet" href="assets/css/sincronizacion.css">
   <link rel="stylesheet" href="assets/css/kobo.css">
   <link rel="stylesheet" href="assets/css/responsive.css">
+  <link rel="stylesheet" href="assets/css/auth.css">
+  <link rel="stylesheet" href="assets/css/usuarios.css">
   <link rel="stylesheet" href="https://js.arcgis.com/4.33/esri/themes/light/main.css">
   <link rel="stylesheet" href="assets/css/arcgis.css">
 </head>
@@ -36,7 +37,6 @@
     </section>
   </div>
   <div id="app-modal-root"></div>
-  <div id="app-drawer-root"></div>
   <div id="app-loader-root"></div>
   <div id="app-toast-region" class="toast-region" aria-live="polite"></div>
 
@@ -45,10 +45,13 @@
   <script src="assets/js/core/storage.js"></script>
   <script src="assets/js/core/utils.js"></script>
   <script src="assets/js/core/theme.js"></script>
-  <script src="assets/js/core/events.js"></script>
-  <script src="assets/js/core/workspace.js"></script>
   <script src="assets/js/core/router.js"></script>
   <script src="assets/js/data/mock-data.js"></script>
+  <script src="assets/js/data/users-demo.js"></script>
+  <script src="assets/js/services/permission-service.js"></script>
+  <script src="assets/js/services/user-context.js"></script>
+  <script src="assets/js/services/auth-service.js"></script>
+  <script src="assets/js/services/user-management-service.js"></script>
 
   <script src="components/icon.js"></script>
   <script src="components/button.js"></script>
@@ -56,14 +59,13 @@
   <script src="components/table.js"></script>
   <script src="components/chart.js"></script>
   <script src="components/modal.js"></script>
-  <script src="components/drawer.js"></script>
   <script src="components/loader.js"></script>
   <script src="components/toast.js"></script>
   <script src="components/sidebar.js"></script>
   <script src="components/navbar.js"></script>
+  <script src="components/role-guard.js"></script>
+  <script src="components/user-menu.js"></script>
 
-  <script src="assets/js/services/action-quality.js"></script>
-  <script src="assets/js/services/operational-intelligence.js"></script>
   <script src="assets/js/services/google-sheets.js"></script>
   <script src="assets/js/services/kobo.js"></script>
 
@@ -77,6 +79,7 @@
   <script src="modules/sincronizacion/sincronizacion.js"></script>
   <script src="modules/kobo/kobo.js"></script>
   <script src="modules/arcgis/arcgis.js"></script>
+  <script src="modules/usuarios/usuarios.js"></script>
   <script src="assets/js/app.js"></script>
 </body>
 </html>

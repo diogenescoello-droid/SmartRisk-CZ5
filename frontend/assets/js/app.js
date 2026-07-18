@@ -1,30 +1,10 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded",()=>{
+  if(!SmartRisk.UserContext.requireSession())return;
   SmartRisk.Theme.init();
   SmartRisk.Sidebar.init();
-
-  const modules = [
-    ["Dashboard", SmartRisk.DashboardModule],
-    ["Territorios", SmartRisk.TerritoriosModule],
-    ["Instituciones", SmartRisk.InstitucionesModule],
-    ["Sitios", SmartRisk.SitiosModule],
-    ["Acciones", SmartRisk.AccionesModule],
-    ["Indicadores", SmartRisk.IndicadoresModule],
-    ["Reportes", SmartRisk.ReportesModule],
-    ["Sincronización", SmartRisk.SincronizacionModule],
-    ["KoboToolbox", SmartRisk.KoboModule],
-    ["ArcGIS Online", SmartRisk.ArcGISModule]
-  ];
-
-  const missing = [];
-  modules.forEach(([name, module]) => {
-    if (!module?.route || !SmartRisk.Router.register(module.route)) missing.push(name);
-  });
-
-  if (missing.length) {
-    console.warn(`[SmartRisk] Módulos no registrados: ${missing.join(", ")}`);
-    SmartRisk.Toast?.show(`Módulos no disponibles: ${missing.join(", ")}`, "error");
-  }
-
-  console.info("[SmartRisk] Rutas registradas:", SmartRisk.Router.list());
+  [SmartRisk.DashboardModule,SmartRisk.TerritoriosModule,SmartRisk.InstitucionesModule,SmartRisk.SitiosModule,SmartRisk.AccionesModule,SmartRisk.IndicadoresModule,SmartRisk.ReportesModule,SmartRisk.SincronizacionModule,SmartRisk.KoboModule,SmartRisk.ArcGISModule,SmartRisk.UsuariosModule]
+    .filter(Boolean)
+    .filter(module=>SmartRisk.PermissionService.can(SmartRisk.PermissionService.navigationPermission(module.route.path)))
+    .forEach(module=>SmartRisk.Router.register(module.route));
   SmartRisk.Router.start();
 });
