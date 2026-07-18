@@ -239,6 +239,35 @@ window.SmartRisk = window.SmartRisk || {};
       </button>`).join("")}</section>`;
   }
 
+
+  function operationalCenter(scope) {
+    const role = SR.Storage.get("workspace.role", "coordinacion");
+    const result = SR.OperationalIntelligence.evaluate(scope.actions);
+    const tasks = SR.OperationalIntelligence.tasks(scope.actions, role);
+    const days = SR.OperationalIntelligence.daysUntilTarget();
+    const labels = {
+      coordinacion: "Coordinación Zonal",
+      ugr: "Técnico UGR",
+      autoridad: "Autoridad provincial/cantonal",
+      coe: "COE / Mesa Técnica"
+    };
+    const next = tasks[0];
+    return `<section class="territory-operational-center" aria-labelledby="operational-center-title">
+      <header class="territory-operational-header">
+        <div><span class="kicker">Centro de trabajo por rol</span><h2 id="operational-center-title">Qué requiere atención ahora</h2><p>Lectura priorizada para ${esc(labels[role] || labels.coordinacion)}. Próxima actualización: 23 de julio de 2026.</p></div>
+        <label class="territory-role-control"><span>Vista de usuario</span><select id="workspace-role" class="select-input"><option value="coordinacion" ${role === "coordinacion" ? "selected" : ""}>Coordinación Zonal</option><option value="ugr" ${role === "ugr" ? "selected" : ""}>Técnico UGR</option><option value="autoridad" ${role === "autoridad" ? "selected" : ""}>Autoridad</option><option value="coe" ${role === "coe" ? "selected" : ""}>COE / Mesa Técnica</option></select></label>
+      </header>
+      <div class="territory-deadline-strip"><strong>${days >= 0 ? `${days} días para la actualización` : `${Math.abs(days)} días de retraso`}</strong><span>${next ? `Prioridad principal: ${esc(next.title)} (${next.count})` : "No existen tareas críticas para este rol."}</span></div>
+      <div class="territory-operational-kpis">
+        <article><span>Brechas críticas</span><strong>${result.counters.critical}</strong></article>
+        <article><span>Pendientes de revisión</span><strong>${result.counters.review}</strong></article>
+        <article><span>Sin verificables</span><strong>${result.counters.evidence}</strong></article>
+        <article><span>Sin actualización reciente</span><strong>${result.counters.stale}</strong></article>
+      </div>
+      <div class="territory-task-list">${tasks.length ? tasks.slice(0, 5).map(task => `<button type="button" class="territory-task-item" data-task-route="/acciones"><span><strong>${esc(task.title)}</strong><small>${esc(task.reason)}</small></span><b>${task.count}</b></button>`).join("") : '<div class="empty-state compact"><strong>Sin tareas críticas</strong><p>El territorio no presenta pendientes para la vista seleccionada.</p></div>'}</div>
+    </section>`;
+  }
+
   function activity(scope) {
     const rows = scope.actions.slice().sort((a, b) => String(b.fechaFin || "").localeCompare(String(a.fechaFin || ""))).slice(0, 5);
     return `<article class="panel territory-activity-panel">
@@ -264,6 +293,7 @@ window.SmartRisk = window.SmartRisk || {};
       </section>
       ${gapPanel(scope)}
       ${coordinationPanel(scope)}
+      ${operationalCenter(scope)}
       ${moduleLinks(scope)}
       ${activity(scope)}`;
   }
@@ -308,6 +338,14 @@ window.SmartRisk = window.SmartRisk || {};
       SR.Router.resolve();
     });
     document.getElementById("territory-export")?.addEventListener("click", exportSummary);
+    document.getElementById("workspace-role")?.addEventListener("change", event => {
+      SR.Storage.set("workspace.role", event.target.value);
+      SR.Router.resolve();
+    });
+    document.querySelectorAll("[data-task-route]").forEach(button => button.addEventListener("click", () => {
+      SR.Workspace.set(context);
+      location.hash = button.dataset.taskRoute;
+    }));
     document.querySelectorAll("[data-action-id]").forEach(button => button.addEventListener("click", () => {
       SR.Storage.set("actions.focusId", button.dataset.actionId);
       SR.Workspace.set(context);

@@ -1,0 +1,9 @@
+SmartRisk CZ5 — R02.4
+
+1. Trabajar en la rama feature/r02-workspace-territorial.
+2. Cerrar Live Server.
+3. Copiar las carpetas frontend, docs y tests en la raíz del proyecto.
+4. Aceptar combinar carpetas y reemplazar archivos.
+5. Abrir frontend/index.html con Live Server.
+6. Ejecutar Ctrl + F5.
+7. Validar con tests/PRUEBAS_R02.4.md.
