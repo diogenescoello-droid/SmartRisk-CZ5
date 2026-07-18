@@ -1,0 +1,12 @@
+SMARTRISK CZ5 — INSTALACIÓN DEL PARCHE R01.1
+
+1. Cierre Live Server.
+2. Haga una copia de respaldo de la carpeta SmartRisk-CZ5.
+3. Descomprima este ZIP.
+4. Copie las carpetas "frontend", "docs" y "tests" dentro de la carpeta raíz SmartRisk-CZ5.
+5. Cuando Windows lo solicite, acepte combinar carpetas y reemplazar los CUATRO archivos de frontend indicados en docs/CHANGELOG_R01.1.md.
+6. Abra la carpeta raíz SmartRisk-CZ5 en Visual Studio Code.
+7. Ejecute Live Server desde frontend/index.html.
+8. Realice las pruebas de tests/PRUEBAS_R01.1.md.
+
+Este parche no reemplaza bases, formularios, servicios ni módulos funcionales.

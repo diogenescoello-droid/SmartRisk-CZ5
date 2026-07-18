@@ -1,51 +1,118 @@
-window.SmartRisk=window.SmartRisk||{};
-(function(){
-  const routes=new Map();
-  const aliases=new Map([["/",SmartRisk.Config.defaultRoute]]);
-  const norm=p=>{
-    let x=String(p||"/").replace(/^#/,"").split("?")[0].trim();
-    if(!x.startsWith("/"))x=`/${x}`;
-    if(x.length>1)x=x.replace(/\/+$/,"");
-    return aliases.get(x)||x;
-  };
-  const current=()=>norm(location.hash||SmartRisk.Config.defaultRoute);
-  const routeLabel=path=>SmartRisk.Config.navigation.find(item=>item.path===path)?.label||"Vista";
-  const renderNotFound=(container,path)=>{
-    container.innerHTML=`<section class="route-state" role="alert"><div class="route-state-icon">404</div><h1>Ruta no encontrada</h1><p>No existe una vista registrada para <code>${SmartRisk.Utils.escapeHtml(path)}</code>.</p><div class="split-actions"><a class="btn btn-primary" href="#${SmartRisk.Config.defaultRoute}">Volver al Dashboard</a><button id="route-back" class="btn btn-secondary" type="button">Regresar</button></div></section>`;
-    document.getElementById("route-back")?.addEventListener("click",()=>history.back());
-  };
-  const renderError=(container,path,error)=>{
-    console.error("SmartRisk route error",path,error);
-    container.innerHTML=`<section class="route-state" role="alert"><div class="route-state-icon">!</div><h1>No se pudo cargar ${SmartRisk.Utils.escapeHtml(routeLabel(path))}</h1><p>La vista encontró un error inesperado. Puedes reintentar sin perder los datos almacenados.</p><div class="split-actions"><button id="route-retry" class="btn btn-primary" type="button">Reintentar</button><a class="btn btn-secondary" href="#${SmartRisk.Config.defaultRoute}">Ir al Dashboard</a></div></section>`;
-    document.getElementById("route-retry")?.addEventListener("click",resolve);
-  };
-  async function resolve(){
-    const path=current(),route=routes.get(path),container=document.getElementById("app-content");
-    if(!container)return;
-    SmartRisk.Loader.show("Cargando vista…");
-    try{
-      if(!route){renderNotFound(container,path);SmartRisk.Sidebar.setActive("");SmartRisk.Navbar.update(path);return;}
-      container.innerHTML=await route.render();
-      SmartRisk.Utils.setTitle(route.title);
-      SmartRisk.Sidebar.setActive(path);
-      SmartRisk.Navbar.update(path);
-      route.bind?.();
-      container.focus({preventScroll:true});
-      window.scrollTo({top:0,behavior:"auto"});
-    }catch(error){
-      renderError(container,path,error);
-      SmartRisk.Navbar.update(path);
-    }finally{SmartRisk.Loader.hide();}
+window.SmartRisk = window.SmartRisk || {};
+
+(function () {
+  const routes = new Map();
+  const aliases = new Map([["/", "/dashboard"]]);
+
+  function normalize(path) {
+    let value = String(path || "/")
+      .trim()
+      .replace(/^#/, "")
+      .split("?")[0]
+      .split("&")[0];
+
+    if (!value.startsWith("/")) value = `/${value}`;
+    value = value.replace(/\/{2,}/g, "/");
+    if (value.length > 1) value = value.replace(/\/+$/, "");
+    return value.toLowerCase();
   }
-  SmartRisk.Router={
-    register(route){if(route?.path)routes.set(norm(route.path),route);},
-    alias(from,to){aliases.set(norm(from),norm(to));},
-    navigate(path){location.hash=norm(path);},
-    refresh:resolve,
-    start(){
-      addEventListener("hashchange",resolve);
-      if(!location.hash)location.hash=SmartRisk.Config.defaultRoute;else resolve();
+
+  function current() {
+    return normalize(location.hash || SmartRisk.Config.defaultRoute);
+  }
+
+  function routeFor(path) {
+    const normalized = normalize(path);
+    return routes.get(normalized) || routes.get(aliases.get(normalized));
+  }
+
+  function recoveryView(path) {
+    const safePath = String(path).replace(/[<>&"']/g, "");
+    return `
+      <section class="empty-state" role="alert">
+        <h1>Ruta no encontrada</h1>
+        <p>No existe una vista registrada para <strong>${safePath}</strong>.</p>
+        <div class="split-actions">
+          <a class="btn btn-primary" href="#${SmartRisk.Config.defaultRoute}">Ir al Dashboard</a>
+          <button id="router-retry" class="btn btn-secondary" type="button">Reintentar</button>
+        </div>
+      </section>`;
+  }
+
+  function errorView() {
+    return `
+      <section class="empty-state" role="alert">
+        <h1>No fue posible cargar la vista</h1>
+        <p>La aplicación encontró un error al ejecutar este módulo.</p>
+        <div class="split-actions">
+          <button id="router-retry" class="btn btn-primary" type="button">Reintentar</button>
+          <a class="btn btn-secondary" href="#${SmartRisk.Config.defaultRoute}">Volver al Dashboard</a>
+        </div>
+      </section>`;
+  }
+
+  function bindRecovery() {
+    document.getElementById("router-retry")?.addEventListener("click", resolve);
+  }
+
+  async function resolve() {
+    const path = current();
+    const route = routeFor(path);
+    const container = document.getElementById("app-content");
+
+    if (!container) return;
+    SmartRisk.Loader.show("Cargando vista…");
+
+    try {
+      if (!route) {
+        container.innerHTML = recoveryView(path);
+        SmartRisk.Utils.setTitle("Ruta no encontrada");
+        SmartRisk.Sidebar.setActive("");
+        SmartRisk.Navbar.update(path);
+        bindRecovery();
+        container.focus();
+        return;
+      }
+
+      container.innerHTML = await route.render();
+      SmartRisk.Utils.setTitle(route.title);
+      SmartRisk.Sidebar.setActive(normalize(route.path));
+      SmartRisk.Navbar.update(normalize(route.path));
+      route.bind?.();
+      container.focus();
+    } catch (error) {
+      console.error(`[SmartRisk] Error al resolver ${path}:`, error);
+      container.innerHTML = errorView();
+      SmartRisk.Utils.setTitle("Error de módulo");
+      bindRecovery();
+      SmartRisk.Toast?.show("No fue posible cargar el módulo.", "error");
+      container.focus();
+    } finally {
+      SmartRisk.Loader.hide();
+    }
+  }
+
+  SmartRisk.Router = {
+    register(route) {
+      if (!route?.path || typeof route.render !== "function") {
+        console.warn("[SmartRisk] Ruta omitida por configuración inválida:", route);
+        return false;
+      }
+      routes.set(normalize(route.path), route);
+      return true;
     },
-    current
+    start() {
+      addEventListener("hashchange", resolve);
+      if (!location.hash) location.hash = SmartRisk.Config.defaultRoute;
+      else resolve();
+    },
+    current,
+    resolve,
+    has(path) {
+      return Boolean(routeFor(path));
+    },
+    list() {
+      return [...routes.keys()];
+    }
   };
 })();
