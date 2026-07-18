@@ -4,10 +4,22 @@ window.SmartRisk=window.SmartRisk||{};
   const now=()=>Date.now();
   const normalize=value=>String(value||"").trim().toLowerCase();
   const validPassword=password=>String(password||"").length>=8;
+
+  const findUser=identity=>{
+    const value=normalize(identity);
+    return SmartRisk.UserContext.users().find(user=>
+      normalize(user.id)===value ||
+      normalize(user.email)===value ||
+      normalize(user.name)===value
+    );
+  };
+
   SmartRisk.AuthService={
-    login(email,password){
-      const user=SmartRisk.UserContext.users().find(u=>normalize(u.email)===normalize(email));
-      if(!user||String(user.password||user.pin)!==String(password||""))return {ok:false,message:"Correo o contraseña incorrectos."};
+    login(identity,password){
+      const user=findUser(identity);
+      if(!user||String(user.password||user.pin)!==String(password||"")){
+        return {ok:false,message:"Funcionario o contraseña incorrectos."};
+      }
       if(user.status==="blocked")return {ok:false,message:"La cuenta está bloqueada. Contacta al administrador."};
       if(user.status==="suspended"||user.status==="inactive")return {ok:false,message:"La cuenta está suspendida. Contacta al administrador."};
       SmartRisk.UserContext.setSession(user);

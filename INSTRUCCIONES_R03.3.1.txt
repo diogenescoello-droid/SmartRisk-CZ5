@@ -1,0 +1,18 @@
+SMART RISK CZ5 · R03.3.1
+
+Objetivo
+- Mostrar el nombre del funcionario como identificador visible de acceso.
+- Mantener el correo institucional para recuperación y verificación.
+- Diferenciar internamente cada cuenta mediante su ID único.
+
+Instalación
+1. Confirmar que la rama activa sea feature/r03-auth.
+2. Copiar el contenido del ZIP sobre la raíz del proyecto.
+3. Conservar las rutas y reemplazar los archivos solicitados.
+4. Abrir frontend/login.html con Live Server.
+5. Seleccionar el funcionario y usar la contraseña temporal 1234.
+
+Notas
+- El selector muestra nombre y apellido; debajo presenta cargo, institución y rol.
+- La autenticación también admite internamente ID, correo o nombre completo.
+- La recuperación de contraseña continúa solicitando el correo registrado.
