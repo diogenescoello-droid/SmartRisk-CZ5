@@ -1,0 +1,33 @@
+SMARTRISK CZ5 — INSTALACIÓN R01.3
+
+REQUISITO
+R01.1 y R01.2 deben estar instalados y probados.
+La rama recomendada es: feature/r01-ux-navigation
+
+ARCHIVOS FUNCIONALES QUE SE REEMPLAZAN
+1. frontend/modules/dashboard/dashboard.js
+2. frontend/assets/css/dashboard-executivo.css
+
+INSTALACIÓN
+1. Cierre Live Server.
+2. Haga una copia de respaldo o confirme que R01.2 ya tiene commit.
+3. Copie el contenido de este parche.
+4. Péguelo en la raíz de SmartRisk-CZ5.
+5. Acepte combinar carpetas y reemplazar los dos archivos funcionales.
+6. Abra frontend/index.html con Live Server.
+7. Ejecute Ctrl + F5.
+8. Realice las pruebas de tests/PRUEBAS_R01.3.md.
+
+COMMIT SUGERIDO
+Summary:
+R01.3 - Convierte Dashboard en centro operativo
+
+Description:
+Problema:
+El Dashboard informaba, pero no conectaba de forma directa con las tareas y alertas operativas.
+
+Solución:
+Se incorporaron KPIs navegables, estado de sincronización, prioridades, alertas accionables y accesos rápidos.
+
+Impacto:
+Reduce pasos, mejora la priorización y fortalece la lectura ejecutiva sin alterar la estructura de datos.
