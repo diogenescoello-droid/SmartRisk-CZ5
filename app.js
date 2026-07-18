@@ -7,6 +7,7 @@ const menu=[
 let data=JSON.parse(localStorage.getItem(STORE)||'null')||structuredClone(window.SEED_DATA);
 let current='dashboard';
 let session=null;
+let pendingTemporaryPassword='';
 const $=s=>document.querySelector(s);
 const normalizeEmail=value=>String(value||'').trim().toLowerCase();
 const isAdmin=()=>ADMIN_EMAILS.includes(normalizeEmail(session?.email));
@@ -32,10 +33,13 @@ $('#loginForm').onsubmit=async event=>{
  event.preventDefault();
  const error=$('#loginError');error.textContent='';
  const email=normalizeEmail($('#email').value);
+ const password=$('#password').value;
  try{
-  await auth.signInWithEmailAndPassword(email,$('#password').value);
+  pendingTemporaryPassword=password.startsWith('CZ5-')?password:'';
+  await auth.signInWithEmailAndPassword(email,password);
   $('#password').value='';
  }catch{
+  pendingTemporaryPassword='';
   error.textContent='Correo o contraseña incorrectos.';
  }
 };
@@ -43,7 +47,10 @@ $('#showRecovery').onclick=()=>openRecoveryDialog();
 $('#changePassword').onclick=()=>openPasswordDialog(false);
 $('#logout').onclick=()=>auth.signOut();
 auth.onAuthStateChanged(user=>{
- if(user)start();
+ if(user){
+  start();
+  if(pendingTemporaryPassword)openPasswordDialog(true,pendingTemporaryPassword);
+ }
  else{$('#app').classList.add('hidden');$('#login').classList.remove('hidden')}
 });
 
@@ -171,10 +178,10 @@ function openRecoveryDialog(){
   message.textContent='Si el correo está registrado, recibirás un enlace para definir una nueva contraseña.';
  };
 }
-function openPasswordDialog(required){
+function openPasswordDialog(required,currentPassword=''){
  const dialog=document.createElement('dialog');
  dialog.innerHTML=`<form class="dialog-body"><h3>Cambiar contraseña</h3>${required?'<p class="notice">Debes definir una contraseña nueva antes de continuar.</p>':''}
- <label>Contraseña actual</label><input name="currentPassword" type="password" autocomplete="current-password" required>
+ ${currentPassword?'':`<label>Contraseña actual</label><input name="currentPassword" type="password" autocomplete="current-password" required>`}
  <label>Nueva contraseña</label><input name="newPassword" type="password" autocomplete="new-password" required>
  <label>Confirmar contraseña</label><input name="confirmation" type="password" autocomplete="new-password" required>
  <div class="form-error error" role="alert"></div>
@@ -182,6 +189,7 @@ function openPasswordDialog(required){
  document.body.append(dialog);dialog.showModal();if(!required)bindCancel(dialog);
  dialog.querySelector('form').onsubmit=async event=>{
   event.preventDefault();const values=Object.fromEntries(new FormData(event.target));const error=dialog.querySelector('.form-error');
+  values.currentPassword=currentPassword||values.currentPassword;
   const validation=passwordError(values.newPassword);
   if(validation){error.textContent=validation;return}
   if(values.newPassword!==values.confirmation){error.textContent='Las contraseñas nuevas no coinciden.';return}
@@ -190,6 +198,7 @@ function openPasswordDialog(required){
    const credential=firebase.auth.EmailAuthProvider.credential(session.email,values.currentPassword);
    await session.reauthenticateWithCredential(credential);
    await session.updatePassword(values.newPassword);
+   pendingTemporaryPassword='';
    dialog.close();dialog.remove();
   }catch(firebaseError){error.textContent=firebaseMessage(firebaseError)}
  };
