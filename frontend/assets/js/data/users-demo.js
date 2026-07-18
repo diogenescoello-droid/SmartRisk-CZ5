@@ -1,0 +1,10 @@
+window.SmartRisk=window.SmartRisk||{};
+SmartRisk.UsersDemo=[
+  {id:"USR-ADMIN",name:"Daniel Coello",email:"daniel.coello@smartrisk.local",password:"1234",mustChangePassword:true,status:"active",role:"Administrador",institution:"SNGR - Coordinación Zonal 5",initials:"DC",territory:{scope:"zonal",provinces:["Guayas","Los Ríos","Santa Elena","Bolívar","Galápagos"],cantons:[]}},
+  {id:"USR-COORD",name:"Coordinación Zonal 5",email:"coordinacion.z5@smartrisk.local",password:"1234",mustChangePassword:true,status:"active",role:"Coordinador zonal",institution:"SNGR - Coordinación Zonal 5",initials:"CZ",territory:{scope:"zonal",provinces:["Guayas","Los Ríos","Santa Elena","Bolívar","Galápagos"],cantons:[]}},
+  {id:"USR-ANA-GYE",name:"Analista Guayas",email:"analista.guayas@smartrisk.local",password:"1234",mustChangePassword:true,status:"active",role:"Analista",institution:"SNGR - Coordinación Zonal 5",initials:"AG",territory:{scope:"provincial",provinces:["Guayas"],cantons:[]}},
+  {id:"USR-ANA-BOL",name:"Analista Bolívar",email:"analista.bolivar@smartrisk.local",password:"1234",mustChangePassword:true,status:"active",role:"Analista",institution:"SNGR - Coordinación Zonal 5",initials:"AB",territory:{scope:"provincial",provinces:["Bolívar"],cantons:[]}},
+  {id:"USR-UGR-SAL",name:"Técnico UGR Salitre",email:"ugr.salitre@smartrisk.local",password:"1234",mustChangePassword:true,status:"active",role:"Técnico UGR",institution:"GAD Municipal de Salitre",initials:"US",territory:{scope:"cantonal",provinces:["Guayas"],cantons:["Salitre"]}},
+  {id:"USR-UGR-NOB",name:"Técnico UGR Nobol",email:"ugr.nobol@smartrisk.local",password:"1234",mustChangePassword:true,status:"active",role:"Técnico UGR",institution:"GAD Municipal de Nobol",initials:"UN",territory:{scope:"cantonal",provinces:["Guayas"],cantons:["Nobol"]}},
+  {id:"USR-CONSULTA",name:"Consulta institucional",email:"consulta@smartrisk.local",password:"1234",mustChangePassword:true,status:"active",role:"Consulta",institution:"Institución invitada",initials:"CI",territory:{scope:"zonal",provinces:["Guayas","Los Ríos","Santa Elena","Bolívar","Galápagos"],cantons:[]}}
+];

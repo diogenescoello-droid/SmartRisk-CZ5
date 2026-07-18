@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Acceso · SmartRisk CZ5</title>
+  <link rel="stylesheet" href="assets/css/variables.css">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/auth.css">
+</head>
+<body class="auth-page">
+  <main class="auth-shell">
+    <section class="auth-brand-panel">
+      <div class="auth-brand-mark">SR</div>
+      <span class="kicker">SmartRisk CZ5</span>
+      <h1>Gestión territorial del riesgo</h1>
+      <p>Accede con un perfil institucional para visualizar únicamente los territorios y funciones asignadas.</p>
+      <div class="auth-feature"><strong>Contexto activo</strong><span>Usuario · rol · institución · territorio</span></div>
+    </section>
+    <section class="auth-card" aria-labelledby="login-title">
+      <div>
+        <span class="kicker">Acceso de demostración</span>
+        <h2 id="login-title">Iniciar sesión</h2>
+        <p class="muted">Selecciona un usuario y utiliza la contraseña temporal <strong>1234</strong>. En el primer acceso deberás crear una clave personal.</p>
+      </div>
+      <form id="login-form" class="auth-form">
+        <label class="form-field"><span class="form-label">Usuario</span><select id="login-email" class="select-input" required></select></label>
+        <label class="form-field"><span class="form-label">Contraseña</span><input id="login-password" class="form-input" type="password" value="1234" autocomplete="current-password" required></label>
+        <p id="login-error" class="auth-error" role="alert" hidden></p>
+        <button class="btn btn-primary auth-submit" type="submit">Ingresar a SmartRisk</button><a class="auth-link" href="recover-password.html">¿Olvidaste tu contraseña?</a>
+      </form>
+      <div id="login-user-detail" class="auth-user-detail"></div>
+    </section>
+  </main>
+  <script src="assets/js/core/constants.js"></script>
+  <script src="assets/js/core/storage.js"></script>
+  <script src="assets/js/data/users-demo.js"></script>
+  <script src="assets/js/services/permission-service.js"></script>
+  <script src="assets/js/services/user-context.js"></script>
+  <script src="assets/js/services/auth-service.js"></script>
+  <script>
+    const users=SmartRisk.UserContext.users(),select=document.getElementById("login-email"),detail=document.getElementById("login-user-detail");
+    select.innerHTML=users.map(u=>`<option value="${u.email}">${u.name} · ${u.role}</option>`).join("");
+    function draw(){const u=users.find(x=>x.email===select.value);detail.innerHTML=u?`<strong>${u.institution}</strong><span>${SmartRisk.UserContext.territoryLabel(u)}</span>`:"";}
+    select.onchange=draw;draw();
+    document.getElementById("login-form").onsubmit=event=>{event.preventDefault();const result=SmartRisk.AuthService.login(select.value,document.getElementById("login-password").value),error=document.getElementById("login-error");if(!result.ok){error.textContent=result.message;error.hidden=false;return}const next=new URLSearchParams(location.search).get("next")||"index.html#/territorios";location.replace(result.mustChangePassword?`change-password.html?required=1&next=${encodeURIComponent(next)}`:next);};
+  </script>
+</body>
+</html>

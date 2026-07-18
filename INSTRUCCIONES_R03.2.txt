@@ -1,0 +1,8 @@
+SMART RISK CZ5 · R03.2
+
+1. Aplicar primero R03.1.
+2. Copiar el contenido de este parche sobre el proyecto, conservando las rutas.
+3. Abrir frontend/login.html.
+4. Ingresar con cualquier usuario y la contraseña temporal 1234.
+5. El sistema exigirá una contraseña personal de mínimo 8 caracteres.
+6. El flujo de recuperación por correo está simulado localmente; el código aparece en pantalla.
