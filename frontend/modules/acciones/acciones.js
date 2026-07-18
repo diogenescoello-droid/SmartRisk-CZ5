@@ -2,7 +2,7 @@ window.SmartRisk = window.SmartRisk || {};
 
 (function () {
   const SR = SmartRisk;
-  let actions = SR.Storage.get("actions", SR.MockData.actions);
+  let actions = (SR.Storage.get("actions", SR.MockData.actions) || []).map((item) => SR.ActionQuality.normalize(item));
   let filtered = [...actions];
   let selectedId = "";
 
@@ -58,11 +58,19 @@ window.SmartRisk = window.SmartRisk || {};
           <div class="action-progress-value" style="width:${item.avance}%"></div>
         </div>
       </div>
+      ${(() => { const q = SR.ActionQuality.evaluate(item); return `<section class="action-quality-card quality-${q.className}"><div><span>Calidad operativa</span><strong>${q.score}%</strong></div><div><b>${q.level}</b><small>${q.gaps.length} brechas detectadas</small></div></section><div class="action-quality-gaps"><strong>Brechas y recomendaciones</strong>${q.gaps.length ? `<ul>${q.gaps.slice(0,5).map(g => `<li><b>${g.label}:</b> ${g.recommendation}</li>`).join("")}</ul>` : '<p class="muted">La acción cumple los criterios mínimos de operatividad.</p>'}</div>`; })()}
+      <div class="action-detail-row"><span>Estado de revisión</span><strong>${SR.ActionQuality.reviewState(item)}</strong></div>
+      <div class="action-detail-row"><span>Compromiso al 23 de julio</span><strong>${item.compromisoProximaActualizacion || "Sin registrar"}</strong></div>
+      <div class="action-detail-row"><span>Producto esperado</span><strong>${item.productoEsperado || "Sin definir"}</strong></div>
+      <div class="action-detail-row"><span>Indicador</span><strong>${item.indicador || "Sin definir"}</strong></div>
       <div class="action-description">${item.descripcion || "Sin descripción."}</div>
-      <div><strong>Evidencias</strong><div class="tag-list action-evidence-list">${(item.evidencias || []).length ? item.evidencias.map((evidence) => `<span class="tag">${evidence}</span>`).join("") : '<span class="muted">Sin evidencias registradas.</span>'}</div></div>
+      <div><strong>Verificables</strong><div class="tag-list action-evidence-list">${(item.evidencias || []).length ? item.evidencias.map((evidence) => `<span class="tag">${evidence}</span>`).join("") : '<span class="muted">Sin verificables registrados.</span>'}</div></div>
       <div><strong>Observaciones</strong><p class="muted action-observations">${item.observaciones || "Sin observaciones."}</p></div>
+      ${item.solicitudAsistencia ? `<div class="action-assistance"><strong>Asistencia técnica solicitada</strong><p>${item.solicitudAsistencia}</p></div>` : ""}
       <div class="split-actions action-detail-actions">
-        <button id="edit-action" class="btn btn-secondary">${SR.Icon.render("edit", 17)}Editar</button>
+        <button id="edit-action" class="btn btn-secondary">${SR.Icon.render("edit", 17)}Actualizar</button>
+        ${SR.ActionQuality.reviewState(item) === "Borrador" || SR.ActionQuality.reviewState(item) === "Observado" ? '<button id="submit-review" class="btn btn-primary">Enviar a revisión</button>' : ''}
+        ${["Enviado a revisión", "Corregido"].includes(SR.ActionQuality.reviewState(item)) ? '<button id="validate-action" class="btn btn-primary">Validar</button><button id="observe-action" class="btn btn-secondary">Observar</button>' : ''}
         <button id="delete-action" class="btn btn-secondary">${SR.Icon.render("trash", 17)}Eliminar</button>
       </div>
     </div>`;
@@ -142,7 +150,33 @@ window.SmartRisk = window.SmartRisk || {};
   }
 
   function form(item = {}) {
-    return `<div class="action-form-grid"><label class="form-field action-form-full"><span class="form-label">Título *</span><input id="a-titulo" class="form-input" value="${SR.Utils.escapeHtml(item.titulo || "")}"></label><label class="form-field"><span class="form-label">Línea</span><select id="a-linea" class="select-input">${["Análisis", "Fortalecimiento", "Respuesta"].map((value) => `<option ${item.linea === value ? "selected" : ""}>${value}</option>`).join("")}</select></label><label class="form-field"><span class="form-label">Estado</span><select id="a-estado" class="select-input">${["Pendiente", "En ejecución", "Completada", "Bloqueada"].map((value) => `<option ${item.estado === value ? "selected" : ""}>${value}</option>`).join("")}</select></label><label class="form-field"><span class="form-label">Prioridad</span><select id="a-prioridad" class="select-input">${["Alta", "Media", "Baja"].map((value) => `<option ${item.prioridad === value ? "selected" : ""}>${value}</option>`).join("")}</select></label><label class="form-field"><span class="form-label">Avance (%)</span><input id="a-avance" class="form-input" type="number" min="0" max="100" value="${item.avance ?? 0}"></label><label class="form-field"><span class="form-label">Provincia</span><input id="a-provincia" class="form-input" value="${SR.Utils.escapeHtml(item.provincia || "")}"></label><label class="form-field"><span class="form-label">Cantón</span><input id="a-canton" class="form-input" value="${SR.Utils.escapeHtml(item.canton || "")}"></label><label class="form-field"><span class="form-label">Institución</span><input id="a-institucion" class="form-input" value="${SR.Utils.escapeHtml(item.institucion || "")}"></label><label class="form-field"><span class="form-label">Responsable</span><input id="a-responsable" class="form-input" value="${SR.Utils.escapeHtml(item.responsable || "")}"></label><label class="form-field"><span class="form-label">Fecha de inicio</span><input id="a-inicio" class="form-input" type="date" value="${item.fechaInicio || ""}"></label><label class="form-field"><span class="form-label">Fecha de fin</span><input id="a-fin" class="form-input" type="date" value="${item.fechaFin || ""}"></label><label class="form-field action-form-full"><span class="form-label">Sitio relacionado</span><input id="a-sitio" class="form-input" value="${SR.Utils.escapeHtml(item.sitio || "")}"></label><label class="form-field action-form-full"><span class="form-label">Descripción</span><textarea id="a-descripcion" class="form-textarea">${SR.Utils.escapeHtml(item.descripcion || "")}</textarea></label><label class="form-field action-form-full"><span class="form-label">Evidencias separadas por coma</span><input id="a-evidencias" class="form-input" value="${SR.Utils.escapeHtml((item.evidencias || []).join(", "))}"></label><label class="form-field action-form-full"><span class="form-label">Observaciones</span><textarea id="a-observaciones" class="form-textarea">${SR.Utils.escapeHtml(item.observaciones || "")}</textarea></label></div>`;
+    item = SR.ActionQuality.normalize(item);
+    return `<div class="action-form-grid">
+      <label class="form-field action-form-full"><span class="form-label">Título *</span><input id="a-titulo" class="form-input" value="${SR.Utils.escapeHtml(item.titulo || "")}"></label>
+      <label class="form-field"><span class="form-label">Línea</span><select id="a-linea" class="select-input">${["Análisis", "Fortalecimiento", "Respuesta", "Monitoreo"].map((value) => `<option ${item.linea === value ? "selected" : ""}>${value}</option>`).join("")}</select></label>
+      <label class="form-field"><span class="form-label">Estado operativo</span><select id="a-estado" class="select-input">${["Pendiente", "En ejecución", "Completada", "Bloqueada"].map((value) => `<option ${item.estado === value ? "selected" : ""}>${value}</option>`).join("")}</select></label>
+      <label class="form-field"><span class="form-label">Estado de revisión</span><select id="a-revision" class="select-input">${["Borrador", "Enviado a revisión", "Observado", "Corregido", "Validado"].map((value) => `<option ${item.estadoRevision === value ? "selected" : ""}>${value}</option>`).join("")}</select></label>
+      <label class="form-field"><span class="form-label">Prioridad</span><select id="a-prioridad" class="select-input">${["Alta", "Media", "Baja"].map((value) => `<option ${item.prioridad === value ? "selected" : ""}>${value}</option>`).join("")}</select></label>
+      <label class="form-field"><span class="form-label">Avance (%)</span><input id="a-avance" class="form-input" type="number" min="0" max="100" value="${item.avance ?? 0}"></label>
+      <label class="form-field"><span class="form-label">Provincia</span><input id="a-provincia" class="form-input" value="${SR.Utils.escapeHtml(item.provincia || "")}"></label>
+      <label class="form-field"><span class="form-label">Cantón</span><input id="a-canton" class="form-input" value="${SR.Utils.escapeHtml(item.canton || "")}"></label>
+      <label class="form-field"><span class="form-label">Institución</span><input id="a-institucion" class="form-input" value="${SR.Utils.escapeHtml(item.institucion || "")}"></label>
+      <label class="form-field"><span class="form-label">Responsable operativo</span><input id="a-responsable" class="form-input" value="${SR.Utils.escapeHtml(item.responsable || "")}"></label>
+      <label class="form-field"><span class="form-label">Fecha de inicio</span><input id="a-inicio" class="form-input" type="date" value="${item.fechaInicio || ""}"></label>
+      <label class="form-field"><span class="form-label">Fecha de fin</span><input id="a-fin" class="form-input" type="date" value="${item.fechaFin || ""}"></label>
+      <label class="form-field action-form-full"><span class="form-label">Sitio o cobertura</span><input id="a-sitio" class="form-input" value="${SR.Utils.escapeHtml(item.sitio || "")}"></label>
+      <label class="form-field action-form-full"><span class="form-label">Descripción operativa</span><textarea id="a-descripcion" class="form-textarea">${SR.Utils.escapeHtml(item.descripcion || "")}</textarea></label>
+      <label class="form-field action-form-full"><span class="form-label">Recursos, personal y logística</span><textarea id="a-recursos" class="form-textarea">${SR.Utils.escapeHtml(item.recursos || "")}</textarea></label>
+      <label class="form-field action-form-full"><span class="form-label">Producto esperado</span><input id="a-producto" class="form-input" value="${SR.Utils.escapeHtml(item.productoEsperado || "")}"></label>
+      <label class="form-field action-form-full"><span class="form-label">Indicador verificable</span><input id="a-indicador" class="form-input" value="${SR.Utils.escapeHtml(item.indicador || "")}"></label>
+      <label class="form-field action-form-full"><span class="form-label">Articulación interinstitucional</span><input id="a-articulacion" class="form-input" value="${SR.Utils.escapeHtml(item.articulacion || "")}"></label>
+      <label class="form-field action-form-full"><span class="form-label">Compromiso hasta el 23 de julio</span><textarea id="a-compromiso" class="form-textarea">${SR.Utils.escapeHtml(item.compromisoProximaActualizacion || "")}</textarea></label>
+      <label class="form-field"><span class="form-label">Fecha de compromiso</span><input id="a-fecha-compromiso" class="form-input" type="date" value="${item.fechaCompromiso || SR.ActionQuality.TARGET_DATE}"></label>
+      <label class="form-field"><span class="form-label">Tipo de verificable</span><select id="a-tipo-verificable" class="select-input">${["Documental", "Fotográfico", "Geográfico", "Mixto"].map((value) => `<option ${item.tipoVerificable === value ? "selected" : ""}>${value}</option>`).join("")}</select></label>
+      <label class="form-field action-form-full"><span class="form-label">Verificables (nombres o enlaces, separados por coma)</span><input id="a-evidencias" class="form-input" value="${SR.Utils.escapeHtml((item.evidencias || []).join(", "))}"></label>
+      <label class="form-field action-form-full"><span class="form-label">Dificultades u observaciones</span><textarea id="a-observaciones" class="form-textarea">${SR.Utils.escapeHtml(item.observaciones || "")}</textarea></label>
+      <label class="form-field action-form-full"><span class="form-label">Solicitud de asistencia técnica</span><textarea id="a-asistencia" class="form-textarea">${SR.Utils.escapeHtml(item.solicitudAsistencia || "")}</textarea></label>
+    </div>`;
   }
 
   function readForm(existing = {}) {
@@ -160,6 +194,7 @@ window.SmartRisk = window.SmartRisk || {};
       titulo,
       linea: get("a-linea"),
       estado: get("a-estado"),
+      estadoRevision: get("a-revision"),
       prioridad: get("a-prioridad"),
       avance,
       provincia: get("a-provincia") || "Sin definir",
@@ -170,8 +205,16 @@ window.SmartRisk = window.SmartRisk || {};
       fechaFin: get("a-fin"),
       sitio: get("a-sitio") || "Sin relación",
       descripcion: get("a-descripcion"),
+      recursos: get("a-recursos"),
+      productoEsperado: get("a-producto"),
+      indicador: get("a-indicador"),
+      articulacion: get("a-articulacion"),
+      compromisoProximaActualizacion: get("a-compromiso"),
+      fechaCompromiso: get("a-fecha-compromiso") || SR.ActionQuality.TARGET_DATE,
+      tipoVerificable: get("a-tipo-verificable"),
       evidencias: get("a-evidencias").split(",").map((value) => value.trim()).filter(Boolean),
-      observaciones: get("a-observaciones")
+      observaciones: get("a-observaciones"),
+      solicitudAsistencia: get("a-asistencia")
     };
   }
 
@@ -184,6 +227,7 @@ window.SmartRisk = window.SmartRisk || {};
       onConfirm: () => {
         const value = readForm(existing || {});
         if (!value) return false;
+        value = SR.ActionQuality.withAudit(existing || {}, value, SR.Config.currentUser.name);
         actions = existing ? actions.map((item) => item.id === existing.id ? value : item) : [value, ...actions];
         persist();
         selectedId = value.id;
@@ -193,8 +237,34 @@ window.SmartRisk = window.SmartRisk || {};
     });
   }
 
+  function updateReviewState(state, message) {
+    const current = actions.find((item) => item.id === selectedId);
+    if (!current) return;
+    const updated = SR.ActionQuality.withAudit(current, { ...current, estadoRevision: state }, SR.Config.currentUser.name);
+    actions = actions.map((item) => item.id === selectedId ? updated : item);
+    persist();
+    SR.Drawer.close();
+    SR.Toast.show(message, "success");
+    SR.Router.resolve();
+  }
+
   function bindDetail() {
     document.getElementById("edit-action")?.addEventListener("click", () => openForm(actions.find((item) => item.id === selectedId)));
+    document.getElementById("submit-review")?.addEventListener("click", () => {
+      const current = actions.find((item) => item.id === selectedId);
+      if (!SR.ActionQuality.isReadyForReview(current)) {
+        SR.Toast.show("Complete el compromiso y registre verificables antes de enviar.", "danger");
+        return;
+      }
+      const updated = SR.ActionQuality.withAudit(current, { ...current, estadoRevision: "Enviado a revisión" }, SR.Config.currentUser.name);
+      actions = actions.map((item) => item.id === selectedId ? updated : item);
+      persist();
+      SR.Drawer.close();
+      SR.Toast.show("Acción enviada a revisión de Coordinación.", "success");
+      SR.Router.resolve();
+    });
+    document.getElementById("validate-action")?.addEventListener("click", () => updateReviewState("Validado", "Acción validada por Coordinación."));
+    document.getElementById("observe-action")?.addEventListener("click", () => updateReviewState("Observado", "Acción devuelta con observaciones."));
     document.getElementById("delete-action")?.addEventListener("click", () => {
       const item = actions.find((action) => action.id === selectedId);
       SR.Drawer.close();
@@ -214,6 +284,11 @@ window.SmartRisk = window.SmartRisk || {};
 
   function bind() {
     drawTable();
+    const focusId = SR.Storage.get("actions.focusId", "");
+    if (focusId && actions.some((item) => item.id === focusId)) {
+      SR.Storage.remove("actions.focusId");
+      setTimeout(() => openDetail(focusId), 0);
+    }
     document.getElementById("action-search").oninput = applyFilters;
     document.getElementById("action-line").onchange = applyFilters;
     document.getElementById("action-status").onchange = applyFilters;

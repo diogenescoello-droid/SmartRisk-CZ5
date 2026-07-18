@@ -105,6 +105,56 @@ window.SmartRisk = window.SmartRisk || {};
     return { high, veryHigh };
   }
 
+
+  function qualitySummary(actions) {
+    const rows = actions.map(action => ({ action, quality: SR.ActionQuality.evaluate(action) }));
+    const average = Math.round(rows.reduce((sum, row) => sum + row.quality.score, 0) / Math.max(rows.length, 1));
+    return {
+      rows,
+      average,
+      critical: rows.filter(row => row.quality.score < 40).length,
+      important: rows.filter(row => row.quality.score >= 40 && row.quality.score < 60).length,
+      adjustments: rows.filter(row => row.quality.score >= 60 && row.quality.score < 80).length,
+      viable: rows.filter(row => row.quality.score >= 80).length,
+      commitments: rows.filter(row => text(row.action.compromisoProximaActualizacion)).length,
+      ready: rows.filter(row => SR.ActionQuality.isReadyForReview(row.action)).length,
+      pendingReview: rows.filter(row => ["Enviado a revisión", "Corregido"].includes(SR.ActionQuality.reviewState(row.action))).length
+    };
+  }
+
+  function text(value) { return String(value ?? "").trim(); }
+
+  function gapPanel(scope) {
+    const summary = qualitySummary(scope.actions);
+    const deadline = SR.ActionQuality.deadlineInfo();
+    const sorted = summary.rows.slice().sort((a, b) => a.quality.score - b.quality.score);
+    return `<section class="territory-gap-section" aria-labelledby="territory-gap-title">
+      <header class="territory-gap-header">
+        <div><span class="kicker">Control de calidad operativa</span><h2 id="territory-gap-title">Brechas y próxima actualización</h2><p>Prioriza los ajustes que deben ejecutar las UGR antes del ${deadline.label}.</p></div>
+        <div class="territory-deadline"><span>${deadline.label}</span><strong>${deadline.message}</strong></div>
+      </header>
+      <div class="territory-gap-kpis">
+        <article><span>Calidad promedio</span><strong>${summary.average}%</strong><small>Sobre ${scope.actions.length} acciones</small></article>
+        <article><span>Brechas críticas</span><strong>${summary.critical + summary.important}</strong><small>Menos de 60% de calidad</small></article>
+        <article><span>Compromisos registrados</span><strong>${summary.commitments}</strong><small>Agenda al 23 de julio</small></article>
+        <article><span>Listas para revisión</span><strong>${summary.ready}</strong><small>${summary.pendingReview} enviadas a Coordinación</small></article>
+      </div>
+      <div class="territory-gap-layout">
+        <article class="panel"><header class="panel-header"><div><h3 class="section-title">Brechas de calidad</h3><p class="muted">Acciones ordenadas desde la menor calidad operativa.</p></div><button class="btn btn-secondary btn-sm" data-open-route="/acciones" type="button">Abrir matriz</button></header>
+          <div class="panel-body territory-gap-list">${sorted.length ? sorted.slice(0, 7).map(({ action, quality }) => `<button type="button" class="territory-gap-item quality-${quality.className}" data-action-id="${esc(action.id)}"><span class="territory-quality-score">${quality.score}%</span><span><strong>${esc(action.titulo)}</strong><small>${esc(action.linea)} · ${quality.gaps.length} brechas · ${esc(SR.ActionQuality.reviewState(action))}</small></span><b>${esc(quality.level)}</b></button>`).join("") : '<div class="empty-state compact"><strong>Sin acciones</strong><p>No existen acciones vinculadas al territorio.</p></div>'}</div>
+        </article>
+        <article class="panel"><header class="panel-header"><div><h3 class="section-title">Agenda al 23 de julio</h3><p class="muted">Compromisos reportados por los técnicos UGR.</p></div><span class="badge">${summary.commitments}</span></header>
+          <div class="panel-body territory-agenda-list">${summary.rows.length ? summary.rows.slice(0, 7).map(({ action }) => `<div class="territory-agenda-item"><span class="agenda-state ${text(action.compromisoProximaActualizacion) ? "has" : "missing"}"></span><section><strong>${esc(action.titulo)}</strong><p>${esc(action.compromisoProximaActualizacion || "Pendiente de definir el siguiente paso operativo.")}</p><small>${esc(action.responsable || "Sin responsable")} · ${esc(action.fechaCompromiso || SR.ActionQuality.TARGET_DATE)} · ${esc(action.estadoRevision || "Borrador")}</small></section></div>`).join("") : '<div class="empty-state compact"><strong>Sin compromisos</strong><p>No existen acciones vinculadas al territorio.</p></div>'}</div>
+        </article>
+      </div>
+    </section>`;
+  }
+
+  function coordinationPanel(scope) {
+    const items = scope.actions.filter(action => ["Enviado a revisión", "Corregido", "Observado"].includes(SR.ActionQuality.reviewState(action)) || action.solicitudAsistencia);
+    return `<article class="panel territory-coordination-panel"><header class="panel-header"><div><span class="kicker">Vista de Coordinación</span><h2 class="section-title">Bandeja de seguimiento</h2></div><span class="badge">${items.length}</span></header><div class="panel-body">${items.length ? `<div class="territory-review-list">${items.slice(0,6).map(action => `<div><span class="badge">${esc(SR.ActionQuality.reviewState(action))}</span><section><strong>${esc(action.titulo)}</strong><small>${esc(action.actualizadoPor || action.responsable || "Sin usuario")} · ${action.ultimaActualizacion ? new Date(action.ultimaActualizacion).toLocaleString("es-EC") : "Sin actualización reciente"}</small>${action.solicitudAsistencia ? `<p><b>Asistencia:</b> ${esc(action.solicitudAsistencia)}</p>` : ""}</section></div>`).join("")}</div>` : '<div class="empty-state compact"><strong>Sin novedades de revisión</strong><p>Las acciones enviadas, observadas o con solicitudes de asistencia aparecerán aquí.</p></div>'}</div></article>`;
+  }
+
   function contextBar(source) {
     const provinceOptions = provinces(source).map(x => `<option value="${esc(x)}" ${same(x, context.provincia) ? "selected" : ""}>${esc(x)}</option>`).join("");
     const cantonOptions = cantons(source, context.provincia).map(x => `<option value="${esc(x)}" ${same(x, context.canton) ? "selected" : ""}>${esc(x)}</option>`).join("");
@@ -212,6 +262,8 @@ window.SmartRisk = window.SmartRisk || {};
         ${planPanel(source, scope)}
         ${priorityPanel(scope)}
       </section>
+      ${gapPanel(scope)}
+      ${coordinationPanel(scope)}
       ${moduleLinks(scope)}
       ${activity(scope)}`;
   }
@@ -229,6 +281,10 @@ window.SmartRisk = window.SmartRisk || {};
       acciones: scope.actions.length,
       avance_promedio_acciones: actionInfo.progress,
       acciones_bloqueadas: actionInfo.blocked,
+      calidad_promedio_acciones: qualitySummary(scope.actions).average,
+      acciones_brecha_critica: qualitySummary(scope.actions).critical + qualitySummary(scope.actions).important,
+      compromisos_23_julio: qualitySummary(scope.actions).commitments,
+      listas_para_revision: qualitySummary(scope.actions).ready,
       instituciones: scope.institutions.length
     }]);
     SR.Toast.show("Resumen territorial exportado.", "success");
@@ -252,6 +308,11 @@ window.SmartRisk = window.SmartRisk || {};
       SR.Router.resolve();
     });
     document.getElementById("territory-export")?.addEventListener("click", exportSummary);
+    document.querySelectorAll("[data-action-id]").forEach(button => button.addEventListener("click", () => {
+      SR.Storage.set("actions.focusId", button.dataset.actionId);
+      SR.Workspace.set(context);
+      location.hash = "/acciones";
+    }));
     document.querySelectorAll("[data-open-route]").forEach(button => button.addEventListener("click", () => {
       SR.Workspace.set(context);
       location.hash = button.dataset.openRoute;
