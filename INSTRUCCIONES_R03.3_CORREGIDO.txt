@@ -1,0 +1,22 @@
+SMART RISK CZ5 · R03.3 CORREGIDO E INTEGRADO
+
+Rama objetivo: feature/r03-auth
+
+1. Confirme que está en feature/r03-auth.
+2. Extraiga este ZIP sobre la raíz del proyecto y permita reemplazar archivos.
+3. Abra frontend/login.html mediante Live Server.
+4. Ingrese con:
+   correo: admin@smartrisk.local
+   contraseña temporal: 1234
+5. El sistema solicitará una contraseña personal de mínimo 8 caracteres.
+6. Entre a Administración > Usuarios para probar creación, edición, estados y restablecimiento de clave.
+
+Correcciones incluidas:
+- se incorporan todos los archivos que el navegador reportaba con error 404;
+- se incorpora la hoja auth.css que faltaba;
+- se completa el contexto de usuario y la persistencia local;
+- se filtra la navegación por permisos;
+- se integra el menú de usuario, cambio de contraseña y cierre de sesión;
+- se mantiene la gestión de usuarios R03.3 dentro de la arquitectura real del proyecto.
+
+Nota: la recuperación por correo continúa simulada en R03. El código aparece en pantalla. El envío real se implementará con backend.

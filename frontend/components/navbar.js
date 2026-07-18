@@ -4,11 +4,12 @@ SmartRisk.Navbar = {
   update(path) {
     const currentPath = String(path || SmartRisk.Config.defaultRoute).toLowerCase();
     const item = SmartRisk.Config.navigation.find(entry => entry.path === currentPath);
-    const user = SmartRisk.Config.currentUser;
+    const user = SmartRisk.UserContext.current();
     const navbar = document.getElementById("app-navbar");
     if (!navbar) return;
 
     const options = SmartRisk.Config.navigation
+      .filter(entry => SmartRisk.PermissionService.can(SmartRisk.PermissionService.navigationPermission(entry.path)))
       .map(entry => `<option value="${entry.path}" ${entry.path === currentPath ? "selected" : ""}>${entry.label}</option>`)
       .join("");
 
@@ -43,9 +44,7 @@ SmartRisk.Navbar = {
         <button id="notification-button" class="icon-btn" type="button" aria-label="Ver alertas" title="Alertas">
           ${SmartRisk.Icon.render("bell", 19)}
         </button>
-        <div class="navbar-user" aria-label="Usuario actual: ${user.name}">
-          <strong>${user.initials}</strong>
-        </div>
+${SmartRisk.UserMenu.render()}
       </div>`;
 
     document.getElementById("navbar-menu")?.addEventListener("click", SmartRisk.Sidebar.toggle);
@@ -57,5 +56,6 @@ SmartRisk.Navbar = {
     document.getElementById("notification-button")?.addEventListener("click", () => {
       SmartRisk.Toast?.show("No existen alertas nuevas en esta sesión.", "success");
     });
+    SmartRisk.UserMenu.bind();
   }
 };

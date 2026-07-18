@@ -7,4 +7,5 @@ document.addEventListener("DOMContentLoaded",()=>{
     .filter(module=>SmartRisk.PermissionService.can(SmartRisk.PermissionService.navigationPermission(module.route.path)))
     .forEach(module=>SmartRisk.Router.register(module.route));
   SmartRisk.Router.start();
+  SmartRisk.RoleGuard.apply(document);
 });

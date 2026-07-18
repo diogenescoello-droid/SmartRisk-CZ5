@@ -5,7 +5,9 @@ SmartRisk.Sidebar = {
     const sidebar = document.getElementById("app-sidebar");
     if (!sidebar) return;
 
-    const groups = SmartRisk.Config.navigation.reduce((result, item) => {
+    const allowedNavigation = SmartRisk.Config.navigation.filter(item => SmartRisk.PermissionService.can(SmartRisk.PermissionService.navigationPermission(item.path)));
+
+    const groups = allowedNavigation.reduce((result, item) => {
       const group = item.group || "General";
       (result[group] ||= []).push(item);
       return result;
