@@ -1,0 +1,15 @@
+SMART RISK CZ5 — INSTALACIÓN DEL PARCHE R02.1
+
+1. Confirme que está en la rama feature/r02-workspace-territorial.
+2. Cierre Live Server.
+3. Copie las carpetas frontend, docs y tests del parche a la raíz del proyecto.
+4. Acepte combinar carpetas y reemplazar los archivos indicados.
+5. Abra frontend/index.html mediante Live Server.
+6. Fuerce la actualización con Ctrl + F5.
+7. Ejecute las pruebas de tests/PRUEBAS_R02.1.md.
+
+Archivos funcionales modificados:
+- frontend/index.html
+- frontend/assets/js/core/workspace.js
+- frontend/modules/territorios/territorios.js
+- frontend/assets/css/territorios.css

@@ -1,0 +1,20 @@
+
+.arcgis-grid{display:grid;grid-template-columns:minmax(320px,.72fr) minmax(0,1.7fr);gap:18px}
+.arcgis-config{display:grid;gap:13px}
+.arcgis-map-shell{position:relative;min-height:670px;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:#e9eef2}
+#arcgis-map{position:absolute;inset:0}
+.arcgis-map-message{position:absolute;inset:0;display:grid;place-items:center;padding:30px;text-align:center;background:linear-gradient(135deg,#edf3f7,#dfe9ef);z-index:1}
+.arcgis-map-message.is-hidden{display:none}
+.arcgis-status{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.arcgis-status-card{padding:12px;border:1px solid var(--border);border-radius:10px;background:var(--surface-muted)}
+.arcgis-status-card span{display:block;font-size:.73rem;text-transform:uppercase;font-weight:700;color:var(--text-muted)}
+.arcgis-status-card strong{display:block;margin-top:4px;font-size:.92rem;word-break:break-word}
+.arcgis-tools{display:flex;flex-wrap:wrap;gap:8px}
+.arcgis-layer-list{display:grid;gap:8px;max-height:260px;overflow:auto}
+.arcgis-layer{display:flex;justify-content:space-between;gap:10px;padding:10px;border:1px solid var(--border);border-radius:9px;background:var(--surface)}
+.arcgis-layer small{display:block;color:var(--text-muted);margin-top:3px}
+.arcgis-coordinates{position:absolute;left:12px;bottom:12px;z-index:4;padding:6px 9px;border-radius:7px;background:rgba(20,35,48,.88);color:#fff;font-size:.72rem}
+.arcgis-note{padding:11px;border-left:4px solid var(--primary);background:var(--surface-muted);font-size:.84rem;line-height:1.45}
+.arcgis-iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+@media(max-width:1050px){.arcgis-grid{grid-template-columns:1fr}.arcgis-map-shell{min-height:590px}}
+@media(max-width:620px){.arcgis-status{grid-template-columns:1fr}.arcgis-map-shell{min-height:520px}}

@@ -1,0 +1,12 @@
+SMARTRISK CZ5 — INSTALACIÓN R02.2
+
+1. Trabajar en la rama feature/r02-workspace-territorial.
+2. Cerrar Live Server.
+3. Copiar las carpetas frontend, docs y tests en la raíz del proyecto.
+4. Aceptar combinar carpetas y reemplazar archivos.
+5. Abrir frontend/index.html con Live Server.
+6. Ejecutar Ctrl + F5.
+7. Probar siguiendo tests/PRUEBAS_R02.2.md.
+
+Commit sugerido:
+R02.2 - Implementa panel lateral reutilizable

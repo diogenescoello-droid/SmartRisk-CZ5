@@ -1,0 +1,1 @@
+window.SmartRisk=window.SmartRisk||{};SmartRisk.Constants=Object.freeze({APP_NAME:"SmartRisk CZ5",APP_VERSION:"3.2.0-dev-R01",STORAGE_PREFIX:"smartrisk.cz5"});

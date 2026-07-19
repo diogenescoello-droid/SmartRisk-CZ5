@@ -1,0 +1,1 @@
+SmartRisk.Button={render({id="",label,variant="primary",icon=""}){return `<button ${id?`id="${id}"`:""} class="btn btn-${variant}" type="button">${icon?SmartRisk.Icon.render(icon,18):""}<span>${label}</span></button>`}};

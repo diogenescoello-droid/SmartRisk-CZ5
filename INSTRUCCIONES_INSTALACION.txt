@@ -1,0 +1,30 @@
+SMARTRISK CZ5 — PARCHE R01
+
+IMPORTANTE: este paquete NO es un proyecto independiente. Contiene solamente los archivos modificados.
+
+CARPETA DE DESTINO
+Debes copiar el contenido de este paquete dentro de la carpeta raíz de tu proyecto actual:
+
+SmartRisk-CZ5/
+  frontend/
+  docs/
+  tests/
+  app.js
+  data.js
+  index.html
+
+PASOS
+1. Cierra Live Server.
+2. Haz una copia de respaldo de la carpeta SmartRisk-CZ5.
+3. Abre este paquete R01.
+4. Selecciona TODO su contenido: frontend, docs, tests, CHANGELOG_R01.md e INSTRUCCIONES_INSTALACION.txt.
+5. Copia esos elementos.
+6. Pégalos DENTRO de tu carpeta SmartRisk-CZ5, junto a la carpeta frontend existente.
+7. Windows preguntará si deseas combinar carpetas y reemplazar archivos. Acepta “Reemplazar los archivos en el destino”.
+8. Abre SmartRisk-CZ5 en Visual Studio Code.
+9. Ejecuta Live Server desde frontend/index.html.
+10. Sigue tests/PRUEBAS_R01.md.
+
+NO PEGAR EL PAQUETE DENTRO DE frontend.
+NO BORRAR LA CARPETA frontend EXISTENTE.
+NO REEMPLAZAR TODO EL PROYECTO; SOLO COMBINAR Y REEMPLAZAR LOS ARCHIVOS INDICADOS.

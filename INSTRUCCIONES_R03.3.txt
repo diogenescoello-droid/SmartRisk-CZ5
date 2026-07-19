@@ -1,0 +1,8 @@
+SMART RISK CZ5 · R03.3 GESTIÓN DE USUARIOS
+
+1. Aplicar este parche sobre la rama feature/r03-auth después de R03.2.
+2. Abrir frontend/login.html e ingresar como Administrador o Coordinador zonal.
+3. Entrar al módulo Administración > Usuarios.
+4. Crear, editar, suspender, bloquear, activar y restablecer cuentas.
+5. Las cuentas nuevas usan la contraseña temporal 1234 y exigen cambio en el primer acceso.
+6. Los datos se conservan localmente en LocalStorage hasta la integración con backend.

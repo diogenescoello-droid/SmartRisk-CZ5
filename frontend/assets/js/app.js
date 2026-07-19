@@ -1,1 +1,11 @@
-console.log('SmartRisk CZ5 v2.0.0-alpha');
+document.addEventListener("DOMContentLoaded",()=>{
+  if(!SmartRisk.UserContext.requireSession())return;
+  SmartRisk.Theme.init();
+  SmartRisk.Sidebar.init();
+  [SmartRisk.DashboardModule,SmartRisk.TerritoriosModule,SmartRisk.InstitucionesModule,SmartRisk.SitiosModule,SmartRisk.AccionesModule,SmartRisk.IndicadoresModule,SmartRisk.ReportesModule,SmartRisk.SincronizacionModule,SmartRisk.KoboModule,SmartRisk.ArcGISModule,SmartRisk.UsuariosModule]
+    .filter(Boolean)
+    .filter(module=>SmartRisk.PermissionService.can(SmartRisk.PermissionService.navigationPermission(module.route.path)))
+    .forEach(module=>SmartRisk.Router.register(module.route));
+  SmartRisk.Router.start();
+  SmartRisk.RoleGuard.apply(document);
+});

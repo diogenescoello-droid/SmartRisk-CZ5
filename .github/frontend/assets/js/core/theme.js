@@ -1,0 +1,1 @@
+window.SmartRisk=window.SmartRisk||{};SmartRisk.Theme={init(){document.documentElement.dataset.theme=SmartRisk.Storage.get("theme","light")},toggle(){const t=document.documentElement.dataset.theme==="dark"?"light":"dark";document.documentElement.dataset.theme=t;SmartRisk.Storage.set("theme",t)}};

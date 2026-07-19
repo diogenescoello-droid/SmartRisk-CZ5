@@ -1,0 +1,26 @@
+
+.indicator-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:20px}
+.indicator-card{padding:18px;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--surface);box-shadow:var(--shadow-sm)}
+.indicator-card span{display:block;color:var(--text-muted);font-size:.77rem;font-weight:800;text-transform:uppercase}
+.indicator-card strong{display:block;margin:8px 0 4px;font-size:1.9rem}
+.indicator-card small{color:var(--text-muted)}
+.indicator-layout{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(320px,.85fr);gap:20px}
+.indicator-stack{display:grid;gap:20px}
+.indicator-score{display:flex;align-items:center;gap:12px}
+.indicator-score-ring{display:grid;place-items:center;width:56px;height:56px;border-radius:50%;background:conic-gradient(var(--primary-600) calc(var(--score)*1%),var(--surface-2) 0)}
+.indicator-score-ring:after{content:"";width:42px;height:42px;border-radius:50%;background:var(--surface)}
+.indicator-score-value{position:absolute;font-size:.78rem;font-weight:800}
+.indicator-row{display:grid;grid-template-columns:1.2fr 1fr 90px 90px;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)}
+.indicator-row:last-child{border-bottom:0}
+.indicator-progress{height:9px;border-radius:999px;background:var(--surface-2);overflow:hidden}
+.indicator-progress>span{display:block;height:100%;background:var(--primary-600);border-radius:inherit}
+.indicator-badge{display:inline-flex;align-items:center;justify-content:center;padding:5px 9px;border-radius:999px;font-size:.74rem;font-weight:800}
+.indicator-good{background:#dff5e8;color:#0f5f39}
+.indicator-medium{background:#fff0d8;color:#865817}
+.indicator-bad{background:#fde5e2;color:#8f2c24}
+.indicator-matrix{width:100%;border-collapse:collapse}
+.indicator-matrix th,.indicator-matrix td{padding:10px;border-bottom:1px solid var(--border);text-align:left;font-size:.83rem}
+.indicator-matrix th{color:var(--text-muted);font-size:.73rem;text-transform:uppercase}
+.indicator-note{padding:13px;border-left:4px solid var(--primary-600);background:var(--surface-2);border-radius:8px;line-height:1.5}
+@media(max-width:1100px){.indicator-grid{grid-template-columns:repeat(2,1fr)}.indicator-layout{grid-template-columns:1fr}}
+@media(max-width:700px){.indicator-grid{grid-template-columns:1fr}.indicator-row{grid-template-columns:1fr}.indicator-matrix{min-width:700px}}

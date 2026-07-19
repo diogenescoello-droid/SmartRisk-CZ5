@@ -1,0 +1,1 @@
+window.SmartRisk=window.SmartRisk||{};(function(){const p=SmartRisk.Constants.STORAGE_PREFIX,k=n=>`${p}.${n}`;SmartRisk.Storage={get(n,f=null){try{const r=localStorage.getItem(k(n));return r===null?f:JSON.parse(r)}catch{return f}},set(n,v){try{localStorage.setItem(k(n),JSON.stringify(v));return true}catch{return false}},remove(n){localStorage.removeItem(k(n))}}})();

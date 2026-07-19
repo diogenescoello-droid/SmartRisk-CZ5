@@ -1,0 +1,32 @@
+SMARTRISK CZ5 — INSTALACIÓN DEL PARCHE R01.2
+
+REQUISITO
+Este parche se instala después de R01.1 y sobre la rama feature/r01-ux-navigation.
+
+1. Cierra Live Server.
+2. Descomprime este ZIP.
+3. Copia la carpeta frontend.
+4. Pégala dentro de la raíz SmartRisk-CZ5.
+5. Acepta combinar carpetas y reemplazar 4 archivos.
+6. Copia también docs y tests a la raíz para conservar la documentación.
+7. Abre frontend/index.html con Live Server.
+8. Ejecuta tests/PRUEBAS_R01.2.md.
+
+ARCHIVOS FUNCIONALES REEMPLAZADOS
+- frontend/index.html
+- frontend/components/navbar.js
+- frontend/assets/css/layout.css
+- frontend/assets/css/responsive.css
+
+COMMIT RECOMENDADO
+Summary: R01.2 - Mejora orientación y navegación rápida
+
+Description:
+Problema:
+La plataforma no mostraba una ruta contextual ni un acceso rápido alternativo al menú lateral.
+
+Solución:
+Se añadió breadcrumb, selector rápido de módulos, foco visible y mejoras de accesibilidad en la barra superior.
+
+Impacto:
+Mejor orientación, memorabilidad y eficiencia sin modificar la lógica de negocio.

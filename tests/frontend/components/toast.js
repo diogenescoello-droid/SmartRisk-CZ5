@@ -1,0 +1,1 @@
+SmartRisk.Toast={show(m,t="info"){const r=document.getElementById("app-toast-region"),e=document.createElement("div");e.className=`toast toast-${t}`;e.textContent=m;r.appendChild(e);setTimeout(()=>e.remove(),3200)}};
