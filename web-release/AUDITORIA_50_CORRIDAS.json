@@ -1,0 +1,453 @@
+{
+  "inventory": {
+    "renderedButtons": 121,
+    "clickBindings": 60,
+    "submitBindings": 16,
+    "changeBindings": 25,
+    "pageBuilders": 10,
+    "dialogsAndForms": 17,
+    "serverGlobalRead": true,
+    "serverGlobalAuthenticatedUpdate": true,
+    "roleServerChecks": false
+  },
+  "counts": {
+    "PASS": 15,
+    "PARTIAL": 20,
+    "FAIL": 15
+  },
+  "score": 50,
+  "byRole": {
+    "Administrador zonal": {
+      "PASS": 4,
+      "PARTIAL": 4,
+      "FAIL": 2,
+      "score": 60
+    },
+    "Técnico territorial": {
+      "PASS": 4,
+      "PARTIAL": 4,
+      "FAIL": 2,
+      "score": 60
+    },
+    "Coordinador COE": {
+      "PASS": 2,
+      "PARTIAL": 4,
+      "FAIL": 4,
+      "score": 40
+    },
+    "Líder MTT/GT": {
+      "PASS": 3,
+      "PARTIAL": 4,
+      "FAIL": 3,
+      "score": 50
+    },
+    "Tomador de decisión/control": {
+      "PASS": 2,
+      "PARTIAL": 4,
+      "FAIL": 4,
+      "score": 40
+    }
+  },
+  "runs": [
+    {
+      "id": 1,
+      "role": "Administrador zonal",
+      "route": "Ingresar y recuperar acceso",
+      "question": "¿Puede administrar su acceso sin intervención técnica?",
+      "status": "PASS",
+      "evidence": "Login, recuperación y cambio de contraseña están implementados."
+    },
+    {
+      "id": 2,
+      "role": "Administrador zonal",
+      "route": "Gestionar usuarios",
+      "question": "¿Quién está activo y quién tiene acceso?",
+      "status": "PARTIAL",
+      "evidence": "Distingue contacto y acceso, pero los permisos de negocio no se aplican en servidor por rol."
+    },
+    {
+      "id": 3,
+      "role": "Administrador zonal",
+      "route": "Asignar territorio",
+      "question": "¿Cada técnico queda limitado a su jurisdicción?",
+      "status": "FAIL",
+      "evidence": "El filtro es de interfaz; Firestore permite actualizar el documento global a cualquier autenticado."
+    },
+    {
+      "id": 4,
+      "role": "Administrador zonal",
+      "route": "Revisar territorios",
+      "question": "¿Qué cantones presentan mayores brechas?",
+      "status": "PARTIAL",
+      "evidence": "Hay panorama y trazabilidad, pero los hallazgos documentales no equivalen a riesgo validado."
+    },
+    {
+      "id": 5,
+      "role": "Administrador zonal",
+      "route": "Configurar instituciones",
+      "question": "¿Qué institución integra cada mesa o grupo?",
+      "status": "PARTIAL",
+      "evidence": "Existe configuración, sin catálogo oficial completo ni validación de competencia."
+    },
+    {
+      "id": 6,
+      "role": "Administrador zonal",
+      "route": "Revisar planes",
+      "question": "¿Qué está documentado, incompleto y validado?",
+      "status": "PASS",
+      "evidence": "El módulo separa evidencia documental, hallazgos y revisión."
+    },
+    {
+      "id": 7,
+      "role": "Administrador zonal",
+      "route": "Gestionar sitios",
+      "question": "¿Qué fichas están pendientes o gestionables?",
+      "status": "PASS",
+      "evidence": "Existe transición de mención/ficha pendiente a ficha gestionable."
+    },
+    {
+      "id": 8,
+      "role": "Administrador zonal",
+      "route": "Controlar acciones",
+      "question": "¿Qué acción está vencida, sin responsable o sin evidencia?",
+      "status": "PASS",
+      "evidence": "Se registran responsable, plazo, avance y evidencia operativa."
+    },
+    {
+      "id": 9,
+      "role": "Administrador zonal",
+      "route": "Administrar cartografía",
+      "question": "¿Qué capas F03/KML/KMZ tienen validez técnica?",
+      "status": "PARTIAL",
+      "evidence": "Hay clasificación y evaluación preliminar; falta aprobación formal del custodio competente."
+    },
+    {
+      "id": 10,
+      "role": "Administrador zonal",
+      "route": "Auditar cambios",
+      "question": "¿Quién cambió qué y cuándo con evidencia inmutable?",
+      "status": "FAIL",
+      "evidence": "El registro está dentro del mismo documento mutable y no constituye bitácora inmutable."
+    },
+    {
+      "id": 11,
+      "role": "Técnico territorial",
+      "route": "Ver territorio asignado",
+      "question": "¿Qué riesgos y pendientes corresponden a mi cantón?",
+      "status": "PARTIAL",
+      "evidence": "La interfaz filtra por asignación, pero una cuenta sin coincidencia puede ver información global."
+    },
+    {
+      "id": 12,
+      "role": "Técnico territorial",
+      "route": "Completar ficha pendiente",
+      "question": "¿Qué dato falta para convertir una mención en sitio gestionable?",
+      "status": "PASS",
+      "evidence": "La ficha indica campos y permite completar ubicación, riesgo, brecha y trazabilidad."
+    },
+    {
+      "id": 13,
+      "role": "Técnico territorial",
+      "route": "Validar ubicación",
+      "question": "¿El sitio, tramo o área está correctamente localizado?",
+      "status": "PARTIAL",
+      "evidence": "Permite geometría y mapa, pero no valida precisión, sistema de referencia ni levantamiento de campo."
+    },
+    {
+      "id": 14,
+      "role": "Técnico territorial",
+      "route": "Cargar KMZ/KML",
+      "question": "¿Puedo incorporar evidencia geográfica del territorio?",
+      "status": "PASS",
+      "evidence": "Existe carga, lectura y visualización por capas."
+    },
+    {
+      "id": 15,
+      "role": "Técnico territorial",
+      "route": "Crear vector operativo",
+      "question": "¿Puedo dibujar punto, línea o polígono para una emergencia?",
+      "status": "PASS",
+      "evidence": "La herramienta de geometría operativa está implementada."
+    },
+    {
+      "id": 16,
+      "role": "Técnico territorial",
+      "route": "Clasificar elemento",
+      "question": "¿Es amenaza, vulnerabilidad o exposición?",
+      "status": "PARTIAL",
+      "evidence": "La clasificación existe, pero puede ser inferida y requiere criterio técnico documentado."
+    },
+    {
+      "id": 17,
+      "role": "Técnico territorial",
+      "route": "Semaforizar riesgo",
+      "question": "¿Cuál es el nivel de riesgo del elemento?",
+      "status": "PARTIAL",
+      "evidence": "El color apoya priorización, pero no demuestra una metodología oficial de cálculo y validación."
+    },
+    {
+      "id": 18,
+      "role": "Técnico territorial",
+      "route": "Actualizar acción",
+      "question": "¿Qué avance y evidencia tiene mi acción?",
+      "status": "PASS",
+      "evidence": "El técnico puede actualizar seguimiento y evidencia."
+    },
+    {
+      "id": 19,
+      "role": "Técnico territorial",
+      "route": "Consultar otro territorio",
+      "question": "¿Puedo modificar información fuera de mi competencia?",
+      "status": "FAIL",
+      "evidence": "La seguridad en servidor no restringe escrituras por territorio."
+    },
+    {
+      "id": 20,
+      "role": "Técnico territorial",
+      "route": "Responder monitoreo",
+      "question": "¿Qué cambió desde la última observación y qué umbral se superó?",
+      "status": "FAIL",
+      "evidence": "No hay series temporales, umbrales oficiales ni fuente de monitoreo versionada."
+    },
+    {
+      "id": 21,
+      "role": "Coordinador COE",
+      "route": "Abrir sesión operativa",
+      "question": "¿Cuál es el problema, ámbito y periodo operacional?",
+      "status": "PARTIAL",
+      "evidence": "La cabina crea sesiones, pero el periodo operacional y la activación oficial no quedan plenamente formalizados."
+    },
+    {
+      "id": 22,
+      "role": "Coordinador COE",
+      "route": "Ver flujo de actores",
+      "question": "¿Quién informa, decide, ejecuta y verifica?",
+      "status": "PASS",
+      "evidence": "El diagrama COE muestra actores, conexiones y faltantes."
+    },
+    {
+      "id": 23,
+      "role": "Coordinador COE",
+      "route": "Asignar tarea",
+      "question": "¿Quién debe hacer qué, dónde y hasta cuándo?",
+      "status": "PASS",
+      "evidence": "La cabina permite responsables, tareas, territorios y plazos."
+    },
+    {
+      "id": 24,
+      "role": "Coordinador COE",
+      "route": "Escalar necesidad",
+      "question": "¿Qué apoyo debe solicitarse por subsidiariedad?",
+      "status": "PARTIAL",
+      "evidence": "Puede registrarse una decisión, pero falta flujo formal de solicitud, aceptación y nivel escalado."
+    },
+    {
+      "id": 25,
+      "role": "Coordinador COE",
+      "route": "Construir panorama común",
+      "question": "¿Qué ocurre, dónde, a quién afecta y qué respuesta está activa?",
+      "status": "PARTIAL",
+      "evidence": "Integra planes, sitios, capas y acciones, pero faltan fuentes en tiempo real y validación territorial completa."
+    },
+    {
+      "id": 26,
+      "role": "Coordinador COE",
+      "route": "Consultar población expuesta",
+      "question": "¿Cuántas personas y grupos prioritarios están expuestos?",
+      "status": "PARTIAL",
+      "evidence": "Hay valores reportados, sin desglose, cobertura ni verificación suficiente."
+    },
+    {
+      "id": 27,
+      "role": "Coordinador COE",
+      "route": "Controlar rutas",
+      "question": "¿Qué vías están cerradas y qué rutas de evacuación son seguras?",
+      "status": "FAIL",
+      "evidence": "No existe análisis de red, estado vial en tiempo real ni validación de rutas seguras."
+    },
+    {
+      "id": 28,
+      "role": "Coordinador COE",
+      "route": "Gestionar alojamientos",
+      "question": "¿Qué alojamiento tiene capacidad y servicios disponibles?",
+      "status": "FAIL",
+      "evidence": "No hay inventario operativo de capacidad, ocupación y servicios de alojamientos temporales."
+    },
+    {
+      "id": 29,
+      "role": "Coordinador COE",
+      "route": "Emitir alerta",
+      "question": "¿Puede la plataforma declarar el nivel de alerta?",
+      "status": "FAIL",
+      "evidence": "La declaratoria corresponde a la autoridad competente con sustento técnico-científico; la plataforma solo debe mostrar o recomendar."
+    },
+    {
+      "id": 30,
+      "role": "Coordinador COE",
+      "route": "Cerrar periodo",
+      "question": "¿Qué decisiones, resultados, pendientes y relevo quedan al siguiente periodo?",
+      "status": "FAIL",
+      "evidence": "No hay cierre operacional estructurado, relevo ni SITREP consolidado."
+    },
+    {
+      "id": 31,
+      "role": "Líder MTT/GT",
+      "route": "Definir objetivo",
+      "question": "¿Qué objetivo operativo debe cumplir la mesa o grupo?",
+      "status": "PASS",
+      "evidence": "El módulo permite configurar objetivos de trabajo."
+    },
+    {
+      "id": 32,
+      "role": "Líder MTT/GT",
+      "route": "Registrar actores",
+      "question": "¿Están presentes principal, alterno y enlace operativo?",
+      "status": "PARTIAL",
+      "evidence": "Registra actores, pero no controla formalmente alternos, disponibilidad y aceptación de convocatoria."
+    },
+    {
+      "id": 33,
+      "role": "Líder MTT/GT",
+      "route": "Crear actividad",
+      "question": "¿Qué actividad aporta al objetivo y con qué producto?",
+      "status": "PASS",
+      "evidence": "Se pueden crear actividades vinculadas al grupo."
+    },
+    {
+      "id": 34,
+      "role": "Líder MTT/GT",
+      "route": "Gestionar dependencia",
+      "question": "¿Qué actividad depende de otra institución o mesa?",
+      "status": "PARTIAL",
+      "evidence": "Los flujos se visualizan, pero no existe motor de dependencias, bloqueo y aceptación."
+    },
+    {
+      "id": 35,
+      "role": "Líder MTT/GT",
+      "route": "Controlar plazo",
+      "question": "¿Qué compromiso está vencido o próximo a vencer?",
+      "status": "PASS",
+      "evidence": "Fechas y estados permiten seguimiento básico."
+    },
+    {
+      "id": 36,
+      "role": "Líder MTT/GT",
+      "route": "Adjuntar evidencia",
+      "question": "¿La actividad tiene producto verificable?",
+      "status": "PARTIAL",
+      "evidence": "Hay campos de evidencia, sin repositorio documental robusto, firma, hash o versionado."
+    },
+    {
+      "id": 37,
+      "role": "Líder MTT/GT",
+      "route": "Reportar recursos",
+      "question": "¿Qué personal, equipo, insumo o presupuesto falta?",
+      "status": "FAIL",
+      "evidence": "No existe catálogo/inventario de recursos y brechas logísticas."
+    },
+    {
+      "id": 38,
+      "role": "Líder MTT/GT",
+      "route": "Coordinar información pública",
+      "question": "¿Qué mensaje fue aprobado, por quién y para qué audiencia?",
+      "status": "FAIL",
+      "evidence": "No hay flujo de vocería, aprobación y publicación de mensajes."
+    },
+    {
+      "id": 39,
+      "role": "Líder MTT/GT",
+      "route": "Evaluar desempeño",
+      "question": "¿La mesa cumplió objetivo, tiempo, calidad e impacto?",
+      "status": "PARTIAL",
+      "evidence": "Hay avance, pero faltan indicadores de producto, resultado e impacto."
+    },
+    {
+      "id": 40,
+      "role": "Líder MTT/GT",
+      "route": "Transferir a recuperación",
+      "question": "¿Qué acciones pasan de respuesta a recuperación?",
+      "status": "FAIL",
+      "evidence": "No existe transición formal entre fases ni plan de recuperación vinculado."
+    },
+    {
+      "id": 41,
+      "role": "Tomador de decisión/control",
+      "route": "Priorizar territorios",
+      "question": "¿Qué territorios requieren apoyo inmediato?",
+      "status": "PARTIAL",
+      "evidence": "El ranking usa brechas y datos disponibles; no es una valoración integral validada del riesgo."
+    },
+    {
+      "id": 42,
+      "role": "Tomador de decisión/control",
+      "route": "Identificar brecha crítica",
+      "question": "¿Qué brecha impide reducir el riesgo?",
+      "status": "PASS",
+      "evidence": "La plataforma consolida brechas de planes, sitios, acciones y cartografía."
+    },
+    {
+      "id": 43,
+      "role": "Tomador de decisión/control",
+      "route": "Ver decisión vencida",
+      "question": "¿Qué decisión está sin responsable o fuera de plazo?",
+      "status": "PASS",
+      "evidence": "La bandeja permite seguimiento de responsables y plazos."
+    },
+    {
+      "id": 44,
+      "role": "Tomador de decisión/control",
+      "route": "Evaluar escenario",
+      "question": "¿Qué puede ocurrir si no se interviene?",
+      "status": "PARTIAL",
+      "evidence": "Hay información base, pero no modelación probabilística, escenarios temporales ni incertidumbre explícita."
+    },
+    {
+      "id": 45,
+      "role": "Tomador de decisión/control",
+      "route": "Ordenar evacuación",
+      "question": "¿Debe evacuarse y qué población, ruta y destino aplican?",
+      "status": "FAIL",
+      "evidence": "Faltan rutas validadas, población objetivo, alojamientos y acto de autoridad; la plataforma no debe decidirlo automáticamente."
+    },
+    {
+      "id": 46,
+      "role": "Tomador de decisión/control",
+      "route": "Activar COE",
+      "question": "¿Corresponde activar el COE y en qué nivel?",
+      "status": "PARTIAL",
+      "evidence": "Puede aportar criterios, pero la activación debe registrarse como acto de la autoridad competente."
+    },
+    {
+      "id": 47,
+      "role": "Tomador de decisión/control",
+      "route": "Asignar recursos",
+      "question": "¿Qué recursos se requieren, existen y fueron movilizados?",
+      "status": "FAIL",
+      "evidence": "No existe inventario, disponibilidad, despacho, recepción y costo trazable."
+    },
+    {
+      "id": 48,
+      "role": "Tomador de decisión/control",
+      "route": "Controlar servicios esenciales",
+      "question": "¿Qué servicios críticos están afectados y cuándo se restablecen?",
+      "status": "FAIL",
+      "evidence": "No hay tablero de continuidad de servicios esenciales."
+    },
+    {
+      "id": 49,
+      "role": "Tomador de decisión/control",
+      "route": "Autorizar comunicación",
+      "question": "¿Qué información pública está verificada y autorizada?",
+      "status": "FAIL",
+      "evidence": "No existe validación de fuente, vocería ni autorización de publicación."
+    },
+    {
+      "id": 50,
+      "role": "Tomador de decisión/control",
+      "route": "Ver trazabilidad legal",
+      "question": "¿Qué autoridad tomó la decisión, con qué fundamento y evidencia?",
+      "status": "PARTIAL",
+      "evidence": "Hay registro de decisión, pero falta base legal estructurada, firma, integridad y retención."
+    }
+  ]
+}

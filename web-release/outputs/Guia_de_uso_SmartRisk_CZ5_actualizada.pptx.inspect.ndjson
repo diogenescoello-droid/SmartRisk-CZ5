@@ -1,0 +1,458 @@
+{"kind":"deck","id":"pr/wwx6h4","name":"Deck"}
+{"kind":"layout","layoutId":"bfcda049-0f1b-473d-92f3-74e71a83a1dc","name":"Master","type":"master"}
+{"kind":"layout","layoutId":"060e0084-dbe8-49e0-8c0f-58c9f8774e86","name":"Title Slide","type":"title"}
+{"kind":"slide","id":"sl/zrx2cz","slide":1,"title":"SmartRisk CZ5","textShapes":11}
+{"kind":"textbox","id":"sh/zexsrqdo","slide":1,"text":"SmartRisk CZ5","textPreview":"SmartRisk CZ5","textChars":13,"textLines":1,"bbox":[56,42,500,35]}
+{"kind":"textbox","id":"sh/kf690ve9","slide":1,"text":"Gestionar el riesgo\ncomo un flujo común","textPreview":"Gestionar el riesgo | como un flujo común","textChars":39,"textLines":2,"bbox":[56,150,650,180]}
+{"kind":"textbox","id":"sh/lgfat0vu","slide":1,"text":"Guía detallada para técnicos, responsables institucionales, analistas y participantes del COE.","textPreview":"Guía detallada para técnicos, responsables institucionales, analistas y participantes del COE.","textChars":94,"textLines":1,"bbox":[56,355,610,95]}
+{"kind":"shape","id":"sh/ap4rulw7","slide":1,"bbox":[790,0,490,720]}
+{"kind":"textbox","id":"sh/bqdsnqdc","slide":1,"text":"PLANES","textPreview":"PLANES","textChars":6,"textLines":1,"bbox":[835,130,360,40]}
+{"kind":"textbox","id":"sh/crm9wvex","slide":1,"text":"↓","textPreview":"↓","textChars":1,"textLines":1,"bbox":[835,180,80,46]}
+{"kind":"textbox","id":"sh/xsfap0vi","slide":1,"text":"RIESGO TERRITORIAL","textPreview":"RIESGO TERRITORIAL","textChars":18,"textLines":1,"bbox":[835,230,380,44]}
+{"kind":"textbox","id":"sh/ul8r6pwb","slide":1,"text":"↓","textPreview":"↓","textChars":1,"textLines":1,"bbox":[835,280,80,46]}
+{"kind":"textbox","id":"sh/vmhszadw","slide":1,"text":"DECISIONES Y ACCIONES","textPreview":"DECISIONES Y ACCIONES","textChars":21,"textLines":1,"bbox":[835,330,390,44]}
+{"kind":"textbox","id":"sh/jup4zatg","slide":1,"text":"↓","textPreview":"↓","textChars":1,"textLines":1,"bbox":[835,380,80,46]}
+{"kind":"textbox","id":"sh/ytgnq5cv","slide":1,"text":"EVIDENCIA Y CONTROL","textPreview":"EVIDENCIA Y CONTROL","textChars":19,"textLines":1,"bbox":[835,430,380,44]}
+{"kind":"textbox","id":"sh/lg7m1kbm","slide":1,"text":"Coordinación Zonal 5 · 2026","textPreview":"Coordinación Zonal 5 · 2026","textChars":27,"textLines":1,"bbox":[56,650,500,24]}
+{"kind":"notes","id":"nt/zrx2cz","slide":1,"text":""}
+{"kind":"slide","id":"sl/gz4s9y","slide":2,"title":"PROPÓSITO","textShapes":14}
+{"kind":"textbox","id":"sh/ozudobuh","slide":2,"text":"PROPÓSITO","textPreview":"PROPÓSITO","textChars":9,"textLines":1,"bbox":[54,30,760,28]}
+{"kind":"textbox","id":"sh/nylwf6tc","slide":2,"text":"La plataforma convierte documentos dispersos en gestión verificable","textPreview":"La plataforma convierte documentos dispersos en gestión verificable","textChars":67,"textLines":1,"bbox":[54,63,1160,62]}
+{"kind":"shape","id":"sh/mxcvm1cr","slide":2,"bbox":[54,135,1170,1]}
+{"kind":"textbox","id":"sh/x43elgbe","slide":2,"text":"2","textPreview":"2","textChars":1,"textLines":1,"bbox":[1190,675,34,20]}
+{"kind":"textbox","id":"sh/w3udsbat","slide":2,"text":"El valor no está en registrar más datos, sino en conectar cada hallazgo con una decisión, un responsable y una evidencia.","textPreview":"El valor no está en registrar más datos, sino en conectar cada hallazgo con una decisión, un responsable y una evidencia.","textChars":121,"textLines":1,"bbox":[54,155,1140,62]}
+{"kind":"shape","id":"sh/b2lwj6t8","slide":2,"bbox":[54,260,360,300]}
+{"kind":"textbox","id":"sh/a1cvq1cn","slide":2,"text":"ANTES","textPreview":"ANTES","textChars":5,"textLines":1,"bbox":[76,280,310,28]}
+{"kind":"textbox","id":"sh/lsnep0ba","slide":2,"text":"Planes, correos, mapas y compromisos separados.","textPreview":"Planes, correos, mapas y compromisos separados.","textChars":47,"textLines":1,"bbox":[76,330,310,82]}
+{"kind":"textbox","id":"sh/kredwvap","slide":2,"text":"La misma brecha podía revisarse varias veces sin convertirse en acción.","textPreview":"La misma brecha podía revisarse varias veces sin convertirse en acción.","textChars":71,"textLines":1,"bbox":[76,435,310,92]}
+{"kind":"shape","id":"sh/exgvmh83","slide":2,"bbox":[444,260,360,300]}
+{"kind":"textbox","id":"sh/fypwfmpo","slide":2,"text":"CON SMARTRISK","textPreview":"CON SMARTRISK","textChars":13,"textLines":1,"bbox":[466,280,310,28]}
+{"kind":"textbox","id":"sh/gjydorq9","slide":2,"text":"Una fuente común conserva territorio, evidencia, responsable, plazo y estado.","textPreview":"Una fuente común conserva territorio, evidencia, responsable, plazo y estado.","textChars":77,"textLines":1,"bbox":[466,330,310,82]}
+{"kind":"textbox","id":"sh/1k7ehw7u","slide":2,"text":"Cada técnico sabe qué debe completar y el control puede seguir el resultado.","textPreview":"Cada técnico sabe qué debe completar y el control puede seguir el resultado.","textChars":76,"textLines":1,"bbox":[466,435,310,92]}
+{"kind":"shape","id":"sh/2lgvq18f","slide":2,"bbox":[834,260,360,300]}
+{"kind":"textbox","id":"sh/3mpwj6p0","slide":2,"text":"RESULTADO","textPreview":"RESULTADO","textChars":9,"textLines":1,"bbox":[856,280,310,28]}
+{"kind":"textbox","id":"sh/onydsbql","slide":2,"text":"El riesgo fluye desde el territorio hacia quien decide y vuelve como una acción controlable.","textPreview":"El riesgo fluye desde el territorio hacia quien decide y vuelve como una acción controlable.","textChars":92,"textLines":1,"bbox":[856,330,310,82]}
+{"kind":"textbox","id":"sh/porelg7q","slide":2,"text":"La trazabilidad permite explicar qué se hizo, qué falta y por qué.","textPreview":"La trazabilidad permite explicar qué se hizo, qué falta y por qué.","textChars":66,"textLines":1,"bbox":[856,435,310,92]}
+{"kind":"textbox","id":"sh/ipwvex8b","slide":2,"text":"SmartRisk CZ5 · Gestión integral del riesgo con trazabilidad","textPreview":"SmartRisk CZ5 · Gestión integral del riesgo con trazabilidad","textChars":60,"textLines":1,"bbox":[54,676,1000,18]}
+{"kind":"notes","id":"nt/gz4s9y","slide":2,"text":""}
+{"kind":"slide","id":"sl/6zjsbm","slide":3,"title":"NUEVO ENFOQUE","textShapes":20}
+{"kind":"textbox","id":"sh/onyxs7ih","slide":3,"text":"NUEVO ENFOQUE","textPreview":"NUEVO ENFOQUE","textChars":13,"textLines":1,"bbox":[54,30,760,28]}
+{"kind":"textbox","id":"sh/nmpwj2hw","slide":3,"text":"El cambio de paradigma: gestionar el riesgo como un ciclo vivo","textPreview":"El cambio de paradigma: gestionar el riesgo como un ciclo vivo","textChars":62,"textLines":1,"bbox":[54,63,1160,62]}
+{"kind":"shape","id":"sh/2lgfqx0b","slide":3,"bbox":[54,135,1170,1]}
+{"kind":"textbox","id":"sh/xsrypwzy","slide":3,"text":"3","textPreview":"3","textChars":1,"textLines":1,"bbox":[1190,675,34,20]}
+{"kind":"textbox","id":"sh/wrixwrid","slide":3,"text":"De revisar documentos","textPreview":"De revisar documentos","textChars":21,"textLines":1,"bbox":[54,155,430,42]}
+{"kind":"textbox","id":"sh/bq9gnmh8","slide":3,"text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[495,155,60,42]}
+{"kind":"textbox","id":"sh/apgfuh0n","slide":3,"text":"a comprender condiciones reales del territorio.","textPreview":"a comprender condiciones reales del territorio.","textChars":47,"textLines":1,"bbox":[570,155,610,42]}
+{"kind":"textbox","id":"sh/lgrytwza","slide":3,"text":"De acumular registros","textPreview":"De acumular registros","textChars":21,"textLines":1,"bbox":[54,247,430,42]}
+{"kind":"textbox","id":"sh/kfix0ryp","slide":3,"text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[495,247,60,42]}
+{"kind":"textbox","id":"sh/i1gzm1c3","slide":3,"text":"a responder preguntas para decidir.","textPreview":"a responder preguntas para decidir.","textChars":35,"textLines":1,"bbox":[570,247,610,42]}
+{"kind":"textbox","id":"sh/jm9gf6do","slide":3,"text":"De recomendar acciones","textPreview":"De recomendar acciones","textChars":22,"textLines":1,"bbox":[54,339,430,42]}
+{"kind":"textbox","id":"sh/4nihobu9","slide":3,"text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[495,339,60,42]}
+{"kind":"textbox","id":"sh/5oryhgvu","slide":3,"text":"a formalizar responsables, plazos y resultados.","textPreview":"a formalizar responsables, plazos y resultados.","textChars":47,"textLines":1,"bbox":[570,339,610,42]}
+{"kind":"textbox","id":"sh/6p0zqlcz","slide":3,"text":"De mostrar mapas","textPreview":"De mostrar mapas","textChars":16,"textLines":1,"bbox":[54,431,430,42]}
+{"kind":"textbox","id":"sh/rq9gjqdk","slide":3,"text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[495,431,60,42]}
+{"kind":"textbox","id":"sh/srihsvu5","slide":3,"text":"a usar geometría como evidencia de intervención.","textPreview":"a usar geometría como evidencia de intervención.","textChars":48,"textLines":1,"bbox":[570,431,610,42]}
+{"kind":"textbox","id":"sh/tsryl0vq","slide":3,"text":"De reportar avances","textPreview":"De reportar avances","textChars":19,"textLines":1,"bbox":[54,523,430,42]}
+{"kind":"textbox","id":"sh/mtwfehwv","slide":3,"text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[495,523,60,42]}
+{"kind":"textbox","id":"sh/nu5g7mdg","slide":3,"text":"a conservar trazabilidad y cierres verificables.","textPreview":"a conservar trazabilidad y cierres verificables.","textChars":48,"textLines":1,"bbox":[570,523,610,42]}
+{"kind":"textbox","id":"sh/bylwfit8","slide":3,"text":"SmartRisk no reemplaza el criterio técnico: lo conecta, documenta y convierte en responsabilidad compartida.","textPreview":"SmartRisk no reemplaza el criterio técnico: lo conecta, documenta y convierte en responsabilidad compartida.","textChars":108,"textLines":1,"bbox":[54,625,1120,36]}
+{"kind":"textbox","id":"sh/qxcvmdsn","slide":3,"text":"SmartRisk CZ5 · Gestión integral del riesgo con trazabilidad","textPreview":"SmartRisk CZ5 · Gestión integral del riesgo con trazabilidad","textChars":60,"textLines":1,"bbox":[54,676,1000,18]}
+{"kind":"notes","id":"nt/6zjsbm","slide":3,"text":""}
+{"kind":"slide","id":"sl/zrbcsr","slide":4,"title":"ARQUITECTURA FUNCIONAL","textShapes":21}
+{"kind":"textbox","id":"sh/ofmd872t","slide":4,"text":"ARQUITECTURA FUNCIONAL","textPreview":"ARQUITECTURA FUNCIONAL","textChars":22,"textLines":1,"bbox":[54,30,760,28]}
+{"kind":"textbox","id":"sh/nedwf2l8","slide":4,"text":"Un solo flujo conecta ocho módulos","textPreview":"Un solo flujo conecta ocho módulos","textChars":34,"textLines":1,"bbox":[54,63,1160,62]}
+{"kind":"shape","id":"sh/md4v6xk3","slide":4,"bbox":[54,135,1170,1]}
+{"kind":"textbox","id":"sh/x4felcjq","slide":4,"text":"4","textPreview":"4","textChars":1,"textLines":1,"bbox":[1190,675,34,20]}
+{"kind":"shape","id":"sh/wj6dcr25","slide":4,"bbox":[54,180,260,132]}
+{"kind":"textbox","id":"sh/vixwjm1k","slide":4,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[72,195,40,24]}
+{"kind":"textbox","id":"sh/ah4vahkz","slide":4,"text":"Territorios","textPreview":"Territorios","textChars":11,"textLines":1,"bbox":[72,228,225,42]}
+{"kind":"shape","id":"sh/d8be9s36","slide":4,"bbox":[350,180,260,132]}
+{"kind":"textbox","id":"sh/cn2d0n2l","slide":4,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[368,195,40,24]}
+{"kind":"textbox","id":"sh/y9w7e9sr","slide":4,"text":"Actores y flujo COE","textPreview":"Actores y flujo COE","textChars":19,"textLines":1,"bbox":[368,228,225,42]}
+{"kind":"shape","id":"sh/za58netc","slide":4,"bbox":[646,180,260,132]}
+{"kind":"textbox","id":"sh/kbepgjax","slide":4,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[664,195,40,24]}
+{"kind":"textbox","id":"sh/lc7qpob2","slide":4,"text":"Revisión de planes","textPreview":"Revisión de planes","textChars":18,"textLines":1,"bbox":[664,228,225,42]}
+{"kind":"shape","id":"sh/mdg7itsn","slide":4,"bbox":[942,180,260,132]}
+{"kind":"textbox","id":"sh/7ep8ry98","slide":4,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[960,195,40,24]}
+{"kind":"textbox","id":"sh/8fypk3at","slide":4,"text":"Sitios críticos","textPreview":"Sitios críticos","textChars":15,"textLines":1,"bbox":[960,228,225,42]}
+{"kind":"shape","id":"sh/907qtore","slide":4,"bbox":[54,370,260,132]}
+{"kind":"textbox","id":"sh/u1grmtsz","slide":4,"text":"05","textPreview":"05","textChars":2,"textLines":1,"bbox":[72,385,40,24]}
+{"kind":"textbox","id":"sh/v2p8vy9k","slide":4,"text":"Decisiones","textPreview":"Decisiones","textChars":10,"textLines":1,"bbox":[72,418,225,42]}
+{"kind":"shape","id":"sh/r69o3ypc","slide":4,"bbox":[350,370,260,132]}
+{"kind":"textbox","id":"sh/6507at8r","slide":4,"text":"06","textPreview":"06","textChars":2,"textLines":1,"bbox":[368,385,40,24]}
+{"kind":"textbox","id":"sh/t8r6587i","slide":4,"text":"Acciones","textPreview":"Acciones","textChars":8,"textLines":1,"bbox":[368,418,225,42]}
+{"kind":"shape","id":"sh/s7ipc3qx","slide":4,"bbox":[646,370,260,132]}
+{"kind":"textbox","id":"sh/j2pofypg","slide":4,"text":"07","textPreview":"07","textChars":2,"textLines":1,"bbox":[664,385,40,24]}
+{"kind":"textbox","id":"sh/i1g76t8v","slide":4,"text":"Herramientas SIG","textPreview":"Herramientas SIG","textChars":16,"textLines":1,"bbox":[664,418,225,42]}
+{"kind":"shape","id":"sh/54r6187m","slide":4,"bbox":[942,370,260,132]}
+{"kind":"textbox","id":"sh/43ip83q1","slide":4,"text":"08","textPreview":"08","textChars":2,"textLines":1,"bbox":[960,385,40,24]}
+{"kind":"textbox","id":"sh/vepobep4","slide":4,"text":"Cabina COE","textPreview":"Cabina COE","textChars":10,"textLines":1,"bbox":[960,418,225,42]}
+{"kind":"textbox","id":"sh/udg7298z","slide":4,"text":"La información debe avanzar; no se vuelve a escribir desde cero en cada módulo.","textPreview":"La información debe avanzar; no se vuelve a escribir desde cero en cada módulo.","textChars":79,"textLines":1,"bbox":[54,592,1120,40]}
+{"kind":"textbox","id":"sh/kjulcf6h","slide":4,"text":"SmartRisk CZ5 · Gestión integral del riesgo con trazabilidad","textPreview":"SmartRisk CZ5 · Gestión integral del riesgo con trazabilidad","textChars":60,"textLines":1,"bbox":[54,676,1000,18]}
+{"kind":"notes","id":"nt/zrbcsr","slide":4,"text":""}
+{"kind":"slide","id":"sl/tbvlln","slide":5,"title":"PERFILES Y RESPONSABILIDADES","textShapes":22}
+{"kind":"textbox","id":"sh/kfuxkrqp","slide":5,"text":"PERFILES Y RESPONSABILIDADES","textPreview":"PERFILES Y RESPONSABILIDADES","textChars":28,"textLines":1,"bbox":[54,30,760,28]}
+{"kind":"textbox","id":"sh/jelgrmp4","slide":5,"text":"Cada perfil ve una parte del proceso, pero todos alimentan la misma trazabilidad","textPreview":"Cada perfil ve una parte del proceso, pero todos alimentan la misma trazabilidad","textChars":80,"textLines":1,"bbox":[54,63,1160,62]}
+{"kind":"shape","id":"sh/ydcfih8j","slide":5,"bbox":[54,135,1170,1]}
+{"kind":"textbox","id":"sh/tknyxw76","slide":5,"text":"5","textPreview":"5","textChars":1,"textLines":1,"bbox":[1190,675,34,20]}
+{"kind":"textbox","id":"sh/8jexorql","slide":5,"text":"Administrador zonal","textPreview":"Administrador zonal","textChars":19,"textLines":1,"bbox":[54,154,245,50]}
+{"kind":"textbox","id":"sh/7i5gvmp0","slide":5,"text":"Configura usuarios, territorios y actores; supervisa cobertura y decisiones.","textPreview":"Configura usuarios, territorios y actores; supervisa cobertura y decisiones.","textChars":76,"textLines":1,"bbox":[315,154,555,50]}
+{"kind":"textbox","id":"sh/6hwfmh8f","slide":5,"text":"No sustituye la validación técnica local.","textPreview":"No sustituye la validación técnica local.","textChars":41,"textLines":1,"bbox":[890,154,325,50]}
+{"kind":"shape","id":"sh/ho7y1w72","slide":5,"bbox":[54,216,1160,1]}
+{"kind":"textbox","id":"sh/gnexsbqh","slide":5,"text":"Técnico territorial","textPreview":"Técnico territorial","textChars":19,"textLines":1,"bbox":[54,234,245,50]}
+{"kind":"textbox","id":"sh/e587mlgr","slide":5,"text":"Completa fichas, valida lugares, actualiza acciones y carga evidencia.","textPreview":"Completa fichas, valida lugares, actualiza acciones y carga evidencia.","textChars":70,"textLines":1,"bbox":[315,234,555,50]}
+{"kind":"textbox","id":"sh/f6h8fqxw","slide":5,"text":"Responde por la calidad y actualidad del dato.","textPreview":"Responde por la calidad y actualidad del dato.","textChars":46,"textLines":1,"bbox":[890,234,325,50]}
+{"kind":"shape","id":"sh/g7q9oveh","slide":5,"bbox":[54,296,1160,1]}
+{"kind":"textbox","id":"sh/18zqh0f2","slide":5,"text":"Revisor de planes","textPreview":"Revisor de planes","textChars":17,"textLines":1,"bbox":[54,314,245,50]}
+{"kind":"textbox","id":"sh/298rq5wn","slide":5,"text":"Contrasta estructura, operación, evidencia y propuestas de cada plan.","textPreview":"Contrasta estructura, operación, evidencia y propuestas de cada plan.","textChars":69,"textLines":1,"bbox":[315,314,555,50]}
+{"kind":"textbox","id":"sh/3ah8jax8","slide":5,"text":"Distingue hallazgo preliminar de validación territorial.","textPreview":"Distingue hallazgo preliminar de validación territorial.","textChars":56,"textLines":1,"bbox":[890,314,325,50]}
+{"kind":"shape","id":"sh/oba9svet","slide":5,"bbox":[54,376,1160,1]}
+{"kind":"textbox","id":"sh/pwjql0fe","slide":5,"text":"Responsable institucional","textPreview":"Responsable institucional","textChars":25,"textLines":1,"bbox":[54,394,245,50]}
+{"kind":"textbox","id":"sh/ido7e1gj","slide":5,"text":"Acepta compromisos, reporta avance y entrega evidencia verificable.","textPreview":"Acepta compromisos, reporta avance y entrega evidencia verificable.","textChars":67,"textLines":1,"bbox":[315,394,555,50]}
+{"kind":"textbox","id":"sh/jex876x4","slide":5,"text":"No cierra acciones sin producto o referencia.","textPreview":"No cierra acciones sin producto o referencia.","textChars":45,"textLines":1,"bbox":[890,394,325,50]}
+{"kind":"shape","id":"sh/nit4f2dw","slide":5,"bbox":[54,456,1160,1]}
+{"kind":"textbox","id":"sh/mhkn6xwb","slide":5,"text":"Analista SIG / F03","textPreview":"Analista SIG / F03","textChars":18,"textLines":1,"bbox":[54,474,245,50]}
+{"kind":"textbox","id":"sh/9kv6hcvm","slide":5,"text":"Valida fuente, fecha, escala y geometría; dibuja o incorpora capas.","textPreview":"Valida fuente, fecha, escala y geometría; dibuja o incorpora capas.","textChars":67,"textLines":1,"bbox":[315,474,555,50]}
+{"kind":"textbox","id":"sh/8j2587e1","slide":5,"text":"Clasifica sin confundir amenaza con riesgo.","textPreview":"Clasifica sin confundir amenaza con riesgo.","textChars":43,"textLines":1,"bbox":[890,474,325,50]}
+{"kind":"shape","id":"sh/zet4b2dk","slide":5,"bbox":[54,536,1160,1]}
+{"kind":"textbox","id":"sh/ydkn2xwz","slide":5,"text":"Participante COE","textPreview":"Participante COE","textChars":16,"textLines":1,"bbox":[54,554,245,50]}
+{"kind":"textbox","id":"sh/lgbmdsvq","slide":5,"text":"Recibe problemas, decisiones y tareas según su rol en la respuesta.","textPreview":"Recibe problemas, decisiones y tareas según su rol en la respuesta.","textChars":67,"textLines":1,"bbox":[315,554,555,50]}
+{"kind":"textbox","id":"sh/0f2547e5","slide":5,"text":"Reporta al flujo definido y no en canales paralelos.","textPreview":"Reporta al flujo definido y no en canales paralelos.","textChars":52,"textLines":1,"bbox":[890,554,325,50]}
+{"kind":"shape","id":"sh/jadonmdo","slide":5,"bbox":[54,616,1160,1]}
+{"kind":"textbox","id":"sh/i94nehcj","slide":5,"text":"SmartRisk CZ5 · Gestión integral del riesgo con trazabilidad","textPreview":"SmartRisk CZ5 · Gestión integral del riesgo con trazabilidad","textChars":60,"textLines":1,"bbox":[54,676,1000,18]}
+{"kind":"notes","id":"nt/tbvlln","slide":5,"text":""}
+{"kind":"slide","id":"sl/4erbb4","slide":6,"title":"PRIMER INGRESO","textShapes":13}
+{"kind":"textbox","id":"sh/doryp43q","slide":6,"text":"PRIMER INGRESO","textPreview":"PRIMER INGRESO","textChars":14,"textLines":1,"bbox":[54,30,760,28]}
+{"kind":"textbox","id":"sh/ql0fu94z","slide":6,"text":"El panel principal responde dónde profundizar primero","textPreview":"El panel principal responde dónde profundizar primero","textChars":53,"textLines":1,"bbox":[54,63,1160,62]}
+{"kind":"shape","id":"sh/rm9gnulk","slide":6,"bbox":[54,135,1170,1]}
+{"kind":"textbox","id":"sh/0b2h0jm1","slide":6,"text":"6","textPreview":"6","textChars":1,"textLines":1,"bbox":[1190,675,34,20]}
+{"kind":"textbox","id":"sh/ep0zy94b","slide":6,"text":"LECTURA RECOMENDADA","textPreview":"LECTURA RECOMENDADA","textChars":19,"textLines":1,"bbox":[54,160,400,28]}
+{"kind":"textbox","id":"sh/fatgrelw","slide":6,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[54,210,22,34]}
+{"kind":"textbox","id":"sh/of2h4jmd","slide":6,"text":"Revise las cuatro preguntas estratégicas.","textPreview":"Revise las cuatro preguntas estratégicas.","textChars":41,"textLines":1,"bbox":[82,210,392,42]}
+{"kind":"textbox","id":"sh/pgbyxo3y","slide":6,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[54,288,22,34]}
+{"kind":"textbox","id":"sh/x4j2ps3e","slide":6,"text":"Identifique territorios con alertas documentales.","textPreview":"Identifique territorios con alertas documentales.","textChars":49,"textLines":1,"bbox":[82,288,392,42]}
+{"kind":"textbox","id":"sh/w3a1w72t","slide":6,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[54,366,22,34]}
+{"kind":"textbox","id":"sh/b21kn2l8","slide":6,"text":"No interprete un hallazgo automático como riesgo validado.","textPreview":"No interprete un hallazgo automático como riesgo validado.","textChars":58,"textLines":1,"bbox":[82,366,392,42]}
+{"kind":"textbox","id":"sh/a18juxkn","slide":6,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[54,444,22,34]}
+{"kind":"textbox","id":"sh/l8j2tc3a","slide":6,"text":"Use el indicador como acceso al módulo que puede resolver la pregunta.","textPreview":"Use el indicador como acceso al módulo que puede resolver la pregunta.","textChars":70,"textLines":1,"bbox":[82,444,392,42]}
+{"kind":"textbox","id":"sh/k7a1072p","slide":6,"text":"Consejo: use las burbujas de ayuda solo cuando necesite orientación contextual.","textPreview":"Consejo: use las burbujas de ayuda solo cuando necesite orientación contextual.","textChars":79,"textLines":1,"bbox":[54,676,1000,18]}
+{"kind":"image","id":"im/o3qxw32d","slide":6,"name":"","alt":"Captura de dashboard en SmartRisk","bbox":[515,150,700,455]}
+{"kind":"notes","id":"nt/4erbb4","slide":6,"text":""}
+{"kind":"slide","id":"sl/ctgzo1","slide":7,"title":"BASE ORGANIZATIVA","textShapes":22}
+{"kind":"textbox","id":"sh/4fm9kba5","slide":7,"text":"BASE ORGANIZATIVA","textPreview":"BASE ORGANIZATIVA","textChars":17,"textLines":1,"bbox":[54,30,760,28]}
+{"kind":"textbox","id":"sh/judsr6t0","slide":7,"text":"Territorios y actores definen quién puede responder","textPreview":"Territorios y actores definen quién puede responder","textChars":51,"textLines":1,"bbox":[54,63,1160,62]}
+{"kind":"shape","id":"sh/it4ri1sf","slide":7,"bbox":[54,135,1170,1]}
+{"kind":"textbox","id":"sh/tkfax0b2","slide":7,"text":"7","textPreview":"7","textChars":1,"textLines":1,"bbox":[1190,675,34,20]}
+{"kind":"textbox","id":"sh/sj6tovah","slide":7,"text":"TERRITORIOS","textPreview":"TERRITORIOS","textChars":11,"textLines":1,"bbox":[54,165,350,34]}
+{"kind":"textbox","id":"sh/ridsvqtw","slide":7,"text":"Concentran plan, menciones, fichas, acciones y alertas por cantón.","textPreview":"Concentran plan, menciones, fichas, acciones y alertas por cantón.","textChars":66,"textLines":1,"bbox":[54,210,470,60]}
+{"kind":"textbox","id":"sh/6h4bmlsb","slide":7,"text":"ACTORES Y FLUJO COE","textPreview":"ACTORES Y FLUJO COE","textChars":19,"textLines":1,"bbox":[54,325,350,34]}
+{"kind":"textbox","id":"sh/1ofa10by","slide":7,"text":"Muestran cómo pasa la información entre territorio, sala de situación, mesas, plenaria y control.","textPreview":"Muestran cómo pasa la información entre territorio, sala de situación, mesas, plenaria y control.","textChars":97,"textLines":1,"bbox":[54,370,470,82]}
+{"kind":"textbox","id":"sh/gn6tsvad","slide":7,"text":"MESAS Y GRUPOS","textPreview":"MESAS Y GRUPOS","textChars":14,"textLines":1,"bbox":[54,500,350,34]}
+{"kind":"textbox","id":"sh/6lwzelcr","slide":7,"text":"Definen objetivo, líder, entradas, actividades, productos y destino de cada respuesta técnica.","textPreview":"Definen objetivo, líder, entradas, actividades, productos y destino de cada respuesta técnica.","textChars":94,"textLines":1,"bbox":[54,545,470,74]}
+{"kind":"shape","id":"sh/7mp0n6dc","slide":7,"bbox":[610,165,560,420]}
+{"kind":"shape","id":"sh/snyhgbuh","slide":7,"bbox":[655,205,38,38]}
+{"kind":"textbox","id":"sh/to7ipgv2","slide":7,"text":"1","textPreview":"1","textChars":1,"textLines":1,"bbox":[655,205,38,38]}
+{"kind":"textbox","id":"sh/u9gzilcn","slide":7,"text":"Territorio reporta","textPreview":"Territorio reporta","textChars":18,"textLines":1,"bbox":[707,203,398,28]}
+{"kind":"textbox","id":"sh/fap0rqd8","slide":7,"text":"Situación, evidencia y necesidad.","textPreview":"Situación, evidencia y necesidad.","textChars":33,"textLines":1,"bbox":[707,233,398,52]}
+{"kind":"shape","id":"sh/gbyhkvut","slide":7,"bbox":[655,305,38,38]}
+{"kind":"textbox","id":"sh/hc7it0ve","slide":7,"text":"2","textPreview":"2","textChars":1,"textLines":1,"bbox":[655,305,38,38]}
+{"kind":"textbox","id":"sh/adcz6hwj","slide":7,"text":"Sala valida","textPreview":"Sala valida","textChars":11,"textLines":1,"bbox":[707,303,398,28]}
+{"kind":"textbox","id":"sh/velgfmd4","slide":7,"text":"Depura, integra y plantea la pregunta.","textPreview":"Depura, integra y plantea la pregunta.","textChars":38,"textLines":1,"bbox":[707,333,398,52]}
+{"kind":"shape","id":"sh/zy1wnitw","slide":7,"bbox":[655,405,38,38]}
+{"kind":"textbox","id":"sh/yxsfexcb","slide":7,"text":"3","textPreview":"3","textChars":1,"textLines":1,"bbox":[655,405,38,38]}
+{"kind":"textbox","id":"sh/lkjepsbm","slide":7,"text":"Mesa produce","textPreview":"Mesa produce","textChars":12,"textLines":1,"bbox":[707,403,398,28]}
+{"kind":"textbox","id":"sh/0jaxgnah","slide":7,"text":"Asigna responsable, actividad y producto.","textPreview":"Asigna responsable, actividad y producto.","textChars":41,"textLines":1,"bbox":[707,433,398,52]}
+{"kind":"shape","id":"sh/buhwjitk","slide":7,"bbox":[655,505,38,38]}
+{"kind":"textbox","id":"sh/qt8vadcz","slide":7,"text":"4","textPreview":"4","textChars":1,"textLines":1,"bbox":[655,505,38,38]}
+{"kind":"textbox","id":"sh/dwjelsbq","slide":7,"text":"Control verifica","textPreview":"Control verifica","textChars":16,"textLines":1,"bbox":[707,503,398,28]}
+{"kind":"textbox","id":"sh/cvadcnu5","slide":7,"text":"Compara compromiso, plazo y evidencia.","textPreview":"Compara compromiso, plazo y evidencia.","textChars":38,"textLines":1,"bbox":[707,533,398,52]}
+{"kind":"textbox","id":"sh/vqlwv2t4","slide":7,"text":"SmartRisk CZ5 · Gestión integral del riesgo con trazabilidad","textPreview":"SmartRisk CZ5 · Gestión integral del riesgo con trazabilidad","textChars":60,"textLines":1,"bbox":[54,676,1000,18]}
+{"kind":"notes","id":"nt/ctgzo1","slide":7,"text":""}
+{"kind":"slide","id":"sl/s2n282","slide":8,"title":"REVISIÓN DE PLANES","textShapes":14}
+{"kind":"textbox","id":"sh/fuxgze5c","slide":8,"text":"REVISIÓN DE PLANES","textPreview":"REVISIÓN DE PLANES","textChars":18,"textLines":1,"bbox":[54,30,760,28]}
+{"kind":"textbox","id":"sh/0vqh8jmx","slide":8,"text":"La revisión del plan separa documento recibido, calidad y brechas","textPreview":"La revisión del plan separa documento recibido, calidad y brechas","textChars":65,"textLines":1,"bbox":[54,63,1160,62]}
+{"kind":"shape","id":"sh/1wzy14ni","slide":8,"bbox":[54,135,1170,1]}
+{"kind":"textbox","id":"sh/2h8za943","slide":8,"text":"8","textPreview":"8","textChars":1,"textLines":1,"bbox":[1190,675,34,20]}
+{"kind":"textbox","id":"sh/ojqhcjmt","slide":8,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[54,165,22,34]}
+{"kind":"textbox","id":"sh/pkzy5one","slide":8,"text":"Seleccione la categoría de atención.","textPreview":"Seleccione la categoría de atención.","textChars":36,"textLines":1,"bbox":[82,165,392,42]}
+{"kind":"textbox","id":"sh/al8zet4z","slide":8,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[54,237,22,34]}
+{"kind":"textbox","id":"sh/bmhg7y5k","slide":8,"text":"Filtre por provincia, territorio o resultado.","textPreview":"Filtre por provincia, territorio o resultado.","textChars":45,"textLines":1,"bbox":[82,237,392,42]}
+{"kind":"textbox","id":"sh/3mpgvm98","slide":8,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[54,309,22,34]}
+{"kind":"textbox","id":"sh/2lgf2h8n","slide":8,"text":"Abra “Revisar” para ver evidencia por componente.","textPreview":"Abra “Revisar” para ver evidencia por componente.","textChars":49,"textLines":1,"bbox":[82,309,392,42]}
+{"kind":"textbox","id":"sh/poryxcry","slide":8,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[54,381,22,34]}
+{"kind":"textbox","id":"sh/onyx47qd","slide":8,"text":"Use el checklist como insumo para nuevas acciones, no como calificación definitiva.","textPreview":"Use el checklist como insumo para nuevas acciones, no como calificación definitiva.","textChars":83,"textLines":1,"bbox":[82,381,392,42]}
+{"kind":"textbox","id":"sh/fypgr29w","slide":8,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[54,453,22,34]}
+{"kind":"textbox","id":"sh/exgfyx8b","slide":8,"text":"Valide territorialmente antes de cerrar una brecha.","textPreview":"Valide territorialmente antes de cerrar una brecha.","textChars":51,"textLines":1,"bbox":[82,453,392,42]}
+{"kind":"textbox","id":"sh/107ytcr2","slide":8,"text":"SmartRisk CZ5 · Gestión integral del riesgo con trazabilidad","textPreview":"SmartRisk CZ5 · Gestión integral del riesgo con trazabilidad","textChars":60,"textLines":1,"bbox":[54,676,1000,18]}
+{"kind":"image","id":"im/u1o7el0j","slide":8,"name":"","alt":"Captura de plans en SmartRisk","bbox":[520,150,690,445]}
+{"kind":"notes","id":"nt/s2n282","slide":8,"text":""}
+{"kind":"slide","id":"sl/1ig74s","slide":9,"title":"SITIOS CRÍTICOS","textShapes":10}
+{"kind":"textbox","id":"sh/5cnqpkjm","slide":9,"text":"SITIOS CRÍTICOS","textPreview":"SITIOS CRÍTICOS","textChars":15,"textLines":1,"bbox":[54,30,760,28]}
+{"kind":"textbox","id":"sh/i9w7u50b","slide":9,"text":"Una mención solo se vuelve ficha cuando permite gestionar el riesgo","textPreview":"Una mención solo se vuelve ficha cuando permite gestionar el riesgo","textChars":67,"textLines":1,"bbox":[54,63,1160,62]}
+{"kind":"shape","id":"sh/ja58na1w","slide":9,"bbox":[54,135,1170,1]}
+{"kind":"textbox","id":"sh/wnepsfi5","slide":9,"text":"9","textPreview":"9","textChars":1,"textLines":1,"bbox":[1190,675,34,20]}
+{"kind":"textbox","id":"sh/ulc7q50z","slide":9,"text":"FICHA PENDIENTE","textPreview":"FICHA PENDIENTE","textChars":15,"textLines":1,"bbox":[54,165,420,32]}
+{"kind":"textbox","id":"sh/vm58ja1k","slide":9,"text":"Lugar citado en un plan que todavía necesita ubicación, amenaza, nivel, condición, exposición y medida.","textPreview":"Lugar citado en un plan que todavía necesita ubicación, amenaza, nivel, condición, exposición y medida.","textChars":103,"textLines":1,"bbox":[54,205,430,86]}
+{"kind":"textbox","id":"sh/gjy94zi9","slide":9,"text":"FICHA GESTIONABLE","textPreview":"FICHA GESTIONABLE","textChars":17,"textLines":1,"bbox":[54,330,420,32]}
+{"kind":"textbox","id":"sh/1k7qx4ju","slide":9,"text":"Registro territorial con campos mínimos, trazabilidad y capacidad para vincular decisiones y acciones.","textPreview":"Registro territorial con campos mínimos, trazabilidad y capacidad para vincular decisiones y acciones.","textChars":102,"textLines":1,"bbox":[54,370,430,78]}
+{"kind":"textbox","id":"sh/9sfu18ju","slide":9,"text":"Regla práctica","textPreview":"Regla práctica","textChars":14,"textLines":1,"bbox":[54,505,200,28]}
+{"kind":"textbox","id":"sh/o76t8329","slide":9,"text":"No crear duplicados: buscar, completar y convertir primero.","textPreview":"No crear duplicados: buscar, completar y convertir primero.","textChars":59,"textLines":1,"bbox":[54,540,420,50]}
+{"kind":"textbox","id":"sh/n6xczy1o","slide":9,"text":"SmartRisk CZ5 · Gestión integral del riesgo con trazabilidad","textPreview":"SmartRisk CZ5 · Gestión integral del riesgo con trazabilidad","textChars":60,"textLines":1,"bbox":[54,676,1000,18]}
+{"kind":"image","id":"im/0nadob61","slide":9,"name":"","alt":"Captura de sites en SmartRisk","bbox":[535,150,675,440]}
+{"kind":"notes","id":"nt/1ig74s","slide":9,"text":""}
+{"kind":"slide","id":"sl/fz2pjy","slide":10,"title":"DECISIONES","textShapes":14}
+{"kind":"textbox","id":"sh/zu103yt4","slide":10,"text":"DECISIONES","textPreview":"DECISIONES","textChars":10,"textLines":1,"bbox":[54,30,760,28]}
+{"kind":"textbox","id":"sh/0vahc3up","slide":10,"text":"La bandeja ordena preguntas que requieren una respuesta formal","textPreview":"La bandeja ordena preguntas que requieren una respuesta formal","textChars":62,"textLines":1,"bbox":[54,63,1160,62]}
+{"kind":"shape","id":"sh/1gji58ba","slide":10,"bbox":[54,135,1170,1]}
+{"kind":"textbox","id":"sh/qp8z6tc7","slide":10,"text":"10","textPreview":"10","textChars":2,"textLines":1,"bbox":[1190,675,34,20]}
+{"kind":"textbox","id":"sh/crah83ud","slide":10,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[54,165,22,34]}
+{"kind":"textbox","id":"sh/dsji18by","slide":10,"text":"Trabaje por categoría: validación, mitigación o ejecución.","textPreview":"Trabaje por categoría: validación, mitigación o ejecución.","textChars":58,"textLines":1,"bbox":[82,165,397,42]}
+{"kind":"textbox","id":"sh/2l8z29cb","slide":10,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[54,238,22,34]}
+{"kind":"textbox","id":"sh/3mhgvetw","slide":10,"text":"Priorice urgentes y filtre por estado.","textPreview":"Priorice urgentes y filtre por estado.","textChars":38,"textLines":1,"bbox":[82,238,397,42]}
+{"kind":"textbox","id":"sh/7mx8jyhw","slide":10,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[54,311,22,34]}
+{"kind":"textbox","id":"sh/61o7atgb","slide":10,"text":"Abra “Resolver” y registre responsable, nivel y fecha.","textPreview":"Abra “Resolver” y registre responsable, nivel y fecha.","textChars":54,"textLines":1,"bbox":[82,311,397,42]}
+{"kind":"textbox","id":"sh/tofql8z2","slide":10,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[54,384,22,34]}
+{"kind":"textbox","id":"sh/8n6pc3yh","slide":10,"text":"Describa la decisión y un compromiso verificable.","textPreview":"Describa la decisión y un compromiso verificable.","textChars":49,"textLines":1,"bbox":[82,384,397,42]}
+{"kind":"textbox","id":"sh/vqx8nyh8","slide":10,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[54,457,22,34]}
+{"kind":"textbox","id":"sh/upo7etgn","slide":10,"text":"Para cerrar, adjunte una evidencia o referencia.","textPreview":"Para cerrar, adjunte una evidencia o referencia.","textChars":48,"textLines":1,"bbox":[82,457,397,42]}
+{"kind":"textbox","id":"sh/hszqp8zy","slide":10,"text":"SmartRisk CZ5 · Gestión integral del riesgo con trazabilidad","textPreview":"SmartRisk CZ5 · Gestión integral del riesgo con trazabilidad","textChars":60,"textLines":1,"bbox":[54,676,1000,18]}
+{"kind":"image","id":"im/6xc7etgb","slide":10,"name":"","alt":"Captura de decisions en SmartRisk","bbox":[535,150,675,440]}
+{"kind":"notes","id":"nt/fz2pjy","slide":10,"text":""}
+{"kind":"slide","id":"sl/6fc2pn","slide":11,"title":"ACCIONES","textShapes":16}
+{"kind":"textbox","id":"sh/bex0fmtc","slide":11,"text":"ACCIONES","textPreview":"ACCIONES","textChars":8,"textLines":1,"bbox":[54,30,760,28]}
+{"kind":"textbox","id":"sh/cf618rax","slide":11,"text":"Una acción debe tener responsable, plazo, resultado y evidencia","textPreview":"Una acción debe tener responsable, plazo, resultado y evidencia","textChars":63,"textLines":1,"bbox":[54,63,1160,62]}
+{"kind":"shape","id":"sh/xgfihwbi","slide":11,"bbox":[54,135,1170,1]}
+{"kind":"textbox","id":"sh/294z2hsv","slide":11,"text":"11","textPreview":"11","textChars":2,"textLines":1,"bbox":[1190,675,34,20]}
+{"kind":"shape","id":"sh/ob6h4ra1","slide":11,"bbox":[54,165,34,34]}
+{"kind":"textbox","id":"sh/pcfidwbm","slide":11,"text":"1","textPreview":"1","textChars":1,"textLines":1,"bbox":[54,165,34,34]}
+{"kind":"textbox","id":"sh/e54zyxsz","slide":11,"text":"Formalizar","textPreview":"Formalizar","textChars":10,"textLines":1,"bbox":[100,160,360,30]}
+{"kind":"textbox","id":"sh/f6d072tk","slide":11,"text":"Convertir una ficha en compromiso.","textPreview":"Convertir una ficha en compromiso.","textChars":34,"textLines":1,"bbox":[100,193,360,42]}
+{"kind":"shape","id":"sh/fedcjex8","slide":11,"bbox":[54,265,34,34]}
+{"kind":"textbox","id":"sh/ud4bq9wn","slide":11,"text":"2","textPreview":"2","textChars":1,"textLines":1,"bbox":[54,265,34,34]}
+{"kind":"textbox","id":"sh/h0ful4fy","slide":11,"text":"Ejecutar","textPreview":"Ejecutar","textChars":8,"textLines":1,"bbox":[100,260,360,30]}
+{"kind":"textbox","id":"sh/gz6tsjet","slide":11,"text":"Actualizar estado, avance y brecha.","textPreview":"Actualizar estado, avance y brecha.","textChars":35,"textLines":1,"bbox":[100,293,360,42]}
+{"kind":"shape","id":"sh/32xcnex4","slide":11,"bbox":[54,365,34,34]}
+{"kind":"textbox","id":"sh/21obu9wj","slide":11,"text":"3","textPreview":"3","textChars":1,"textLines":1,"bbox":[54,365,34,34]}
+{"kind":"textbox","id":"sh/p4fupofa","slide":11,"text":"Evidenciar","textPreview":"Evidenciar","textChars":10,"textLines":1,"bbox":[100,360,360,30]}
+{"kind":"textbox","id":"sh/436twjep","slide":11,"text":"Adjuntar producto, referencia o geometría.","textPreview":"Adjuntar producto, referencia o geometría.","textChars":42,"textLines":1,"bbox":[100,393,360,42]}
+{"kind":"shape","id":"sh/j6tsbux0","slide":11,"bbox":[54,475,34,34]}
+{"kind":"textbox","id":"sh/i5kbipwf","slide":11,"text":"4","textPreview":"4","textChars":1,"textLines":1,"bbox":[54,475,34,34]}
+{"kind":"textbox","id":"sh/m1sfqxg3","slide":11,"text":"Cerrar","textPreview":"Cerrar","textChars":6,"textLines":1,"bbox":[100,470,360,30]}
+{"kind":"textbox","id":"sh/n21wj2ho","slide":11,"text":"Solo al 100% y con evidencia verificable.","textPreview":"Solo al 100% y con evidencia verificable.","textChars":41,"textLines":1,"bbox":[100,503,360,42]}
+{"kind":"textbox","id":"sh/o3axsnyt","slide":11,"text":"SmartRisk CZ5 · Gestión integral del riesgo con trazabilidad","textPreview":"SmartRisk CZ5 · Gestión integral del riesgo con trazabilidad","textChars":60,"textLines":1,"bbox":[54,676,1000,18]}
+{"kind":"image","id":"im/y58by5o3","slide":11,"name":"","alt":"Captura de actions en SmartRisk","bbox":[535,150,675,440]}
+{"kind":"notes","id":"nt/6fc2pn","slide":11,"text":""}
+{"kind":"slide","id":"sl/aslbtc","slide":12,"title":"INFORME VERIFICABLE","textShapes":24}
+{"kind":"textbox","id":"sh/bil8zi98","slide":12,"text":"INFORME VERIFICABLE","textPreview":"INFORME VERIFICABLE","textChars":19,"textLines":1,"bbox":[54,30,760,28]}
+{"kind":"textbox","id":"sh/wjupsnqt","slide":12,"text":"El informe Word convierte el seguimiento en un respaldo archivable","textPreview":"El informe Word convierte el seguimiento en un respaldo archivable","textChars":66,"textLines":1,"bbox":[54,63,1160,62]}
+{"kind":"shape","id":"sh/x43q18re","slide":12,"bbox":[54,135,1170,1]}
+{"kind":"textbox","id":"sh/mds7mt8r","slide":12,"text":"12","textPreview":"12","textChars":2,"textLines":1,"bbox":[1190,675,34,20]}
+{"kind":"textbox","id":"sh/ne18vy9c","slide":12,"text":"DESCARGA DESDE ACCIONES","textPreview":"DESCARGA DESDE ACCIONES","textChars":23,"textLines":1,"bbox":[54,160,410,30]}
+{"kind":"textbox","id":"sh/ofapo3qh","slide":12,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[54,205,22,34]}
+{"kind":"textbox","id":"sh/9g3qx8r2","slide":12,"text":"Código único, fecha, hora y usuario generador.","textPreview":"Código único, fecha, hora y usuario generador.","textChars":46,"textLines":1,"bbox":[82,205,502,42]}
+{"kind":"textbox","id":"sh/e9s7it8f","slide":12,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[54,267,22,34]}
+{"kind":"textbox","id":"sh/za1ory90","slide":12,"text":"Resumen de acciones, vencimientos y avance promedio.","textPreview":"Resumen de acciones, vencimientos y avance promedio.","textChars":52,"textLines":1,"bbox":[82,267,502,42]}
+{"kind":"textbox","id":"sh/nap83ipg","slide":12,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[54,329,22,34]}
+{"kind":"textbox","id":"sh/m9grad8v","slide":12,"text":"Una ficha por acción con sitio, territorio y responsable.","textPreview":"Una ficha por acción con sitio, territorio y responsable.","textChars":57,"textLines":1,"bbox":[82,329,502,42]}
+{"kind":"textbox","id":"sh/9c7q5s7m","slide":12,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[54,391,22,34]}
+{"kind":"textbox","id":"sh/oby9cnq1","slide":12,"text":"Objetivo, producto, indicador y criterio de cierre.","textPreview":"Objetivo, producto, indicador y criterio de cierre.","textChars":51,"textLines":1,"bbox":[82,391,502,42]}
+{"kind":"textbox","id":"sh/bep872pc","slide":12,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[54,453,22,34]}
+{"kind":"textbox","id":"sh/adgrex87","slide":12,"text":"Evidencia documental, geográfica y última actualización.","textPreview":"Evidencia documental, geográfica y última actualización.","textChars":56,"textLines":1,"bbox":[82,453,502,42]}
+{"kind":"textbox","id":"sh/x0ra9c7i","slide":12,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[54,515,22,34]}
+{"kind":"textbox","id":"sh/wzi9g7qx","slide":12,"text":"Registro automático de la descarga en la auditoría.","textPreview":"Registro automático de la descarga en la auditoría.","textChars":51,"textLines":1,"bbox":[82,515,502,42]}
+{"kind":"shape","id":"sh/ri58vyp8","slide":12,"bbox":[650,160,520,385]}
+{"kind":"textbox","id":"sh/qhwr2t8n","slide":12,"text":"INFORME DE SEGUIMIENTO DE ACCIONES","textPreview":"INFORME DE SEGUIMIENTO DE ACCIONES","textChars":34,"textLines":1,"bbox":[685,195,450,48]}
+{"kind":"textbox","id":"sh/uxkba1sb","slide":12,"text":"SR-ACT-AAAAMMDDHHMMSS","textPreview":"SR-ACT-AAAAMMDDHHMMSS","textChars":21,"textLines":1,"bbox":[685,255,450,32]}
+{"kind":"textbox","id":"sh/vydc369w","slide":12,"text":"Resumen ejecutivo","textPreview":"Resumen ejecutivo","textChars":17,"textLines":1,"bbox":[685,315,220,30]}
+{"kind":"textbox","id":"sh/gzmtcbah","slide":12,"text":"Acciones · Pendientes · Vencidas · Completadas · Avance","textPreview":"Acciones · Pendientes · Vencidas · Completadas · Avance","textChars":55,"textLines":1,"bbox":[685,355,430,55]}
+{"kind":"textbox","id":"sh/h0vu5gr2","slide":12,"text":"Detalle verificable por acción","textPreview":"Detalle verificable por acción","textChars":30,"textLines":1,"bbox":[685,435,310,30]}
+{"kind":"textbox","id":"sh/6tkb61sf","slide":12,"text":"Responsable · Plazo · Producto · Indicador · Evidencia · Capas","textPreview":"Responsable · Plazo · Producto · Indicador · Evidencia · Capas","textChars":62,"textLines":1,"bbox":[685,475,430,50]}
+{"kind":"textbox","id":"sh/7utcz69k","slide":12,"text":"Uso recomendado: descargar en cada corte de seguimiento, archivar con el acta o informe institucional y volver a generar después de actualizar evidencias.","textPreview":"Uso recomendado: descargar en cada corte de seguimiento, archivar con el acta o informe institucional y volver a generar después de actua...","textChars":154,"textLines":1,"bbox":[54,590,1120,58]}
+{"kind":"textbox","id":"sh/8v2t8ba5","slide":12,"text":"SmartRisk CZ5 · Gestión integral del riesgo con trazabilidad","textPreview":"SmartRisk CZ5 · Gestión integral del riesgo con trazabilidad","textChars":60,"textLines":1,"bbox":[54,676,1000,18]}
+{"kind":"notes","id":"nt/aslbtc","slide":12,"text":""}
+{"kind":"slide","id":"sl/9lb4kw","slide":13,"title":"TALLER CARTOGRÁFICO","textShapes":14}
+{"kind":"textbox","id":"sh/1onih4zq","slide":13,"text":"TALLER CARTOGRÁFICO","textPreview":"TALLER CARTOGRÁFICO","textChars":19,"textLines":1,"bbox":[54,30,760,28]}
+{"kind":"textbox","id":"sh/e1wj6pgf","slide":13,"text":"La cartografía sirve cuando responde una pregunta de gestión","textPreview":"La cartografía sirve cuando responde una pregunta de gestión","textChars":60,"textLines":1,"bbox":[54,63,1160,62]}
+{"kind":"shape","id":"sh/fm50fuh0","slide":13,"bbox":[54,135,1170,1]}
+{"kind":"textbox","id":"sh/ory1czyh","slide":13,"text":"13","textPreview":"13","textChars":2,"textLines":1,"bbox":[1190,675,34,20]}
+{"kind":"textbox","id":"sh/2pgja9gb","slide":13,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[54,165,22,34]}
+{"kind":"textbox","id":"sh/nqpkjuhw","slide":13,"text":"Cargue ZIP/SHP, GeoJSON, KML o KMZ.","textPreview":"Cargue ZIP/SHP, GeoJSON, KML o KMZ.","textChars":35,"textLines":1,"bbox":[82,165,392,42]}
+{"kind":"textbox","id":"sh/cvy1gjyd","slide":13,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[54,239,22,34]}
+{"kind":"textbox","id":"sh/xw72pozy","slide":13,"text":"O dibuje punto, línea, área o buffer.","textPreview":"O dibuje punto, línea, área o buffer.","textChars":37,"textLines":1,"bbox":[82,239,392,42]}
+{"kind":"textbox","id":"sh/xgbq1k7u","slide":13,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[54,313,22,34]}
+{"kind":"textbox","id":"sh/cf2psf69","slide":13,"text":"Clasifique como amenaza, vulnerabilidad, exposición o capacidad.","textPreview":"Clasifique como amenaza, vulnerabilidad, exposición o capacidad.","textChars":64,"textLines":1,"bbox":[82,313,392,42]}
+{"kind":"textbox","id":"sh/bet8zapo","slide":13,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[54,387,22,34]}
+{"kind":"textbox","id":"sh/adk7q5o3","slide":13,"text":"Vincule con sitio, acción o sesión COE.","textPreview":"Vincule con sitio, acción o sesión COE.","textChars":39,"textLines":1,"bbox":[82,387,392,42]}
+{"kind":"textbox","id":"sh/l4vq5k76","slide":13,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[54,461,22,34]}
+{"kind":"textbox","id":"sh/kjm9wf6l","slide":13,"text":"Exporte KMZ o utilice la geometría como evidencia de cierre.","textPreview":"Exporte KMZ o utilice la geometría como evidencia de cierre.","textChars":60,"textLines":1,"bbox":[82,461,392,42]}
+{"kind":"textbox","id":"sh/zit83ap0","slide":13,"text":"Para SHP: comprima .shp, .dbf y .prj; se recomienda incluir .shx.","textPreview":"Para SHP: comprima .shp, .dbf y .prj; se recomienda incluir .shx.","textChars":65,"textLines":1,"bbox":[54,676,1000,18]}
+{"kind":"image","id":"im/gbix0j2l","slide":13,"name":"","alt":"Captura de tools en SmartRisk","bbox":[525,150,685,445]}
+{"kind":"notes","id":"nt/9lb4kw","slide":13,"text":""}
+{"kind":"slide","id":"sl/7cpc6v","slide":14,"title":"USO DE F03","textShapes":23}
+{"kind":"textbox","id":"sh/fyl0j254","slide":14,"text":"USO DE F03","textPreview":"USO DE F03","textChars":10,"textLines":1,"bbox":[54,30,760,28]}
+{"kind":"textbox","id":"sh/gze1s7mp","slide":14,"text":"F03 es una fuente con control técnico, no un destino aislado","textPreview":"F03 es una fuente con control técnico, no un destino aislado","textChars":60,"textLines":1,"bbox":[54,63,1160,62]}
+{"kind":"shape","id":"sh/10nilcna","slide":14,"bbox":[54,135,1170,1]}
+{"kind":"textbox","id":"sh/21wjuh4v","slide":14,"text":"14","textPreview":"14","textChars":2,"textLines":1,"bbox":[1190,675,34,20]}
+{"kind":"shape","id":"sh/3250nm5g","slide":14,"bbox":[54,165,555,115]}
+{"kind":"textbox","id":"sh/o3e1wrm1","slide":14,"text":"✓","textPreview":"✓","textChars":1,"textLines":1,"bbox":[74,184,30,30]}
+{"kind":"textbox","id":"sh/p4nipcnm","slide":14,"text":"Fuente y custodio","textPreview":"Fuente y custodio","textChars":17,"textLines":1,"bbox":[118,180,455,28]}
+{"kind":"textbox","id":"sh/q5wjyh4r","slide":14,"text":"¿Quién produjo o mantiene el dato?","textPreview":"¿Quién produjo o mantiene el dato?","textChars":34,"textLines":1,"bbox":[118,214,455,48]}
+{"kind":"shape","id":"sh/b6pkrm5c","slide":14,"bbox":[644,165,555,115]}
+{"kind":"textbox","id":"sh/jqp8nupw","slide":14,"text":"✓","textPreview":"✓","textChars":1,"textLines":1,"bbox":[664,184,30,30]}
+{"kind":"textbox","id":"sh/ipg7upor","slide":14,"text":"Fecha de corte","textPreview":"Fecha de corte","textChars":14,"textLines":1,"bbox":[708,180,455,28]}
+{"kind":"textbox","id":"sh/5srqp4n2","slide":14,"text":"¿Sigue siendo vigente para la decisión?","textPreview":"¿Sigue siendo vigente para la decisión?","textChars":39,"textLines":1,"bbox":[708,214,455,48]}
+{"kind":"shape","id":"sh/4ripwz6h","slide":14,"bbox":[54,310,555,115]}
+{"kind":"textbox","id":"sh/vmp8jup0","slide":14,"text":"✓","textPreview":"✓","textChars":1,"textLines":1,"bbox":[74,329,30,30]}
+{"kind":"textbox","id":"sh/alg7qpof","slide":14,"text":"Escala y método","textPreview":"Escala y método","textChars":15,"textLines":1,"bbox":[118,325,455,28]}
+{"kind":"textbox","id":"sh/ho7ql476","slide":14,"text":"¿Permite el nivel de detalle requerido?","textPreview":"¿Permite el nivel de detalle requerido?","textChars":39,"textLines":1,"bbox":[118,359,455,48]}
+{"kind":"shape","id":"sh/wnypsz6l","slide":14,"bbox":[644,310,555,115]}
+{"kind":"textbox","id":"sh/fit8ve54","slide":14,"text":"✓","textPreview":"✓","textChars":1,"textLines":1,"bbox":[664,329,30,30]}
+{"kind":"textbox","id":"sh/eh0729oj","slide":14,"text":"Geometría y atributos","textPreview":"Geometría y atributos","textChars":21,"textLines":1,"bbox":[708,325,455,28]}
+{"kind":"textbox","id":"sh/qd4bud8r","slide":14,"text":"¿Se entiende qué representa cada elemento?","textPreview":"¿Se entiende qué representa cada elemento?","textChars":42,"textLines":1,"bbox":[708,359,455,48]}
+{"kind":"shape","id":"sh/bedsnipc","slide":14,"bbox":[54,455,555,115]}
+{"kind":"textbox","id":"sh/cfmtwnqx","slide":14,"text":"✓","textPreview":"✓","textChars":1,"textLines":1,"bbox":[74,474,30,30]}
+{"kind":"textbox","id":"sh/dgvaps7i","slide":14,"text":"Validez territorial","textPreview":"Validez territorial","textChars":19,"textLines":1,"bbox":[118,470,455,28]}
+{"kind":"textbox","id":"sh/yhobyx83","slide":14,"text":"¿Fue confirmada por el técnico competente?","textPreview":"¿Fue confirmada por el técnico competente?","textChars":42,"textLines":1,"bbox":[118,504,455,48]}
+{"kind":"shape","id":"sh/zixsr2po","slide":14,"bbox":[644,455,555,115]}
+{"kind":"textbox","id":"sh/0j6t07q9","slide":14,"text":"✓","textPreview":"✓","textChars":1,"textLines":1,"bbox":[664,474,30,30]}
+{"kind":"textbox","id":"sh/lkfats7u","slide":14,"text":"Uso permitido","textPreview":"Uso permitido","textChars":13,"textLines":1,"bbox":[708,470,455,28]}
+{"kind":"textbox","id":"sh/elkrmt8z","slide":14,"text":"¿Es concluyente o requiere advertencias?","textPreview":"¿Es concluyente o requiere advertencias?","textChars":40,"textLines":1,"bbox":[708,504,455,48]}
+{"kind":"textbox","id":"sh/fmtsfy94","slide":14,"text":"Si falta un dato crítico, la plataforma debe mostrar la limitación; no completar con supuestos.","textPreview":"Si falta un dato crítico, la plataforma debe mostrar la limitación; no completar con supuestos.","textChars":95,"textLines":1,"bbox":[54,620,1120,34]}
+{"kind":"textbox","id":"sh/x0zelwr2","slide":14,"text":"SmartRisk CZ5 · Gestión integral del riesgo con trazabilidad","textPreview":"SmartRisk CZ5 · Gestión integral del riesgo con trazabilidad","textChars":60,"textLines":1,"bbox":[54,676,1000,18]}
+{"kind":"notes","id":"nt/7cpc6v","slide":14,"text":""}
+{"kind":"slide","id":"sl/az5mv7","slide":15,"title":"CABINA TERRITORIAL","textShapes":20}
+{"kind":"textbox","id":"sh/gfmp83yt","slide":15,"text":"CABINA TERRITORIAL","textPreview":"CABINA TERRITORIAL","textChars":18,"textLines":1,"bbox":[54,30,760,28]}
+{"kind":"textbox","id":"sh/fedofyx8","slide":15,"text":"La Cabina COE conduce un problema hasta productos verificables","textPreview":"La Cabina COE conduce un problema hasta productos verificables","textChars":62,"textLines":1,"bbox":[54,63,1160,62]}
+{"kind":"shape","id":"sh/ed476tg3","slide":15,"bbox":[54,135,1170,1]}
+{"kind":"textbox","id":"sh/tcv6dofi","slide":15,"text":"15","textPreview":"15","textChars":2,"textLines":1,"bbox":[1190,675,34,20]}
+{"kind":"shape","id":"sh/sbmp4jyx","slide":15,"bbox":[54,190,210,320]}
+{"kind":"textbox","id":"sh/ratobexc","slide":15,"text":"1","textPreview":"1","textChars":1,"textLines":1,"bbox":[72,210,30,30]}
+{"kind":"textbox","id":"sh/69k729gr","slide":15,"text":"Abrir sesión","textPreview":"Abrir sesión","textChars":12,"textLines":1,"bbox":[72,260,175,54]}
+{"kind":"textbox","id":"sh/d8fqpsfm","slide":15,"text":"Problema, territorio, objetivo y evidencia inicial.","textPreview":"Problema, territorio, objetivo y evidencia inicial.","textChars":51,"textLines":1,"bbox":[72,330,175,125]}
+{"kind":"shape","id":"sh/c76pgny1","slide":15,"bbox":[292,190,210,320]}
+{"kind":"textbox","id":"sh/ypsfit8b","slide":15,"text":"2","textPreview":"2","textChars":1,"textLines":1,"bbox":[310,210,30,30]}
+{"kind":"textbox","id":"sh/jq1gbypw","slide":15,"text":"Organizar actores","textPreview":"Organizar actores","textChars":17,"textLines":1,"bbox":[310,260,175,54]}
+{"kind":"textbox","id":"sh/kraxk3qh","slide":15,"text":"Quién informa, analiza, decide, ejecuta y controla.","textPreview":"Quién informa, analiza, decide, ejecuta y controla.","textChars":51,"textLines":1,"bbox":[310,330,175,125]}
+{"kind":"shape","id":"sh/lsjyd872","slide":15,"bbox":[530,190,210,320]}
+{"kind":"textbox","id":"sh/al8fe98f","slide":15,"text":"3","textPreview":"3","textChars":1,"textLines":1,"bbox":[548,210,30,30]}
+{"kind":"textbox","id":"sh/bm1w7ep0","slide":15,"text":"Asignar tareas","textPreview":"Asignar tareas","textChars":14,"textLines":1,"bbox":[548,260,175,54]}
+{"kind":"textbox","id":"sh/wnaxgjql","slide":15,"text":"Acción, responsable, plazo, producto y destino.","textPreview":"Acción, responsable, plazo, producto y destino.","textChars":47,"textLines":1,"bbox":[548,330,175,125]}
+{"kind":"shape","id":"sh/xojy9o76","slide":15,"bbox":[768,190,210,320]}
+{"kind":"textbox","id":"sh/uhcfqd8j","slide":15,"text":"4","textPreview":"4","textChars":1,"textLines":1,"bbox":[786,210,30,30]}
+{"kind":"textbox","id":"sh/vilgjip4","slide":15,"text":"Monitorear","textPreview":"Monitorear","textChars":10,"textLines":1,"bbox":[786,260,175,54]}
+{"kind":"textbox","id":"sh/r2dcba5g","slide":15,"text":"Avance, bloqueo, evidencia geográfica y decisiones.","textPreview":"Avance, bloqueo, evidencia geográfica y decisiones.","textChars":51,"textLines":1,"bbox":[786,330,175,125]}
+{"kind":"shape","id":"sh/q14v25ob","slide":15,"bbox":[1006,190,210,320]}
+{"kind":"textbox","id":"sh/dofudknm","slide":15,"text":"5","textPreview":"5","textChars":1,"textLines":1,"bbox":[1024,210,30,30]}
+{"kind":"textbox","id":"sh/cn6d4f61","slide":15,"text":"Cerrar","textPreview":"Cerrar","textChars":6,"textLines":1,"bbox":[1024,260,175,54]}
+{"kind":"textbox","id":"sh/zqxcfa5s","slide":15,"text":"Producto entregado, evidencia y lección registrada.","textPreview":"Producto entregado, evidencia y lección registrada.","textChars":51,"textLines":1,"bbox":[1024,330,175,125]}
+{"kind":"textbox","id":"sh/epov65o7","slide":15,"text":"La Cabina no sustituye a las mesas: ordena lo que cada actor debe producir y cuándo debe reportarlo.","textPreview":"La Cabina no sustituye a las mesas: ordena lo que cada actor debe producir y cuándo debe reportarlo.","textChars":100,"textLines":1,"bbox":[54,555,1130,52]}
+{"kind":"textbox","id":"sh/1sfuhkny","slide":15,"text":"SmartRisk CZ5 · Gestión integral del riesgo con trazabilidad","textPreview":"SmartRisk CZ5 · Gestión integral del riesgo con trazabilidad","textChars":60,"textLines":1,"bbox":[54,676,1000,18]}
+{"kind":"notes","id":"nt/az5mv7","slide":15,"text":""}
+{"kind":"slide","id":"sl/2h836h","slide":16,"title":"RECORRIDO PRÁCTICO","textShapes":22}
+{"kind":"textbox","id":"sh/50nmt0zq","slide":16,"text":"RECORRIDO PRÁCTICO","textPreview":"RECORRIDO PRÁCTICO","textChars":18,"textLines":1,"bbox":[54,30,760,28]}
+{"kind":"textbox","id":"sh/ixc3ylgf","slide":16,"text":"Escenario completo: una inundación reportada se convierte en acción","textPreview":"Escenario completo: una inundación reportada se convierte en acción","textChars":67,"textLines":1,"bbox":[54,63,1160,62]}
+{"kind":"shape","id":"sh/3yl4rqhk","slide":16,"bbox":[54,135,1170,1]}
+{"kind":"textbox","id":"sh/gvulwvy9","slide":16,"text":"16","textPreview":"16","textChars":2,"textLines":1,"bbox":[1190,675,34,20]}
+{"kind":"textbox","id":"sh/hw3mp0zu","slide":16,"text":"1. Plan","textPreview":"1. Plan","textChars":7,"textLines":1,"bbox":[54,150,180,38]}
+{"kind":"textbox","id":"sh/utc3ulg3","slide":16,"text":"Menciona un tramo y población expuesta.","textPreview":"Menciona un tramo y población expuesta.","textChars":39,"textLines":1,"bbox":[240,150,860,38]}
+{"kind":"textbox","id":"sh/vul4nqho","slide":16,"text":"↓","textPreview":"↓","textChars":1,"textLines":1,"bbox":[1110,150,40,38]}
+{"kind":"textbox","id":"sh/0ry58fyd","slide":16,"text":"2. Ficha","textPreview":"2. Ficha","textChars":8,"textLines":1,"bbox":[54,232,180,38]}
+{"kind":"textbox","id":"sh/1s7m1kzy","slide":16,"text":"El técnico precisa ubicación, amenaza y medida.","textPreview":"El técnico precisa ubicación, amenaza y medida.","textChars":47,"textLines":1,"bbox":[240,232,860,38]}
+{"kind":"textbox","id":"sh/tw3qp4fe","slide":16,"text":"↓","textPreview":"↓","textChars":1,"textLines":1,"bbox":[1110,232,40,38]}
+{"kind":"textbox","id":"sh/svupgzet","slide":16,"text":"3. Decisión","textPreview":"3. Decisión","textChars":11,"textLines":1,"bbox":[54,314,180,38]}
+{"kind":"textbox","id":"sh/7ul8nux8","slide":16,"text":"Control pregunta qué mitigación y quién responde.","textPreview":"Control pregunta qué mitigación y quién responde.","textChars":49,"textLines":1,"bbox":[240,314,860,38]}
+{"kind":"textbox","id":"sh/6tc7epwn","slide":16,"text":"↓","textPreview":"↓","textChars":1,"textLines":1,"bbox":[1110,314,40,38]}
+{"kind":"textbox","id":"sh/5s3qlkf2","slide":16,"text":"4. Acción","textPreview":"4. Acción","textChars":9,"textLines":1,"bbox":[54,396,180,38]}
+{"kind":"textbox","id":"sh/krupczex","slide":16,"text":"Se asignan obra, responsable, plazo y producto.","textPreview":"Se asignan obra, responsable, plazo y producto.","textChars":47,"textLines":1,"bbox":[240,396,860,38]}
+{"kind":"textbox","id":"sh/jql8juxc","slide":16,"text":"↓","textPreview":"↓","textChars":1,"textLines":1,"bbox":[1110,396,40,38]}
+{"kind":"textbox","id":"sh/ipc7apwr","slide":16,"text":"5. Mapa","textPreview":"5. Mapa","textChars":7,"textLines":1,"bbox":[54,478,180,38]}
+{"kind":"textbox","id":"sh/po7qxofm","slide":16,"text":"Se dibuja o carga el tramo intervenido.","textPreview":"Se dibuja o carga el tramo intervenido.","textChars":39,"textLines":1,"bbox":[240,478,860,38]}
+{"kind":"textbox","id":"sh/one9oje1","slide":16,"text":"↓","textPreview":"↓","textChars":1,"textLines":1,"bbox":[1110,478,40,38]}
+{"kind":"textbox","id":"sh/8361grq9","slide":16,"text":"6. Cierre","textPreview":"6. Cierre","textChars":9,"textLines":1,"bbox":[54,560,180,38]}
+{"kind":"textbox","id":"sh/94fi9w7u","slide":16,"text":"Se verifica cobertura, evidencia y resultado.","textPreview":"Se verifica cobertura, evidencia y resultado.","textChars":45,"textLines":1,"bbox":[240,560,860,38]}
+{"kind":"shape","id":"sh/mhojeh8j","slide":16,"bbox":[900,590,280,54]}
+{"kind":"textbox","id":"sh/nix07mpo","slide":16,"text":"Trazabilidad completa","textPreview":"Trazabilidad completa","textChars":21,"textLines":1,"bbox":[920,600,240,30]}
+{"kind":"textbox","id":"sh/0f61c7qd","slide":16,"text":"SmartRisk CZ5 · Gestión integral del riesgo con trazabilidad","textPreview":"SmartRisk CZ5 · Gestión integral del riesgo con trazabilidad","textChars":60,"textLines":1,"bbox":[54,676,1000,18]}
+{"kind":"notes","id":"nt/2h836h","slide":16,"text":""}
+{"kind":"slide","id":"sl/oubxzg","slide":17,"title":"RUTINAS DE USO","textShapes":16}
+{"kind":"textbox","id":"sh/d8ji5wzq","slide":17,"text":"RUTINAS DE USO","textPreview":"RUTINAS DE USO","textChars":14,"textLines":1,"bbox":[54,30,760,28]}
+{"kind":"textbox","id":"sh/q58zu1gf","slide":17,"text":"Qué debe hacer cada perfil en su jornada","textPreview":"Qué debe hacer cada perfil en su jornada","textChars":40,"textLines":1,"bbox":[54,63,1160,62]}
+{"kind":"shape","id":"sh/r6h036h0","slide":17,"bbox":[54,135,1170,1]}
+{"kind":"textbox","id":"sh/0vah0byh","slide":17,"text":"17","textPreview":"17","textChars":2,"textLines":1,"bbox":[1190,675,34,20]}
+{"kind":"textbox","id":"sh/1wji9gz2","slide":17,"text":"Técnico territorial","textPreview":"Técnico territorial","textChars":19,"textLines":1,"bbox":[54,160,520,30]}
+{"kind":"textbox","id":"sh/etszy1gb","slide":17,"text":"Revisar fichas pendientes → actualizar sitios → reportar acciones → cargar evidencia.","textPreview":"Revisar fichas pendientes → actualizar sitios → reportar acciones → cargar evidencia.","textChars":85,"textLines":1,"bbox":[54,200,520,70]}
+{"kind":"shape","id":"sh/fu1076hw","slide":17,"bbox":[54,278,520,1]}
+{"kind":"textbox","id":"sh/ozu14vyd","slide":17,"text":"Revisor","textPreview":"Revisor","textChars":7,"textLines":1,"bbox":[644,160,520,30]}
+{"kind":"textbox","id":"sh/p03id0zy","slide":17,"text":"Filtrar planes prioritarios → abrir evidencia → registrar brechas → enviar a validación.","textPreview":"Filtrar planes prioritarios → abrir evidencia → registrar brechas → enviar a validación.","textChars":88,"textLines":1,"bbox":[644,200,520,70]}
+{"kind":"shape","id":"sh/hk3md0r2","slide":17,"bbox":[644,278,520,1]}
+{"kind":"textbox","id":"sh/gju5kvqh","slide":17,"text":"Responsable de acción","textPreview":"Responsable de acción","textChars":21,"textLines":1,"bbox":[54,305,520,30]}
+{"kind":"textbox","id":"sh/fil4bq9c","slide":17,"text":"Revisar compromisos → actualizar avance → reportar bloqueo → adjuntar producto.","textPreview":"Revisar compromisos → actualizar avance → reportar bloqueo → adjuntar producto.","textChars":79,"textLines":1,"bbox":[54,345,520,70]}
+{"kind":"shape","id":"sh/uhcni58r","slide":17,"bbox":[54,423,520,1]}
+{"kind":"textbox","id":"sh/p8nmhkre","slide":17,"text":"Analista SIG","textPreview":"Analista SIG","textChars":12,"textLines":1,"bbox":[644,305,520,30]}
+{"kind":"textbox","id":"sh/47e5ofqt","slide":17,"text":"Revisar fuente → validar geometría → vincular capa → advertir limitaciones.","textPreview":"Revisar fuente → validar geometría → vincular capa → advertir limitaciones.","textChars":75,"textLines":1,"bbox":[644,345,520,70]}
+{"kind":"shape","id":"sh/3654fa98","slide":17,"bbox":[644,423,520,1]}
+{"kind":"textbox","id":"sh/25cnm58n","slide":17,"text":"Administrador/control","textPreview":"Administrador/control","textChars":21,"textLines":1,"bbox":[54,450,520,30]}
+{"kind":"textbox","id":"sh/5cjmlgru","slide":17,"text":"Revisar alertas → priorizar decisiones → escalar retrasos → verificar cierres.","textPreview":"Revisar alertas → priorizar decisiones → escalar retrasos → verificar cierres.","textChars":78,"textLines":1,"bbox":[54,490,520,70]}
+{"kind":"shape","id":"sh/kba5cbqp","slide":17,"bbox":[54,568,520,1]}
+{"kind":"textbox","id":"sh/w7ydof2h","slide":17,"text":"COE / mesa técnica","textPreview":"COE / mesa técnica","textChars":18,"textLines":1,"bbox":[644,450,520,30]}
+{"kind":"textbox","id":"sh/x87ehk32","slide":17,"text":"Abrir problema → confirmar objetivo → producir respuesta → informar al destino.","textPreview":"Abrir problema → confirmar objetivo → producir respuesta → informar al destino.","textChars":79,"textLines":1,"bbox":[644,490,520,70]}
+{"kind":"shape","id":"sh/a5wvm5kr","slide":17,"bbox":[644,568,520,1]}
+{"kind":"textbox","id":"sh/v6pwfalw","slide":17,"text":"SmartRisk CZ5 · Gestión integral del riesgo con trazabilidad","textPreview":"SmartRisk CZ5 · Gestión integral del riesgo con trazabilidad","textChars":60,"textLines":1,"bbox":[54,676,1000,18]}
+{"kind":"notes","id":"nt/oubxzg","slide":17,"text":""}
+{"kind":"slide","id":"sl/87kvfa","slide":18,"title":"REGLAS DE OPERACIÓN","textShapes":19}
+{"kind":"textbox","id":"sh/5ov25of6","slide":18,"text":"REGLAS DE OPERACIÓN","textPreview":"REGLAS DE OPERACIÓN","textChars":19,"textLines":1,"bbox":[54,30,760,28]}
+{"kind":"textbox","id":"sh/il4ja9wf","slide":18,"text":"Cinco reglas protegen la calidad y la responsabilidad institucional","textPreview":"Cinco reglas protegen la calidad y la responsabilidad institucional","textChars":67,"textLines":1,"bbox":[54,63,1160,62]}
+{"kind":"shape","id":"sh/3mdk3ex0","slide":18,"bbox":[54,135,1170,1]}
+{"kind":"textbox","id":"sh/sr61g3ex","slide":18,"text":"18","textPreview":"18","textChars":2,"textLines":1,"bbox":[1190,675,34,20]}
+{"kind":"textbox","id":"sh/dsf29ov2","slide":18,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[54,150,60,38]}
+{"kind":"textbox","id":"sh/qp4jetwr","slide":18,"text":"No inventar","textPreview":"No inventar","textChars":11,"textLines":1,"bbox":[130,150,250,38]}
+{"kind":"textbox","id":"sh/rqxk7yxc","slide":18,"text":"Distinguir dato documental, hallazgo preliminar y validación territorial.","textPreview":"Distinguir dato documental, hallazgo preliminar y validación territorial.","textChars":73,"textLines":1,"bbox":[395,150,785,50]}
+{"kind":"textbox","id":"sh/0v6lk3et","slide":18,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[54,246,60,38]}
+{"kind":"textbox","id":"sh/1gf2d8ve","slide":18,"text":"No duplicar","textPreview":"No duplicar","textChars":11,"textLines":1,"bbox":[130,246,250,38]}
+{"kind":"textbox","id":"sh/xknqpo3m","slide":18,"text":"Buscar el sitio, plan o acción antes de crear un registro nuevo.","textPreview":"Buscar el sitio, plan o acción antes de crear un registro nuevo.","textChars":64,"textLines":1,"bbox":[395,246,785,50]}
+{"kind":"textbox","id":"sh/cje9gjmh","slide":18,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[54,342,60,38]}
+{"kind":"textbox","id":"sh/by58nelw","slide":18,"text":"Conservar fuente","textPreview":"Conservar fuente","textChars":16,"textLines":1,"bbox":[130,342,250,38]}
+{"kind":"textbox","id":"sh/axcre94b","slide":18,"text":"Registrar plan, página, institución, fecha, escala o referencia.","textPreview":"Registrar plan, página, institución, fecha, escala o referencia.","textChars":64,"textLines":1,"bbox":[395,342,785,50]}
+{"kind":"textbox","id":"sh/lonqto3y","slide":18,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[54,438,60,38]}
+{"kind":"textbox","id":"sh/kne9kjmd","slide":18,"text":"No cerrar sin evidencia","textPreview":"No cerrar sin evidencia","textChars":23,"textLines":1,"bbox":[130,438,250,38]}
+{"kind":"textbox","id":"sh/zm58rels","slide":18,"text":"Una respuesta debe producir algo verificable.","textPreview":"Una respuesta debe producir algo verificable.","textChars":45,"textLines":1,"bbox":[395,438,785,50]}
+{"kind":"textbox","id":"sh/ylwrit47","slide":18,"text":"05","textPreview":"05","textChars":2,"textLines":1,"bbox":[54,534,60,38]}
+{"kind":"textbox","id":"sh/1s3qh4nu","slide":18,"text":"Usar el perfil correcto","textPreview":"Usar el perfil correcto","textChars":23,"textLines":1,"bbox":[130,534,250,38]}
+{"kind":"textbox","id":"sh/0ru98zm9","slide":18,"text":"Cada actor modifica solo lo que le corresponde y queda auditado.","textPreview":"Cada actor modifica solo lo que le corresponde y queda auditado.","textChars":64,"textLines":1,"bbox":[395,534,785,50]}
+{"kind":"textbox","id":"sh/snyhk3y1","slide":18,"text":"SmartRisk CZ5 · Gestión integral del riesgo con trazabilidad","textPreview":"SmartRisk CZ5 · Gestión integral del riesgo con trazabilidad","textChars":60,"textLines":1,"bbox":[54,676,1000,18]}
+{"kind":"notes","id":"nt/87kvfa","slide":18,"text":""}
+{"kind":"slide","id":"sl/bks0co","slide":19,"title":"SOLUCIÓN DE PROBLEMAS","textShapes":18}
+{"kind":"textbox","id":"sh/kjytgf29","slide":19,"text":"SOLUCIÓN DE PROBLEMAS","textPreview":"SOLUCIÓN DE PROBLEMAS","textChars":21,"textLines":1,"bbox":[54,30,760,28]}
+{"kind":"textbox","id":"sh/jypcna1o","slide":19,"text":"Cuando algo no funciona, revise primero el dato y el vínculo","textPreview":"Cuando algo no funciona, revise primero el dato y el vínculo","textChars":60,"textLines":1,"bbox":[54,63,1160,62]}
+{"kind":"shape","id":"sh/yxwbepk3","slide":19,"bbox":[54,135,1170,1]}
+{"kind":"textbox","id":"sh/to7ut4jq","slide":19,"text":"19","textPreview":"19","textChars":2,"textLines":1,"bbox":[1190,675,34,20]}
+{"kind":"textbox","id":"sh/8nytkz25","slide":19,"text":"SITUACIÓN","textPreview":"SITUACIÓN","textChars":9,"textLines":1,"bbox":[54,155,360,32]}
+{"kind":"textbox","id":"sh/7mpcru1k","slide":19,"text":"ACCIÓN RECOMENDADA","textPreview":"ACCIÓN RECOMENDADA","textChars":18,"textLines":1,"bbox":[430,155,740,32]}
+{"kind":"shape","id":"sh/6lgbipkz","slide":19,"bbox":[54,200,1125,58]}
+{"kind":"textbox","id":"sh/9snah0jm","slide":19,"text":"No veo un registro","textPreview":"No veo un registro","textChars":18,"textLines":1,"bbox":[72,208,335,40]}
+{"kind":"textbox","id":"sh/oret8v21","slide":19,"text":"Revise territorio, perfil, filtros y categoría.","textPreview":"Revise territorio, perfil, filtros y categoría.","textChars":47,"textLines":1,"bbox":[430,208,720,40]}
+{"kind":"shape","id":"sh/i1k7mdwj","slide":19,"bbox":[54,269,1125,58]}
+{"kind":"textbox","id":"sh/j2tovid4","slide":19,"text":"No puedo cerrar","textPreview":"No puedo cerrar","textChars":15,"textLines":1,"bbox":[72,277,335,40]}
+{"kind":"textbox","id":"sh/432ponep","slide":19,"text":"Falta evidencia, producto o un campo obligatorio.","textPreview":"Falta evidencia, producto o un campo obligatorio.","textChars":49,"textLines":1,"bbox":[430,277,720,40]}
+{"kind":"shape","id":"sh/54b6x8va","slide":19,"bbox":[54,338,1125,58]}
+{"kind":"textbox","id":"sh/6pk7qdwv","slide":19,"text":"El mapa no muestra la capa","textPreview":"El mapa no muestra la capa","textChars":26,"textLines":1,"bbox":[72,346,335,40]}
+{"kind":"textbox","id":"sh/rqtozidg","slide":19,"text":"Revise geometría, archivo, territorio y estado de validación.","textPreview":"Revise geometría, archivo, territorio y estado de validación.","textChars":61,"textLines":1,"bbox":[430,346,720,40]}
+{"kind":"shape","id":"sh/sr2psne1","slide":19,"bbox":[54,407,1125,58]}
+{"kind":"textbox","id":"sh/tsv61sv6","slide":19,"text":"El SHP no carga","textPreview":"El SHP no carga","textChars":15,"textLines":1,"bbox":[72,415,335,40]}
+{"kind":"textbox","id":"sh/et47uxwr","slide":19,"text":"Use ZIP con .shp + .dbf + .prj; agregue .shx si existe.","textPreview":"Use ZIP con .shp + .dbf + .prj; agregue .shx si existe.","textChars":55,"textLines":1,"bbox":[430,415,720,40]}
+{"kind":"shape","id":"sh/fud832dc","slide":19,"bbox":[54,476,1125,58]}
+{"kind":"textbox","id":"sh/bydob2tk","slide":19,"text":"La cifra parece alta","textPreview":"La cifra parece alta","textChars":20,"textLines":1,"bbox":[72,484,335,40]}
+{"kind":"textbox","id":"sh/ax4nixsz","slide":19,"text":"Diferencie menciones documentales de fichas gestionables.","textPreview":"Diferencie menciones documentales de fichas gestionables.","textChars":57,"textLines":1,"bbox":[430,484,720,40]}
+{"kind":"shape","id":"sh/x0f6dcbq","slide":19,"bbox":[54,545,1125,58]}
+{"kind":"textbox","id":"sh/cz65k7a5","slide":19,"text":"La decisión no avanza","textPreview":"La decisión no avanza","textChars":21,"textLines":1,"bbox":[72,553,335,40]}
+{"kind":"textbox","id":"sh/3udo7it8","slide":19,"text":"Confirme responsable, nivel de gestión y fecha de compromiso.","textPreview":"Confirme responsable, nivel de gestión y fecha de compromiso.","textChars":61,"textLines":1,"bbox":[430,553,720,40]}
+{"kind":"textbox","id":"sh/2t4neds3","slide":19,"text":"SmartRisk CZ5 · Gestión integral del riesgo con trazabilidad","textPreview":"SmartRisk CZ5 · Gestión integral del riesgo con trazabilidad","textChars":60,"textLines":1,"bbox":[54,676,1000,18]}
+{"kind":"notes","id":"nt/bks0co","slide":19,"text":""}
+{"kind":"slide","id":"sl/e0tf7n","slide":20,"title":"La plataforma funciona cuando","textShapes":5}
+{"kind":"textbox","id":"sh/gr298bet","slide":20,"text":"La plataforma funciona cuando\ncada dato llega a una decisión\ny cada decisión llega a evidencia.","textPreview":"La plataforma funciona cuando | cada dato llega a una decisión | y cada decisión llega a evidencia.","textChars":95,"textLines":3,"bbox":[60,110,860,260]}
+{"kind":"textbox","id":"sh/v6tsf6d8","slide":20,"text":"Compromiso de los equipos","textPreview":"Compromiso de los equipos","textChars":25,"textLines":1,"bbox":[60,430,430,34]}
+{"kind":"textbox","id":"sh/u50r61wn","slide":20,"text":"Actualizar con oportunidad · conservar la fuente · responder según el perfil · cerrar con evidencia.","textPreview":"Actualizar con oportunidad · conservar la fuente · responder según el perfil · cerrar con evidencia.","textChars":100,"textLines":1,"bbox":[60,480,900,70]}
+{"kind":"shape","id":"sh/t4rqdwv2","slide":20,"bbox":[970,110,210,210]}
+{"kind":"textbox","id":"sh/83i94reh","slide":20,"text":"RIESGO\n→\nACCIÓN\n→\nCONTROL","textPreview":"RIESGO | → | ACCIÓN | → | CONTROL","textChars":25,"textLines":5,"bbox":[995,130,160,165]}
+{"kind":"textbox","id":"sh/7298bmdw","slide":20,"text":"Acceso: https://smartrisk-cz5-produccion.web.app","textPreview":"Acceso: https://smartrisk-cz5-produccion.web.app","textChars":48,"textLines":1,"bbox":[60,640,780,28]}
+{"kind":"notes","id":"nt/e0tf7n","slide":20,"text":""}

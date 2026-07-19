@@ -1,4 +1,4 @@
-name: Publicar SmartRisk CZ5
+﻿name: Publicar SmartRisk CZ5
 
 on:
   push:
@@ -30,21 +30,13 @@ jobs:
       - name: Preparar GitHub Pages
         uses: actions/configure-pages@v5
 
-      - name: Preparar versión web actual
-        run: |
-          mkdir -p _site
-          cp index.html _site/
-          cp styles.css _site/
-          cp app.js _site/
-          cp data.js _site/
-          cp firebase-config.js _site/
-          cp 404.html _site/
-          touch _site/.nojekyll
+      - name: Desactivar Jekyll
+        run: touch web-release/.nojekyll
 
-      - name: Cargar versión web
+      - name: Cargar versión actual
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./_site
+          path: ./web-release
 
       - name: Publicar
         id: deployment

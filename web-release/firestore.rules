@@ -1,0 +1,77 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function admin() {
+      return signedIn()
+        && request.auth.token.email in ['geopro.ec2@gmail.com', 'dcoellom2@unemi.edu.ec'];
+    }
+
+    function profile() {
+      return get(/databases/$(database)/documents/perfiles/$(request.auth.uid)).data;
+    }
+
+    function activeProfile() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/perfiles/$(request.auth.uid))
+        && profile().estado == 'Activo';
+    }
+
+    function roleIs(roles) {
+      return activeProfile() && profile().rol in roles;
+    }
+
+    function changesOnly(fields) {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(fields);
+    }
+
+    match /plataforma/datos {
+      allow read: if admin() || activeProfile();
+      allow create: if admin();
+      allow update: if request.resource.data._revision == resource.data.get('_revision', 0) + 1
+        && (
+          admin()
+          || (
+            roleIs(['Usuario territorial', 'Técnico territorial'])
+            && changesOnly([
+              '_revision', 'decisiones', 'sitios', 'acciones', 'validaciones',
+              'auditoria', 'capasGeograficas', 'tareasCabina', 'cartografiaOperativa',
+              'fichasTecnicas'
+            ])
+          )
+          || (
+            roleIs(['Coordinador COE'])
+            && changesOnly([
+              '_revision', 'decisiones', 'sitios', 'acciones', 'validaciones',
+              'auditoria', 'actoresCOE', 'equiposCOE', 'actividadesCOE',
+              'capasGeograficas', 'sesionesCabina', 'tareasCabina', 'cartografiaOperativa',
+              'cabinaActiva', 'fichasTecnicas'
+            ])
+          )
+          || (
+            roleIs(['Líder MTT/GT'])
+            && changesOnly([
+              '_revision', 'decisiones', 'acciones', 'auditoria', 'equiposCOE',
+              'actividadesCOE', 'tareasCabina', 'capasGeograficas', 'cartografiaOperativa',
+              'fichasTecnicas'
+            ])
+          )
+          || (
+            roleIs(['Tomador de decisión/control'])
+            && changesOnly([
+              '_revision', 'decisiones', 'acciones', 'auditoria', 'tareasCabina',
+              'fichasTecnicas'
+            ])
+          )
+        );
+      allow delete: if false;
+    }
+    match /perfiles/{uid} {
+      allow read: if signedIn() && (request.auth.uid == uid || admin());
+      allow write: if admin();
+    }
+  }
+}
