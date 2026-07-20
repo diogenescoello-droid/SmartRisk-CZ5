@@ -1,10 +1,11 @@
 (() => {
   'use strict';
 
+  // Contención temporal: solo las cuentas administrativas ya validadas
+  // pueden cargar la aplicación heredada y su base global.
   const ADMIN_ALLOWLIST = new Set([
     'geopro.ec2@gmail.com',
-    'dcoellom2@unemi.edu.ec',
-    'diogenes.coello@gestionderiesgos.gob.ec'
+    'dcoellom2@unemi.edu.ec'
   ]);
 
   const LEGACY_SCRIPTS = [
@@ -43,10 +44,11 @@
   }
 
   function isAdministrator(profile, user) {
+    // No confiar todavía en el rol almacenado en Firestore para liberar
+    // la base zonal completa. Esta excepción desaparecerá al publicar
+    // las reglas V10 y terminar la migración por alcance.
     const email = normalizeEmail(user?.email);
-    return ADMIN_ALLOWLIST.has(email)
-      || profile?.codigoRol === 'ADMIN'
-      || profile?.rol === 'Administrador';
+    return ADMIN_ALLOWLIST.has(email);
   }
 
   function profileScope(profile) {
@@ -245,7 +247,7 @@
   });
 
   window.SMART_RISK_ACCESS_GATE = {
-    version: '10.1',
+    version: '10.2',
     mode: 'containment',
     support: 'diogenes.coello@gestionderiesgos.gob.ec'
   };
