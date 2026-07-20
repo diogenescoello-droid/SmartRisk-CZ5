@@ -1,0 +1,17 @@
+CÓMO SUBIR EL PARCHE A GITHUB
+
+Rama requerida:
+seguridad-territorial-v10
+
+1. Abra la carpeta web-release.
+2. Pulse Agregar archivo.
+3. Seleccione Cargar archivos.
+4. Arrastre index.html y access-gate.js desde la carpeta web-release de este paquete.
+5. En el mensaje escriba:
+   Implementar compuerta de seguridad territorial V10.1
+6. Confirme que la opción seleccionada sea:
+   Confirmar directamente en la rama seguridad-territorial-v10
+7. Pulse Confirmar cambios.
+
+No copie estos archivos en la rama principal.
+No combine todavía la rama con principal.
