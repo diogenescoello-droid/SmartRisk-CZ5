@@ -459,7 +459,7 @@
   }
 
   function renderActionTable(items) {
-    return `<div class="sr-table-wrap"><table class="sr-table"><thead><tr><th>Código</th><th>Acción</th><th>Tipo / etapa</th><th>Responsable</th><th>Prioridad</th><th>Estado</th><th>Fecha límite</th><th>Progreso</th></tr></thead><tbody>${items.map(item => `<tr><td>${esc(item.payload?.codigo || item.sourceId || "—")}</td><td><b>${esc(recordTitle(item))}</b></td><td>${esc(item.payload?.etapa || item.tipo || "—")}</td><td>${esc(item.responsable || item.institucion || "Por asignar")}</td><td>${badge(item.prioridad || "Sin definir", priorityTone(item.prioridad))}</td><td>${badge(item.estado || "Pendiente", statusTone(item.estado))}</td><td>${fmtDate(item.payload?.fechaLimite || item.payload?.plazo)}</td><td><div class="sr-progress"><span style="width:${Math.min(item.avance, 100)}%"></span></div><small>${item.avance}%</small></td></tr>`).join("")}</tbody></table></div>`;
+    return `<div class="sr-table-wrap"><table class="sr-table"><thead><tr><th>Código</th><th>Acción</th><th>Tipo / etapa</th><th>Responsable</th><th>Prioridad</th><th>Estado</th><th>Fecha límite</th><th>Progreso</th></tr></thead><tbody>${items.map(item => `<tr><td>${esc(item.payload?.codigo || item.sourceId || "—")}</td><td><b>${esc(recordTitle(item))}</b>${item.normalizedFromPlan || item.payload?.normalizedFromPlan ? `<small class="sr9-plan-source">Origen: ${esc(item.sourcePlanTitle || item.payload?.sourcePlanTitle || "Plan territorial")}</small>` : ""}</td><td>${esc(item.payload?.etapa || item.tipo || "—")}</td><td>${esc(item.responsable || item.institucion || "Por asignar")}</td><td>${badge(item.prioridad || "Sin definir", priorityTone(item.prioridad))}</td><td>${badge(item.estado || "Pendiente", statusTone(item.estado))}</td><td>${fmtDate(item.payload?.fechaLimite || item.payload?.plazo)}</td><td><div class="sr-progress"><span style="width:${Math.min(item.avance, 100)}%"></span></div><small>${item.avance}%</small></td></tr>`).join("")}</tbody></table></div>`;
   }
 
   function renderModuleFilters() {
@@ -491,12 +491,35 @@
     return `${renderModuleFilters()}<section class="sr-metrics-row">${metric("Riesgos registrados", risks.length, "blue", "Alcance actual", "risk")}${metric("Críticos / altos", critical, "red", "Atención prioritaria", "risk")}${metric("Medios", medium, "orange", "Seguimiento", "risk")}${metric("Amenazas", threats.length, "purple", "Tipos identificados", "monitor")}</section><section class="sr-two-column"><article class="sr-card"><header><h2>Riesgos y sitios críticos</h2><button data-route-link="mapas">Ver en mapa</button></header>${risks.length ? `<div class="sr-risk-list">${risks.slice(0, 10).map(item => `<button data-detail-record="${esc(item.id)}"><span class="sr-risk-symbol ${priorityTone(item.prioridad)}">${icon("risk", 22)}</span><div><b>${esc(item.title)}</b><small>${esc([item.canton, item.provincia].filter(Boolean).join(" · ") || recordDetail(item))}</small></div>${badge(item.prioridad || item.estado || "Por valorar", priorityTone(item.prioridad))}</button>`).join("")}</div>` : emptyState("Sin riesgos registrados", "No existen riesgos o sitios críticos para el territorio seleccionado.", "risk")}</article><article class="sr-card"><header><h2>Matriz de criticidad</h2></header><div class="sr-risk-matrix"><div><b>${critical}</b><span>Alta</span></div><div><b>${medium}</b><span>Media</span></div><div><b>${Math.max(risks.length - critical - medium, 0)}</b><span>Baja / sin valorar</span></div></div><h3>Amenazas identificadas</h3><div class="sr-chip-list">${threats.length ? threats.map(value => badge(value, "info")).join("") : '<span class="sr-muted">Sin amenazas clasificadas.</span>'}</div></article></section>`;
   }
 
+  function renderPlanNormalizationNotice(plans, actions) {
+    if (!plans.length) return "";
+    const derived = actions.filter(item => item.normalizedFromPlan || item.payload?.normalizedFromPlan);
+    const structured = plans.filter(plan => plan.normalization?.counts?.actions > 0);
+    const pending = plans.filter(plan => plan.normalization?.actionSignals && !plan.normalization?.counts?.actions);
+    const tone = derived.length ? "success" : "warning";
+    const title = derived.length
+      ? `${derived.length} acciones recuperadas desde ${structured.length || plans.length} plan(es)`
+      : `${plans.length} plan(es) localizado(s), sin filas de acciones estructuradas`;
+    const detail = derived.length
+      ? "RC9 conserva el plan de origen, responsable, estado, plazo y avance disponibles."
+      : pending.length
+        ? "Los planes contienen señales de acciones o actividades, pero la información puede estar como texto, archivo o con campos aún no reconocidos."
+        : "Los planes están visibles, pero no declaran una matriz de acciones estructurada.";
+    return `<section class="sr9-normalization ${tone}"><span>${icon(derived.length ? "check" : "reports", 23)}</span><div><b>${esc(title)}</b><p>${esc(detail)}</p></div><button type="button" data-route-link="dashboard">Revisar en Dashboard</button></section>`;
+  }
+
   function renderActions() {
     const actions = records("actions");
+    const plans = records("plans");
+    const derived = actions.filter(item => item.normalizedFromPlan || item.payload?.normalizedFromPlan);
     const completed = actions.filter(i => /complet|cerrad|finaliz/.test(normalize(i.estado))).length;
     const executing = actions.filter(i => /ejec|curso|activo/.test(normalize(i.estado))).length;
     const overdue = actions.filter(i => /venc/.test(normalize(i.estado))).length;
-    return `${renderModuleFilters()}<section class="sr-toolbar"><div class="sr-metrics-row">${metric("Total acciones", actions.length, "blue", "Registros visibles", "actions")}${metric("Por ejecutar", Math.max(actions.length - completed - executing, 0), "orange", "Pendientes", "refresh")}${metric("En ejecución", executing, "blue", "En curso", "escalation")}${metric("Completadas", completed, "green", "Cerradas", "check")}${metric("Vencidas", overdue, "red", "Requieren atención", "risk")}</div><button class="sr-primary-disabled" disabled>Nueva acción · habilitación posterior</button></section><section class="sr-card">${actions.length ? renderActionTable(actions.slice(0, 30)) : emptyState("Sin acciones", "No existen acciones registradas para el territorio seleccionado.", "actions")}</section>`;
+    const notice = renderPlanNormalizationNotice(plans, actions);
+    const emptyContent = plans.length
+      ? `<div class="sr9-plan-empty">${icon("reports", 40)}<strong>Plan localizado; acciones aún no estructuradas</strong><p>SmartRisk encontró ${plans.length} plan(es) en este territorio, pero no pudo convertir su contenido en filas operativas. Esto no significa que el plan carezca de acciones.</p><div><button type="button" data-route-link="dashboard">Ver información disponible</button><button type="button" data-assistant="guide">Ver guía</button></div></div>`
+      : emptyState("Sin acciones registradas", "No se localizaron acciones ni planes con información operativa para el territorio seleccionado.", "actions");
+    return `${renderModuleFilters()}${notice}<section class="sr-toolbar"><div class="sr-metrics-row">${metric("Total acciones", actions.length, "blue", `${derived.length} derivadas de planes`, "actions")}${metric("Por ejecutar", Math.max(actions.length - completed - executing, 0), "orange", "Pendientes", "refresh")}${metric("En ejecución", executing, "blue", "En curso", "escalation")}${metric("Completadas", completed, "green", "Cerradas", "check")}${metric("Vencidas", overdue, "red", "Requieren atención", "risk")}</div><button class="sr-primary-disabled" disabled>Nueva acción · habilitación posterior</button></section><section class="sr-card">${actions.length ? renderActionTable(actions.slice(0, 100)) : emptyContent}</section>`;
   }
 
   function renderInstitutions() {

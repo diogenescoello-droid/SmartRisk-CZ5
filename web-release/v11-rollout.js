@@ -9,7 +9,7 @@
     "geopro.ec5@gmail.com"
   ]);
 
-  const BUILD_VERSION = "11.0.0-rc8";
+  const BUILD_VERSION = "11.0.0-rc9";
   const loadedResources = new Set();
   const normalizeEmail = value => String(value || "").trim().toLowerCase();
 
@@ -56,6 +56,7 @@
     await loadStyles("v11.css");
     await loadStyles("v11-ux-rc7.css");
     await loadStyles("v11-dashboard-rc8.css");
+    await loadStyles("v11-normalizer-rc9.css");
     await loadScript("v11-router.js");
     await loadScript("v11-permissions.js");
     await loadScript("v11-data-adapter.js");

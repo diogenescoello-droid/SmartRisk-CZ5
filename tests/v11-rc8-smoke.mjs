@@ -27,7 +27,7 @@ ok(router.routes.length === 12, 'Navegación con 12 módulos');
 ok(router.routes[0].id === 'inicio' && router.routes[1].id === 'dashboard', 'Dashboard ubicado inmediatamente después de Inicio');
 ok(router.normalizeRoute('#/dashboard') === 'dashboard', 'Ruta Dashboard independiente');
 ok(permissions.includes('"inicio", "dashboard", "respuesta-coe"'), 'Dashboard disponible para todos los perfiles');
-ok(rollout.includes('11.0.0-rc8') && index.includes('11.0.0-rc8'), 'Versión de caché RC8 consistente');
+ok(rollout.includes('11.0.0-rc9') && index.includes('11.0.0-rc9'), 'Versión de caché RC8 consistente');
 ok(rollout.includes('v11-dashboard-rc8.css') && rollout.includes('v11-dashboard-rc8.js'), 'Capa Dashboard RC8 cargada');
 ok(dashboard.includes('geo/cantones-zonal5.geojson'), 'Mapa cantonal usa el GeoJSON existente');
 ok(dashboard.includes('¿Con qué información cuento?'), 'Inventario territorial presente');

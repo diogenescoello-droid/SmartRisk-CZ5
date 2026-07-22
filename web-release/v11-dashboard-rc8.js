@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const VERSION = "11.0.0-rc8";
+  const VERSION = "11.0.0-rc9"; // RC9 normalización de planes
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
   const normalize = value => String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toLowerCase();
@@ -97,12 +97,14 @@
     const completed = actions.filter(record => /complet|cerrad|finaliz/.test(recordText(record))).length;
     const overdue = actions.filter(record => /venc/.test(recordText(record))).length;
     const active = Math.max(actions.length - completed, 0);
+    const derivedActions = actions.filter(record => record.normalizedFromPlan || record.payload?.normalizedFromPlan).length;
+    const unstructuredPlans = plans.filter(record => record.normalization?.actionSignals && !record.normalization?.counts?.actions).length;
     const progressValues = actions.map(record => Number(record.avance) || 0);
     const progress = progressValues.length ? Math.round(progressValues.reduce((sum, value) => sum + value, 0) / progressValues.length) : 0;
     const georeferenced = records.filter(record => Number.isFinite(record.lat) && Number.isFinite(record.lng));
     const coverageParts = [plans.length, actions.length, breaches.length, risks.length || alerts.length || reports.length, contacts.length, georeferenced.length];
     const coverage = Math.round((coverageParts.filter(Boolean).length / coverageParts.length) * 100);
-    return { plans, actions, breaches, risks, alerts, reports, contacts, completed, overdue, active, progress, coverage };
+    return { plans, actions, breaches, risks, alerts, reports, contacts, completed, overdue, active, progress, coverage, derivedActions, unstructuredPlans };
   }
 
   function planStatus(plans) {
@@ -238,7 +240,7 @@
         ${metric("Cantones con información", cantonsWithData, `${visibleTerritories.length} cantones en el mapa`, "blue", "map")}
         ${metric("Planes visibles", summary.plans.length, planStatus(summary.plans), "green", "reports")}
         ${metric("Brechas identificadas", summary.breaches.length, `${summary.alerts.length} alertas`, "red", "risk")}
-        ${metric("Acciones activas", summary.active, `${summary.overdue} vencidas · ${summary.completed} cerradas`, "orange", "actions")}
+        ${metric("Acciones activas", summary.active, `${summary.derivedActions} recuperadas de planes · ${summary.overdue} vencidas`, "orange", "actions")}
         ${metric("Avance promedio", `${summary.progress}%`, `Promedio zonal ${averageZonalProgress}%`, "purple", "check")}
         ${metric("Cobertura informativa", `${avgCoverage}%`, `${summary.contacts.length} contactos visibles`, "cyan", "institution")}
       </section>
@@ -249,7 +251,7 @@
       <section id="sr8Indicators" class="sr8-review-grid">
         ${compactList("Planes", selectedSummary.plans, "No existen planes visibles para el alcance seleccionado.", "planes")}
         ${compactList("Brechas y alertas", [...selectedSummary.breaches, ...selectedSummary.alerts], "No existen brechas o alertas clasificadas.", "brechas")}
-        ${compactList("Acciones", selectedSummary.actions, "No existen acciones registradas.", "acciones")}
+        ${compactList("Acciones", selectedSummary.actions, "No existen acciones estructuradas; revisa el estado de normalización de los planes.", "acciones")}
         <article class="sr-card sr8-comparison"><header><h2>Comparación del avance</h2><span>Cantón / Zona 5</span></header><div><b>${selectedSummary.progress}%</b><i>frente a</i><strong>${averageZonalProgress}%</strong></div><p>${selectedSummary.progress >= averageZonalProgress ? "El alcance seleccionado está sobre el promedio zonal." : "El alcance seleccionado requiere refuerzo para alcanzar el promedio zonal."}</p></article>
       </section>
       <section class="sr-card sr8-inventory"><header><div><h2>¿Con qué información cuento?</h2><p>Comparación rápida de cobertura por cantón.</p></div><span>${visibleTerritories.length} territorios</span></header><div class="sr8-table-wrap"><table><thead><tr><th>Provincia</th><th>Cantón</th><th>Plan</th><th>Brechas</th><th>Acciones</th><th>Contactos</th><th>Cobertura</th><th></th></tr></thead><tbody>${visibleTerritories.map(item => `<tr><td>${esc(item.province)}</td><td><b>${esc(item.canton)}</b></td><td>${item.plans.length}</td><td>${item.breaches.length}</td><td>${item.actions.length}</td><td>${item.contacts.length}</td><td><span class="sr8-bar"><i style="width:${item.coverage}%"></i></span><b>${item.coverage}%</b></td><td><button data-rc8-select="${esc(item.canton)}" data-rc8-province="${esc(item.province)}">Abrir</button></td></tr>`).join("")}</tbody></table></div></section>`;
