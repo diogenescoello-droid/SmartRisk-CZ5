@@ -51,7 +51,7 @@ ok(['Reporte de monitoreo','Validación técnica','Coordinación institucional',
 ok(css.includes('.sr-dashboard-kpis'), 'Estilos del dashboard consolidados');
 ok(css.includes('.sr-nav-group'), 'Estilos de grupos de navegación presentes');
 ok(css.includes('.sr-neural-connectors'), 'Estilos de conectores neuronales conservados');
-ok(rollout.includes('11.0.0-rc9') && index.includes('11.0.0-rc9'), 'Regresión RC6 compatible con caché RC8');
+ok(rollout.includes('11.0.0-rc10') && index.includes('11.0.0-rc10'), 'Regresión RC6 compatible con caché RC8');
 ok(!/\.collection\([^)]*\)\.(add|set|update|delete)\s*\(/.test(app) && !/\.doc\([^)]*\)\.(set|update|delete)\s*\(/.test(app), 'La interfaz V11 no introduce escrituras Firestore');
 
 console.log('\nTodas las pruebas consolidadas RC6 pasaron.');

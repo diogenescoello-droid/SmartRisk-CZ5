@@ -52,7 +52,7 @@ ok(adapterCode.includes("structuredPayload(record)"), "Campos planos de Firestor
 ok(app.includes("Plan localizado; acciones aún no estructuradas"), "Estado vacío distingue plan existente de cero acciones");
 ok(app.includes("sr9-plan-source"), "Tabla muestra plan de origen");
 ok(dashboard.includes("recuperadas de planes"), "Dashboard informa acciones recuperadas");
-ok(rollout.includes("11.0.0-rc9") && index.includes("11.0.0-rc9"), "Caché RC9 consistente");
+ok(rollout.includes("11.0.0-rc10") && index.includes("11.0.0-rc10"), "Caché RC9 consistente");
 ok(rollout.includes("v11-normalizer-rc9.css"), "Estilos RC9 cargados");
 ok(css.includes(".sr9-normalization") && css.includes(".sr9-plan-empty"), "Estados visuales RC9 presentes");
 ok(!/\.collection\([^)]*\)\.(add|set|update|delete)\s*\(/.test(adapterCode), "RC9 no introduce escrituras Firestore");

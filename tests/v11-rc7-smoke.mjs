@@ -18,8 +18,8 @@ new vm.Script(ux, { filename: 'v11-ux-rc7.js' });
 new vm.Script(rollout, { filename: 'v11-rollout.js' });
 ok(true, 'Sintaxis JavaScript RC7');
 
-ok(rollout.includes('11.0.0-rc9'), 'Capa RC7 conservada en rollout RC8');
-ok(index.includes('11.0.0-rc9'), 'Capa RC7 conservada en index RC8');
+ok(rollout.includes('11.0.0-rc10'), 'Capa RC7 conservada en rollout RC8');
+ok(index.includes('11.0.0-rc10'), 'Capa RC7 conservada en index RC8');
 ok(rollout.includes('v11-ux-rc7.css') && rollout.includes('v11-ux-rc7.js'), 'Capa UX cargada después de V11');
 ok(ux.includes('setTimeout(() =>') && ux.includes('}, 2000)'), 'Inicio automático de la guía a los dos segundos');
 ok(ux.includes('sr-tour-overlay') && css.includes('.sr-tour-overlay.intro'), 'Spotlight inicial con pantalla opaca');
