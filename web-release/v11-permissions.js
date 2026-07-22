@@ -2,7 +2,7 @@
   "use strict";
 
   const UNIVERSAL_MODULES = [
-    "inicio", "respuesta-coe", "monitoreo", "coe", "riesgos", "acciones",
+    "inicio", "dashboard", "respuesta-coe", "monitoreo", "coe", "riesgos", "acciones",
     "instituciones", "reportes", "mapas", "herramientas", "configuracion"
   ];
 

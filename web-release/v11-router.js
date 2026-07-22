@@ -3,6 +3,7 @@
 
   const routes = [
     { id: "inicio", title: "Inicio", subtitle: "Resumen ejecutivo e indicadores clave", icon: "dashboard", group: "Resumen" },
+    { id: "dashboard", title: "Dashboard", subtitle: "Lectura zonal, provincial y cantonal", icon: "dashboard", group: "Resumen" },
     { id: "respuesta-coe", title: "Respuesta COE", subtitle: "Gestión de riesgos durante la respuesta", icon: "response", group: "Operación COE" },
     { id: "coe", title: "COE", subtitle: "Programación, sesiones y coordinación", icon: "people", group: "Operación COE" },
     { id: "acciones", title: "Acciones", subtitle: "Gestión y seguimiento de acciones del COE", icon: "actions", group: "Operación COE" },
@@ -19,7 +20,8 @@
     "": "inicio",
     home: "inicio",
     inicio: "inicio",
-    dashboard: "inicio",
+    dashboard: "dashboard",
+    panel: "dashboard",
     resumen: "inicio",
     config: "configuracion",
     settings: "configuracion",
