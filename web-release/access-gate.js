@@ -94,10 +94,17 @@
     }
 
     try {
-      if (isAdministrator(user)) {
-        await loadAdministratorApplication();
+      // Fase 1: V11 Rollout - decidir qué aplicación cargar
+      if (window.SmartRiskV11Rollout && window.SmartRiskV11Rollout.decide) {
+        setStatus("Determinando versión de aplicación...", "saving");
+        const handledByV11 = await window.SmartRiskV11Rollout.decide(user, profile, db, auth);
+        if (!handledByV11) {
+          if (isAdministrator(user)) await loadAdministratorApplication();
+          else await loadScopedApplication(user, profile);
+        }
       } else {
-        await loadScopedApplication(user, profile);
+        if (isAdministrator(user)) await loadAdministratorApplication();
+        else await loadScopedApplication(user, profile);
       }
     } catch (error) {
       console.error(error);
