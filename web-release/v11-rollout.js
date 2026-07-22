@@ -9,7 +9,7 @@
     "geopro.ec5@gmail.com"
   ]);
 
-  const BUILD_VERSION = "11.0.0-rc6";
+  const BUILD_VERSION = "11.0.0-rc7";
   const loadedResources = new Set();
   const normalizeEmail = value => String(value || "").trim().toLowerCase();
 
@@ -31,7 +31,7 @@
   }
 
   function loadStyles(href) {
-    if (loadedResources.has(href) || document.querySelector(`link[href="${href}"]`)) return Promise.resolve();
+    if (loadedResources.has(href) || document.querySelector(`link[href^="${href}"]`)) return Promise.resolve();
     return new Promise((resolve, reject) => {
       const link = document.createElement("link");
       link.rel = "stylesheet";
@@ -54,11 +54,14 @@
     if (!enabled) return false;
 
     await loadStyles("v11.css");
+    await loadStyles("v11-ux-rc7.css");
     await loadScript("v11-router.js");
     await loadScript("v11-permissions.js");
     await loadScript("v11-data-adapter.js");
     await loadScript("v11-app.js");
+    await loadScript("v11-ux-rc7.js");
     await window.SmartRiskV11App.start({ user, profile, db, auth });
+    window.SmartRiskV11UX?.afterAppStart?.();
     return true;
   }
 
