@@ -1,0 +1,172 @@
+:root {
+  --rc13-nav-panel: rgba(255, 255, 255, 0.055);
+  --rc13-nav-border: rgba(255, 255, 255, 0.11);
+  --rc13-nav-text: #e6f0f4;
+  --rc13-nav-muted: #a9c0cb;
+  --rc13-nav-active: #27c58b;
+}
+
+.app {
+  grid-template-columns: 310px minmax(0, 1fr);
+}
+
+.app > aside {
+  min-width: 0;
+  padding: 20px 14px;
+}
+
+.brand {
+  padding: 4px 10px 18px;
+}
+
+#nav {
+  display: block;
+  min-height: 0;
+  flex: 1;
+  padding-right: 4px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.rc13-nav-shell {
+  display: grid;
+  gap: 11px;
+}
+
+.rc13-nav-module {
+  overflow: hidden;
+  border: 1px solid var(--rc13-nav-border);
+  border-radius: 13px;
+  background: var(--rc13-nav-panel);
+}
+
+#nav .rc13-module-toggle {
+  position: relative;
+  width: 100%;
+  margin: 0;
+  padding: 11px 34px 10px 12px;
+  border-radius: 0;
+  background: transparent;
+  color: #ffffff;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+}
+
+#nav .rc13-module-toggle::after {
+  content: "⌄";
+  position: absolute;
+  right: 13px;
+  top: 9px;
+  font-size: 17px;
+  color: var(--rc13-nav-muted);
+  transition: transform 0.16s ease;
+}
+
+.rc13-nav-module.is-collapsed .rc13-module-toggle::after {
+  transform: rotate(-90deg);
+}
+
+.rc13-module-items {
+  display: grid;
+  gap: 4px;
+  padding: 0 7px 8px;
+}
+
+.rc13-nav-module.is-collapsed .rc13-module-items {
+  display: none;
+}
+
+#nav .rc13-nav-item {
+  position: relative;
+  width: 100%;
+  min-height: 57px;
+  margin: 0;
+  padding: 9px 10px 22px 13px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--rc13-nav-text);
+  text-align: left;
+  font-size: 13px;
+  line-height: 1.2;
+}
+
+#nav .rc13-nav-item::after {
+  content: attr(data-rc13-hint);
+  position: absolute;
+  left: 13px;
+  right: 8px;
+  bottom: 7px;
+  overflow: hidden;
+  color: var(--rc13-nav-muted);
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#nav .rc13-nav-item:hover:not(:disabled),
+#nav .rc13-nav-item:focus-visible {
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.075);
+  outline: none;
+}
+
+#nav .rc13-nav-item.nav-active {
+  border-color: rgba(39, 197, 139, 0.45);
+  border-left: 4px solid var(--rc13-nav-active);
+  background: rgba(39, 197, 139, 0.14) !important;
+  color: #ffffff;
+}
+
+#nav .rc13-nav-item.nav-active::after {
+  color: #c7f5e4;
+}
+
+#nav .rc13-nav-placeholder {
+  border: 1px dashed rgba(255, 255, 255, 0.16);
+  color: #aabdc6;
+  cursor: not-allowed;
+  opacity: 0.72;
+}
+
+#nav .rc13-nav-placeholder::before {
+  content: "Pendiente";
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 2px 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #d8e5eb;
+  font-size: 8px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 900px) {
+  .app {
+    grid-template-columns: 1fr;
+  }
+
+  #nav {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(220px, 1fr));
+    gap: 10px;
+    overflow: visible;
+  }
+
+  .rc13-nav-shell {
+    display: contents;
+  }
+}
+
+@media (max-width: 600px) {
+  #nav {
+    grid-template-columns: 1fr;
+  }
+}
