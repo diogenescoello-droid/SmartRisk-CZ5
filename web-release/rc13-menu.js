@@ -1,9 +1,6 @@
 (() => {
   "use strict";
 
-  const nav = document.querySelector("#nav");
-  if (!nav) return;
-
   const stateKey = "smartrisk-rc13-menu-state";
   let scheduled = false;
 
@@ -41,6 +38,45 @@
         { page: "instituciones", label: "Mesas técnicas", hint: "Coordinación, productos y tareas" },
         { page: "cabina", label: "Monitoreo operativo", hint: "Conducción territorial del COE", synthetic: true },
         { page: "recursos", label: "Recursos operativos", hint: "Inventario y disponibilidad · pendiente", disabled: true }
+      ]
+    }
+  ];
+
+  const v11Groups = [
+    {
+      id: "transversal",
+      title: "Funciones transversales",
+      items: [
+        { route: "inicio", label: "Inicio", hint: "Resumen ejecutivo y accesos operativos" },
+        { route: "dashboard", label: "Panorama e indicadores", hint: "Lectura zonal, provincial y cantonal" },
+        { route: "configuracion", label: "Configuración", hint: "Perfil, preferencias y notificaciones" }
+      ]
+    },
+    {
+      id: "planificacion",
+      title: "1 · Planificación documental",
+      items: [
+        { route: "reportes", label: "Informes y productos", hint: "Generación, revisión y exportación" },
+        { route: "acciones", label: "Seguimiento de acciones", hint: "Compromisos, evidencia e indicadores" }
+      ]
+    },
+    {
+      id: "analisis",
+      title: "2 · Análisis y monitoreo",
+      items: [
+        { route: "monitoreo", label: "Monitoreo territorial", hint: "Reportes y verificación de información" },
+        { route: "riesgos", label: "Sitios y riesgos", hint: "Amenazas, exposición y sitios críticos" },
+        { route: "mapas", label: "Mapas y capas", hint: "Visualización territorial y capas operativas" },
+        { route: "herramientas", label: "Herramientas y tableros", hint: "Utilidades, auditoría y administración" }
+      ]
+    },
+    {
+      id: "respuesta",
+      title: "3 · Respuesta operativa",
+      items: [
+        { route: "respuesta-coe", label: "Respuesta operativa", hint: "Gestión de riesgos durante la respuesta" },
+        { route: "coe", label: "COE y sesiones", hint: "Programación, sesiones y coordinación" },
+        { route: "instituciones", label: "Mesas e instituciones", hint: "Relaciones, competencias y capacidades" }
       ]
     }
   ];
@@ -102,7 +138,18 @@
     return button;
   }
 
-  function legacyNavigation() {
+  function prepareV11PageButton(button, item) {
+    button.type = "button";
+    button.classList.add("rc13-nav-item");
+    const label = button.querySelector("span");
+    if (label) label.textContent = item.label;
+    else button.textContent = item.label;
+    button.dataset.rc13Hint = item.hint;
+    button.setAttribute("aria-label", `${item.label}. ${item.hint}`);
+    return button;
+  }
+
+  function legacyNavigation(nav) {
     const directButtons = [...nav.querySelectorAll(":scope > button[data-page]")];
     if (!directButtons.length) return false;
 
@@ -150,7 +197,7 @@
     return "otros";
   }
 
-  function scopedNavigation() {
+  function scopedNavigation(nav) {
     const directButtons = [...nav.querySelectorAll(":scope > button[data-scope-page]")];
     if (!directButtons.length) return false;
 
@@ -197,16 +244,44 @@
     return true;
   }
 
-  function decorateBrand() {
+  function v11Navigation(nav) {
+    const directButtons = [...nav.querySelectorAll(":scope > .sr-nav-group > button[data-route]")];
+    if (!directButtons.length) return false;
+
+    const routeButtons = new Map(directButtons.map(button => [button.dataset.route, button]));
+    const shell = document.createElement("div");
+    shell.className = "rc13-nav-shell";
+
+    v11Groups.forEach(group => {
+      const buttons = group.items
+        .map(item => {
+          const button = routeButtons.get(item.route);
+          return button ? prepareV11PageButton(button, item) : null;
+        })
+        .filter(Boolean);
+      if (buttons.length) shell.append(makeSection(group, buttons));
+    });
+
+    nav.replaceChildren(shell);
+    nav.dataset.rc13Mode = "v11";
+    return true;
+  }
+
+  function decorateBrand(nav) {
     const subtitle = document.querySelector(".brand span");
     if (subtitle) subtitle.textContent = "CZ5 · Arquitectura funcional RC13";
+    const v11Subtitle = document.querySelector(".sr-brand span");
+    if (v11Subtitle) v11Subtitle.textContent = "Arquitectura funcional RC13";
+    nav.dataset.rc13Version = "13.1.0";
     document.documentElement.dataset.smartRiskMenu = "rc13";
   }
 
   function apply() {
     scheduled = false;
+    const nav = document.querySelector("#nav");
+    if (!nav) return;
     if (nav.querySelector(":scope > .rc13-nav-shell")) return;
-    if (legacyNavigation() || scopedNavigation()) decorateBrand();
+    if (legacyNavigation(nav) || scopedNavigation(nav) || v11Navigation(nav)) decorateBrand(nav);
   }
 
   function scheduleApply() {
@@ -215,7 +290,7 @@
     queueMicrotask(apply);
   }
 
-  nav.addEventListener("click", event => {
+  document.addEventListener("click", event => {
     const toggle = event.target.closest("[data-rc13-toggle]");
     if (!toggle) return;
 
@@ -230,13 +305,14 @@
     writeState(state);
   });
 
-  new MutationObserver(scheduleApply).observe(nav, { childList: true });
+  new MutationObserver(scheduleApply).observe(document.body, { childList: true, subtree: true });
   scheduleApply();
 
   window.SMART_RISK_MENU_RC13 = {
-    version: "13.0.0",
+    version: "13.1.0",
     strategy: "presentation-layer",
     preservesRoutes: true,
-    preservesPermissions: true
+    preservesPermissions: true,
+    supportedNavigationModes: ["legacy", "scoped", "v11"]
   };
 })();

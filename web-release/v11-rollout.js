@@ -9,7 +9,7 @@
     "geopro.ec5@gmail.com"
   ]);
 
-  const BUILD_VERSION = "11.0.0-rc12";
+  const BUILD_VERSION = "11.0.0-rc13";
   const loadedResources = new Set();
   const normalizeEmail = value => String(value || "").trim().toLowerCase();
 

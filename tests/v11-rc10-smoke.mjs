@@ -20,7 +20,7 @@ ok(["Reporte de monitoreo","Validación técnica","Coordinación institucional",
 ok(admin.includes("registros consolidados leídos") && admin.includes("registros virtuales derivados de planes"), "Conciliación entre fuente consolidada y derivados RC9");
 ok(admin.includes("campos faltantes") && admin.includes("Sugerencia:"), "Brechas y sugerencias operativas visibles");
 ok(admin.includes("data-sr10-route"), "Acceso directo al módulo relacionado");
-ok(rollout.includes('11.0.0-rc10') && index.includes('11.0.0-rc10'), "Caché RC10 consistente");
+ok(rollout.includes('11.0.0-rc13') && index.includes('11.0.0-rc13'), "Caché vigente consistente");
 ok(rollout.includes("v11-admin-rc10.css") && rollout.includes("v11-admin-rc10.js"), "Capa RC10 cargada por rollout");
 ok(css.includes(".sr10-viewbar") && css.includes(".sr10-drawer") && css.includes(".sr10-stage-list"), "Estilos administrativos y de auditoría presentes");
 ok(!/\.collection\([^)]*\)\.(add|set|update|delete)\s*\(/.test(admin), "RC10 no introduce escrituras Firestore");

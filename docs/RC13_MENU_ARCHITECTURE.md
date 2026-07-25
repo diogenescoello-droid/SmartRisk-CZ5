@@ -2,13 +2,17 @@
 
 ## Reorganización de la arquitectura funcional del menú principal
 
+### Ajuste de compatibilidad RC13.1
+
+RC13.1 restaura la carga de `v11-rollout.js`, unifica la versión de caché en `11.0.0-rc13` y amplía la capa del menú para reconocer la navegación V11 basada en `data-route`. La corrección conserva las doce rutas V11, además de los menús administrativo y territorial existentes.
+
 ### Objetivo
 
 Reorganizar la navegación de SmartRisk CZ5 sin cambiar la arquitectura técnica existente, las rutas internas, los identificadores de página, Firebase, ArcGIS, la base de datos ni los mecanismos de autenticación y autorización.
 
 ### Principio de implementación
 
-RC13 funciona como una capa de presentación desacoplada. La aplicación mantiene los identificadores actuales (`dashboard`, `revision`, `acciones`, `territorios`, `sitios`, `herramientas`, `usuarios`, `instituciones`, `decisiones` y `cabina`). La nueva capa únicamente los agrupa y renombra visualmente.
+RC13 funciona como una capa de presentación desacoplada. La aplicación mantiene los identificadores actuales (`dashboard`, `revision`, `acciones`, `territorios`, `sitios`, `herramientas`, `usuarios`, `instituciones`, `decisiones` y `cabina`) y las rutas V11 (`inicio`, `dashboard`, `respuesta-coe`, `coe`, `acciones`, `monitoreo`, `riesgos`, `mapas`, `instituciones`, `reportes`, `herramientas` y `configuracion`). La nueva capa únicamente los agrupa y renombra visualmente.
 
 ## Arquitectura aprobada
 
@@ -47,10 +51,12 @@ La entrada “Recursos operativos” se presenta deshabilitada para no simular u
 
 1. No modificar `app.js`, `scoped-app.js`, `access-gate.js`, Firebase ni los datos.
 2. Conservar todos los atributos `data-page` y `data-scope-page`.
-3. Respetar los botones que la aplicación ya filtró por rol.
-4. No duplicar rutas ni funcionalidades.
-5. Mantener el menú territorial segregado de solo lectura.
-6. Permitir retirar RC13 eliminando dos referencias de `index.html` y dos archivos independientes.
+3. Conservar todos los atributos `data-route` de la navegación V11.
+4. Respetar los botones que la aplicación ya filtró por rol.
+5. No duplicar rutas ni funcionalidades.
+6. Mantener el menú territorial segregado de solo lectura.
+7. Mantener activo `v11-rollout.js` para los usuarios piloto.
+8. Permitir retirar RC13 eliminando dos referencias de `index.html` y dos archivos independientes.
 
 ## Criterios de aceptación
 
@@ -60,5 +66,6 @@ La entrada “Recursos operativos” se presenta deshabilitada para no simular u
 - El menú se presenta agrupado en tres módulos y funciones transversales.
 - La Cabina COE se muestra como acceso directo únicamente en la interfaz administrativa completa.
 - La navegación territorial segregada conserva sus filtros y permisos.
+- La navegación V11 conserva sus doce rutas y las agrupa sin alterar sus manejadores.
 - La interfaz es utilizable en escritorio, tableta y móvil.
 - No se realizan escrituras nuevas en Firestore por efecto del menú.
