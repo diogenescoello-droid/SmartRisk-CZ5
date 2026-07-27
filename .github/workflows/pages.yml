@@ -1,10 +1,16 @@
-﻿name: Publicar SmartRisk CZ5
+name: Publicar SmartRisk CZ5
 
 on:
   push:
     branches:
-      - main
+      - principal
+
   workflow_dispatch:
+    inputs:
+      confirmar_publicacion:
+        description: Escriba PUBLICAR para confirmar el despliegue manual
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -17,6 +23,10 @@ concurrency:
 
 jobs:
   deploy:
+    if: >-
+      github.event_name == 'push' ||
+      inputs.confirmar_publicacion == 'PUBLICAR'
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -25,18 +35,55 @@ jobs:
 
     steps:
       - name: Descargar repositorio
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
-      - name: Preparar GitHub Pages
+      - name: Configurar GitHub Pages
         uses: actions/configure-pages@v5
 
-      - name: Desactivar Jekyll
-        run: touch web-release/.nojekyll
+      - name: Validar SmartRisk
+        run: |
+          test -f web-release/index.html
+          test -f web-release/access-gate.js
+          test -f web-release/scope-context.js
+          test -f web-release/scope-repository.js
+          test -f web-release/scope-ui.js
 
-      - name: Cargar versión actual
-        uses: actions/upload-pages-artifact@v3
+          node --check web-release/access-gate.js
+          node --check web-release/scope-context.js
+          node --check web-release/scope-repository.js
+          node --check web-release/scope-ui.js
+          node tests/rc13-2-scope-check.mjs
+
+      - name: Preparar publicación saneada
+        run: |
+          rm -rf _site
+          mkdir -p _site
+
+          rsync -a web-release/ _site/ \
+            --exclude='.firebase/' \
+            --exclude='outputs/' \
+            --exclude='frontend/' \
+            --exclude='web-release/' \
+            --exclude='*.zip' \
+            --exclude='*.inspect.ndjson' \
+            --exclude='~$*'
+
+          touch _site/.nojekyll
+
+          test ! -e _site/.firebase
+          test ! -e _site/outputs
+          test ! -e _site/frontend
+          test ! -e _site/web-release
+          test ! -e _site/frontend.zip
+
+          echo "Archivos que serán publicados:"
+          find _site -maxdepth 2 -type f | sort
+
+      - name: Cargar artefacto de GitHub Pages
+        uses: actions/upload-pages-artifact@v4
         with:
-          path: ./web-release
+          path: ./_site
+          include-hidden-files: true
 
       - name: Publicar
         id: deployment
