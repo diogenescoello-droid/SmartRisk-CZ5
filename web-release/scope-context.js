@@ -436,6 +436,60 @@
     return state.cantonNames[0] || "Cantón sin asignar";
   }
 
+  function sharedScopeKey() {
+    if (!state) {
+      throw new Error(
+        "SmartRiskScope no está inicializado."
+      );
+    }
+
+    if (state.administrator) {
+      return "ZONAL:CZ5";
+    }
+
+    const prefix =
+      state.scopeType === "provincial"
+        ? "PROV:"
+        : "TER:";
+
+    const explicit = state.scopeKeys.find(
+      key => String(key).startsWith(prefix)
+    );
+
+    if (explicit) {
+      return explicit;
+    }
+
+    if (state.scopeType === "provincial") {
+      const province =
+        state.provinceIds[0] ||
+        state.provinceNames[0] ||
+        state.territories[0]?.provincia;
+
+      if (!province) {
+        throw new Error(
+          "El perfil provincial no tiene una " +
+          "clave de alcance válida."
+        );
+      }
+
+      return `PROV:${province}`;
+    }
+
+    const territory =
+      state.territories[0]?.id ||
+      state.territoryIds[0];
+
+    if (!territory) {
+      throw new Error(
+        "El perfil cantonal no tiene una " +
+        "clave de alcance válida."
+      );
+    }
+
+    return `TER:${territory}`;
+  }
+
   function init({ user, profile }) {
     state = buildState(user, profile || {});
 
@@ -478,6 +532,8 @@
       return [...(state?.scopeKeys || [])];
     },
 
+    sharedScopeKey,
+
     availableTerritories() {
       return clone(state?.territories || []);
     },
@@ -499,6 +555,7 @@
         provinceIds: [...state.provinceIds],
         provinceNames: [...state.provinceNames],
         scopeKeys: [...state.scopeKeys],
+        sharedScopeKey: sharedScopeKey(),
         territories: clone(state.territories)
       };
     },

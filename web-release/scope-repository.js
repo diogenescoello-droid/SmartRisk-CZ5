@@ -791,10 +791,17 @@
     user,
     sourceData,
     overlayReference,
-    initialData
+    initialData,
+    initialRevision
   }) {
     const originalDoc = db.doc.bind(db);
+    const nativeRunTransaction =
+      db.runTransaction.bind(db);
+
     let currentData = clone(initialData);
+    let currentRevision = Number(
+      initialRevision || 0
+    );
 
     const virtualReference = {
       __smartRiskVirtual: true,
@@ -808,20 +815,72 @@
         const filtered =
           window.SmartRiskScope.filterData(value);
 
-        const payload = {
-          data: filtered,
-          scope: {
-            type:
-              window.SmartRiskScope.getState()?.scopeType,
-            label:
-              window.SmartRiskScope.scopeLabel(),
-            userId: user.uid,
-            email: user.email,
-            updatedAt: new Date().toISOString()
-          }
-        };
+        const scopeState =
+          window.SmartRiskScope.getState();
 
-        await overlayReference.set(payload);
+        const scopeKey =
+          window.SmartRiskScope.sharedScopeKey();
+
+        let nextRevision =
+          currentRevision + 1;
+
+        await nativeRunTransaction(
+          async transaction => {
+            const stored =
+              await transaction.get(
+                overlayReference
+              );
+
+            const storedRevision =
+              stored.exists
+                ? Number(
+                    stored.data()?.revision || 0
+                  )
+                : 0;
+
+            if (
+              storedRevision !== currentRevision
+            ) {
+              throw new Error(
+                "Otro usuario modificó este alcance. " +
+                "Recarga SmartRisk antes de guardar."
+              );
+            }
+
+            nextRevision =
+              storedRevision + 1;
+
+            transaction.set(
+              overlayReference,
+              {
+                data: filtered,
+
+                scope: {
+                  scopeKey,
+                  type: scopeState?.scopeType,
+                  label:
+                    window.SmartRiskScope
+                      .scopeLabel(),
+                  territoryIds:
+                    scopeState?.territories
+                      ?.map(item => item.id) || [],
+                  provinceIds:
+                    scopeState?.provinceIds || []
+                },
+
+                revision: nextRevision,
+                updatedBy: user.uid,
+
+                updatedAt:
+                  firebase.firestore
+                    .FieldValue
+                    .serverTimestamp()
+              }
+            );
+          }
+        );
+
+        currentRevision = nextRevision;
         currentData = clone(filtered);
       },
 
@@ -834,7 +893,13 @@
               if (!change.exists) return;
 
               const stored = change.data();
-              const overlay = stored.data || stored;
+
+              currentRevision = Number(
+                stored.revision || 0
+              );
+
+              const overlay =
+                stored.data || stored;
 
               currentData =
                 window.SmartRiskScope.filterData(
@@ -932,24 +997,71 @@
     const filteredSource =
       window.SmartRiskScope.filterData(sourceData);
 
-    const overlayReference = db
-      .collection("territorialStates")
-      .doc(user.uid);
+    const sharedScopeKey =
+      window.SmartRiskScope.sharedScopeKey();
+
+    const statesCollection =
+      db.collection("territorialStates");
+
+    const overlayReference =
+      statesCollection.doc(sharedScopeKey);
+
+    const legacyReference =
+      statesCollection.doc(user.uid);
 
     let overlay = {};
+    let initialRevision = 0;
+    let sharedStateLoaded = false;
 
     try {
-      const stored = await overlayReference.get();
+      const stored =
+        await overlayReference.get();
 
       if (stored.exists) {
         const payload = stored.data();
-        overlay = payload.data || payload;
+
+        overlay =
+          payload.data || payload;
+
+        initialRevision = Number(
+          payload.revision || 0
+        );
+
+        sharedStateLoaded = true;
       }
     } catch (error) {
       console.warn(
-        "El estado territorial todavía no está disponible.",
+        "El estado compartido todavía no está disponible.",
         error
       );
+    }
+
+    if (!sharedStateLoaded) {
+      try {
+        const legacy =
+          await legacyReference.get();
+
+        if (legacy.exists) {
+          const payload = legacy.data();
+
+          overlay =
+            payload.data || payload;
+
+          console.info(
+            "Se cargó el respaldo territorial " +
+            "anterior del usuario. El próximo " +
+            "guardado migrará el estado al alcance " +
+            "compartido.",
+            sharedScopeKey
+          );
+        }
+      } catch (error) {
+        console.warn(
+          "No fue posible cargar el respaldo " +
+          "territorial anterior.",
+          error
+        );
+      }
     }
 
     const initialData =
@@ -965,7 +1077,7 @@
 
     localStorage.setItem(
       "smartrisk-active-territorial-scope",
-      user.uid
+      sharedScopeKey
     );
 
     installProfileBridge(db, user);
@@ -975,20 +1087,22 @@
       user,
       sourceData: filteredSource,
       overlayReference,
-      initialData
+      initialData,
+      initialRevision
     });
 
     return {
       mode: "interfaz-unificada-territorial",
       scopeLabel:
         window.SmartRiskScope.scopeLabel(),
+      sharedScopeKey,
       records: records.length
     };
   }
 
   window.SmartRiskScopeRepository = {
     init,
-    version: "13.2.0",
-    architecture: "unified-ui-territorial-state"
+    version: "13.3.0",
+    architecture: "shared-scope-territorial-state"
   };
 })();
