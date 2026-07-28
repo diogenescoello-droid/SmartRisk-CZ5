@@ -1,5 +1,6 @@
 (() => {
   "use strict";
+  const BUILD_VERSION="14.3.1";
   const SUPPORT_SCRIPTS=["data.js","enos-data.js","enos-reviews.js","risk-locations.js","f03-data.js","cases-data.js","pilot-baseline-data.js","pilot-baseline-bridge.js"];
   const $=selector=>document.querySelector(selector);
   const normalizeEmail=value=>String(value||"").trim().toLowerCase();
@@ -10,7 +11,7 @@
     $("#guideHelp")?.classList.add("hidden");$("#riskAnalyst")?.classList.add("hidden");loginMessage(message);
   }
   function status(text,state="local"){if($("#syncStatus")){$("#syncStatus").textContent=text;$("#syncStatus").className=`sync-status ${state}`}}
-  function loadScript(src){return new Promise((resolve,reject)=>{const script=document.createElement("script");script.src=src;script.async=false;script.onload=resolve;script.onerror=()=>reject(new Error(`No fue posible cargar ${src}`));document.body.appendChild(script)})}
+  function loadScript(src){return new Promise((resolve,reject)=>{const script=document.createElement("script");script.src=`${src}?v=${BUILD_VERSION}`;script.async=false;script.onload=resolve;script.onerror=()=>reject(new Error(`No fue posible cargar ${src}`));document.body.appendChild(script)})}
   async function readProfile(user){const snap=await db.collection("perfiles").doc(user.uid).get();return snap.exists?snap.data():null}
   async function loadApplication(user,profile){
     if(loaded||loading)return;loading=true;
