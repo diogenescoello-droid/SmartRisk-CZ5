@@ -1,0 +1,17 @@
+/* SmartRisk V11 RC9 · normalización de planes y trazabilidad */
+.sr9-normalization { display:flex; align-items:center; gap:12px; margin:0 0 12px; padding:12px 14px; border:1px solid #cfe0f4; border-radius:11px; background:#f7fbff; }
+.sr9-normalization > span { width:40px; height:40px; flex:0 0 40px; display:grid; place-items:center; border-radius:50%; background:#eaf3ff; color:#1769df; }
+.sr9-normalization > div { min-width:0; flex:1; }
+.sr9-normalization b { display:block; color:#0b3974; font-size:15px; }
+.sr9-normalization p { margin:3px 0 0; color:#59739a; font-size:13px; line-height:1.4; }
+.sr9-normalization button { min-height:38px; border:1px solid #c9daf0; border-radius:8px; background:#fff; color:#0e5ac7; padding:0 13px; font-weight:700; cursor:pointer; }
+.sr9-normalization.success { border-color:#bfe5cd; background:#f2fbf5; }
+.sr9-normalization.success > span { background:#e1f6e8; color:#138d47; }
+.sr9-plan-source { display:block; margin-top:4px; color:#627c9e; font-size:11px; font-weight:500; }
+.sr9-plan-empty { min-height:330px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:30px; color:#47678f; }
+.sr9-plan-empty svg { color:#8aa0bc; }
+.sr9-plan-empty strong { margin-top:12px; color:#274e82; font-size:18px; }
+.sr9-plan-empty p { max-width:650px; margin:8px auto 16px; line-height:1.55; }
+.sr9-plan-empty > div { display:flex; flex-wrap:wrap; gap:9px; justify-content:center; }
+.sr9-plan-empty button { min-height:40px; border:1px solid #c9daf0; border-radius:8px; background:#fff; color:#0e5ac7; padding:0 14px; cursor:pointer; }
+@media (max-width: 900px) { .sr9-normalization { align-items:flex-start; flex-wrap:wrap; } .sr9-normalization button { margin-left:52px; } }
