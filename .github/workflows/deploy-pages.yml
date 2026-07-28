@@ -1,15 +1,15 @@
-name: Deploy SmartRisk CZ5 to GitHub Pages
+name: Deploy SmartRisk CZ5 RC14.4
 
 on:
   push:
     branches: ["main"]
     paths:
-      - "smartrisk-site-rc14.3.3.zip"
+      - "smartrisk-site-rc14.4.zip"
       - ".github/workflows/deploy-pages.yml"
   workflow_dispatch:
 
 permissions:
-  contents: readEz
+  contents: read
   pages: write
   id-token: write
 
@@ -26,23 +26,20 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Configure Pages
         uses: actions/configure-pages@v5
-
       - name: Prepare site
         run: |
           rm -rf _site
           mkdir _site
-          unzip -q smartrisk-site-rc14.3.3.zip -d _site
+          unzip -q smartrisk-site-rc14.4.zip -d _site
           test -f _site/index.html
           test -f _site/VERSION.txt
-
+          grep -q "RC14.4" _site/VERSION.txt
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./_site
-
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
