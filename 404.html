@@ -28,12 +28,14 @@
   <main>
     <header>
       <div><h2 id="pageTitle">Panel principal</h2><p id="pageSubtitle">Estado operativo de la plataforma</p></div>
-      <div class="account-menu"><span id="sessionUser" class="pill"></span><button id="changePassword" class="secondary">Cambiar contraseña</button></div>
+      <div class="account-menu"><span id="syncStatus" class="sync-status local">Modo local</span><span id="sessionUser" class="pill"></span><button id="changePassword" class="secondary">Cambiar contraseña</button></div>
     </header>
     <section id="content"></section>
   </main>
 </div>
+<button id="guideHelp" class="guide-help hidden" type="button" aria-label="Abrir guía de esta pantalla">?</button>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
-<script src="firebase-config.js"></script><script src="data.js"></script><script src="app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script><script src="data.js"></script><script src="enos-data.js"></script><script src="enos-reviews.js"></script><script src="app.js"></script>
 </body></html>

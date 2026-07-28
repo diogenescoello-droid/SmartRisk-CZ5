@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SmartRisk CZ5</title><link rel="stylesheet" href="styles.css">
+<title>SmartRisk CZ5</title><link rel="stylesheet" href="vendor/leaflet.css"><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="rc13-menu.css?v=11.0.0-rc13">
 </head>
 <body>
 <div id="login" class="login-shell">
@@ -21,19 +21,30 @@
 </div>
 <div id="app" class="app hidden">
   <aside>
-    <div class="brand"><b>SmartRisk</b><span>CZ5 · v1.0 MVP</span></div>
+    <div class="brand"><b>SmartRisk</b><span>CZ5 · Seguridad territorial V10</span></div>
     <nav id="nav"></nav>
     <button id="logout" class="logout">Cerrar sesión</button>
   </aside>
   <main>
     <header>
       <div><h2 id="pageTitle">Panel principal</h2><p id="pageSubtitle">Estado operativo de la plataforma</p></div>
-      <div class="account-menu"><span id="sessionUser" class="pill"></span><button id="changePassword" class="secondary">Cambiar contraseña</button></div>
+      <div class="account-menu"><span id="syncStatus" class="sync-status local">Verificando acceso</span><span id="sessionUser" class="pill"></span><button id="changePassword" class="secondary">Cambiar contraseña</button></div>
     </header>
     <section id="content"></section>
   </main>
 </div>
+<button id="guideHelp" class="guide-help hidden" type="button" aria-label="Abrir guía de esta pantalla">?</button>
+<button id="riskAnalyst" class="risk-analyst-launch hidden" type="button" aria-label="Abrir analista de riesgos en ChatGPT"><span>IA↗</span><b>Consultar analista externo</b></button>
+
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
-<script src="firebase-config.js"></script><script src="data.js"></script><script src="app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="vendor/jszip.min.js"></script><script src="vendor/shp.min.js"></script><script src="vendor/leaflet.js"></script>
+<script src="firebase-config.js"></script>
+<script src="scope-context.js?v=13.2.0"></script>
+<script src="scope-repository.js?v=13.2.0"></script>
+<script src="scope-ui.js?v=13.2.0"></script>
+<script src="v11-rollout.js?v=11.0.0-rc13"></script>
+<script src="rc13-menu.js?v=11.0.0-rc13"></script>
+<script src="access-gate.js?v=13.2.0"></script>
 </body></html>

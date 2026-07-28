@@ -1,0 +1,23 @@
+{
+  "firestore": {
+    "rules": "firestore.rules"
+  },
+  "hosting": {
+    "public": ".",
+    "ignore": [
+      "firebase.json",
+      "firestore.rules",
+      "functions/**",
+      "**/.*",
+      "**/*.md",
+      "**/*.mjs",
+      "AUDITORIA_50_CORRIDAS.json",
+      "frontend/**",
+      "geo/riesgo-bolivar.geojson",
+      "geo/riesgo-guayas.geojson",
+      "geo/riesgo-santa-elena.geojson"
+    ],
+    "cleanUrls": true,
+    "trailingSlash": false
+  }
+}
