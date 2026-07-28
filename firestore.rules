@@ -1,0 +1,25 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn(){return request.auth != null;}
+    function profile(){return get(/databases/$(database)/documents/perfiles/$(request.auth.uid)).data;}
+    function isAdmin(){
+      return signedIn() && (
+        profile().rol == 'Administrador' ||
+        request.auth.token.email == 'geopro.ec2@gmail.com' ||
+        request.auth.token.email == 'dcoellom2@unemi.edu.ec'
+      );
+    }
+    function hasScope(scopeId){
+      return isAdmin() ||
+        (profile().scopeKeys is list && scopeId in profile().scopeKeys) ||
+        (profile().territorioIds is list && scopeId in profile().territorioIds) ||
+        (profile().provinciaIds is list && scopeId in profile().provinciaIds);
+    }
+    match /perfiles/{uid}{allow read: if signedIn() && (request.auth.uid == uid || isAdmin());allow write: if isAdmin();}
+    match /plataforma/{documentId}{allow read,write: if isAdmin();}
+    match /alcances/{scopeId}/registros/{recordId}{allow read: if signedIn() && hasScope(scopeId);allow write: if isAdmin();}
+    match /alcances/{scopeId}/estado/{documentId}{allow read,create,update: if signedIn() && hasScope(scopeId);allow delete: if isAdmin();}
+    match /{document=**}{allow read,write: if false;}
+  }
+}
