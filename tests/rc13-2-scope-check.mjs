@@ -1,0 +1,15 @@
+import fs from "node:fs";
+import assert from "node:assert/strict";
+const read=path=>fs.readFileSync(path,"utf8");
+const gate=read("web-release/access-gate.js");
+const context=read("web-release/scope-context.js");
+const repo=read("web-release/scope-repository.js");
+const index=read("web-release/index.html");
+assert.match(gate,/unified-application-by-scope/);
+assert.doesNotMatch(gate,/loadScopedApplication/);
+assert.match(context,/filterData/);
+assert.match(repo,/territorial-overlay/);
+assert.match(index,/scope-context\.js/);
+assert.match(index,/scope-repository\.js/);
+assert.match(index,/scope-ui\.js/);
+console.log("PASS RC13.2");
