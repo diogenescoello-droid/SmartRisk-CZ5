@@ -1,0 +1,14 @@
+SMART RISK CZ5 — PUBLICACIÓN SIN TERMINAL NI INSTALADORES
+
+1. En GitHub, abre diogenescoello-droid/SmartRisk-CZ5.
+2. En main, usa Add file > Upload files y sube smartrisk-site-rc14.3.3.zip a la raíz.
+3. Usa Add file > Create new file.
+4. En el nombre escribe: .github/workflows/deploy-pages.yml
+5. Copia el contenido del archivo deploy-pages.yml entregado en este paquete.
+6. Commit directly to main.
+7. Ve a Settings > Pages > Build and deployment > Source y elige GitHub Actions.
+8. Ve a Actions y abre “Deploy SmartRisk CZ5 to GitHub Pages”.
+9. Espera estado verde.
+10. Verifica /VERSION.txt. Debe mostrar la versión incluida en el ZIP.
+
+Este método publica exclusivamente el contenido del ZIP y no depende del resto de archivos del repositorio.
