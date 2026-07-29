@@ -1,11 +1,11 @@
-name: Deploy SmartRisk CZ5 RC14.4.1
+name: Deploy SmartRisk CZ5 RC14.4.2
 
 on:
   push:
     branches:
       - main
     paths:
-      - "smartrisk-site-rc14.4.1.zip"
+      - "smartrisk-site-rc14.4.2.zip"
       - ".github/workflows/deploy-pages.yml"
   workflow_dispatch:
 
@@ -26,19 +26,19 @@ jobs:
       - name: Descargar repositorio
         uses: actions/checkout@v6
 
-      - name: Preparar sitio RC14.4.1
+      - name: Preparar sitio RC14.4.2
         run: |
           rm -rf _site
           mkdir -p _site
 
-          test -f smartrisk-site-rc14.4.1.zip
+          test -f smartrisk-site-rc14.4.2.zip
 
-          unzip -q smartrisk-site-rc14.4.1.zip -d _site
+          unzip -q smartrisk-site-rc14.4.2.zip -d _site
 
           test -f _site/index.html
           test -f _site/VERSION.txt
 
-          grep -q "RC14.4.1" _site/VERSION.txt
+          grep -q "RC14.4.2" _site/VERSION.txt
 
           echo "Versión que se publicará:"
           cat _site/VERSION.txt
