@@ -1,12 +1,12 @@
-name: Deploy SmartRisk CZ5 RC14.4.2
+name: Deploy SmartRisk CZ5 RC14.4.3
 
-# Flujo productivo oficial: publica únicamente el paquete versionado RC14.4.2.
+# Flujo productivo oficial: publica únicamente el paquete versionado RC14.4.3.
 on:
   push:
     branches:
       - main
     paths:
-      - "smartrisk-site-rc14.4.2.zip"
+      - "smartrisk-site-rc14.4.3.zip"
       - ".github/workflows/deploy-pages.yml"
   workflow_dispatch:
 
@@ -27,19 +27,19 @@ jobs:
       - name: Descargar repositorio
         uses: actions/checkout@v6
 
-      - name: Preparar sitio RC14.4.2
+      - name: Preparar sitio RC14.4.3
         run: |
           rm -rf _site
           mkdir -p _site
 
-          test -f smartrisk-site-rc14.4.2.zip
+          test -f smartrisk-site-rc14.4.3.zip
 
-          unzip -q smartrisk-site-rc14.4.2.zip -d _site
+          unzip -q smartrisk-site-rc14.4.3.zip -d _site
 
           test -f _site/index.html
           test -f _site/VERSION.txt
 
-          grep -q "RC14.4.2" _site/VERSION.txt
+          grep -q "RC14.4.3" _site/VERSION.txt
 
           echo "Versión que se publicará:"
           cat _site/VERSION.txt
