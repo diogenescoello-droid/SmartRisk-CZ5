@@ -1,5 +1,6 @@
 name: Deploy SmartRisk CZ5 RC14.4.2
 
+# Flujo productivo oficial: publica únicamente el paquete versionado RC14.4.2.
 on:
   push:
     branches:
