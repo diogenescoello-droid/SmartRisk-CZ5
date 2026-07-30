@@ -28,6 +28,17 @@ service cloud.firestore {
       return request.resource.data.diff(resource.data).affectedKeys().hasOnly(fields);
     }
 
+    function validAccessTrace(uid) {
+      return signedIn()
+        && request.auth.uid == uid
+        && request.resource.data.uid == uid
+        && request.resource.data.correo == request.auth.token.email
+        && request.resource.data.keys().hasOnly([
+          'uid', 'correo', 'nombre', 'rol', 'scopeType', 'version',
+          'primerAccesoEn', 'ultimoAccesoEn'
+        ]);
+    }
+
     match /plataforma/datos {
       allow read: if admin() || activeProfile();
       allow create: if admin();
@@ -69,9 +80,22 @@ service cloud.firestore {
         );
       allow delete: if false;
     }
+
     match /perfiles/{uid} {
       allow read: if signedIn() && (request.auth.uid == uid || admin());
       allow write: if admin();
+    }
+
+    match /accesos/{uid} {
+      allow read: if admin() || (signedIn() && request.auth.uid == uid);
+      allow create: if validAccessTrace(uid);
+      allow update: if admin() || (
+        validAccessTrace(uid)
+        && changesOnly([
+          'nombre', 'rol', 'scopeType', 'version', 'primerAccesoEn', 'ultimoAccesoEn'
+        ])
+      );
+      allow delete: if false;
     }
   }
 }
