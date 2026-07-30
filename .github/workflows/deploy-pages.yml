@@ -1,12 +1,13 @@
-name: Deploy SmartRisk CZ5 RC14.4.3
+name: Deploy SmartRisk CZ5 RC14.4.3 + Preview RC14.4.4
 
-# Flujo productivo oficial: publica únicamente el paquete versionado RC14.4.3.
+# Flujo productivo oficial: conserva RC14.4.3 en la raíz y añade una vista aislada de prueba.
 on:
   push:
     branches:
       - main
     paths:
       - "smartrisk-site-rc14.4.3.zip"
+      - "preview-rc14.4.4/**"
       - ".github/workflows/deploy-pages.yml"
   workflow_dispatch:
 
@@ -27,22 +28,36 @@ jobs:
       - name: Descargar repositorio
         uses: actions/checkout@v6
 
-      - name: Preparar sitio RC14.4.3
+      - name: Preparar sitio oficial RC14.4.3
         run: |
           rm -rf _site
           mkdir -p _site
 
           test -f smartrisk-site-rc14.4.3.zip
-
           unzip -q smartrisk-site-rc14.4.3.zip -d _site
 
           test -f _site/index.html
           test -f _site/VERSION.txt
-
           grep -q "RC14.4.3" _site/VERSION.txt
 
-          echo "Versión que se publicará:"
+          echo "Versión oficial que se publicará:"
           cat _site/VERSION.txt
+
+      - name: Añadir vista aislada RC14.4.4
+        run: |
+          test -f preview-rc14.4.4/index.html
+          test -f preview-rc14.4.4/access-gate-preview.js
+          test -f preview-rc14.4.4/access-core.js
+          test -f preview-rc14.4.4/access-ui.js
+          test -f preview-rc14.4.4/access-form.js
+
+          mkdir -p _site/preview-rc14.4.4
+          cp -R preview-rc14.4.4/. _site/preview-rc14.4.4/
+
+          grep -q "VISTA DE PRUEBA · RC14.4.4" _site/preview-rc14.4.4/index.html
+          grep -q "14.4.4-rc1" _site/preview-rc14.4.4/access-core.js
+
+          echo "Vista de prueba añadida en /preview-rc14.4.4/"
 
       - name: Configurar GitHub Pages
         uses: actions/configure-pages@v5
