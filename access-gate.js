@@ -1,7 +1,8 @@
 (() => {
   "use strict";
-  const BUILD_VERSION="14.3.1";
+  const BUILD_VERSION="14.4.4-rc1";
   const SUPPORT_SCRIPTS=["data.js","enos-data.js","enos-reviews.js","risk-locations.js","f03-data.js","cases-data.js","pilot-baseline-data.js","pilot-baseline-bridge.js"];
+  const ACCESS_SCRIPTS=["access-core.js","access-ui.js","access-form.js"];
   const $=selector=>document.querySelector(selector);
   const normalizeEmail=value=>String(value||"").trim().toLowerCase();
   let loaded=false,loading=false;
@@ -21,7 +22,9 @@
       for(const src of SUPPORT_SCRIPTS)await loadScript(src);
       await window.SmartRiskScopeRepository.init({user,profile,db,auth});
       status(`Cargando ${window.SmartRiskScope.scopeLabel()}...`,"saving");
-      await loadScript("app.js");loaded=true;
+      await loadScript("app.js");
+      for(const src of ACCESS_SCRIPTS)await loadScript(src);
+      loaded=true;
     }finally{loading=false}
   }
   async function handle(user){
@@ -54,5 +57,5 @@
     if(loaded){localStorage.removeItem("smartrisk-cz5-data-v1");location.reload();return}
     showLogin();
   });
-  window.SMART_RISK_ACCESS_GATE={version:"13.2.0",mode:"unified-application-by-scope",support:"diogenes.coello@gestionderiesgos.gob.ec"};
+  window.SMART_RISK_ACCESS_GATE={version:BUILD_VERSION,mode:"unified-application-by-scope",accessModule:"personal-invitations-and-login-trace",support:"diogenes.coello@gestionderiesgos.gob.ec"};
 })();
