@@ -1,0 +1,7 @@
+SmartRisk CZ5
+Versión funcional: RC14.4.4-rc1
+Tipo: vista aislada de prueba
+Ruta: /preview-rc14.4.4/
+Módulo principal: accesos personales, invitaciones y trazabilidad
+Publicación oficial raíz: no modificada funcionalmente
+Fecha: 2026-07-30
