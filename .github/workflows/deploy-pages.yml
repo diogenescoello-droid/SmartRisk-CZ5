@@ -54,10 +54,11 @@ jobs:
           mkdir -p _site/preview-rc14.4.4
           cp -R preview-rc14.4.4/. _site/preview-rc14.4.4/
 
-          grep -q "VISTA DE PRUEBA · RC14.4.4" _site/preview-rc14.4.4/index.html
-          grep -q "14.4.4-rc1" _site/preview-rc14.4.4/access-core.js
+          grep -q "VISTA DE PRUEBA · RC14.4.4 RC2" _site/preview-rc14.4.4/index.html
+          grep -q "14.4.4-rc2" _site/preview-rc14.4.4/access-gate-preview.js
+          grep -q "14.4.4-rc2" _site/preview-rc14.4.4/access-core.js
 
-          echo "Vista de prueba añadida en /preview-rc14.4.4/"
+          echo "Vista de prueba RC14.4.4 RC2 añadida en /preview-rc14.4.4/"
 
       - name: Configurar GitHub Pages
         uses: actions/configure-pages@v5
