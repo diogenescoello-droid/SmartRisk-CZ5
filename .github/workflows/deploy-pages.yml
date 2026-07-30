@@ -43,22 +43,28 @@ jobs:
           echo "Versión oficial que se publicará:"
           cat _site/VERSION.txt
 
-      - name: Añadir vista aislada RC14.4.4
+      - name: Añadir vista aislada RC14.4.4 RC4
         run: |
           test -f preview-rc14.4.4/index.html
           test -f preview-rc14.4.4/access-gate-preview.js
           test -f preview-rc14.4.4/access-core.js
           test -f preview-rc14.4.4/access-ui.js
           test -f preview-rc14.4.4/access-form.js
+          test -f preview-rc14.4.4/action-r023-core.js
+          test -f preview-rc14.4.4/action-r023-page.js
+          test -f preview-rc14.4.4/action-r023-form.js
 
           mkdir -p _site/preview-rc14.4.4
           cp -R preview-rc14.4.4/. _site/preview-rc14.4.4/
 
-          grep -q "VISTA DE PRUEBA · RC14.4.4 RC3" _site/preview-rc14.4.4/index.html
-          grep -q "14.4.4-rc3" _site/preview-rc14.4.4/access-gate-preview.js
-          grep -q "14.4.4-rc2" _site/preview-rc14.4.4/access-core.js
+          grep -q "VISTA DE PRUEBA · RC14.4.4 RC4" _site/preview-rc14.4.4/index.html
+          grep -q "14.4.4-rc4" _site/preview-rc14.4.4/access-gate-preview.js
+          grep -q "14.4.4-rc4" _site/preview-rc14.4.4/access-core.js
+          grep -q "14.4.4-rc4" _site/preview-rc14.4.4/action-r023-core.js
+          grep -q "Calidad operativa y revisión UGR" _site/preview-rc14.4.4/action-r023-page.js
+          grep -q "Compromiso próximo" _site/preview-rc14.4.4/action-r023-form.js
 
-          echo "Vista de prueba RC14.4.4 RC3 añadida en /preview-rc14.4.4/"
+          echo "Vista RC14.4.4 RC4 con Acciones R02.3 añadida en /preview-rc14.4.4/"
 
       - name: Configurar GitHub Pages
         uses: actions/configure-pages@v5
