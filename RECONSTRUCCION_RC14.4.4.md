@@ -3,10 +3,45 @@
 Fecha de trabajo: 2026-07-30
 Rama: `rescate/rc14.4.4-windows-20260730`
 Base: `main` / RC14.4.3
+PR de revisión: `#4` — borrador, sin publicación productiva
 
 ## Objetivo
 
 Reconstruir desde Windows la actualización observada en la Mac, sin alterar la publicación productiva, conservando la interfaz y las funciones ya validadas y recuperando el flujo de credenciales personales, trazabilidad y control administrativo.
+
+## Estado de implementación
+
+### Completado en RC14.4.4-rc1
+
+- [x] Rama de rescate separada de `main`.
+- [x] Identificación visible de la compilación RC14.4.4.
+- [x] Formulario de invitación con nombre, correo, teléfono, rol y territorio.
+- [x] Creación de cuenta mediante instancia secundaria de Firebase Auth.
+- [x] Envío de enlace para que el usuario defina su contraseña personal.
+- [x] Reenvío del enlace sin revelar ni conocer la contraseña.
+- [x] Estados: sin credenciales, credenciales creadas, invitación enviada, correo pendiente, activo y suspendido.
+- [x] Suspensión y reactivación mediante el estado del perfil de Firestore.
+- [x] Panel administrativo con filtros, resumen, UID y actividad registrada.
+- [x] Registro de primer y último acceso, alcance y versión utilizada.
+- [x] Reglas Firestore propuestas para `accesos/{uid}`.
+- [x] Protección frente a registros huérfanos cuando falla la creación del perfil.
+- [x] PR `#4` creado como borrador para revisión y comparación.
+
+### Pendiente de prueba o implementación
+
+- [ ] Desplegar las reglas de Firestore de la rama en un entorno controlado.
+- [ ] Ejecutar una invitación real con correo de prueba no utilizado.
+- [ ] Confirmar definición de contraseña e ingreso del invitado.
+- [ ] Verificar alcance cantonal y menús por rol.
+- [ ] Probar suspensión, rechazo del ingreso y reactivación.
+- [ ] Registrar cierre de sesión y consultas a módulos sensibles.
+- [ ] Incorporar trazabilidad específica para exportaciones, observaciones y aperturas de expedientes.
+- [ ] Comparar con los archivos locales de la Mac.
+- [ ] Actualizar `VERSION.txt` y la validación de despliegue cuando se apruebe la versión final.
+
+### Limitación arquitectónica conocida
+
+La creación de cuentas usa Firebase Auth desde el navegador porque la aplicación actual es estática. El perfil obligatorio en Firestore impide que una cuenta sin autorización acceda a SmartRisk, pero una implementación definitiva debería trasladar la creación y revocación de usuarios a una función administrativa con Firebase Admin SDK. La versión piloto mantiene esta restricción documentada.
 
 ## Línea base que debe conservarse
 
