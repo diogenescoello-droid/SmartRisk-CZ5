@@ -1,10 +1,11 @@
 (() => {
   "use strict";
-  const BUILD_VERSION="14.4.4-rc2";
+  const BUILD_VERSION="14.4.4-rc3";
   const APP_BASE="/SmartRisk-CZ5/";
   const PREVIEW_BASE=`${APP_BASE}preview-rc14.4.4/`;
   const ADMIN_EMAILS=new Set(["geopro.ec2@gmail.com","dcoellom2@unemi.edu.ec"]);
-  const SUPPORT_SCRIPTS=["data.js","enos-data.js","enos-reviews.js","risk-locations.js","f03-data.js","cases-data.js","pilot-baseline-data.js","pilot-baseline-bridge.js"];
+  const REQUIRED_SCRIPTS=["data.js","enos-data.js","enos-reviews.js","risk-locations.js","f03-data.js","cases-data.js"];
+  const OPTIONAL_SCRIPTS=["pilot-baseline-data.js","pilot-baseline-bridge.js"];
   const ACCESS_SCRIPTS=["access-core.js","access-ui.js","access-form.js"];
   const $=selector=>document.querySelector(selector);
   const normalizeEmail=value=>String(value||"").trim().toLowerCase();
@@ -58,9 +59,19 @@
       script.dataset.smartriskSrc=src;
       script.async=false;
       script.onload=()=>{clearTimeout(timeout);resolve()};
-      script.onerror=()=>{clearTimeout(timeout);reject(new Error(`no se encontró ${src}`))};
+      script.onerror=()=>{clearTimeout(timeout);script.remove();reject(new Error(`no se encontró ${src}`))};
       document.body.appendChild(script);
     });
+  }
+  async function loadOptionalScript(src){
+    try{
+      status(`Comprobando módulo opcional ${src}...`,"saving");
+      await loadScript(src,false);
+      return true;
+    }catch(error){
+      console.warn(`SmartRisk continúa sin el módulo opcional ${src}`,error);
+      return false;
+    }
   }
   async function readProfile(user){
     const snap=await db.collection("perfiles").doc(user.uid).get();
@@ -71,16 +82,18 @@
     return null;
   }
   async function loadApplication(user,profile){
-    if(loaded)return;
-    if(loading)return;
+    if(loaded||loading)return;
     loading=true;
     try{
       status("Preparando alcance territorial...","saving");
       window.SmartRiskScope.init({user,profile,db,auth});
-      for(const src of SUPPORT_SCRIPTS){
+      for(const src of REQUIRED_SCRIPTS){
         status(`Cargando ${src}...`,"saving");
         await loadScript(src,false);
       }
+      const optionalResults=[];
+      for(const src of OPTIONAL_SCRIPTS)optionalResults.push([src,await loadOptionalScript(src)]);
+      window.SMART_RISK_OPTIONAL_MODULES=Object.fromEntries(optionalResults);
       await window.SmartRiskScopeRepository.init({user,profile,db,auth});
       status(`Cargando ${window.SmartRiskScope.scopeLabel()}...`,"saving");
       await loadScript("app.js",false);
@@ -93,8 +106,7 @@
     }
   }
   async function handle(user){
-    if(!user)return;
-    if(loaded)return;
+    if(!user||loaded)return;
     if(handlingUid===user.uid&&loading)return;
     handlingUid=user.uid;
     loginMessage("Credenciales válidas. Verificando perfil autorizado...");
