@@ -1,6 +1,6 @@
-name: Deploy SmartRisk CZ5 RC14.4.3 + Preview RC14.4.4
+name: Deploy SmartRisk CZ5 RC14.4.4 estable
 
-# Flujo productivo oficial: conserva RC14.4.3 en la raíz y añade una vista aislada de prueba.
+# Publica una sola versión en la raíz: RC14.4.4 RC4 con ajustes de seguimiento R02.3.
 on:
   push:
     branches:
@@ -28,7 +28,7 @@ jobs:
       - name: Descargar repositorio
         uses: actions/checkout@v6
 
-      - name: Preparar sitio oficial RC14.4.3
+      - name: Preparar base compartida
         run: |
           rm -rf _site
           mkdir -p _site
@@ -36,14 +36,12 @@ jobs:
           test -f smartrisk-site-rc14.4.3.zip
           unzip -q smartrisk-site-rc14.4.3.zip -d _site
 
-          test -f _site/index.html
-          test -f _site/VERSION.txt
-          grep -q "RC14.4.3" _site/VERSION.txt
+          test -f _site/styles.css
+          test -f _site/app.js
+          test -f _site/firebase-config.js
+          test -f _site/vendor/leaflet.css
 
-          echo "Versión oficial que se publicará:"
-          cat _site/VERSION.txt
-
-      - name: Añadir vista aislada RC14.4.4 RC4
+      - name: Promover RC14.4.4 RC4 como única versión pública
         run: |
           test -f preview-rc14.4.4/index.html
           test -f preview-rc14.4.4/access-gate-preview.js
@@ -54,17 +52,45 @@ jobs:
           test -f preview-rc14.4.4/action-r023-page.js
           test -f preview-rc14.4.4/action-r023-form.js
 
-          mkdir -p _site/preview-rc14.4.4
-          cp -R preview-rc14.4.4/. _site/preview-rc14.4.4/
+          cp -R preview-rc14.4.4/. _site/
 
-          grep -q "VISTA DE PRUEBA · RC14.4.4 RC4" _site/preview-rc14.4.4/index.html
-          grep -q "14.4.4-rc4" _site/preview-rc14.4.4/access-gate-preview.js
-          grep -q "14.4.4-rc4" _site/preview-rc14.4.4/access-core.js
-          grep -q "14.4.4-rc4" _site/preview-rc14.4.4/action-r023-core.js
-          grep -q "Calidad operativa y revisión UGR" _site/preview-rc14.4.4/action-r023-page.js
-          grep -q "Compromiso próximo" _site/preview-rc14.4.4/action-r023-form.js
+          python - <<'PY'
+          from pathlib import Path
 
-          echo "Vista RC14.4.4 RC4 con Acciones R02.3 añadida en /preview-rc14.4.4/"
+          index = Path("_site/index.html")
+          html = index.read_text(encoding="utf-8")
+          html = html.replace('href="../', 'href="')
+          html = html.replace('src="../', 'src="')
+          html = html.replace('SmartRisk CZ5 · RC14.4.4 prueba', 'SmartRisk CZ5 · RC14.4.4')
+          html = html.replace('VISTA DE PRUEBA · RC14.4.4 RC4', 'VERSIÓN ESTABLE · RC14.4.4')
+          html = html.replace('Vista controlada con accesos personales y módulo R02.3 de acciones.', 'Versión estable con accesos personales y módulo R02.3 de seguimiento.')
+          html = html.replace('CZ5 · Piloto controlado · RC14.4.4', 'CZ5 · Seguimiento territorial · RC14.4.4')
+          index.write_text(html, encoding="utf-8")
+
+          gate = Path("_site/access-gate-preview.js")
+          js = gate.read_text(encoding="utf-8")
+          old = 'PRE=`${APP}preview-rc14.4.4/`'
+          if old not in js:
+              raise SystemExit("No se encontró la ruta previa RC14.4.4")
+          js = js.replace(old, 'PRE=APP')
+          js = js.replace('mode:"preview-r023-actions-and-access"', 'mode:"stable-r023-actions-and-access"')
+          gate.write_text(js, encoding="utf-8")
+          PY
+
+          printf '%s\n' 'SmartRisk CZ5 RC14.4.4 RC4' 'Versión estable con ajustes de seguimiento R02.3' > _site/VERSION.txt
+
+          test ! -d _site/preview-rc14.4.4
+          grep -q "VERSIÓN ESTABLE · RC14.4.4" _site/index.html
+          grep -q "Seguimiento territorial · RC14.4.4" _site/index.html
+          grep -q 'PRE=APP' _site/access-gate-preview.js
+          grep -q 'stable-r023-actions-and-access' _site/access-gate-preview.js
+          grep -q "Calidad operativa y revisión UGR" _site/action-r023-page.js
+          grep -q "Compromiso próximo" _site/action-r023-form.js
+          ! grep -q 'href="../' _site/index.html
+          ! grep -q 'src="../' _site/index.html
+
+          echo "SmartRisk RC14.4.4 RC4 quedó preparada como única versión pública."
+          cat _site/VERSION.txt
 
       - name: Configurar GitHub Pages
         uses: actions/configure-pages@v5
