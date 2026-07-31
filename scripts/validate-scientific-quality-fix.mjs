@@ -14,17 +14,20 @@ const scopeGuard=read('preview-rc14.4.4/territorial-scope-guard-20260731.js');
 
 expect(manifest.release==='RC14.4.4 RC8','release incorrecto');
 expect(manifest.build==='14.4.4-rc8','build incorrecto');
-expect(manifest.scientificCorrectionVersion==='2026-07-31T00:05:00-05:00','versión científica incorrecta');
+expect(manifest.scientificCorrectionVersion==='2026-07-31T13:20:00-05:00','versión científica incorrecta');
 expect(manifest.counts.territories===56,'universo zonal incorrecto');
 expect(manifest.counts.plansAvailable===56,'planes zonales incorrectos');
 expect(manifest.counts.validatedPlans===52,'planes validados incorrectos');
 expect(manifest.acceptance.scientificIndicatorsDerivedFromCounts===true,'los porcentajes deben derivarse de conteos');
+expect(manifest.acceptance.missingPlansDerivedFromUniverse===true,'los faltantes deben derivarse del universo');
 expect(manifest.acceptance.processedReviewedValidatedSeparated===true,'procesado, revisado y validado deben permanecer separados');
 expect(manifest.acceptance.territorialGlobalsFiltered===true,'los indicadores territoriales deben recalcularse por alcance');
 
 includes(gate,'scientific-quality-fix-20260731.js','compuerta');
 includes(index,'access-gate-preview.js?v=14.4.4-rc8','caché');
 includes(index,'territorial-scope-guard-20260731.js?v=14.4.4-rc8','alcance');
+includes(fix,'missingPlans=Math.max(0,canonical-plansReceived)','faltantes zonales');
+includes(fix,'missingPlans,','persistencia de faltantes');
 includes(fix,'territorialCoverage:percent(plansReceived,canonical)','cobertura zonal');
 includes(fix,'reviewCompletion:percent(plansEvaluated,plansReceived)','extracción zonal');
 includes(fix,'Los Ríos cuenta como plan recibido y revisado al 68 %','Los Ríos');
@@ -40,6 +43,7 @@ console.log(JSON.stringify({
   scientificCorrectionVersion:manifest.scientificCorrectionVersion,
   zonalTerritories:manifest.counts.territories,
   zonalPlans:manifest.counts.plansAvailable,
+  zonalMissingPlans:0,
   scopedIndicatorsRecalculated:true,
   losRiosValidated:false
 },null,2));
