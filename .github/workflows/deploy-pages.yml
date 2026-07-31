@@ -10,6 +10,9 @@ on:
       - "pilot-baseline-data.js"
       - "pilot-baseline-bridge.js"
       - "preview-rc14.4.4/**"
+      - "RELEASE_MANIFEST.json"
+      - "scripts/validate-release.mjs"
+      - "firestore.rules"
       - ".github/workflows/deploy-pages.yml"
   workflow_dispatch:
 
@@ -30,6 +33,14 @@ jobs:
       - name: Descargar repositorio
         uses: actions/checkout@v6
 
+      - name: Preparar Node para validación
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Validar coherencia de versión, fuentes y conteos
+        run: node scripts/validate-release.mjs
+
       - name: Preparar base compartida
         run: |
           rm -rf _site
@@ -45,7 +56,8 @@ jobs:
 
           test -f pilot-baseline-data.js
           test -f pilot-baseline-bridge.js
-          cp pilot-baseline-data.js pilot-baseline-bridge.js _site/
+          test -f RELEASE_MANIFEST.json
+          cp pilot-baseline-data.js pilot-baseline-bridge.js RELEASE_MANIFEST.json _site/
 
       - name: Promover RC14.4.4 RC5 como única versión pública
         run: |
@@ -62,6 +74,7 @@ jobs:
           cp -R preview-rc14.4.4/. _site/
 
           python - <<'PY'
+          import json
           from pathlib import Path
 
           index = Path("_site/index.html")
@@ -77,6 +90,17 @@ jobs:
               raise SystemExit("No se encontró la ruta previa RC14.4.4")
           js = js.replace(old, 'PRE=APP')
           gate.write_text(js, encoding="utf-8")
+
+          manifest = json.loads(Path("RELEASE_MANIFEST.json").read_text(encoding="utf-8"))
+          health = {
+              "status": "ok",
+              "product": manifest["product"],
+              "release": manifest["release"],
+              "build": manifest["build"],
+              "dataCut": manifest["dataCut"],
+              "counts": manifest["counts"]
+          }
+          Path("_site/HEALTH.json").write_text(json.dumps(health, ensure_ascii=False, indent=2), encoding="utf-8")
           PY
 
           printf '%s\n' 'SmartRisk CZ5 RC14.4.4 RC5' 'Seguimiento R02.3 · datos consolidados al 30-07-2026' '56 entidades · 55 planes disponibles · 106 seguimientos territoriales' > _site/VERSION.txt
@@ -84,15 +108,20 @@ jobs:
           test ! -d _site/preview-rc14.4.4
           test -f _site/pilot-baseline-data.js
           test -f _site/pilot-baseline-bridge.js
+          test -f _site/RELEASE_MANIFEST.json
+          test -f _site/HEALTH.json
           grep -q "VERSIÓN ESTABLE · RC14.4.4 · DATOS 30-07-2026" _site/index.html
           grep -q '14.4.4-rc5' _site/index.html
           grep -q 'PRE=APP' _site/access-gate-preview.js
           grep -q 'stable-r023-latest-data' _site/access-gate-preview.js
           grep -q 'latest-data-update.js' _site/access-gate-preview.js
+          grep -q 'diogenes.coello@gestionderiesgos.gob.ec' _site/access-gate-preview.js
           grep -q 'DecompressionStream' _site/latest-data-update.js
           grep -q 'SMART_RISK_LATEST_DATA_UPDATE' _site/latest-data-update.js
           grep -q "Calidad operativa y revisión UGR" _site/action-r023-page.js
           grep -q "Compromiso próximo" _site/action-r023-form.js
+          grep -q '"followupsMinimum": 106' _site/RELEASE_MANIFEST.json
+          grep -q '"status": "ok"' _site/HEALTH.json
           ! grep -q 'href="../' _site/index.html
           ! grep -q 'src="../' _site/index.html
 
