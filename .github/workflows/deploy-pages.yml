@@ -1,6 +1,7 @@
-name: Deploy SmartRisk CZ5 RC14.4.4 estable
+name: Deploy SmartRisk CZ5 RC14.4.4 RC6
 
-# Publica una sola versión en la raíz: RC14.4.4 RC5 con seguimiento R02.3 y datos consolidados.
+# Publica una sola versión en la raíz: RC14.4.4 RC6 con seguimiento R02.3,
+# datos consolidados y optimización de Planes, checklist y brechas.
 on:
   push:
     branches:
@@ -47,6 +48,9 @@ jobs:
       - name: Validar recepción y estados diferenciados de planes
         run: node scripts/validate-plan-receipt-status.mjs
 
+      - name: Validar sintaxis de la corrección de rendimiento
+        run: node --check preview-rc14.4.4/review-performance-fix-20260731.js
+
       - name: Preparar base compartida
         run: |
           rm -rf _site
@@ -65,7 +69,7 @@ jobs:
           test -f RELEASE_MANIFEST.json
           cp pilot-baseline-data.js pilot-baseline-bridge.js RELEASE_MANIFEST.json _site/
 
-      - name: Promover RC14.4.4 RC5 como única versión pública
+      - name: Promover RC14.4.4 RC6 como única versión pública
         run: |
           test -f preview-rc14.4.4/index.html
           test -f preview-rc14.4.4/access-gate-preview.js
@@ -80,6 +84,7 @@ jobs:
           test -f preview-rc14.4.4/los-rios-plan-correction-20260730.js
           test -f preview-rc14.4.4/scientific-quality-fix-20260731.js
           test -f preview-rc14.4.4/plan-receipt-status-fix-20260731.js
+          test -f preview-rc14.4.4/review-performance-fix-20260731.js
 
           cp -R preview-rc14.4.4/. _site/
 
@@ -105,20 +110,21 @@ jobs:
           health = {
               "status": "ok",
               "product": manifest["product"],
-              "release": manifest["release"],
-              "build": manifest["build"],
+              "release": "RC14.4.4 RC6",
+              "build": "14.4.4-rc6",
               "dataVersion": manifest["dataVersion"],
               "completionVersion": manifest["completionVersion"],
               "correctionVersion": manifest["correctionVersion"],
               "scientificCorrectionVersion": manifest["scientificCorrectionVersion"],
               "planReceiptCorrectionVersion": manifest["planReceiptCorrectionVersion"],
+              "reviewPerformanceVersion": "14.4.4-rc6",
               "dataCut": manifest["dataCut"],
               "counts": manifest["counts"]
           }
           Path("_site/HEALTH.json").write_text(json.dumps(health, ensure_ascii=False, indent=2), encoding="utf-8")
           PY
 
-          printf '%s\n' 'SmartRisk CZ5 RC14.4.4 RC5' 'Seguimiento R02.3 · datos consolidados al 31-07-2026' '56 entidades · 56 planes disponibles · 106 seguimientos territoriales' 'Recepción, archivo, firma, revisión y validación se muestran por separado' 'Galápagos provincial 84 % · San Cristóbal recibido y devuelto · Los Ríos 68 %' > _site/VERSION.txt
+          printf '%s\n' 'SmartRisk CZ5 RC14.4.4 RC6' 'Seguimiento R02.3 · datos consolidados al 31-07-2026' '56 entidades · 56 planes disponibles · 106 seguimientos territoriales' 'Planes, checklist y brechas: índice ligero, búsqueda diferida y checklist paginado' 'Recepción, archivo, firma, revisión y validación se muestran por separado' > _site/VERSION.txt
 
           test ! -d _site/preview-rc14.4.4
           test -f _site/pilot-baseline-data.js
@@ -129,8 +135,9 @@ jobs:
           test -f _site/los-rios-plan-correction-20260730.js
           test -f _site/scientific-quality-fix-20260731.js
           test -f _site/plan-receipt-status-fix-20260731.js
-          grep -q "VERSIÓN ESTABLE · RC14.4.4 · DATOS 30-07-2026" _site/index.html
-          grep -q 'access-gate-preview.js?v=14.4.4-rc5.2' _site/index.html
+          test -f _site/review-performance-fix-20260731.js
+          grep -q "VERSIÓN ESTABLE · RC14.4.4 RC6 · DATOS 30-07-2026" _site/index.html
+          grep -q 'review-performance-fix-20260731.js?v=14.4.4-rc6' _site/index.html
           grep -q 'PRE=APP' _site/access-gate-preview.js
           grep -q 'stable-r023-latest-data' _site/access-gate-preview.js
           grep -q 'latest-data-update.js' _site/access-gate-preview.js
@@ -138,6 +145,9 @@ jobs:
           grep -q 'los-rios-plan-correction-20260730.js' _site/access-gate-preview.js
           grep -q 'scientific-quality-fix-20260731.js' _site/access-gate-preview.js
           grep -q 'plan-receipt-status-fix-20260731.js' _site/access-gate-preview.js
+          grep -q 'SMART_RISK_REVIEW_PERFORMANCE_FIX' _site/review-performance-fix-20260731.js
+          grep -q 'CHECKLIST_BATCH=25' _site/review-performance-fix-20260731.js
+          grep -q 'requestAnimationFrame' _site/review-performance-fix-20260731.js
           grep -q 'diogenes.coello@gestionderiesgos.gob.ec' _site/access-gate-preview.js
           grep -q 'SMART_RISK_PLAN_RECEIPT_STATUS_FIX' _site/plan-receipt-status-fix-20260731.js
           grep -q 'TER-REG-ESPECIAL-GALAPAGOS' _site/plan-receipt-status-fix-20260731.js
@@ -145,12 +155,12 @@ jobs:
           grep -q 'TER-PROV-LOS-RIOS' _site/plan-receipt-status-fix-20260731.js
           grep -q 'Recibido · devuelto' _site/plan-receipt-status-fix-20260731.js
           grep -q '"plansAvailable": 56' _site/RELEASE_MANIFEST.json
-          grep -q '"planReceiptCorrectionVersion"' _site/HEALTH.json
+          grep -q '"reviewPerformanceVersion": "14.4.4-rc6"' _site/HEALTH.json
           grep -q '"status": "ok"' _site/HEALTH.json
           ! grep -q 'href="../' _site/index.html
           ! grep -q 'src="../' _site/index.html
 
-          echo "SmartRisk RC14.4.4 RC5 quedó preparada con estados documentales reconciliados."
+          echo "SmartRisk RC14.4.4 RC6 quedó preparada con carga documental optimizada."
           cat _site/VERSION.txt
 
       - name: Configurar GitHub Pages
