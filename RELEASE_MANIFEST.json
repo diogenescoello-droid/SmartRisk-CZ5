@@ -15,17 +15,23 @@
     "returnedPlans": 4,
     "followupsMinimum": 106
   },
+  "packageHashes": {
+    "principalRawSha256": "289bff5cc45ed7725f4ba04edddbe1752193781143e8794185989bee4d849a9c",
+    "completionRawSha256": "15f8465d1c41c37aba924a5c6c46447e117179958645f50891b9126bccb54ebc"
+  },
   "sources": [
     {
       "name": "Kobo F07 ENOS CZ5",
       "role": "seguimiento operativo",
-      "cut": "2026-07-30"
+      "cut": "2026-07-30",
+      "sourceFileSha256": "a8cdef870e8bb3a9a7d128036786309acc705887d31df5ac612b42bf288c5022"
     },
     {
       "name": "MATRIZSEGUIM-EL NIÑO(2).xlsx",
       "role": "estado documental de planes",
       "driveFileId": "1g1D9tWgDkUEAZtI3lJ9WilfYcmbJ2gCj",
-      "modifiedAt": "2026-07-30T19:53:43.753Z"
+      "modifiedAt": "2026-07-30T19:53:43.753Z",
+      "sourceFileSha256": "94a9bf7caf4bdaca73d2b521d9887168389fdf23742bc0b7e5d4c86e6269427f"
     },
     {
       "name": "Correo institucional ENOS CZ5",
