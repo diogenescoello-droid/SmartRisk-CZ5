@@ -10,8 +10,9 @@ async function decode(){
   return JSON.parse(await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream("gzip"))).text());
 }
 decode().then(delta=>{
-  const baseline=window.SMART_RISK_PILOT_BASELINE;
-  if(!baseline)throw new Error("No se cargó la línea base de seguimiento.");
+  const sourceBaseline=window.SMART_RISK_PILOT_BASELINE;
+  if(!sourceBaseline)throw new Error("No se cargó la línea base de seguimiento.");
+  const baseline=structuredClone(sourceBaseline);
   const VERSION=delta.config.version;
   const prepareBaseline=()=>{
     const emap=new Map((baseline.entities||[]).map(item=>[item.entityId,item]));
