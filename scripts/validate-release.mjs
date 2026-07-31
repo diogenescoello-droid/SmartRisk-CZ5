@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import zlib from 'node:zlib';
+import { execFileSync } from 'node:child_process';
 
 const root = process.cwd();
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
@@ -112,12 +113,36 @@ for (const item of delta.followups) followups.set(followupKey(item), { ...(follo
 for (const item of completion.followups) followups.set(followupKey(item), { ...(followups.get(followupKey(item)) || {}), ...item });
 expect(followups.size >= manifest.counts.followupsMinimum, `se esperaban al menos ${manifest.counts.followupsMinimum} seguimientos y se obtuvieron ${followups.size}`);
 
-const availableValues = new Set(['true', 'si', 'sí', 'disponible', '1']);
-const plansAvailable = [...entities.values()].filter(item => item.planDocumentAvailable === true || availableValues.has(normalize(item.planDocumentAvailable))).length;
-expect(plansAvailable === manifest.counts.plansAvailable, `se esperaban ${manifest.counts.plansAvailable} planes disponibles y se obtuvieron ${plansAvailable}`);
+let baseReviewText;
+try {
+  baseReviewText = execFileSync('unzip', ['-p', 'smartrisk-site-rc14.4.3.zip', 'enos-reviews.js'], {
+    encoding: 'utf8',
+    maxBuffer: 20 * 1024 * 1024
+  });
+} catch (error) {
+  fail(`no se pudo leer enos-reviews.js del paquete base: ${error.message}`);
+}
+const reviewMatch = baseReviewText.match(/window\.ENOS_REVIEWS=(\{[\s\S]*\});?\s*$/);
+expect(reviewMatch, 'no se pudo interpretar enos-reviews.js del paquete base');
+let baseReviews;
+try {
+  baseReviews = JSON.parse(reviewMatch[1]);
+} catch (error) {
+  fail(`enos-reviews.js del paquete base es ilegible: ${error.message}`);
+}
 
-const planKeys = new Set(delta.planPatches.map(item => `${normalize(item.province)}|${normalize(item.territory)}`));
-expect(planKeys.size === delta.planPatches.length, 'existen parches documentales duplicados por provincia y territorio');
+const planKey = item => `${normalize(item.province)}|${normalize(item.territory)}`;
+const availablePlans = new Set((baseReviews.reviews || []).map(planKey));
+const planPatchKeys = new Set();
+for (const item of delta.planPatches) {
+  const key = planKey(item);
+  expect(!planPatchKeys.has(key), `parche documental duplicado: ${key}`);
+  planPatchKeys.add(key);
+  if (item.planDocumentAvailable === true) availablePlans.add(key);
+  else if (item.planDocumentAvailable === false) availablePlans.delete(key);
+}
+const plansAvailable = availablePlans.size;
+expect(plansAvailable === manifest.counts.plansAvailable, `se esperaban ${manifest.counts.plansAvailable} planes disponibles y se obtuvieron ${plansAvailable}`);
 
 console.log(JSON.stringify({
   ok: true,
