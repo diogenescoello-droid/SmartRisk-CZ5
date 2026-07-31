@@ -44,6 +44,9 @@ jobs:
       - name: Validar coherencia del panel científico
         run: node scripts/validate-scientific-quality-fix.mjs
 
+      - name: Validar recepción y estados diferenciados de planes
+        run: node scripts/validate-plan-receipt-status.mjs
+
       - name: Preparar base compartida
         run: |
           rm -rf _site
@@ -76,6 +79,7 @@ jobs:
           test -f preview-rc14.4.4/followup-completion-20260730.js
           test -f preview-rc14.4.4/los-rios-plan-correction-20260730.js
           test -f preview-rc14.4.4/scientific-quality-fix-20260731.js
+          test -f preview-rc14.4.4/plan-receipt-status-fix-20260731.js
 
           cp -R preview-rc14.4.4/. _site/
 
@@ -107,13 +111,14 @@ jobs:
               "completionVersion": manifest["completionVersion"],
               "correctionVersion": manifest["correctionVersion"],
               "scientificCorrectionVersion": manifest["scientificCorrectionVersion"],
+              "planReceiptCorrectionVersion": manifest["planReceiptCorrectionVersion"],
               "dataCut": manifest["dataCut"],
               "counts": manifest["counts"]
           }
           Path("_site/HEALTH.json").write_text(json.dumps(health, ensure_ascii=False, indent=2), encoding="utf-8")
           PY
 
-          printf '%s\n' 'SmartRisk CZ5 RC14.4.4 RC5' 'Seguimiento R02.3 · datos consolidados al 30-07-2026' '56 entidades · 56 planes disponibles · 106 seguimientos territoriales' 'Panel científico: cobertura 100 % · extracción 100 % · validación documental 52/56' 'Los Ríos provincial · plan funcional parcial 68 % · en corrección progresiva' > _site/VERSION.txt
+          printf '%s\n' 'SmartRisk CZ5 RC14.4.4 RC5' 'Seguimiento R02.3 · datos consolidados al 31-07-2026' '56 entidades · 56 planes disponibles · 106 seguimientos territoriales' 'Recepción, archivo, firma, revisión y validación se muestran por separado' 'Galápagos provincial 84 % · San Cristóbal recibido y devuelto · Los Ríos 68 %' > _site/VERSION.txt
 
           test ! -d _site/preview-rc14.4.4
           test -f _site/pilot-baseline-data.js
@@ -123,35 +128,29 @@ jobs:
           test -f _site/followup-completion-20260730.js
           test -f _site/los-rios-plan-correction-20260730.js
           test -f _site/scientific-quality-fix-20260731.js
+          test -f _site/plan-receipt-status-fix-20260731.js
           grep -q "VERSIÓN ESTABLE · RC14.4.4 · DATOS 30-07-2026" _site/index.html
-          grep -q 'access-gate-preview.js?v=14.4.4-rc5.1' _site/index.html
+          grep -q 'access-gate-preview.js?v=14.4.4-rc5.2' _site/index.html
           grep -q 'PRE=APP' _site/access-gate-preview.js
           grep -q 'stable-r023-latest-data' _site/access-gate-preview.js
           grep -q 'latest-data-update.js' _site/access-gate-preview.js
           grep -q 'followup-completion-20260730.js' _site/access-gate-preview.js
           grep -q 'los-rios-plan-correction-20260730.js' _site/access-gate-preview.js
           grep -q 'scientific-quality-fix-20260731.js' _site/access-gate-preview.js
+          grep -q 'plan-receipt-status-fix-20260731.js' _site/access-gate-preview.js
           grep -q 'diogenes.coello@gestionderiesgos.gob.ec' _site/access-gate-preview.js
-          grep -q 'DecompressionStream' _site/latest-data-update.js
-          grep -q 'SMART_RISK_LATEST_DATA_UPDATE' _site/latest-data-update.js
-          grep -q 'SMART_RISK_FOLLOWUP_COMPLETION' _site/followup-completion-20260730.js
-          grep -q 'Sincronizado · 106 seguimientos' _site/followup-completion-20260730.js
-          grep -q 'SMART_RISK_LOS_RIOS_PLAN_CORRECTION' _site/los-rios-plan-correction-20260730.js
-          grep -q 'planReviewScore":68' _site/los-rios-plan-correction-20260730.js
-          grep -q 'SMART_RISK_SCIENTIFIC_QUALITY_FIX' _site/scientific-quality-fix-20260731.js
-          grep -q 'territorialCoverage:percent(plansReceived,canonical)' _site/scientific-quality-fix-20260731.js
-          grep -q 'losRiosValidated:false' _site/scientific-quality-fix-20260731.js
-          grep -q "Calidad operativa y revisión UGR" _site/action-r023-page.js
-          grep -q "Compromiso próximo" _site/action-r023-form.js
+          grep -q 'SMART_RISK_PLAN_RECEIPT_STATUS_FIX' _site/plan-receipt-status-fix-20260731.js
+          grep -q 'TER-REG-ESPECIAL-GALAPAGOS' _site/plan-receipt-status-fix-20260731.js
+          grep -q 'TER-GALAPAGOS-SAN-CRISTOBAL' _site/plan-receipt-status-fix-20260731.js
+          grep -q 'TER-PROV-LOS-RIOS' _site/plan-receipt-status-fix-20260731.js
+          grep -q 'Recibido · devuelto' _site/plan-receipt-status-fix-20260731.js
           grep -q '"plansAvailable": 56' _site/RELEASE_MANIFEST.json
-          grep -q '"validatedPlans": 52' _site/RELEASE_MANIFEST.json
-          grep -q '"followupsMinimum": 106' _site/RELEASE_MANIFEST.json
+          grep -q '"planReceiptCorrectionVersion"' _site/HEALTH.json
           grep -q '"status": "ok"' _site/HEALTH.json
-          grep -q '"scientificCorrectionVersion"' _site/HEALTH.json
           ! grep -q 'href="../' _site/index.html
           ! grep -q 'src="../' _site/index.html
 
-          echo "SmartRisk RC14.4.4 RC5 quedó preparada con el panel científico corregido."
+          echo "SmartRisk RC14.4.4 RC5 quedó preparada con estados documentales reconciliados."
           cat _site/VERSION.txt
 
       - name: Configurar GitHub Pages

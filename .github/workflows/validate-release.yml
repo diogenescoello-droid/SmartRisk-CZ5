@@ -44,6 +44,9 @@ jobs:
       - name: Validar coherencia del panel científico
         run: node scripts/validate-scientific-quality-fix.mjs
 
+      - name: Validar recepción y estados diferenciados de planes
+        run: node scripts/validate-plan-receipt-status.mjs
+
       - name: Revisar sintaxis JavaScript
         run: |
           node --check preview-rc14.4.4/access-gate-preview.js
@@ -51,6 +54,7 @@ jobs:
           node --check preview-rc14.4.4/followup-completion-20260730.js
           node --check preview-rc14.4.4/los-rios-plan-correction-20260730.js
           node --check preview-rc14.4.4/scientific-quality-fix-20260731.js
+          node --check preview-rc14.4.4/plan-receipt-status-fix-20260731.js
           node --check preview-rc14.4.4/action-r023-core.js
           node --check preview-rc14.4.4/action-r023-page.js
           node --check preview-rc14.4.4/action-r023-form.js
