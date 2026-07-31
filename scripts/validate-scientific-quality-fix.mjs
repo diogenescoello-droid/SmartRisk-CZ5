@@ -3,7 +3,7 @@ import path from 'node:path';
 
 const root=process.cwd();
 const read=file=>fs.readFileSync(path.join(root,file),'utf8');
-const expect=(condition,message)=>{if(!condition)throw new Error(`VALIDACIÓN PANEL CIENTÍFICO RC8: ${message}`)};
+const expect=(condition,message)=>{if(!condition)throw new Error(`VALIDACIÓN PANEL CIENTÍFICO RC9: ${message}`)};
 const includes=(text,value,label)=>expect(text.includes(value),`${label}: falta ${value}`);
 
 const manifest=JSON.parse(read('RELEASE_MANIFEST.json'));
@@ -12,8 +12,8 @@ const index=read('preview-rc14.4.4/index.html');
 const fix=read('preview-rc14.4.4/scientific-quality-fix-20260731.js');
 const scopeGuard=read('preview-rc14.4.4/territorial-scope-guard-20260731.js');
 
-expect(manifest.release==='RC14.4.4 RC8','release incorrecto');
-expect(manifest.build==='14.4.4-rc8','build incorrecto');
+expect(manifest.release==='RC14.4.4 RC9','release incorrecto');
+expect(manifest.build==='14.4.4-rc9','build incorrecto');
 expect(manifest.scientificCorrectionVersion==='2026-07-31T13:20:00-05:00','versión científica incorrecta');
 expect(manifest.counts.territories===56,'universo zonal incorrecto');
 expect(manifest.counts.plansAvailable===56,'planes zonales incorrectos');
@@ -24,8 +24,8 @@ expect(manifest.acceptance.processedReviewedValidatedSeparated===true,'procesado
 expect(manifest.acceptance.territorialGlobalsFiltered===true,'los indicadores territoriales deben recalcularse por alcance');
 
 includes(gate,'scientific-quality-fix-20260731.js','compuerta');
-includes(index,'access-gate-preview.js?v=14.4.4-rc8','caché');
-includes(index,'territorial-scope-guard-20260731.js?v=14.4.4-rc8','alcance');
+includes(index,'access-gate-preview.js?v=14.4.4-rc9','caché');
+includes(index,'territorial-scope-guard-20260731.js?v=14.4.4-rc9','alcance');
 includes(fix,'missingPlans=Math.max(0,canonical-plansReceived)','faltantes zonales');
 includes(fix,'missingPlans,','persistencia de faltantes');
 includes(fix,'territorialCoverage:percent(plansReceived,canonical)','cobertura zonal');
