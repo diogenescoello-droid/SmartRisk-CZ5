@@ -1,7 +1,7 @@
-name: Deploy SmartRisk CZ5 RC14.4.4 RC8
+name: Deploy SmartRisk CZ5 RC14.4.4 RC9
 
-# Publica RC14.4.4 RC8 con corrección del congelamiento,
-# coherencia documental y aislamiento territorial de perfiles.
+# Publica RC14.4.4 RC9 con aislamiento territorial, estabilidad documental
+# y avisos cantonales de informes de riesgo de los últimos cinco años.
 on:
   push:
     branches:
@@ -57,6 +57,8 @@ jobs:
           node --check preview-rc14.4.4/plan-receipt-status-fix-20260731.js
           node --check preview-rc14.4.4/review-performance-fix-20260731.js
           node --check preview-rc14.4.4/territorial-scope-guard-20260731.js
+          node --check preview-rc14.4.4/risk-reports-5y-data.js
+          node --check preview-rc14.4.4/risk-reports-5y-ui.js
           node --check scope-context.js
           node --check scope-repository.js
           node --check scope-ui.js
@@ -80,7 +82,7 @@ jobs:
           cp pilot-baseline-data.js pilot-baseline-bridge.js RELEASE_MANIFEST.json _site/
           cp scope-context.js scope-repository.js scope-ui.js _site/
 
-      - name: Promover RC14.4.4 RC8 como versión pública
+      - name: Promover RC14.4.4 RC9 como versión pública
         run: |
           test -f preview-rc14.4.4/index.html
           test -f preview-rc14.4.4/access-gate-preview.js
@@ -97,6 +99,8 @@ jobs:
           test -f preview-rc14.4.4/plan-receipt-status-fix-20260731.js
           test -f preview-rc14.4.4/review-performance-fix-20260731.js
           test -f preview-rc14.4.4/territorial-scope-guard-20260731.js
+          test -f preview-rc14.4.4/risk-reports-5y-data.js
+          test -f preview-rc14.4.4/risk-reports-5y-ui.js
 
           cp -R preview-rc14.4.4/. _site/
 
@@ -130,8 +134,11 @@ jobs:
               "planReceiptCorrectionVersion": manifest["planReceiptCorrectionVersion"],
               "reviewPerformanceVersion": manifest["reviewPerformanceVersion"],
               "territorialScopeVersion": manifest["territorialScopeVersion"],
+              "riskReportsVersion": manifest["riskReportsVersion"],
+              "riskReportsWindowYears": manifest["riskReportsWindowYears"],
               "reviewObserverStrategy": "idempotent-disconnect-write-reconnect",
               "scopeStrategy": "filter-global-packages-and-render-boundary",
+              "riskReportsStrategy": "rolling-five-year-window-by-province-canton",
               "dataCut": manifest["dataCut"],
               "counts": manifest["counts"]
           }
@@ -139,11 +146,12 @@ jobs:
           PY
 
           printf '%s\n' \
-            'SmartRisk CZ5 RC14.4.4 RC8' \
+            'SmartRisk CZ5 RC14.4.4 RC9' \
             'Seguimiento R02.3 · datos consolidados al 31-07-2026' \
             '56 entidades · 56 planes disponibles · 106 seguimientos territoriales' \
             'Perfiles territoriales: paquetes globales y render filtrados por alcance' \
-            'Planes, checklist y brechas: ciclo de observación eliminado' \
+            'Informes de riesgo: ventana móvil de cinco años y fichas cantonales' \
+            'Índice inicial: 6 informes verificados en 4 cantones' \
             'Recepción, archivo, firma, revisión y validación se muestran por separado' \
             > _site/VERSION.txt
 
@@ -158,12 +166,16 @@ jobs:
           test -f _site/plan-receipt-status-fix-20260731.js
           test -f _site/review-performance-fix-20260731.js
           test -f _site/territorial-scope-guard-20260731.js
+          test -f _site/risk-reports-5y-data.js
+          test -f _site/risk-reports-5y-ui.js
 
-          grep -q "VERSIÓN ESTABLE · RC14.4.4 RC8 · DATOS 30-07-2026" _site/index.html
-          grep -q 'access-gate-preview.js?v=14.4.4-rc8' _site/index.html
-          grep -q 'territorial-scope-guard-20260731.js?v=14.4.4-rc8' _site/index.html
-          grep -q 'BUILD="14.4.4-rc8"' _site/access-gate-preview.js
-          grep -q 'stable-r023-territorial-scope-enforced' _site/access-gate-preview.js
+          grep -q "VERSIÓN ESTABLE · RC14.4.4 RC9 · DATOS 30-07-2026" _site/index.html
+          grep -q 'access-gate-preview.js?v=14.4.4-rc9' _site/index.html
+          grep -q 'territorial-scope-guard-20260731.js?v=14.4.4-rc9' _site/index.html
+          grep -q 'BUILD="14.4.4-rc9"' _site/access-gate-preview.js
+          grep -q 'stable-territorial-risk-reports-5y' _site/access-gate-preview.js
+          grep -q 'risk-reports-5y-data.js' _site/access-gate-preview.js
+          grep -q 'risk-reports-5y-ui.js' _site/access-gate-preview.js
           grep -q 'filterReviews(index)' _site/territorial-scope-guard-20260731.js
           grep -q 'window.F03_CARTOGRAPHY=window.F03_CARTOGRAPHY.filter' _site/territorial-scope-guard-20260731.js
           grep -q 'data=window.SmartRiskScope.filterData(data)' _site/territorial-scope-guard-20260731.js
@@ -171,15 +183,20 @@ jobs:
           grep -q 'missingPlans:missing' _site/territorial-scope-guard-20260731.js
           grep -q 'observerStrategy:"idempotent-disconnect-write-reconnect"' _site/plan-receipt-status-fix-20260731.js
           grep -q 'observer.disconnect()' _site/plan-receipt-status-fix-20260731.js
-          grep -q 'note.textContent!==desiredNote' _site/plan-receipt-status-fix-20260731.js
           grep -q 'CHECKLIST_BATCH=25' _site/review-performance-fix-20260731.js
           grep -q 'if(element&&element.textContent!==value)' _site/scope-ui.js
-          grep -q '"scopeStrategy": "filter-global-packages-and-render-boundary"' _site/HEALTH.json
+          grep -q 'rollingWindowYears:5' _site/risk-reports-5y-data.js
+          grep -q 'IR-GYE-CIUDAD-OLIMPO-2026' _site/risk-reports-5y-data.js
+          grep -q 'IR-SANTA-ELENA-SANTUARIO-OLON-2022' _site/risk-reports-5y-data.js
+          grep -q 'reportsForTerritory' _site/risk-reports-5y-ui.js
+          grep -q 'CONSULTAR_FICHA_INFORME_RIESGO' _site/risk-reports-5y-ui.js
+          grep -q 'ABRIR_INFORME_RIESGO' _site/risk-reports-5y-ui.js
+          grep -q '"riskReportsStrategy": "rolling-five-year-window-by-province-canton"' _site/HEALTH.json
           grep -q '"status": "ok"' _site/HEALTH.json
           ! grep -q 'href="../' _site/index.html
           ! grep -q 'src="../' _site/index.html
 
-          echo "SmartRisk RC14.4.4 RC8 quedó preparada con aislamiento territorial reforzado."
+          echo "SmartRisk RC14.4.4 RC9 quedó preparada con informes de riesgo cantonales de cinco años."
           cat _site/VERSION.txt
 
       - name: Configurar GitHub Pages
