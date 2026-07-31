@@ -20,7 +20,7 @@ expect(manifest.acceptance.scientificIndicatorsDerivedFromCounts===true,'los por
 expect(manifest.acceptance.processedReviewedValidatedSeparated===true,'procesado, revisado y validado deben permanecer separados');
 
 includes(gate,'scientific-quality-fix-20260731.js','compuerta de acceso');
-includes(index,'access-gate-preview.js?v=14.4.4-rc5.1','control de caché');
+includes(index,'access-gate-preview.js?v=14.4.4-rc5.2','control de caché');
 includes(fix,'territorialCoverage:percent(plansReceived,canonical)','cobertura documental');
 includes(fix,'reviewCompletion:percent(plansEvaluated,plansReceived)','extracción documental');
 includes(fix,'validatedPlans','validación documental');
