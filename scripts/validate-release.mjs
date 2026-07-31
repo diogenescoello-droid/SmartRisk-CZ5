@@ -49,7 +49,10 @@ try {
 } catch (error) {
   fail(`paquete de datos ilegible: ${error.message}`);
 }
-expect(delta?.config?.version === manifest.build, 'la versión del paquete de datos no coincide con el manifiesto');
+expect(
+  delta?.config?.version === manifest.dataVersion,
+  `la versión del paquete de datos no coincide: paquete=${delta?.config?.version || 'sin versión'}, manifiesto=${manifest.dataVersion || 'sin dataVersion'}`
+);
 expect(delta?.config?.cutDate === manifest.dataCut, 'el corte del paquete de datos no coincide con el manifiesto');
 expect(Array.isArray(delta.entityPatches), 'entityPatches no es una lista');
 expect(Array.isArray(delta.followups), 'followups no es una lista');
@@ -94,6 +97,7 @@ console.log(JSON.stringify({
   ok: true,
   release: manifest.release,
   build: manifest.build,
+  dataVersion: manifest.dataVersion,
   dataCut: manifest.dataCut,
   territories: entities.size,
   plansAvailable,
