@@ -6,7 +6,7 @@ const moduleText=read('preview-rc14.4.4/plan-receipt-status-fix-20260731.js');
 const gate=read('preview-rc14.4.4/access-gate-preview.js');
 const index=read('preview-rc14.4.4/index.html');
 const manifest=JSON.parse(read('RELEASE_MANIFEST.json'));
-for(const value of ['TER-REG-ESPECIAL-GALAPAGOS','TER-GALAPAGOS-SAN-CRISTOBAL','TER-PROV-LOS-RIOS','Recibido · devuelto','score:null','planReceived:true','receipt-independent-from-signature-link-review-validation'])expect(moduleText.includes(value),`falta ${value}`);
+for(const value of ['TER-REG-ESPECIAL-GALAPAGOS','TER-GALAPAGOS-SAN-CRISTOBAL','TER-PROV-LOS-RIOS','Recibido · devuelto','score:null','planReceived:true','received-independent-from-signature-link-review-validation'])expect(moduleText.includes(value),`falta ${value}`);
 for(const value of ['1M79_NXC7Q3oZsXTS8ZJnd5XTUaRfjtIp','1VtlXrd5qoL2jW-2UUw-6GD8dduyQedzn','1OORaykZcWJHJe3zPWB9dXn_pCc84RKDT','11cWFIu56jVBp-VWVB_gyeBumfrF4u1_I'])expect(moduleText.includes(value),`falta evidencia Drive ${value}`);
 expect(moduleText.includes('score:84'),'Galápagos provincial no conserva 84 %');
 expect(moduleText.includes('score:68'),'Los Ríos provincial no conserva 68 %');
