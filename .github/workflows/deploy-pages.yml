@@ -1,7 +1,7 @@
-name: Deploy SmartRisk CZ5 RC14.4.4 RC7
+name: Deploy SmartRisk CZ5 RC14.4.4 RC8
 
-# Publica RC14.4.4 RC7 con corrección del congelamiento en
-# Planes, checklist y brechas.
+# Publica RC14.4.4 RC8 con corrección del congelamiento,
+# coherencia documental y aislamiento territorial de perfiles.
 on:
   push:
     branches:
@@ -11,6 +11,9 @@ on:
       - "pilot-baseline-data.js"
       - "pilot-baseline-bridge.js"
       - "preview-rc14.4.4/**"
+      - "scope-context.js"
+      - "scope-repository.js"
+      - "scope-ui.js"
       - "RELEASE_MANIFEST.json"
       - "scripts/**"
       - "firestore.rules"
@@ -39,7 +42,7 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Validar coherencia de versión, fuentes y conteos
+      - name: Validar coherencia de versión, fuentes y alcance
         run: node scripts/validate-release.mjs
 
       - name: Validar coherencia del panel científico
@@ -48,10 +51,15 @@ jobs:
       - name: Validar recepción y estados diferenciados de planes
         run: node scripts/validate-plan-receipt-status.mjs
 
-      - name: Validar sintaxis de las correcciones documentales
+      - name: Validar sintaxis de módulos críticos
         run: |
+          node --check preview-rc14.4.4/access-gate-preview.js
           node --check preview-rc14.4.4/plan-receipt-status-fix-20260731.js
           node --check preview-rc14.4.4/review-performance-fix-20260731.js
+          node --check preview-rc14.4.4/territorial-scope-guard-20260731.js
+          node --check scope-context.js
+          node --check scope-repository.js
+          node --check scope-ui.js
 
       - name: Preparar base compartida
         run: |
@@ -70,8 +78,9 @@ jobs:
           test -f pilot-baseline-bridge.js
           test -f RELEASE_MANIFEST.json
           cp pilot-baseline-data.js pilot-baseline-bridge.js RELEASE_MANIFEST.json _site/
+          cp scope-context.js scope-repository.js scope-ui.js _site/
 
-      - name: Promover RC14.4.4 RC7 como versión pública
+      - name: Promover RC14.4.4 RC8 como versión pública
         run: |
           test -f preview-rc14.4.4/index.html
           test -f preview-rc14.4.4/access-gate-preview.js
@@ -87,6 +96,7 @@ jobs:
           test -f preview-rc14.4.4/scientific-quality-fix-20260731.js
           test -f preview-rc14.4.4/plan-receipt-status-fix-20260731.js
           test -f preview-rc14.4.4/review-performance-fix-20260731.js
+          test -f preview-rc14.4.4/territorial-scope-guard-20260731.js
 
           cp -R preview-rc14.4.4/. _site/
 
@@ -105,22 +115,23 @@ jobs:
           old = 'PRE=`${APP}preview-rc14.4.4/`'
           if old not in js:
               raise SystemExit("No se encontró la ruta previa RC14.4.4")
-          js = js.replace(old, 'PRE=APP')
-          gate.write_text(js, encoding="utf-8")
+          gate.write_text(js.replace(old, 'PRE=APP'), encoding="utf-8")
 
           manifest = json.loads(Path("RELEASE_MANIFEST.json").read_text(encoding="utf-8"))
           health = {
               "status": "ok",
               "product": manifest["product"],
-              "release": "RC14.4.4 RC7",
-              "build": "14.4.4-rc7",
+              "release": manifest["release"],
+              "build": manifest["build"],
               "dataVersion": manifest["dataVersion"],
               "completionVersion": manifest["completionVersion"],
               "correctionVersion": manifest["correctionVersion"],
               "scientificCorrectionVersion": manifest["scientificCorrectionVersion"],
               "planReceiptCorrectionVersion": manifest["planReceiptCorrectionVersion"],
-              "reviewPerformanceVersion": "14.4.4-rc7",
+              "reviewPerformanceVersion": manifest["reviewPerformanceVersion"],
+              "territorialScopeVersion": manifest["territorialScopeVersion"],
               "reviewObserverStrategy": "idempotent-disconnect-write-reconnect",
+              "scopeStrategy": "filter-global-packages-and-render-boundary",
               "dataCut": manifest["dataCut"],
               "counts": manifest["counts"]
           }
@@ -128,11 +139,11 @@ jobs:
           PY
 
           printf '%s\n' \
-            'SmartRisk CZ5 RC14.4.4 RC7' \
+            'SmartRisk CZ5 RC14.4.4 RC8' \
             'Seguimiento R02.3 · datos consolidados al 31-07-2026' \
             '56 entidades · 56 planes disponibles · 106 seguimientos territoriales' \
+            'Perfiles territoriales: paquetes globales y render filtrados por alcance' \
             'Planes, checklist y brechas: ciclo de observación eliminado' \
-            'Índice ligero, búsqueda diferida y checklist paginado' \
             'Recepción, archivo, firma, revisión y validación se muestran por separado' \
             > _site/VERSION.txt
 
@@ -141,25 +152,34 @@ jobs:
           test -f _site/pilot-baseline-bridge.js
           test -f _site/RELEASE_MANIFEST.json
           test -f _site/HEALTH.json
+          test -f _site/scope-context.js
+          test -f _site/scope-repository.js
+          test -f _site/scope-ui.js
           test -f _site/plan-receipt-status-fix-20260731.js
           test -f _site/review-performance-fix-20260731.js
+          test -f _site/territorial-scope-guard-20260731.js
 
-          grep -q "VERSIÓN ESTABLE · RC14.4.4 RC7 · DATOS 30-07-2026" _site/index.html
-          grep -q 'access-gate-preview.js?v=14.4.4-rc7' _site/index.html
-          grep -q 'BUILD="14.4.4-rc7"' _site/access-gate-preview.js
-          grep -q 'review-performance-fix-20260731.js' _site/access-gate-preview.js
-          grep -q 'stable-r023-review-freeze-fixed' _site/access-gate-preview.js
+          grep -q "VERSIÓN ESTABLE · RC14.4.4 RC8 · DATOS 30-07-2026" _site/index.html
+          grep -q 'access-gate-preview.js?v=14.4.4-rc8' _site/index.html
+          grep -q 'territorial-scope-guard-20260731.js?v=14.4.4-rc8' _site/index.html
+          grep -q 'BUILD="14.4.4-rc8"' _site/access-gate-preview.js
+          grep -q 'stable-r023-territorial-scope-enforced' _site/access-gate-preview.js
+          grep -q 'filterReviews(index)' _site/territorial-scope-guard-20260731.js
+          grep -q 'window.F03_CARTOGRAPHY=window.F03_CARTOGRAPHY.filter' _site/territorial-scope-guard-20260731.js
+          grep -q 'data=window.SmartRiskScope.filterData(data)' _site/territorial-scope-guard-20260731.js
+          grep -q 'window.render=function' _site/territorial-scope-guard-20260731.js
+          grep -q 'missingPlans:missing' _site/territorial-scope-guard-20260731.js
           grep -q 'observerStrategy:"idempotent-disconnect-write-reconnect"' _site/plan-receipt-status-fix-20260731.js
           grep -q 'observer.disconnect()' _site/plan-receipt-status-fix-20260731.js
           grep -q 'note.textContent!==desiredNote' _site/plan-receipt-status-fix-20260731.js
           grep -q 'CHECKLIST_BATCH=25' _site/review-performance-fix-20260731.js
-          grep -q 'requestAnimationFrame' _site/review-performance-fix-20260731.js
-          grep -q '"reviewObserverStrategy": "idempotent-disconnect-write-reconnect"' _site/HEALTH.json
+          grep -q 'if(element&&element.textContent!==value)' _site/scope-ui.js
+          grep -q '"scopeStrategy": "filter-global-packages-and-render-boundary"' _site/HEALTH.json
           grep -q '"status": "ok"' _site/HEALTH.json
           ! grep -q 'href="../' _site/index.html
           ! grep -q 'src="../' _site/index.html
 
-          echo "SmartRisk RC14.4.4 RC7 quedó preparada sin el ciclo recursivo de revisión documental."
+          echo "SmartRisk RC14.4.4 RC8 quedó preparada con aislamiento territorial reforzado."
           cat _site/VERSION.txt
 
       - name: Configurar GitHub Pages
