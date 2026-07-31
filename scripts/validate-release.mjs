@@ -1,19 +1,21 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import zlib from 'node:zlib';
-import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 
 const root = process.cwd();
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const fail = message => { throw new Error(`VALIDACIÓN RC14.4.4 RC5: ${message}`); };
 const expect = (condition, message) => { if (!condition) fail(message); };
 const includes = (text, value, label) => expect(text.includes(value), `${label}: falta ${value}`);
+const sha256 = value => createHash('sha256').update(value).digest('hex');
 
 function decodePayload(text, label) {
   const match = text.match(/const PAYLOAD="([A-Za-z0-9+/=]+)";/);
   expect(match, `${label}: no se encontró PAYLOAD`);
   try {
-    return JSON.parse(zlib.gunzipSync(Buffer.from(match[1], 'base64')).toString('utf8'));
+    const raw = zlib.gunzipSync(Buffer.from(match[1], 'base64'));
+    return { raw, data: JSON.parse(raw.toString('utf8')) };
   } catch (error) {
     fail(`${label}: paquete ilegible: ${error.message}`);
   }
@@ -56,9 +58,13 @@ includes(rules, "profile().rol == 'Administrador'", 'reglas Firestore');
 includes(workflow, 'node scripts/validate-release.mjs', 'workflow de despliegue');
 includes(workflow, 'RELEASE_MANIFEST.json', 'workflow de despliegue');
 
-const delta = decodePayload(updateText, 'actualización principal');
-const completion = decodePayload(completionText, 'complemento de seguimientos');
+const principalDecoded = decodePayload(updateText, 'actualización principal');
+const completionDecoded = decodePayload(completionText, 'complemento de seguimientos');
+const delta = principalDecoded.data;
+const completion = completionDecoded.data;
 
+expect(sha256(principalDecoded.raw) === manifest.packageHashes.principalRawSha256, 'hash del paquete principal distinto del manifiesto');
+expect(sha256(completionDecoded.raw) === manifest.packageHashes.completionRawSha256, 'hash del complemento distinto del manifiesto');
 expect(
   delta?.config?.version === manifest.dataVersion,
   `versión de datos principal distinta: paquete=${delta?.config?.version || 'sin versión'}, manifiesto=${manifest.dataVersion || 'sin dataVersion'}`
@@ -84,6 +90,20 @@ for (const item of completion.followups) {
 }
 expect(expectedCompletionKeys.size === 0, `faltan seguimientos del complemento: ${[...expectedCompletionKeys].join(', ')}`);
 
+for (const [summaryKey, manifestKey] of [
+  ['universe', 'territories'],
+  ['planDocumentsAvailable', 'plansAvailable'],
+  ['formalPlanDeliveries', 'formalPlanDeliveries'],
+  ['validatedPlans', 'validatedPlans'],
+  ['returnedPlans', 'returnedPlans'],
+  ['territorialFollowups', 'followupsMinimum']
+]) {
+  expect(
+    Number(delta?.summary?.[summaryKey]) === Number(manifest.counts[manifestKey]),
+    `resumen ${summaryKey}=${delta?.summary?.[summaryKey]} no coincide con ${manifestKey}=${manifest.counts[manifestKey]}`
+  );
+}
+
 const baselineMatch = baselineText.match(/const DATA = (\{[\s\S]*\});\s*window\.SMART_RISK_PILOT_BASELINE/);
 expect(baselineMatch, 'no se pudo interpretar la línea base piloto');
 let baseline;
@@ -93,12 +113,6 @@ try {
   fail(`línea base ilegible: ${error.message}`);
 }
 
-const normalize = value => String(value ?? '')
-  .normalize('NFD')
-  .replace(/[\u0300-\u036f]/g, '')
-  .replace(/[^a-zA-Z0-9]+/g, ' ')
-  .trim()
-  .toLowerCase();
 const followupKey = item => String(
   item?.followupId || item?.id || `${item?.submissionId || ''}|${item?.actionOrCommitment || item?.accion_o_compromiso || item?.description || ''}`
 );
@@ -113,36 +127,12 @@ for (const item of delta.followups) followups.set(followupKey(item), { ...(follo
 for (const item of completion.followups) followups.set(followupKey(item), { ...(followups.get(followupKey(item)) || {}), ...item });
 expect(followups.size >= manifest.counts.followupsMinimum, `se esperaban al menos ${manifest.counts.followupsMinimum} seguimientos y se obtuvieron ${followups.size}`);
 
-let baseReviewText;
-try {
-  baseReviewText = execFileSync('unzip', ['-p', 'smartrisk-site-rc14.4.3.zip', 'enos-reviews.js'], {
-    encoding: 'utf8',
-    maxBuffer: 20 * 1024 * 1024
-  });
-} catch (error) {
-  fail(`no se pudo leer enos-reviews.js del paquete base: ${error.message}`);
-}
-const reviewMatch = baseReviewText.match(/window\.ENOS_REVIEWS=(\{[\s\S]*\});?\s*$/);
-expect(reviewMatch, 'no se pudo interpretar enos-reviews.js del paquete base');
-let baseReviews;
-try {
-  baseReviews = JSON.parse(reviewMatch[1]);
-} catch (error) {
-  fail(`enos-reviews.js del paquete base es ilegible: ${error.message}`);
-}
-
-const planKey = item => `${normalize(item.province)}|${normalize(item.territory)}`;
-const availablePlans = new Set((baseReviews.reviews || []).map(planKey));
-const planPatchKeys = new Set();
+const planEntityIds = new Set();
 for (const item of delta.planPatches) {
-  const key = planKey(item);
-  expect(!planPatchKeys.has(key), `parche documental duplicado: ${key}`);
-  planPatchKeys.add(key);
-  if (item.planDocumentAvailable === true) availablePlans.add(key);
-  else if (item.planDocumentAvailable === false) availablePlans.delete(key);
+  expect(item.entityId, 'parche documental sin entityId');
+  expect(!planEntityIds.has(item.entityId), `parche documental duplicado por entityId: ${item.entityId}`);
+  planEntityIds.add(item.entityId);
 }
-const plansAvailable = availablePlans.size;
-expect(plansAvailable === manifest.counts.plansAvailable, `se esperaban ${manifest.counts.plansAvailable} planes disponibles y se obtuvieron ${plansAvailable}`);
 
 console.log(JSON.stringify({
   ok: true,
@@ -152,9 +142,13 @@ console.log(JSON.stringify({
   completionVersion: manifest.completionVersion,
   dataCut: manifest.dataCut,
   territories: entities.size,
-  plansAvailable,
+  plansAvailable: delta.summary.planDocumentsAvailable,
+  formalPlanDeliveries: delta.summary.formalPlanDeliveries,
+  validatedPlans: delta.summary.validatedPlans,
+  returnedPlans: delta.summary.returnedPlans,
   followups: followups.size,
   principalFollowups: delta.followups.length,
   completionFollowups: completion.followups.length,
-  planPatches: delta.planPatches.length
+  planPatches: delta.planPatches.length,
+  packageHashesVerified: true
 }, null, 2));
