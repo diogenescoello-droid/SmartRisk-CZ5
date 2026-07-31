@@ -77,13 +77,53 @@ const normalize = value => String(value ?? '')
 const followupKey = item => String(
   item?.followupId || item?.id || `${item?.submissionId || ''}|${item?.actionOrCommitment || item?.accion_o_compromiso || item?.description || ''}`
 );
+const describe = item => ({
+  key: followupKey(item),
+  entityId: item?.entityId || '',
+  submissionId: item?.submissionId || '',
+  followupId: item?.followupId || item?.id || '',
+  action: item?.actionOrCommitment || item?.accion_o_compromiso || item?.description || '',
+  submittedAt: item?.submittedAt || item?._submission_time || ''
+});
 
 const entities = new Map((baseline.entities || []).map(item => [item.entityId, { ...item }]));
 for (const patch of delta.entityPatches) entities.set(patch.entityId, { ...(entities.get(patch.entityId) || {}), ...patch });
 expect(entities.size === manifest.counts.territories, `se esperaban ${manifest.counts.territories} territorios y se obtuvieron ${entities.size}`);
 
-const followups = new Map((baseline.followups || []).map(item => [followupKey(item), item]));
+const baselineByKey = new Map();
+const baselineDuplicateKeys = [];
+for (const item of baseline.followups || []) {
+  const key = followupKey(item);
+  if (baselineByKey.has(key)) baselineDuplicateKeys.push({ previous: describe(baselineByKey.get(key)), current: describe(item) });
+  baselineByKey.set(key, item);
+}
+const deltaByKey = new Map();
+const deltaDuplicateKeys = [];
+const baselineCollisions = [];
+for (const item of delta.followups || []) {
+  const key = followupKey(item);
+  if (deltaByKey.has(key)) deltaDuplicateKeys.push({ previous: describe(deltaByKey.get(key)), current: describe(item) });
+  if (baselineByKey.has(key)) baselineCollisions.push({ baseline: describe(baselineByKey.get(key)), delta: describe(item) });
+  deltaByKey.set(key, item);
+}
+
+const followups = new Map(baselineByKey);
 for (const item of delta.followups) followups.set(followupKey(item), { ...(followups.get(followupKey(item)) || {}), ...item });
+
+const followupDiagnostics = {
+  baselineArray: (baseline.followups || []).length,
+  baselineUnique: baselineByKey.size,
+  deltaArray: delta.followups.length,
+  deltaUnique: deltaByKey.size,
+  mergedUnique: followups.size,
+  summaryDeclared: delta?.summary?.territorialFollowups ?? null,
+  baselineDuplicateKeys,
+  deltaDuplicateKeys,
+  baselineCollisions
+};
+if (followups.size < manifest.counts.followupsMinimum) {
+  console.error('DIAGNÓSTICO_SEGUIMIENTOS', JSON.stringify(followupDiagnostics, null, 2));
+}
 expect(followups.size >= manifest.counts.followupsMinimum, `se esperaban al menos ${manifest.counts.followupsMinimum} seguimientos y se obtuvieron ${followups.size}`);
 
 const availableValues = new Set(['true', 'si', 'sí', 'disponible', '1']);
