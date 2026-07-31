@@ -9,7 +9,7 @@
   "planReceiptCorrectionVersion": "2026-07-31T00:25:00-05:00",
   "status": "stable",
   "publicPath": "/SmartRisk-CZ5/",
-  "dataCut": "2026-07-31",
+  "dataCut": "2026-07-30",
   "counts": {
     "territories": 56,
     "plansAvailable": 56,
@@ -23,52 +23,13 @@
     "completionRawSha256": "15f8465d1c41c37aba924a5c6c46447e117179958645f50891b9126bccb54ebc"
   },
   "sources": [
-    {
-      "name": "Kobo F07 ENOS CZ5",
-      "role": "seguimiento operativo",
-      "cut": "2026-07-30",
-      "sourceFileSha256": "a8cdef870e8bb3a9a7d128036786309acc705887d31df5ac612b42bf288c5022"
-    },
-    {
-      "name": "Matriz_ENOS_CZ5_COMPLETA_GoogleSheets",
-      "role": "estado documental de planes y reconciliación de recepción",
-      "driveFileId": "14pw4tCwW2gp0Vn_xd9dxOmjj84_4-m6m2qXpbrGkxPw",
-      "cut": "2026-07-31"
-    },
-    {
-      "name": "Plan provincial de Galápagos ENOS 2026–2027",
-      "role": "plan recibido, firmado y revisión técnica progresiva",
-      "driveFileId": "1M79_NXC7Q3oZsXTS8ZJnd5XTUaRfjtIp",
-      "reviewReportDriveFileId": "1VtlXrd5qoL2jW-2UUw-6GD8dduyQedzn",
-      "receivedAt": "2026-06-24",
-      "reviewScore": 84,
-      "classification": "Plan defendible"
-    },
-    {
-      "name": "Plan cantonal de San Cristóbal ENOS 2026–2027",
-      "role": "entrega registrada y devuelta para corrección",
-      "receivedAt": "2026-06-24",
-      "status": "Devuelto - pendiente de corrección"
-    },
-    {
-      "name": "Plan provincial de Los Ríos ENOS 2026–2027",
-      "role": "plan firmado, revisión técnica y estado progresivo",
-      "driveFileId": "1OORaykZcWJHJe3zPWB9dXn_pCc84RKDT",
-      "reviewReportDriveFileId": "11cWFIu56jVBp-VWVB_gyeBumfrF4u1_I",
-      "receivedAt": "2026-06-25",
-      "reviewScore": 68,
-      "classification": "Plan funcional parcial"
-    },
-    {
-      "name": "Correo institucional ENOS CZ5",
-      "role": "remisiones, oficios y novedades",
-      "cut": "2026-07-31"
-    },
-    {
-      "name": "SmartRisk / Firestore",
-      "role": "persistencia compartida",
-      "document": "plataforma/datos"
-    }
+    {"name":"Kobo F07 ENOS CZ5","role":"seguimiento operativo","cut":"2026-07-30","sourceFileSha256":"a8cdef870e8bb3a9a7d128036786309acc705887d31df5ac612b42bf288c5022"},
+    {"name":"Matriz_ENOS_CZ5_COMPLETA_GoogleSheets","role":"estado documental de planes y reconciliación de recepción","driveFileId":"14pw4tCwW2gp0Vn_xd9dxOmjj84_4-m6m2qXpbrGkxPw","cut":"2026-07-31"},
+    {"name":"Plan provincial de Galápagos ENOS 2026–2027","role":"plan recibido, firmado y revisión técnica progresiva","driveFileId":"1M79_NXC7Q3oZsXTS8ZJnd5XTUaRfjtIp","reviewReportDriveFileId":"1VtlXrd5qoL2jW-2UUw-6GD8dduyQedzn","receivedAt":"2026-06-24","reviewScore":84,"classification":"Plan defendible"},
+    {"name":"Plan cantonal de San Cristóbal ENOS 2026–2027","role":"entrega registrada y devuelta para corrección","receivedAt":"2026-06-24","status":"Devuelto - pendiente de corrección"},
+    {"name":"Plan provincial de Los Ríos ENOS 2026–2027","role":"plan firmado, revisión técnica y estado progresivo","driveFileId":"1OORaykZcWJHJe3zPWB9dXn_pCc84RKDT","reviewReportDriveFileId":"11cWFIu56jVBp-VWVB_gyeBumfrF4u1_I","receivedAt":"2026-06-25","reviewScore":68,"classification":"Plan funcional parcial"},
+    {"name":"Correo institucional ENOS CZ5","role":"remisiones, oficios y novedades","cut":"2026-07-31"},
+    {"name":"SmartRisk / Firestore","role":"persistencia compartida","document":"plataforma/datos"}
   ],
   "requiredFiles": [
     "preview-rc14.4.4/index.html",
