@@ -1,0 +1,58 @@
+{
+  "product": "SmartRisk CZ5",
+  "release": "RC14.4.4 RC5",
+  "build": "14.4.4-rc5",
+  "status": "stable",
+  "publicPath": "/SmartRisk-CZ5/",
+  "dataCut": "2026-07-30",
+  "counts": {
+    "territories": 56,
+    "plansAvailable": 55,
+    "formalPlanDeliveries": 53,
+    "validatedPlans": 52,
+    "returnedPlans": 4,
+    "followupsMinimum": 106
+  },
+  "sources": [
+    {
+      "name": "Kobo F07 ENOS CZ5",
+      "role": "seguimiento operativo",
+      "cut": "2026-07-30"
+    },
+    {
+      "name": "MATRIZSEGUIM-EL NIÑO(2).xlsx",
+      "role": "estado documental de planes",
+      "driveFileId": "1g1D9tWgDkUEAZtI3lJ9WilfYcmbJ2gCj",
+      "modifiedAt": "2026-07-30T19:53:43.753Z"
+    },
+    {
+      "name": "Correo institucional ENOS CZ5",
+      "role": "remisiones, oficios y novedades",
+      "cut": "2026-07-30"
+    },
+    {
+      "name": "SmartRisk / Firestore",
+      "role": "persistencia compartida",
+      "document": "plataforma/datos"
+    }
+  ],
+  "requiredFiles": [
+    "preview-rc14.4.4/index.html",
+    "preview-rc14.4.4/access-gate-preview.js",
+    "preview-rc14.4.4/latest-data-update.js",
+    "preview-rc14.4.4/action-r023-core.js",
+    "preview-rc14.4.4/action-r023-page.js",
+    "preview-rc14.4.4/action-r023-form.js",
+    "pilot-baseline-data.js",
+    "pilot-baseline-bridge.js",
+    "firestore.rules",
+    ".github/workflows/deploy-pages.yml"
+  ],
+  "acceptance": {
+    "singlePublicVersion": true,
+    "sharedDataRequired": true,
+    "noLocalOnlyRelease": true,
+    "backupBranch": "backup/rc14.4.4-rc5-estable-20260730",
+    "rollbackCommit": "0067de1c9b2e035f151ee5f7342d6ea1ab0a4678"
+  }
+}
