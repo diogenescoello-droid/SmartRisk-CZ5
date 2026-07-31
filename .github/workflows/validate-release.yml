@@ -47,6 +47,17 @@ jobs:
       - name: Validar recepción y estados diferenciados de planes
         run: node scripts/validate-plan-receipt-status.mjs
 
+      - name: Auditar todas las páginas y cruces de datos
+        run: node scripts/audit-full-platform-20260731.mjs
+
+      - name: Conservar informe de auditoría
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: auditoria-integral-smartrisk-20260731
+          path: AUDIT_FULL_PLATFORM_20260731.json
+          if-no-files-found: warn
+
       - name: Revisar sintaxis JavaScript
         run: |
           node --check preview-rc14.4.4/access-gate-preview.js
