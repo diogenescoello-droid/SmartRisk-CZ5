@@ -58,6 +58,28 @@ jobs:
           path: AUDIT_FULL_PLATFORM_20260731.json
           if-no-files-found: warn
 
+      - name: Conservar fuentes auditadas
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fuentes-auditadas-smartrisk-20260731
+          path: |
+            app.js
+            data.js
+            enos-data.js
+            enos-reviews.js
+            risk-locations.js
+            f03-data.js
+            cases-data.js
+            pilot-baseline-data.js
+            pilot-baseline-bridge.js
+            RELEASE_MANIFEST.json
+            firestore.rules
+            preview-rc14.4.4/*.js
+            preview-rc14.4.4/index.html
+            scripts/*.mjs
+          if-no-files-found: error
+
       - name: Revisar sintaxis JavaScript
         run: |
           node --check preview-rc14.4.4/access-gate-preview.js
