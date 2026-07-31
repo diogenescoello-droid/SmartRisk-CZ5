@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 
 const read=file=>fs.readFileSync(file,'utf8');
-const expect=(condition,message)=>{if(!condition)throw new Error(`VALIDACIÓN RECEPCIÓN DE PLANES RC8: ${message}`)};
+const expect=(condition,message)=>{if(!condition)throw new Error(`VALIDACIÓN RECEPCIÓN DE PLANES RC9: ${message}`)};
 
 const moduleText=read('preview-rc14.4.4/plan-receipt-status-fix-20260731.js');
 const performanceText=read('preview-rc14.4.4/review-performance-fix-20260731.js');
@@ -39,13 +39,13 @@ expect(scopeText.includes('missingPlans:missing'),'el alcance no recalcula plane
 expect(scopeText.includes('pack.reviews=pack.reviews.filter'),'los planes no se filtran territorialmente');
 expect(gate.includes('plan-receipt-status-fix-20260731.js'),'la compuerta no carga la reconciliación');
 expect(gate.includes('review-performance-fix-20260731.js'),'la compuerta no carga el optimizador');
-expect(gate.includes('BUILD="14.4.4-rc8"'),'la compuerta no está en RC8');
-expect(index.includes('access-gate-preview.js?v=14.4.4-rc8'),'caché de compuerta incorrecta');
-expect(index.includes('territorial-scope-guard-20260731.js?v=14.4.4-rc8'),'caché de alcance incorrecta');
-expect(index.includes('VERSIÓN ESTABLE · RC14.4.4 RC8'),'la interfaz no identifica RC8');
+expect(gate.includes('BUILD="14.4.4-rc9"'),'la compuerta no está en RC9');
+expect(index.includes('access-gate-preview.js?v=14.4.4-rc9'),'caché de compuerta incorrecta');
+expect(index.includes('territorial-scope-guard-20260731.js?v=14.4.4-rc9'),'caché de alcance incorrecta');
+expect(index.includes('VERSIÓN ESTABLE · RC14.4.4 RC9'),'la interfaz no identifica RC9');
 expect(manifest.planReceiptCorrectionVersion==='2026-07-31T12:15:00-05:00','versión documental incorrecta');
 expect(manifest.reviewPerformanceVersion==='14.4.4-rc7','versión de rendimiento incorrecta');
-expect(manifest.territorialScopeVersion==='2026-07-31T13:05:00-05:00','versión territorial incorrecta');
+expect(manifest.territorialScopeVersion==='2026-07-31T14:13:00-05:00','versión territorial incorrecta');
 expect(manifest.counts.plansAvailable===56,'el manifiesto no conserva 56 planes');
 expect(manifest.acceptance.receiptIndependentFromSignature===true,'falta política de firma');
 expect(manifest.acceptance.receiptIndependentFromFileLink===true,'falta política de enlace');
