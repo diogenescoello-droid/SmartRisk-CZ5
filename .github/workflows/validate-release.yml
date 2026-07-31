@@ -41,12 +41,16 @@ jobs:
       - name: Validar manifiesto, línea base y paquetes de datos
         run: node scripts/validate-release.mjs
 
+      - name: Validar coherencia del panel científico
+        run: node scripts/validate-scientific-quality-fix.mjs
+
       - name: Revisar sintaxis JavaScript
         run: |
           node --check preview-rc14.4.4/access-gate-preview.js
           node --check preview-rc14.4.4/latest-data-update.js
           node --check preview-rc14.4.4/followup-completion-20260730.js
           node --check preview-rc14.4.4/los-rios-plan-correction-20260730.js
+          node --check preview-rc14.4.4/scientific-quality-fix-20260731.js
           node --check preview-rc14.4.4/action-r023-core.js
           node --check preview-rc14.4.4/action-r023-page.js
           node --check preview-rc14.4.4/action-r023-form.js
