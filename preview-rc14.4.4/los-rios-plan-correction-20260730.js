@@ -79,7 +79,8 @@ const updateViews=()=>{
   });
   window.ENOS_REVIEWS.reviews=reviews;
 };
-const enough=value=>Boolean(value?._latestDataSnapshot?.corrections?.losRiosProvincialPlan===CORRECTION.version&&Array.isArray(value?.entidadesSeguimiento)&&value.entidadesSeguimiento.some(item=>matches(item)&&item.planDocumentAvailable===true&&Number(item.planReviewScore)===68));
+const completeBase=value=>Boolean(Array.isArray(value?.entidadesSeguimiento)&&value.entidadesSeguimiento.length===56&&Array.isArray(value?.seguimientos)&&value.seguimientos.length>=106);
+const enough=value=>Boolean(value?._latestDataSnapshot?.corrections?.losRiosProvincialPlan===CORRECTION.version&&completeBase(value)&&value.entidadesSeguimiento.some(item=>matches(item)&&item.planDocumentAvailable===true&&Number(item.planReviewScore)===68));
 const paint=()=>{
   try{
     data=apply(data);
@@ -102,7 +103,9 @@ const migrate=async()=>{
     await db.runTransaction(async transaction=>{
       const ref=db.doc(CLOUD_DOC),snapshot=await transaction.get(ref),remote=snapshot.exists?snapshot.data():{};
       if(enough(remote)){committed=remote;return}
-      const merged=apply(structuredClone(remote));
+      if(!completeBase(data))throw new Error("La base local validada aún no contiene 56 entidades y 106 seguimientos.");
+      const source=completeBase(remote)?structuredClone(remote):structuredClone(data);
+      const merged=apply(source);
       merged._revision=Number(remote._revision||0)+1;
       const size=new Blob([JSON.stringify(merged)]).size;
       if(size>880000)throw new Error(`Límite Firestore: ${size} bytes`);
@@ -127,12 +130,12 @@ let attempts=0;
 const timer=setInterval(async()=>{
   attempts++;
   let ready=false,baseReady=false;
-  try{ready=typeof data!=="undefined"&&typeof session!=="undefined"&&Boolean(session);baseReady=Array.isArray(data?.entidadesSeguimiento)&&data.entidadesSeguimiento.length===56&&Array.isArray(data?.seguimientos)&&data.seguimientos.length>=106}catch{}
+  try{ready=typeof data!=="undefined"&&typeof session!=="undefined"&&Boolean(session);baseReady=completeBase(data)}catch{}
   if((!ready||!baseReady)&&attempts<120)return;
   clearInterval(timer);
   if(!ready)return;
   if(!enough(data))paint();else updateViews();
   await migrate();
 },250);
-window.SMART_RISK_LOS_RIOS_PLAN_CORRECTION=Object.freeze({...CORRECTION,plansAvailable:56});
+window.SMART_RISK_LOS_RIOS_PLAN_CORRECTION=Object.freeze({...CORRECTION,plansAvailable:56,safeCloudFallback:true});
 })();
