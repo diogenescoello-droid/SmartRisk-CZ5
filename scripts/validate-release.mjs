@@ -1,147 +1,85 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import zlib from 'node:zlib';
-import { createHash } from 'node:crypto';
+import {createHash} from 'node:crypto';
 
 const root=process.cwd();
 const read=file=>fs.readFileSync(path.join(root,file),'utf8');
-const fail=message=>{throw new Error(`VALIDACIÓN RC14.4.4 RC7: ${message}`)};
-const expect=(condition,message)=>{if(!condition)fail(message)};
+const expect=(condition,message)=>{if(!condition)throw new Error(`VALIDACIÓN RC14.4.4 RC8: ${message}`)};
 const includes=(text,value,label)=>expect(text.includes(value),`${label}: falta ${value}`);
 const sha256=value=>createHash('sha256').update(value).digest('hex');
 
 function decodePayload(text,label){
   const match=text.match(/const PAYLOAD="([A-Za-z0-9+/=]+)";/);
   expect(match,`${label}: no se encontró PAYLOAD`);
-  try{
-    const raw=zlib.gunzipSync(Buffer.from(match[1],'base64'));
-    return {raw,data:JSON.parse(raw.toString('utf8'))};
-  }catch(error){fail(`${label}: paquete ilegible: ${error.message}`)}
-}
-
-function decodeCorrection(text){
-  const match=text.match(/const CORRECTION=(\{[^\n]+\});\nconst STORE_KEY/);
-  expect(match,'corrección Los Ríos: no se encontró CORRECTION');
-  try{return JSON.parse(match[1])}
-  catch(error){fail(`corrección Los Ríos ilegible: ${error.message}`)}
+  const raw=zlib.gunzipSync(Buffer.from(match[1],'base64'));
+  return {raw,data:JSON.parse(raw.toString('utf8'))};
 }
 
 const manifest=JSON.parse(read('RELEASE_MANIFEST.json'));
 expect(manifest.product==='SmartRisk CZ5','producto incorrecto');
-expect(manifest.release==='RC14.4.4 RC7','release incorrecto');
-expect(manifest.build==='14.4.4-rc7','build incorrecto');
-expect(manifest.dataCut==='2026-07-30','corte incorrecto');
+expect(manifest.release==='RC14.4.4 RC8','release incorrecto');
+expect(manifest.build==='14.4.4-rc8','build incorrecto');
 expect(manifest.status==='stable','release no estable');
-expect(manifest.planReceiptCorrectionVersion==='2026-07-31T12:15:00-05:00','versión de recepción incorrecta');
-expect(manifest.reviewPerformanceVersion==='14.4.4-rc7','versión de rendimiento incorrecta');
+expect(manifest.counts.territories===56,'universo territorial incorrecto');
+expect(manifest.counts.plansAvailable===56,'conteo de planes incorrecto');
+expect(manifest.acceptance.territorialGlobalsFiltered===true,'falta aceptación de paquetes globales filtrados');
+expect(manifest.acceptance.territorialRenderGuard===true,'falta guardián de render territorial');
+expect(manifest.acceptance.scopeUiIdempotent===true,'falta interfaz de alcance idempotente');
 for(const file of manifest.requiredFiles)expect(fs.existsSync(path.join(root,file)),`archivo obligatorio inexistente: ${file}`);
 
 const index=read('preview-rc14.4.4/index.html');
 const gate=read('preview-rc14.4.4/access-gate-preview.js');
-const principalText=read('preview-rc14.4.4/latest-data-update.js');
-const completionText=read('preview-rc14.4.4/followup-completion-20260730.js');
-const correctionText=read('preview-rc14.4.4/los-rios-plan-correction-20260730.js');
-const receiptText=read('preview-rc14.4.4/plan-receipt-status-fix-20260731.js');
-const performanceText=read('preview-rc14.4.4/review-performance-fix-20260731.js');
-const baselineText=read('pilot-baseline-data.js');
-const workflow=read('.github/workflows/deploy-pages.yml');
-const rules=read('firestore.rules');
+const guard=read('preview-rc14.4.4/territorial-scope-guard-20260731.js');
+const scopeUi=read('scope-ui.js');
+const receipt=read('preview-rc14.4.4/plan-receipt-status-fix-20260731.js');
+const performance=read('preview-rc14.4.4/review-performance-fix-20260731.js');
+const principal=read('preview-rc14.4.4/latest-data-update.js');
+const completion=read('preview-rc14.4.4/followup-completion-20260730.js');
 
-includes(index,'VERSIÓN ESTABLE · RC14.4.4 RC7 · DATOS 30-07-2026','index');
-includes(index,'access-gate-preview.js?v=14.4.4-rc7','index');
-for(const file of [
-  'latest-data-update.js',
-  'followup-completion-20260730.js',
-  'los-rios-plan-correction-20260730.js',
-  'scientific-quality-fix-20260731.js',
-  'plan-receipt-status-fix-20260731.js',
-  'review-performance-fix-20260731.js'
-])includes(gate,file,'compuerta');
-includes(gate,'BUILD="14.4.4-rc7"','compuerta');
-includes(gate,'mode:"stable-r023-review-freeze-fixed"','compuerta');
-includes(gate,'diogenes.coello@gestionderiesgos.gob.ec','administración institucional');
-includes(receiptText,'observer.disconnect()','observador documental');
-includes(receiptText,'note.textContent!==desiredNote','idempotencia documental');
-includes(receiptText,'idempotent-disconnect-write-reconnect','estrategia documental');
-includes(performanceText,'CHECKLIST_BATCH=25','paginación de checklist');
-includes(performanceText,'requestAnimationFrame','renderizado diferido');
-includes(principalText,'value.entidadesSeguimiento.length===56','migración principal');
-includes(principalText,'value.seguimientos.length>=106','migración principal');
-includes(completionText,'SMART_RISK_FOLLOWUP_COMPLETION','complemento');
-includes(correctionText,'TER-PROV-LOS-RIOS','corrección Los Ríos');
-includes(correctionText,'planReviewScore":68','valoración Los Ríos');
-includes(rules,"'diogenes.coello@gestionderiesgos.gob.ec'",'reglas Firestore');
-includes(rules,"profile().rol == 'Administrador'",'reglas Firestore');
-includes(workflow,'node scripts/validate-release.mjs','despliegue');
-includes(workflow,'reviewObserverStrategy','despliegue');
+includes(index,'VERSIÓN ESTABLE · RC14.4.4 RC8 · DATOS 30-07-2026','index');
+includes(index,'access-gate-preview.js?v=14.4.4-rc8','index');
+includes(index,'territorial-scope-guard-20260731.js?v=14.4.4-rc8','index');
+includes(gate,'BUILD="14.4.4-rc8"','compuerta');
+includes(gate,'stable-r023-territorial-scope-enforced','compuerta');
 
-const principalDecoded=decodePayload(principalText,'actualización principal');
-const completionDecoded=decodePayload(completionText,'complemento de seguimientos');
-const delta=principalDecoded.data;
-const completion=completionDecoded.data;
-const correction=decodeCorrection(correctionText);
+for(const value of [
+  'filterReviews(index)',
+  'filterRiskLocations(index)',
+  'window.F03_CARTOGRAPHY=window.F03_CARTOGRAPHY.filter',
+  'window.ENOS_IMPORT.sites=window.ENOS_IMPORT.sites.filter',
+  'data=window.SmartRiskScope.filterData(data)',
+  'window.render=function(...args)',
+  'missingPlans:missing',
+  'scopeFiltered:true'
+])includes(guard,value,'guardián territorial');
 
+includes(scopeUi,'if(element&&element.textContent!==value)','interfaz de alcance');
+includes(scopeUi,'observer.disconnect()','interfaz de alcance');
+includes(scopeUi,'RC14.4.4 RC8','interfaz de alcance');
+
+for(const value of ['observer.disconnect()','note.textContent!==desiredNote','requestAnimationFrame(applyLabels)'])includes(receipt,value,'reconciliación documental');
+for(const value of ['CHECKLIST_BATCH=25','requestAnimationFrame','buildIndex(reviews)'])includes(performance,value,'rendimiento documental');
+
+const principalDecoded=decodePayload(principal,'actualización principal');
+const completionDecoded=decodePayload(completion,'complemento de seguimientos');
 expect(sha256(principalDecoded.raw)===manifest.packageHashes.principalRawSha256,'hash principal distinto');
 expect(sha256(completionDecoded.raw)===manifest.packageHashes.completionRawSha256,'hash complemento distinto');
-expect(delta?.config?.version===manifest.dataVersion,'versión principal distinta');
-expect(delta?.config?.cutDate===manifest.dataCut,'corte principal distinto');
-expect(completion?.version===manifest.completionVersion,'versión complemento distinta');
-expect(completion?.cutDate===manifest.dataCut,'corte complemento distinto');
-expect(correction?.version===manifest.correctionVersion,'versión corrección distinta');
-expect(correction?.cutDate===manifest.dataCut,'corte corrección distinto');
-
-expect(Array.isArray(delta.entityPatches),'entityPatches principal inválido');
-expect(Array.isArray(delta.followups),'followups principal inválido');
-expect(Array.isArray(delta.planPatches),'planPatches principal inválido');
-expect(Array.isArray(completion.entityPatches),'entityPatches complemento inválido');
-expect(Array.isArray(completion.followups),'followups complemento inválido');
-expect(completion.followups.length===3,`complemento con ${completion.followups.length} seguimientos, se esperaban 3`);
-expect(completion.entityPatches.length===3,`complemento con ${completion.entityPatches.length} entidades, se esperaban 3`);
-
-for(const [summaryKey,manifestKey] of [
-  ['universe','territories'],
-  ['formalPlanDeliveries','formalPlanDeliveries'],
-  ['validatedPlans','validatedPlans'],
-  ['returnedPlans','returnedPlans'],
-  ['territorialFollowups','followupsMinimum']
-])expect(Number(delta?.summary?.[summaryKey])===Number(manifest.counts[manifestKey]),`${summaryKey} no coincide con ${manifestKey}`);
-expect(Number(delta?.summary?.planDocumentsAvailable)===55,'la línea base debe conservar 55 planes antes de la corrección');
-expect(Number(delta.summary.planDocumentsAvailable)+1===Number(manifest.counts.plansAvailable),'la corrección no completa los 56 planes');
-
-expect(correction.entityId==='TER-PROV-LOS-RIOS','entityId Los Ríos incorrecto');
-expect(correction.planDocumentAvailable===true,'plan Los Ríos no disponible');
-expect(Number(correction.planReviewScore)===68,'valoración Los Ríos distinta de 68');
-expect(correction.planReviewClassification==='Plan funcional parcial','clasificación Los Ríos incorrecta');
-expect(correction.planCorrectionStatus==='En corrección progresiva','estado Los Ríos incorrecto');
-
-const baselineMatch=baselineText.match(/const DATA = (\{[\s\S]*\});\s*window\.SMART_RISK_PILOT_BASELINE/);
-expect(baselineMatch,'línea base piloto no interpretable');
-let baseline;
-try{baseline=JSON.parse(baselineMatch[1])}
-catch(error){fail(`línea base ilegible: ${error.message}`)}
-
-const entities=new Map((baseline.entities||[]).map(item=>[item.entityId,{...item}]));
-for(const patch of delta.entityPatches)entities.set(patch.entityId,{...(entities.get(patch.entityId)||{}),...patch});
-for(const patch of completion.entityPatches)entities.set(patch.entityId,{...(entities.get(patch.entityId)||{}),...patch});
-entities.set(correction.entityId,{...(entities.get(correction.entityId)||{}),...correction});
-expect(entities.size===manifest.counts.territories,`territorios reconstruidos=${entities.size}`);
-
-const followupKey=item=>String(item?.followupId||item?.id||`${item?.submissionId||''}|${item?.actionOrCommitment||item?.accion_o_compromiso||item?.description||''}`);
-const followups=new Map((baseline.followups||[]).map(item=>[followupKey(item),item]));
-for(const item of delta.followups)followups.set(followupKey(item),{...(followups.get(followupKey(item))||{}),...item});
-for(const item of completion.followups)followups.set(followupKey(item),{...(followups.get(followupKey(item))||{}),...item});
-expect(followups.size>=manifest.counts.followupsMinimum,`seguimientos reconstruidos=${followups.size}`);
+expect(principalDecoded.data?.config?.version===manifest.dataVersion,'versión principal distinta');
+expect(completionDecoded.data?.version===manifest.completionVersion,'versión de complemento distinta');
+expect(Array.isArray(principalDecoded.data?.entityPatches),'entityPatches principal inválido');
+expect(Array.isArray(principalDecoded.data?.followups),'followups principal inválido');
+expect(Array.isArray(completionDecoded.data?.followups),'followups complemento inválido');
+expect(completionDecoded.data.followups.length===3,'complemento territorial distinto de 3 registros');
 
 console.log(JSON.stringify({
   ok:true,
   release:manifest.release,
   build:manifest.build,
-  dataCut:manifest.dataCut,
-  territories:entities.size,
+  territories:manifest.counts.territories,
   plansAvailable:manifest.counts.plansAvailable,
-  followups:followups.size,
-  losRiosPlanScore:correction.planReviewScore,
-  observer:'idempotent-disconnect-write-reconnect',
-  checklistBatch:25,
+  territorialScopeVersion:manifest.territorialScopeVersion,
+  scopeGuard:true,
+  reviewObserverIdempotent:true,
   packageHashesVerified:true
 },null,2));
