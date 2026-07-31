@@ -5,7 +5,7 @@ import {createHash} from 'node:crypto';
 
 const root=process.cwd();
 const read=file=>fs.readFileSync(path.join(root,file),'utf8');
-const expect=(condition,message)=>{if(!condition)throw new Error(`VALIDACIÓN RC14.4.4 RC8: ${message}`)};
+const expect=(condition,message)=>{if(!condition)throw new Error(`VALIDACIÓN RC14.4.4 RC9: ${message}`)};
 const includes=(text,value,label)=>expect(text.includes(value),`${label}: falta ${value}`);
 const sha256=value=>createHash('sha256').update(value).digest('hex');
 
@@ -18,14 +18,19 @@ function decodePayload(text,label){
 
 const manifest=JSON.parse(read('RELEASE_MANIFEST.json'));
 expect(manifest.product==='SmartRisk CZ5','producto incorrecto');
-expect(manifest.release==='RC14.4.4 RC8','release incorrecto');
-expect(manifest.build==='14.4.4-rc8','build incorrecto');
+expect(manifest.release==='RC14.4.4 RC9','release incorrecto');
+expect(manifest.build==='14.4.4-rc9','build incorrecto');
 expect(manifest.status==='stable','release no estable');
 expect(manifest.counts.territories===56,'universo territorial incorrecto');
 expect(manifest.counts.plansAvailable===56,'conteo de planes incorrecto');
+expect(manifest.counts.riskReportsIndexed===6,'conteo inicial de informes de riesgo incorrecto');
+expect(manifest.riskReportsWindowYears===5,'ventana temporal de informes incorrecta');
 expect(manifest.acceptance.territorialGlobalsFiltered===true,'falta aceptación de paquetes globales filtrados');
 expect(manifest.acceptance.territorialRenderGuard===true,'falta guardián de render territorial');
 expect(manifest.acceptance.scopeUiIdempotent===true,'falta interfaz de alcance idempotente');
+expect(manifest.acceptance.riskReportsRollingWindow===true,'falta ventana móvil de informes');
+expect(manifest.acceptance.riskReportsFilteredByTerritory===true,'falta filtro cantonal de informes');
+expect(manifest.acceptance.riskReportConsultationAudited===true,'falta trazabilidad de consultas');
 for(const file of manifest.requiredFiles)expect(fs.existsSync(path.join(root,file)),`archivo obligatorio inexistente: ${file}`);
 
 const index=read('preview-rc14.4.4/index.html');
@@ -34,14 +39,18 @@ const guard=read('preview-rc14.4.4/territorial-scope-guard-20260731.js');
 const scopeUi=read('scope-ui.js');
 const receipt=read('preview-rc14.4.4/plan-receipt-status-fix-20260731.js');
 const performance=read('preview-rc14.4.4/review-performance-fix-20260731.js');
+const reportData=read('preview-rc14.4.4/risk-reports-5y-data.js');
+const reportUi=read('preview-rc14.4.4/risk-reports-5y-ui.js');
 const principal=read('preview-rc14.4.4/latest-data-update.js');
 const completion=read('preview-rc14.4.4/followup-completion-20260730.js');
 
-includes(index,'VERSIÓN ESTABLE · RC14.4.4 RC8 · DATOS 30-07-2026','index');
-includes(index,'access-gate-preview.js?v=14.4.4-rc8','index');
-includes(index,'territorial-scope-guard-20260731.js?v=14.4.4-rc8','index');
-includes(gate,'BUILD="14.4.4-rc8"','compuerta');
-includes(gate,'stable-r023-territorial-scope-enforced','compuerta');
+includes(index,'VERSIÓN ESTABLE · RC14.4.4 RC9 · DATOS 30-07-2026','index');
+includes(index,'access-gate-preview.js?v=14.4.4-rc9','index');
+includes(index,'territorial-scope-guard-20260731.js?v=14.4.4-rc9','index');
+includes(gate,'BUILD="14.4.4-rc9"','compuerta');
+includes(gate,'stable-territorial-risk-reports-5y','compuerta');
+includes(gate,'risk-reports-5y-data.js','compuerta');
+includes(gate,'risk-reports-5y-ui.js','compuerta');
 
 for(const value of [
   'filterReviews(index)',
@@ -51,15 +60,38 @@ for(const value of [
   'data=window.SmartRiskScope.filterData(data)',
   'window.render=function(...args)',
   'missingPlans:missing',
-  'scopeFiltered:true'
+  'scopeFiltered:true',
+  'RC14.4.4 RC9'
 ])includes(guard,value,'guardián territorial');
 
 includes(scopeUi,'if(element&&element.textContent!==value)','interfaz de alcance');
 includes(scopeUi,'observer.disconnect()','interfaz de alcance');
-includes(scopeUi,'RC14.4.4 RC8','interfaz de alcance');
+includes(scopeUi,'RC14.4.4 RC9','interfaz de alcance');
 
 for(const value of ['observer.disconnect()','note.textContent!==desiredNote','requestAnimationFrame(applyLabels)'])includes(receipt,value,'reconciliación documental');
 for(const value of ['CHECKLIST_BATCH=25','requestAnimationFrame','buildIndex(reviews)'])includes(performance,value,'rendimiento documental');
+
+for(const value of [
+  'rollingWindowYears:5',
+  'IR-GYE-CIUDAD-OLIMPO-2026',
+  'IR-GYE-LEONIDAS-GARCIA-2026',
+  'IR-DURAN-ESTERO-LA-MONA-2026',
+  'IR-NOBOL-LA-PRIMAVERA-2026',
+  'IR-GYE-CRISTO-REY-2025',
+  'IR-SANTA-ELENA-SANTUARIO-OLON-2022'
+])includes(reportData,value,'índice de informes');
+expect((reportData.match(/id:"IR-/g)||[]).length===6,'el índice no contiene seis informes únicos');
+for(const value of [
+  'date.setFullYear(date.getFullYear()-Number(pack.rollingWindowYears||5))',
+  'reportsForTerritory',
+  'scopeAllows(territory)',
+  'openReportDetail',
+  'openReportList',
+  'CONSULTAR_FICHA_INFORME_RIESGO',
+  'ABRIR_INFORME_RIESGO',
+  'Existen ${reports.length}',
+  'últimos 5 años'
+])includes(reportUi,value,'interfaz de informes');
 
 const principalDecoded=decodePayload(principal,'actualización principal');
 const completionDecoded=decodePayload(completion,'complemento de seguimientos');
@@ -78,8 +110,12 @@ console.log(JSON.stringify({
   build:manifest.build,
   territories:manifest.counts.territories,
   plansAvailable:manifest.counts.plansAvailable,
+  riskReportsIndexed:manifest.counts.riskReportsIndexed,
+  riskReportsWindowYears:manifest.riskReportsWindowYears,
   territorialScopeVersion:manifest.territorialScopeVersion,
+  riskReportsVersion:manifest.riskReportsVersion,
   scopeGuard:true,
+  riskReportsByCanton:true,
   reviewObserverIdempotent:true,
   packageHashesVerified:true
 },null,2));
