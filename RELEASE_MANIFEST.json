@@ -5,6 +5,7 @@
   "dataVersion": "2026-07-30T20:41:00-05:00",
   "completionVersion": "2026-07-30T20:41:00-05:00",
   "correctionVersion": "2026-07-30T22:56:00-05:00",
+  "scientificCorrectionVersion": "2026-07-31T00:05:00-05:00",
   "status": "stable",
   "publicPath": "/SmartRisk-CZ5/",
   "dataCut": "2026-07-30",
@@ -60,6 +61,7 @@
     "preview-rc14.4.4/latest-data-update.js",
     "preview-rc14.4.4/followup-completion-20260730.js",
     "preview-rc14.4.4/los-rios-plan-correction-20260730.js",
+    "preview-rc14.4.4/scientific-quality-fix-20260731.js",
     "preview-rc14.4.4/action-r023-core.js",
     "preview-rc14.4.4/action-r023-page.js",
     "preview-rc14.4.4/action-r023-form.js",
@@ -74,6 +76,8 @@
     "noLocalOnlyRelease": true,
     "partialInformationVisible": true,
     "progressiveCorrectionSupported": true,
+    "scientificIndicatorsDerivedFromCounts": true,
+    "processedReviewedValidatedSeparated": true,
     "backupBranch": "backup/rc14.4.4-rc5-estable-20260730",
     "rollbackCommit": "0067de1c9b2e035f151ee5f7342d6ea1ab0a4678"
   }
