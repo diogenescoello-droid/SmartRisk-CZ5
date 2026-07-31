@@ -1,0 +1,55 @@
+name: Validar release SmartRisk
+
+on:
+  push:
+    branches:
+      - "**"
+    paths:
+      - "preview-rc14.4.4/**"
+      - "pilot-baseline-data.js"
+      - "pilot-baseline-bridge.js"
+      - "RELEASE_MANIFEST.json"
+      - "scripts/**"
+      - "firestore.rules"
+      - ".github/workflows/**"
+  pull_request:
+    paths:
+      - "preview-rc14.4.4/**"
+      - "pilot-baseline-data.js"
+      - "pilot-baseline-bridge.js"
+      - "RELEASE_MANIFEST.json"
+      - "scripts/**"
+      - "firestore.rules"
+      - ".github/workflows/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v6
+
+      - name: Preparar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Validar manifiesto, línea base y paquete de datos
+        run: node scripts/validate-release.mjs
+
+      - name: Revisar sintaxis JavaScript
+        run: |
+          node --check preview-rc14.4.4/access-gate-preview.js
+          node --check preview-rc14.4.4/latest-data-update.js
+          node --check preview-rc14.4.4/action-r023-core.js
+          node --check preview-rc14.4.4/action-r023-page.js
+          node --check preview-rc14.4.4/action-r023-form.js
+
+      - name: Verificar que no existan marcadores de conflicto
+        run: |
+          ! grep -R -n -E '^(<<<<<<<|=======|>>>>>>>)' \
+            preview-rc14.4.4 RELEASE_MANIFEST.json scripts firestore.rules .github/workflows
