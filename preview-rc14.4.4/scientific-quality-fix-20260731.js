@@ -23,12 +23,17 @@ function correctedScientificQualitySnapshot(){
   }catch{}
 
   const canonical=Math.max(asNumber(stats.canonicalTerritories),asNumber(stats.folders),entities.length,56);
-  const plansFromEntities=entities.filter(item=>item?.planDocumentAvailable===true).length;
-  const plansFromReview=reviews.filter(item=>item?.documentAvailable!==false&&(item?.planFinalUrl||item?.plan||item?.reviewScore!=null||item?.score!=null||item?.planReviewStatus)).length;
+  const plansFromEntities=entities.filter(item=>item?.planReceived===true||item?.planDocumentAvailable===true).length;
+  const plansFromReview=reviews.filter(item=>{
+    const status=norm(item?.status||item?.planReviewStatus);
+    if(item?.planReceived===false||status.includes("sin plan")||status.includes("no recibido"))return false;
+    return item?.planReceived===true||status.includes("recibid")||status.includes("devuelt")||item?.documentAvailable===true||item?.planFinalUrl||item?.plan||item?.reviewScore!=null||item?.score!=null;
+  }).length;
   const plansReceived=Math.min(canonical,Math.max(asNumber(stats.plansReceived),plansFromEntities,plansFromReview));
 
-  const evaluatedFromReview=reviews.filter(item=>item?.reviewScore!=null||item?.score!=null||item?.criteria?.length||item?.planReviewStatus||item?.status).length;
+  const evaluatedFromReview=reviews.filter(item=>item?.reviewScore!=null||item?.score!=null||item?.criteria?.length).length;
   const plansEvaluated=Math.min(plansReceived,Math.max(asNumber(stats.plansEvaluated),evaluatedFromReview));
+  const missingPlans=Math.max(0,canonical-plansReceived);
 
   const validatedFromRecords=uniqueCount(
     validations.filter(item=>norm(item?.estado||item?.status)==="validado"),
@@ -45,6 +50,7 @@ function correctedScientificQualitySnapshot(){
     folders:canonical,
     plansReceived,
     plansEvaluated,
+    missingPlans,
     territorialCoverage:percent(plansReceived,canonical),
     reviewCompletion:percent(plansEvaluated,plansReceived),
     validatedPlans
@@ -65,12 +71,13 @@ function correctedScientificQualitySnapshot(){
     "La validación documental del plan no equivale al cierre del expediente ni a la corroboración de los seguimientos F07."
   );
 
-  return {...snapshot,dimensions,warnings,scientificCorrection:{version:"2026-07-31T00:05:00-05:00",canonical,plansReceived,plansEvaluated,validatedPlans,followups:followups.length}};
+  return {...snapshot,dimensions,warnings,scientificCorrection:{version:"2026-07-31T13:20:00-05:00",canonical,plansReceived,plansEvaluated,missingPlans,validatedPlans,followups:followups.length}};
 }
 globalThis.scientificQualitySnapshot=correctedScientificQualitySnapshot;
 globalThis.SMART_RISK_SCIENTIFIC_QUALITY_FIX=Object.freeze({
-  version:"2026-07-31T00:05:00-05:00",
+  version:"2026-07-31T13:20:00-05:00",
   derivesPercentagesFromCounts:true,
+  derivesMissingPlansFromUniverse:true,
   separatesProcessedReviewedValidated:true,
   losRiosValidated:false
 });
