@@ -71,6 +71,7 @@ jobs:
           test -f preview-rc14.4.4/action-r023-form.js
           test -f preview-rc14.4.4/latest-data-update.js
           test -f preview-rc14.4.4/followup-completion-20260730.js
+          test -f preview-rc14.4.4/los-rios-plan-correction-20260730.js
 
           cp -R preview-rc14.4.4/. _site/
 
@@ -100,13 +101,14 @@ jobs:
               "build": manifest["build"],
               "dataVersion": manifest["dataVersion"],
               "completionVersion": manifest["completionVersion"],
+              "correctionVersion": manifest["correctionVersion"],
               "dataCut": manifest["dataCut"],
               "counts": manifest["counts"]
           }
           Path("_site/HEALTH.json").write_text(json.dumps(health, ensure_ascii=False, indent=2), encoding="utf-8")
           PY
 
-          printf '%s\n' 'SmartRisk CZ5 RC14.4.4 RC5' 'Seguimiento R02.3 · datos consolidados al 30-07-2026' '56 entidades · 55 planes disponibles · 106 seguimientos territoriales' > _site/VERSION.txt
+          printf '%s\n' 'SmartRisk CZ5 RC14.4.4 RC5' 'Seguimiento R02.3 · datos consolidados al 30-07-2026' '56 entidades · 56 planes disponibles · 106 seguimientos territoriales' 'Los Ríos provincial · plan funcional parcial 68 % · en corrección progresiva' > _site/VERSION.txt
 
           test ! -d _site/preview-rc14.4.4
           test -f _site/pilot-baseline-data.js
@@ -114,26 +116,32 @@ jobs:
           test -f _site/RELEASE_MANIFEST.json
           test -f _site/HEALTH.json
           test -f _site/followup-completion-20260730.js
+          test -f _site/los-rios-plan-correction-20260730.js
           grep -q "VERSIÓN ESTABLE · RC14.4.4 · DATOS 30-07-2026" _site/index.html
           grep -q '14.4.4-rc5' _site/index.html
           grep -q 'PRE=APP' _site/access-gate-preview.js
           grep -q 'stable-r023-latest-data' _site/access-gate-preview.js
           grep -q 'latest-data-update.js' _site/access-gate-preview.js
           grep -q 'followup-completion-20260730.js' _site/access-gate-preview.js
+          grep -q 'los-rios-plan-correction-20260730.js' _site/access-gate-preview.js
           grep -q 'diogenes.coello@gestionderiesgos.gob.ec' _site/access-gate-preview.js
           grep -q 'DecompressionStream' _site/latest-data-update.js
           grep -q 'SMART_RISK_LATEST_DATA_UPDATE' _site/latest-data-update.js
           grep -q 'SMART_RISK_FOLLOWUP_COMPLETION' _site/followup-completion-20260730.js
           grep -q 'Sincronizado · 106 seguimientos' _site/followup-completion-20260730.js
+          grep -q 'SMART_RISK_LOS_RIOS_PLAN_CORRECTION' _site/los-rios-plan-correction-20260730.js
+          grep -q 'planReviewScore":68' _site/los-rios-plan-correction-20260730.js
+          grep -q 'Sincronizado · 56 planes' _site/los-rios-plan-correction-20260730.js
           grep -q "Calidad operativa y revisión UGR" _site/action-r023-page.js
           grep -q "Compromiso próximo" _site/action-r023-form.js
+          grep -q '"plansAvailable": 56' _site/RELEASE_MANIFEST.json
           grep -q '"followupsMinimum": 106' _site/RELEASE_MANIFEST.json
           grep -q '"status": "ok"' _site/HEALTH.json
-          grep -q '"completionVersion"' _site/HEALTH.json
+          grep -q '"correctionVersion"' _site/HEALTH.json
           ! grep -q 'href="../' _site/index.html
           ! grep -q 'src="../' _site/index.html
 
-          echo "SmartRisk RC14.4.4 RC5 quedó preparada como única versión pública con datos actualizados."
+          echo "SmartRisk RC14.4.4 RC5 quedó preparada como única versión pública con 56 planes disponibles."
           cat _site/VERSION.txt
 
       - name: Configurar GitHub Pages
