@@ -5,9 +5,13 @@ service cloud.firestore {
       return request.auth != null;
     }
 
-    function admin() {
+    function adminEmail() {
       return signedIn()
-        && request.auth.token.email in ['geopro.ec2@gmail.com', 'dcoellom2@unemi.edu.ec'];
+        && request.auth.token.email in [
+          'geopro.ec2@gmail.com',
+          'dcoellom2@unemi.edu.ec',
+          'diogenes.coello@gestionderiesgos.gob.ec'
+        ];
     }
 
     function profile() {
@@ -18,6 +22,11 @@ service cloud.firestore {
       return signedIn()
         && exists(/databases/$(database)/documents/perfiles/$(request.auth.uid))
         && profile().estado == 'Activo';
+    }
+
+    function admin() {
+      return adminEmail()
+        || (activeProfile() && profile().rol == 'Administrador');
     }
 
     function roleIs(roles) {
@@ -69,9 +78,10 @@ service cloud.firestore {
         );
       allow delete: if false;
     }
+
     match /perfiles/{uid} {
-      allow read: if signedIn() && (request.auth.uid == uid || admin());
-      allow write: if admin();
+      allow read: if signedIn() && (request.auth.uid == uid || adminEmail());
+      allow write: if adminEmail();
     }
   }
 }
