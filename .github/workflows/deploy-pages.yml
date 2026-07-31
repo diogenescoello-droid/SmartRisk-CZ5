@@ -1,6 +1,6 @@
 name: Deploy SmartRisk CZ5 RC14.4.4 estable
 
-# Publica una sola versión en la raíz: RC14.4.4 RC4 con ajustes de seguimiento R02.3.
+# Publica una sola versión en la raíz: RC14.4.4 RC5 con seguimiento R02.3 y datos consolidados.
 on:
   push:
     branches:
@@ -40,8 +40,10 @@ jobs:
           test -f _site/app.js
           test -f _site/firebase-config.js
           test -f _site/vendor/leaflet.css
+          test -f _site/pilot-baseline-data.js
+          test -f _site/pilot-baseline-bridge.js
 
-      - name: Promover RC14.4.4 RC4 como única versión pública
+      - name: Promover RC14.4.4 RC5 como única versión pública
         run: |
           test -f preview-rc14.4.4/index.html
           test -f preview-rc14.4.4/access-gate-preview.js
@@ -51,6 +53,7 @@ jobs:
           test -f preview-rc14.4.4/action-r023-core.js
           test -f preview-rc14.4.4/action-r023-page.js
           test -f preview-rc14.4.4/action-r023-form.js
+          test -f preview-rc14.4.4/latest-data-update.js
 
           cp -R preview-rc14.4.4/. _site/
 
@@ -61,10 +64,6 @@ jobs:
           html = index.read_text(encoding="utf-8")
           html = html.replace('href="../', 'href="')
           html = html.replace('src="../', 'src="')
-          html = html.replace('SmartRisk CZ5 · RC14.4.4 prueba', 'SmartRisk CZ5 · RC14.4.4')
-          html = html.replace('VISTA DE PRUEBA · RC14.4.4 RC4', 'VERSIÓN ESTABLE · RC14.4.4')
-          html = html.replace('Vista controlada con accesos personales y módulo R02.3 de acciones.', 'Versión estable con accesos personales y módulo R02.3 de seguimiento.')
-          html = html.replace('CZ5 · Piloto controlado · RC14.4.4', 'CZ5 · Seguimiento territorial · RC14.4.4')
           index.write_text(html, encoding="utf-8")
 
           gate = Path("_site/access-gate-preview.js")
@@ -73,23 +72,25 @@ jobs:
           if old not in js:
               raise SystemExit("No se encontró la ruta previa RC14.4.4")
           js = js.replace(old, 'PRE=APP')
-          js = js.replace('mode:"preview-r023-actions-and-access"', 'mode:"stable-r023-actions-and-access"')
           gate.write_text(js, encoding="utf-8")
           PY
 
-          printf '%s\n' 'SmartRisk CZ5 RC14.4.4 RC4' 'Versión estable con ajustes de seguimiento R02.3' > _site/VERSION.txt
+          printf '%s\n' 'SmartRisk CZ5 RC14.4.4 RC5' 'Seguimiento R02.3 · datos consolidados al 30-07-2026' '56 entidades · 55 planes disponibles · 106 seguimientos territoriales' > _site/VERSION.txt
 
           test ! -d _site/preview-rc14.4.4
-          grep -q "VERSIÓN ESTABLE · RC14.4.4" _site/index.html
-          grep -q "Seguimiento territorial · RC14.4.4" _site/index.html
+          grep -q "VERSIÓN ESTABLE · RC14.4.4 · DATOS 30-07-2026" _site/index.html
+          grep -q '14.4.4-rc5' _site/index.html
           grep -q 'PRE=APP' _site/access-gate-preview.js
-          grep -q 'stable-r023-actions-and-access' _site/access-gate-preview.js
+          grep -q 'stable-r023-latest-data' _site/access-gate-preview.js
+          grep -q 'latest-data-update.js' _site/access-gate-preview.js
+          grep -q 'DecompressionStream' _site/latest-data-update.js
+          grep -q 'territorialFollowups' _site/latest-data-update.js
           grep -q "Calidad operativa y revisión UGR" _site/action-r023-page.js
           grep -q "Compromiso próximo" _site/action-r023-form.js
           ! grep -q 'href="../' _site/index.html
           ! grep -q 'src="../' _site/index.html
 
-          echo "SmartRisk RC14.4.4 RC4 quedó preparada como única versión pública."
+          echo "SmartRisk RC14.4.4 RC5 quedó preparada como única versión pública con datos actualizados."
           cat _site/VERSION.txt
 
       - name: Configurar GitHub Pages
