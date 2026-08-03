@@ -1,7 +1,8 @@
 (() => {
   "use strict";
 
-  const RELEASE="RC14.4.4 RC9";
+  const RELEASE=window.SMART_RISK_RELEASE?.release||"V1.0.0 PILOTO ESTABLE";
+  const BUILD=window.SMART_RISK_RELEASE?.build||"1.0.0-piloto-estable";
   let scheduled=false;
   let observer=null;
 
@@ -39,5 +40,5 @@
   window.addEventListener("load",schedule);
   schedule();
 
-  window.SMART_RISK_SCOPE_UI={version:"14.4.4-rc9",release:RELEASE,refresh:schedule};
+  window.SMART_RISK_SCOPE_UI={version:BUILD,release:RELEASE,refresh:schedule};
 })();

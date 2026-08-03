@@ -1,7 +1,8 @@
 {
   "product": "SmartRisk CZ5",
-  "release": "RC14.4.4 RC9",
-  "build": "14.4.4-rc9",
+  "release": "V1.0.0 PILOTO ESTABLE",
+  "build": "1.0.0-piloto-estable",
+  "tag": "v1.0.0-piloto-estable",
   "dataVersion": "2026-07-30T20:41:00-05:00",
   "completionVersion": "2026-07-30T20:41:00-05:00",
   "correctionVersion": "2026-07-30T22:56:00-05:00",
@@ -12,7 +13,7 @@
   "riskReportsVersion": "2026-07-31T14:13:00-05:00",
   "riskReportsWindowYears": 5,
   "status": "stable",
-  "publicPath": "/SmartRisk-CZ5/",
+  "publicPath": "./",
   "dataCut": "2026-07-30",
   "counts": {
     "territories": 56,
@@ -40,8 +41,12 @@
     {"name":"SmartRisk / Firestore","role":"persistencia compartida","document":"plataforma/datos"}
   ],
   "requiredFiles": [
-    "preview-rc14.4.4/index.html",
-    "preview-rc14.4.4/access-gate-preview.js",
+    "index.html",
+    "access-gate.js",
+    "release-config.js",
+    "release-assets.json",
+    "scripts/build-release.mjs",
+    "scripts/validate-canonical-release.mjs",
     "preview-rc14.4.4/territorial-scope-guard-20260731.js",
     "preview-rc14.4.4/risk-reports-5y-data.js",
     "preview-rc14.4.4/risk-reports-5y-ui.js",
@@ -60,6 +65,8 @@
     "pilot-baseline-data.js",
     "pilot-baseline-bridge.js",
     "firestore.rules",
+    "firebase.json",
+    ".firebaserc",
     ".github/workflows/deploy-pages.yml"
   ],
   "acceptance": {
@@ -83,7 +90,7 @@
     "riskReportsFilteredByTerritory": true,
     "riskReportSourceLinks": true,
     "riskReportConsultationAudited": true,
-    "backendGlobalReadRestrictionPendingDeployment": true,
+    "backendGlobalReadRestrictionPendingDeployment": false,
     "backupBranch": "backup/rc14.4.4-rc5-estable-20260730",
     "rollbackCommit": "0067de1c9b2e035f151ee5f7342d6ea1ab0a4678"
   }

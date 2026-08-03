@@ -6,8 +6,8 @@ const expect=(condition,message)=>{if(!condition)throw new Error(`VALIDACIÓN RE
 const moduleText=read('preview-rc14.4.4/plan-receipt-status-fix-20260731.js');
 const performanceText=read('preview-rc14.4.4/review-performance-fix-20260731.js');
 const scopeText=read('preview-rc14.4.4/territorial-scope-guard-20260731.js');
-const gate=read('preview-rc14.4.4/access-gate-preview.js');
-const index=read('preview-rc14.4.4/index.html');
+const gate=read('access-gate.js');
+const index=read('index.html');
 const manifest=JSON.parse(read('RELEASE_MANIFEST.json'));
 
 for(const value of [
@@ -39,10 +39,10 @@ expect(scopeText.includes('missingPlans:missing'),'el alcance no recalcula plane
 expect(scopeText.includes('pack.reviews=pack.reviews.filter'),'los planes no se filtran territorialmente');
 expect(gate.includes('plan-receipt-status-fix-20260731.js'),'la compuerta no carga la reconciliación');
 expect(gate.includes('review-performance-fix-20260731.js'),'la compuerta no carga el optimizador');
-expect(gate.includes('BUILD="14.4.4-rc9"'),'la compuerta no está en RC9');
-expect(index.includes('access-gate-preview.js?v=14.4.4-rc9'),'caché de compuerta incorrecta');
-expect(index.includes('territorial-scope-guard-20260731.js?v=14.4.4-rc9'),'caché de alcance incorrecta');
-expect(index.includes('VERSIÓN ESTABLE · RC14.4.4 RC9'),'la interfaz no identifica RC9');
+expect(gate.includes('const BUILD_VERSION = RELEASE.build'),'la compuerta no usa la versión canónica');
+expect(index.includes('access-gate.js?v=1.0.0-piloto-estable'),'caché de compuerta incorrecta');
+expect(gate.includes('territorial-scope-guard-20260731.js'),'falta el guardián territorial');
+expect(index.includes('V1.0.0 PILOTO ESTABLE'),'la interfaz no identifica la versión estable');
 expect(manifest.planReceiptCorrectionVersion==='2026-07-31T12:15:00-05:00','versión documental incorrecta');
 expect(manifest.reviewPerformanceVersion==='14.4.4-rc7','versión de rendimiento incorrecta');
 expect(manifest.territorialScopeVersion==='2026-07-31T14:13:00-05:00','versión territorial incorrecta');

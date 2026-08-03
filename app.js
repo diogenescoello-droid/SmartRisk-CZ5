@@ -1,5 +1,5 @@
 const STORE='smartrisk-cz5-data-v1';
-const ADMIN_EMAILS=['geopro.ec2@gmail.com','dcoellom2@unemi.edu.ec'];
+const ADMIN_EMAILS=['geopro.ec2@gmail.com','dcoellom2@unemi.edu.ec','diogenes.coello@gestionderiesgos.gob.ec'];
 const menu=[
  ['dashboard','Panel principal'],['usuarios','Actores y flujo COE'],['territorios','Territorios'],
  ['instituciones','Mesas y grupos de trabajo'],['revision','Revisión de planes'],['decisiones','Bandeja de decisiones'],['sitios','Sitios críticos'],['acciones','Acciones'],['herramientas','Herramientas']
@@ -39,7 +39,7 @@ const $=s=>document.querySelector(s);
 const normalizeEmail=value=>String(value||'').trim().toLowerCase();
 const normalizeText=value=>String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toLowerCase();
 const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
-const isAdmin=()=>ADMIN_EMAILS.includes(normalizeEmail(session?.email));
+const isAdmin=()=>ADMIN_EMAILS.includes(normalizeEmail(session?.email))||Boolean(window.SmartRiskScope?.isAdministrator?.());
 function ficheLinks(fiche){return fiche.vinculos||{territorios:[],sitios:[],decisiones:[],acciones:[],sesiones:[]}}
 function relevantTechnicalFiches(context={}){
  return (data.fichasTecnicas||[]).filter(fiche=>{

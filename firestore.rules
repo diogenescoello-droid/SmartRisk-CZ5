@@ -76,6 +76,17 @@ service cloud.firestore {
       allow update: if admin() || ownPasswordStateUpdate(uid);
     }
 
+    // Registro mínimo de actividad. Cada cuenta solo puede escribir su propio UID.
+    match /accesos/{uid} {
+      allow get: if signedIn() && (request.auth.uid == uid || admin());
+      allow list: if admin();
+      allow create, update: if activeProfile()
+        && request.auth.uid == uid
+        && request.resource.data.get('uid', '') == uid
+        && request.resource.data.get('correo', '') == request.auth.token.email;
+      allow delete: if admin();
+    }
+
     // Registros y estado operativo segmentados por alcance autorizado.
     match /alcances/{scopeKey} {
       allow get, list: if admin() || scopeAllowed(scopeKey);

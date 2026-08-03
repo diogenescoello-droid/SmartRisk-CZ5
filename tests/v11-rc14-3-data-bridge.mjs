@@ -1,8 +1,11 @@
 import fs from 'node:fs';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
+import path from 'node:path';
+const root=path.resolve(process.argv[2]||'dist');
 const context={window:{}};context.window.window=context.window;vm.createContext(context);
-for(const file of ['web-release/data.js','web-release/pilot-baseline-data.js','web-release/pilot-baseline-bridge.js']){
+for(const name of ['data.js','pilot-baseline-data.js','pilot-baseline-bridge.js']){
+  const file=path.join(root,name);
   vm.runInContext(fs.readFileSync(file,'utf8'),context,{filename:file});
 }
 const data=context.window.SEED_DATA;

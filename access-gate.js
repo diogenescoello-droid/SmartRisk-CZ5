@@ -1,7 +1,11 @@
 (() => {
   "use strict";
 
-  const BUILD_VERSION = "14.4.0-security";
+  const RELEASE = window.SMART_RISK_RELEASE || {
+    release: "V1.0.0 PILOTO ESTABLE",
+    build: "1.0.0-piloto-estable"
+  };
+  const BUILD_VERSION = RELEASE.build;
   const SUPPORT_SCRIPTS = [
     "data.js",
     "enos-data.js",
@@ -11,6 +15,24 @@
     "cases-data.js",
     "pilot-baseline-data.js",
     "pilot-baseline-bridge.js"
+  ];
+  const FEATURE_SCRIPTS = [
+    "access-core.js",
+    "access-ui.js",
+    "access-form.js",
+    "action-r023-core.js",
+    "action-r023-page.js",
+    "action-r023-form.js",
+    "latest-data-update.js",
+    "followup-completion-20260730.js",
+    "los-rios-plan-correction-20260730.js",
+    "scientific-quality-fix-20260731.js",
+    "plan-receipt-status-fix-20260731.js",
+    "review-performance-fix-20260731.js",
+    "risk-reports-5y-data.js",
+    "risk-reports-5y-ui.js",
+    "risk-reports-map-layer-20260803.js",
+    "territorial-scope-guard-20260731.js"
   ];
   const SUPPORTED_ROLES = new Set([
     "Administrador",
@@ -218,6 +240,7 @@
       await window.SmartRiskScopeRepository.init({ user, profile, db, auth });
       status(`Cargando ${window.SmartRiskScope.scopeLabel()}...`, "saving");
       await loadScript("app.js");
+      for (const src of FEATURE_SCRIPTS) await loadScript(`modules/${src}`);
       loaded = true;
     } finally {
       loading = false;
@@ -301,7 +324,8 @@
 
   window.SMART_RISK_ACCESS_GATE = {
     version: BUILD_VERSION,
-    mode: "uid-profile-scope",
+    release: RELEASE.release,
+    mode: "uid-profile-scope-canonical-artifact",
     provisioning: "Firebase Console or Admin SDK only",
     support: "diogenes.coello@gestionderiesgos.gob.ec"
   };

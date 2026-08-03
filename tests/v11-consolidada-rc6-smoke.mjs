@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 import path from 'node:path';
 
-const root = process.argv[2] ? path.resolve(process.argv[2]) : path.resolve(process.cwd(), 'web-release');
+const root = process.argv[2] ? path.resolve(process.argv[2]) : path.resolve(process.cwd(), 'dist');
 const read = name => fs.readFileSync(path.join(root, name), 'utf8');
 const ok = (condition, message) => {
   if (!condition) throw new Error(`FALLO: ${message}`);

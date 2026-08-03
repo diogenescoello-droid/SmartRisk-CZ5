@@ -1,6 +1,6 @@
 (() => {
   "use strict";
-  const BUILD="14.4.4-rc4", COLLECTION="accesos";
+  const BUILD=window.SMART_RISK_RELEASE?.build||"1.0.0-piloto-estable", COLLECTION="accesos";
   const states={NONE:"Sin credenciales",CREATED:"Credenciales creadas",INVITED:"Invitación enviada",ACTIVE:"Activo",SUSPENDED:"Suspendido",MAIL_PENDING:"Correo pendiente"};
   const activityByUid=new Map();
   const now=()=>new Date().toISOString(),clean=v=>String(v??"").trim(),normalized=v=>clean(v).toLowerCase();
