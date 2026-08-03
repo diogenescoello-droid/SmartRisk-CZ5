@@ -1,7 +1,7 @@
 (()=>{
   "use strict";
 
-  const BUILD="14.4.4-rc6";
+  const BUILD=window.SMART_RISK_RELEASE?.build||"1.0.0-piloto-estable";
   const PAGE_SIZE=10;
   const CHECKLIST_BATCH=25;
   let installed=false;

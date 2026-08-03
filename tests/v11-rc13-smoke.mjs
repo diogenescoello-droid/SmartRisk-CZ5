@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import vm from "node:vm";
 
-const root = process.argv[2] ? path.resolve(process.argv[2]) : path.resolve(process.cwd(), "web-release");
+const root = process.argv[2] ? path.resolve(process.argv[2]) : path.resolve(process.cwd(), "dist");
 const read = name => fs.readFileSync(path.join(root, name), "utf8");
 const ok = (condition, message) => {
   if (!condition) throw new Error(`FALLO: ${message}`);
@@ -13,17 +13,17 @@ const menu = read("rc13-menu.js");
 const css = read("rc13-menu.css");
 const rollout = read("v11-rollout.js");
 const index = read("index.html");
-const architecture = fs.readFileSync(path.resolve(root, "../docs/RC13_MENU_ARCHITECTURE.md"), "utf8");
+const architecture = fs.readFileSync(path.resolve(process.cwd(), "docs/RC13_MENU_ARCHITECTURE.md"), "utf8");
 
 new vm.Script(menu, { filename: "rc13-menu.js" });
 
 const rolloutPosition = index.indexOf("v11-rollout.js?v=11.0.0-rc13");
-const menuPosition = index.indexOf("rc13-menu.js?v=11.0.0-rc13");
-const gatePosition = index.indexOf("access-gate.js?v=11.0.0-rc13");
+const menuPosition = index.indexOf("rc13-menu.js?v=1.0.0-piloto-estable");
+const gatePosition = index.indexOf("access-gate.js?v=1.0.0-piloto-estable");
 
 ok(rolloutPosition >= 0 && rolloutPosition < gatePosition, "Rollout V11 restaurado antes de la compuerta de acceso");
 ok(menuPosition > rolloutPosition && menuPosition < gatePosition, "Capa RC13 cargada antes de iniciar la aplicación");
-ok(index.includes("rc13-menu.css?v=11.0.0-rc13"), "Hoja de estilos RC13 usa la caché vigente");
+ok(index.includes("rc13-menu.css?v=1.0.0-piloto-estable"), "Hoja de estilos RC13 usa la caché de la versión estable");
 ok(rollout.includes('BUILD_VERSION = "11.0.0-rc13"'), "Versión de recursos V11 actualizada a RC13");
 ok(menu.includes("supportedNavigationModes") && ["legacy", "scoped", "v11"].every(mode => menu.includes(`"${mode}"`)), "Tres modos de navegación compatibles");
 ok(menu.includes('button[data-route]') && menu.includes("v11Navigation"), "Navegación V11 integrada por data-route");

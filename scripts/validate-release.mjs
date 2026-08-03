@@ -5,7 +5,7 @@ import {createHash} from 'node:crypto';
 
 const root=process.cwd();
 const read=file=>fs.readFileSync(path.join(root,file),'utf8');
-const expect=(condition,message)=>{if(!condition)throw new Error(`VALIDACIÓN RC14.4.4 RC9: ${message}`)};
+const expect=(condition,message)=>{if(!condition)throw new Error(`VALIDACIÓN V1.0.0 PILOTO ESTABLE: ${message}`)};
 const includes=(text,value,label)=>expect(text.includes(value),`${label}: falta ${value}`);
 const sha256=value=>createHash('sha256').update(value).digest('hex');
 
@@ -18,8 +18,9 @@ function decodePayload(text,label){
 
 const manifest=JSON.parse(read('RELEASE_MANIFEST.json'));
 expect(manifest.product==='SmartRisk CZ5','producto incorrecto');
-expect(manifest.release==='RC14.4.4 RC9','release incorrecto');
-expect(manifest.build==='14.4.4-rc9','build incorrecto');
+expect(manifest.release==='V1.0.0 PILOTO ESTABLE','release incorrecto');
+expect(manifest.build==='1.0.0-piloto-estable','build incorrecto');
+expect(manifest.tag==='v1.0.0-piloto-estable','tag incorrecto');
 expect(manifest.status==='stable','release no estable');
 expect(manifest.counts.territories===56,'universo territorial incorrecto');
 expect(manifest.counts.plansAvailable===56,'conteo de planes incorrecto');
@@ -33,8 +34,8 @@ expect(manifest.acceptance.riskReportsFilteredByTerritory===true,'falta filtro c
 expect(manifest.acceptance.riskReportConsultationAudited===true,'falta trazabilidad de consultas');
 for(const file of manifest.requiredFiles)expect(fs.existsSync(path.join(root,file)),`archivo obligatorio inexistente: ${file}`);
 
-const index=read('preview-rc14.4.4/index.html');
-const gate=read('preview-rc14.4.4/access-gate-preview.js');
+const index=read('index.html');
+const gate=read('access-gate.js');
 const guard=read('preview-rc14.4.4/territorial-scope-guard-20260731.js');
 const scopeUi=read('scope-ui.js');
 const receipt=read('preview-rc14.4.4/plan-receipt-status-fix-20260731.js');
@@ -44,11 +45,11 @@ const reportUi=read('preview-rc14.4.4/risk-reports-5y-ui.js');
 const principal=read('preview-rc14.4.4/latest-data-update.js');
 const completion=read('preview-rc14.4.4/followup-completion-20260730.js');
 
-includes(index,'VERSIÓN ESTABLE · RC14.4.4 RC9 · DATOS 30-07-2026','index');
-includes(index,'access-gate-preview.js?v=14.4.4-rc9','index');
-includes(index,'territorial-scope-guard-20260731.js?v=14.4.4-rc9','index');
-includes(gate,'BUILD="14.4.4-rc9"','compuerta');
-includes(gate,'stable-territorial-risk-reports-5y','compuerta');
+includes(index,'V1.0.0 PILOTO ESTABLE','index');
+includes(index,'release-config.js?v=1.0.0-piloto-estable','index');
+includes(index,'access-gate.js?v=1.0.0-piloto-estable','index');
+includes(gate,'const BUILD_VERSION = RELEASE.build','compuerta');
+includes(gate,'uid-profile-scope-canonical-artifact','compuerta');
 includes(gate,'risk-reports-5y-data.js','compuerta');
 includes(gate,'risk-reports-5y-ui.js','compuerta');
 
@@ -61,12 +62,12 @@ for(const value of [
   'window.render=function(...args)',
   'missingPlans:missing',
   'scopeFiltered:true',
-  'RC14.4.4 RC9'
+  'V1.0.0 PILOTO ESTABLE'
 ])includes(guard,value,'guardián territorial');
 
 includes(scopeUi,'if(element&&element.textContent!==value)','interfaz de alcance');
 includes(scopeUi,'observer.disconnect()','interfaz de alcance');
-includes(scopeUi,'RC14.4.4 RC9','interfaz de alcance');
+includes(scopeUi,'SMART_RISK_RELEASE?.release','interfaz de alcance');
 
 for(const value of ['observer.disconnect()','note.textContent!==desiredNote','requestAnimationFrame(applyLabels)'])includes(receipt,value,'reconciliación documental');
 for(const value of ['CHECKLIST_BATCH=25','requestAnimationFrame','buildIndex(reviews)'])includes(performance,value,'rendimiento documental');

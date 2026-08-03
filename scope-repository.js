@@ -223,7 +223,7 @@
 
   window.SmartRiskScopeRepository = {
     init,
-    version: "14.4.0-security",
+    version: window.SMART_RISK_RELEASE?.build || "1.0.0-piloto-estable",
     architecture: "unified-ui-secured-scope-overlay"
   };
 })();

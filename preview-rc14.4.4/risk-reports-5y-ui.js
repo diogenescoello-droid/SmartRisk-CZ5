@@ -1,7 +1,7 @@
 (()=>{
   "use strict";
 
-  const RELEASE="RC14.4.4 RC9";
+  const RELEASE=window.SMART_RISK_RELEASE?.release||"V1.0.0 PILOTO ESTABLE";
   const VERSION="2026-07-31T14:13:00-05:00";
   const pack=window.SMART_RISK_RISK_REPORTS_5Y;
   if(!pack||!Array.isArray(pack.reports)){
