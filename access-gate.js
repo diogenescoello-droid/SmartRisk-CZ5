@@ -103,7 +103,8 @@
     if (!SUPPORTED_ROLES.has(profile.rol)) {
       return `El rol “${profile.rol || "sin definir"}” no está habilitado en esta versión.`;
     }
-    if (profile.rol !== "Administrador" && !Array.isArray(profile.scopeKeys) && !profile.canton && !profile.provincia) {
+    const scopeKeys = Array.isArray(profile.scopeKeys) ? profile.scopeKeys.filter(Boolean) : [];
+    if (profile.rol !== "Administrador" && !scopeKeys.length && !profile.canton && !profile.provincia) {
       return "El perfil no tiene un alcance territorial o institucional asignado.";
     }
     return "";
