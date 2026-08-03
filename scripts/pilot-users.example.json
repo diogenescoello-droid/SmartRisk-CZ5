@@ -1,0 +1,34 @@
+{
+  "users": [
+    {
+      "email": "usuario.territorial@institucion.gob.ec",
+      "nombre": "Nombre del técnico territorial",
+      "rol": "Técnico territorial",
+      "provincia": "Guayas",
+      "canton": "Cantón correspondiente",
+      "nivelAcceso": "Cantonal",
+      "scopeKeys": [
+        "TER:TER-GUAYAS-CANTON"
+      ],
+      "estado": "Activo",
+      "resetTemporaryPassword": false
+    },
+    {
+      "email": "visor.ame@ame.gob.ec",
+      "nombre": "Nombre del visor AME",
+      "rol": "Visor provincial AME",
+      "provincia": "Guayas",
+      "canton": "",
+      "nivelAcceso": "Consulta zonal",
+      "scopeKeys": [
+        "PROV:PROV-GUAYAS",
+        "PROV:PROV-LOS-RIOS",
+        "PROV:PROV-SANTA-ELENA",
+        "PROV:PROV-BOLIVAR",
+        "PROV:PROV-GALAPAGOS"
+      ],
+      "estado": "Activo",
+      "resetTemporaryPassword": false
+    }
+  ]
+}
