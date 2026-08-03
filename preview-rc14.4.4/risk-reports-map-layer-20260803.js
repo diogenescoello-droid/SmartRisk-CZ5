@@ -50,13 +50,15 @@
   }
 
   function clear(){
-    if(reportControl&&activeF03Map){try{activeF03Map.removeControl(reportControl)}catch{}}
+    if(reportControl&&typeof activeF03Map!=="undefined"&&activeF03Map){
+      try{activeF03Map.removeControl(reportControl)}catch{}
+    }
     reportControl=null;
     reportLayer=null;
   }
 
   function addLayer(){
-    if(!window.activeF03Map||typeof L==="undefined")return;
+    if(typeof activeF03Map==="undefined"||!activeF03Map||typeof L==="undefined")return;
     clear();
     const items=mappedReports();
     reportLayer=L.featureGroup();
