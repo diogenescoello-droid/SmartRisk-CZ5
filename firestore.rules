@@ -24,19 +24,19 @@ service cloud.firestore {
     }
 
     function activeProfile() {
-      return profileExists() && profile().estado == 'Activo';
+      return profileExists() && profile().get('estado', '') == 'Activo';
     }
 
     function admin() {
       return adminEmail()
-        || (activeProfile() && profile().rol == 'Administrador');
+        || (activeProfile() && profile().get('rol', '') == 'Administrador');
     }
 
     function readOnlyProfile() {
       return activeProfile()
         && (
-          profile().modoAcceso == 'Consulta'
-          || profile().rol in [
+          profile().get('modoAcceso', '') == 'Consulta'
+          || profile().get('rol', '') in [
             'Visor provincial AME',
             'Visor zonal AME',
             'Consulta provincial AME'
@@ -46,8 +46,8 @@ service cloud.firestore {
 
     function scopeAllowed(scopeKey) {
       return activeProfile()
-        && profile().scopeKeys is list
-        && scopeKey in profile().scopeKeys;
+        && profile().get('scopeKeys', []) is list
+        && scopeKey in profile().get('scopeKeys', []);
     }
 
     function ownPasswordStateUpdate(uid) {
@@ -92,7 +92,7 @@ service cloud.firestore {
           || (
             scopeAllowed(scopeKey)
             && !readOnlyProfile()
-            && request.resource.data._scope.updatedBy == request.auth.token.email
+            && request.resource.data.get('_scope', {}).get('updatedBy', '') == request.auth.token.email
           );
         allow delete: if admin();
       }
