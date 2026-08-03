@@ -27,8 +27,8 @@ jobs:
           mkdir -p _site
           rsync -a --exclude '.git' --exclude '.github' --exclude '_site' ./ _site/
           test -f _site/index.html
-          test -f _site/informes-contextuales.js
-          test -f _site/informes-contextuales.css
+          test -f _site/report-evidence.js
+          test -f _site/report-evidence.css
           printf '%s\n' \
             'SmartRisk CZ5 · versión ajustada' \
             'Informes técnicos distribuidos en Territorios y Cartografía' \
