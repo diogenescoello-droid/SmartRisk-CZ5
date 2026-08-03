@@ -14,14 +14,17 @@ service cloud.firestore {
         ];
     }
 
+    function profileExists() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/perfiles/$(request.auth.uid));
+    }
+
     function profile() {
       return get(/databases/$(database)/documents/perfiles/$(request.auth.uid)).data;
     }
 
     function activeProfile() {
-      return signedIn()
-        && exists(/databases/$(database)/documents/perfiles/$(request.auth.uid))
-        && profile().estado == 'Activo';
+      return profileExists() && profile().estado == 'Activo';
     }
 
     function admin() {
@@ -29,59 +32,92 @@ service cloud.firestore {
         || (activeProfile() && profile().rol == 'Administrador');
     }
 
-    function roleIs(roles) {
-      return activeProfile() && profile().rol in roles;
+    function readOnlyProfile() {
+      return activeProfile()
+        && (
+          profile().modoAcceso == 'Consulta'
+          || profile().rol in [
+            'Visor provincial AME',
+            'Visor zonal AME',
+            'Consulta provincial AME'
+          ]
+        );
     }
 
-    function changesOnly(fields) {
-      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(fields);
+    function scopeAllowed(scopeKey) {
+      return activeProfile()
+        && profile().scopeKeys is list
+        && scopeKey in profile().scopeKeys;
     }
 
+    function ownPasswordStateUpdate(uid) {
+      return signedIn()
+        && request.auth.uid == uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'requiereCambioClave',
+          'claveActualizadaEn',
+          'ultimoAccesoEn'
+        ]);
+    }
+
+    // La base global queda reservada a administradores para escritura.
+    // Los perfiles territoriales trabajan exclusivamente en su documento de alcance.
     match /plataforma/datos {
       allow read: if admin() || activeProfile();
-      allow create: if admin();
-      allow update: if request.resource.data._revision == resource.data.get('_revision', 0) + 1
-        && (
-          admin()
-          || (
-            roleIs(['Usuario territorial', 'Técnico territorial'])
-            && changesOnly([
-              '_revision', 'decisiones', 'sitios', 'acciones', 'validaciones',
-              'auditoria', 'capasGeograficas', 'tareasCabina', 'cartografiaOperativa',
-              'fichasTecnicas'
-            ])
-          )
-          || (
-            roleIs(['Coordinador COE'])
-            && changesOnly([
-              '_revision', 'decisiones', 'sitios', 'acciones', 'validaciones',
-              'auditoria', 'actoresCOE', 'equiposCOE', 'actividadesCOE',
-              'capasGeograficas', 'sesionesCabina', 'tareasCabina', 'cartografiaOperativa',
-              'cabinaActiva', 'fichasTecnicas'
-            ])
-          )
-          || (
-            roleIs(['Líder MTT/GT'])
-            && changesOnly([
-              '_revision', 'decisiones', 'acciones', 'auditoria', 'equiposCOE',
-              'actividadesCOE', 'tareasCabina', 'capasGeograficas', 'cartografiaOperativa',
-              'fichasTecnicas'
-            ])
-          )
-          || (
-            roleIs(['Tomador de decisión/control'])
-            && changesOnly([
-              '_revision', 'decisiones', 'acciones', 'auditoria', 'tareasCabina',
-              'fichasTecnicas'
-            ])
-          )
-        );
+      allow create, update: if admin();
       allow delete: if false;
     }
 
+    // El UID de Authentication es el identificador canónico del perfil.
     match /perfiles/{uid} {
-      allow read: if signedIn() && (request.auth.uid == uid || adminEmail());
-      allow write: if adminEmail();
+      allow get: if signedIn() && (request.auth.uid == uid || admin());
+      allow list: if admin();
+      allow create, delete: if admin();
+      allow update: if admin() || ownPasswordStateUpdate(uid);
+    }
+
+    // Registros y estado operativo segmentados por alcance autorizado.
+    match /alcances/{scopeKey} {
+      allow get, list: if admin() || scopeAllowed(scopeKey);
+      allow create, update, delete: if admin();
+
+      match /registros/{recordId} {
+        allow read: if admin() || scopeAllowed(scopeKey);
+        allow write: if admin();
+      }
+
+      match /estado/{stateId} {
+        allow read: if admin() || scopeAllowed(scopeKey);
+        allow create, update: if admin()
+          || (
+            scopeAllowed(scopeKey)
+            && !readOnlyProfile()
+            && request.resource.data._scope.updatedBy == request.auth.token.email
+          );
+        allow delete: if admin();
+      }
+    }
+
+    // Catálogos y procesos administrativos no usados directamente por usuarios finales.
+    match /provincias/{document=**} {
+      allow read, write: if admin();
+    }
+    match /territorios/{document=**} {
+      allow read, write: if admin();
+    }
+    match /registros/{document=**} {
+      allow read, write: if admin();
+    }
+    match /migraciones/{document=**} {
+      allow read, write: if admin();
+    }
+    match /respaldos_plataforma/{document=**} {
+      allow read, write: if admin();
+    }
+
+    // Denegación explícita para cualquier ruta no declarada.
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }
