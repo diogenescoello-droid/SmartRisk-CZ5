@@ -16,6 +16,9 @@ for (const moduleName of assets.featureModules) if (!fs.existsSync(path.join(dis
 for (const forbidden of ["web-release", "preview-rc14.4.4", ".git", ".github", "firestore.rules", "firebase.json"]) {
   if (fs.existsSync(path.join(dist, forbidden))) fail(`el artefacto contiene ${forbidden}`);
 }
+for (const legacy of ["report-evidence.js", "report-evidence.css"]) {
+  if (fs.existsSync(path.join(dist, legacy))) fail(`el artefacto conserva la dependencia externa heredada ${legacy}`);
+}
 
 const releaseContext = { window: {} };
 vm.createContext(releaseContext);
