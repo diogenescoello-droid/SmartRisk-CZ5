@@ -1,23 +1,8 @@
-name: Deploy SmartRisk CZ5 RC14.4.4 RC9
+name: Deploy SmartRisk CZ5
 
-# Publica RC14.4.4 RC9 con aislamiento territorial, estabilidad documental
-# y avisos cantonales de informes de riesgo de los últimos cinco años.
 on:
   push:
-    branches:
-      - main
-    paths:
-      - "smartrisk-site-rc14.4.3.zip"
-      - "pilot-baseline-data.js"
-      - "pilot-baseline-bridge.js"
-      - "preview-rc14.4.4/**"
-      - "scope-context.js"
-      - "scope-repository.js"
-      - "scope-ui.js"
-      - "RELEASE_MANIFEST.json"
-      - "scripts/**"
-      - "firestore.rules"
-      - ".github/workflows/deploy-pages.yml"
+    branches: ["main"]
   workflow_dispatch:
 
 permissions:
@@ -32,190 +17,38 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Descargar repositorio
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
-      - name: Preparar Node para validación
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-
-      - name: Validar coherencia de versión, fuentes y alcance
-        run: node scripts/validate-release.mjs
-
-      - name: Validar coherencia del panel científico
-        run: node scripts/validate-scientific-quality-fix.mjs
-
-      - name: Validar recepción y estados diferenciados de planes
-        run: node scripts/validate-plan-receipt-status.mjs
-
-      - name: Validar sintaxis de módulos críticos
-        run: |
-          node --check preview-rc14.4.4/access-gate-preview.js
-          node --check preview-rc14.4.4/plan-receipt-status-fix-20260731.js
-          node --check preview-rc14.4.4/review-performance-fix-20260731.js
-          node --check preview-rc14.4.4/territorial-scope-guard-20260731.js
-          node --check preview-rc14.4.4/risk-reports-5y-data.js
-          node --check preview-rc14.4.4/risk-reports-5y-ui.js
-          node --check scope-context.js
-          node --check scope-repository.js
-          node --check scope-ui.js
-
-      - name: Preparar base compartida
+      - name: Preparar sitio actual
         run: |
           rm -rf _site
           mkdir -p _site
-
-          test -f smartrisk-site-rc14.4.3.zip
-          unzip -q smartrisk-site-rc14.4.3.zip -d _site
-
-          test -f _site/styles.css
-          test -f _site/app.js
-          test -f _site/firebase-config.js
-          test -f _site/vendor/leaflet.css
-
-          test -f pilot-baseline-data.js
-          test -f pilot-baseline-bridge.js
-          test -f RELEASE_MANIFEST.json
-          cp pilot-baseline-data.js pilot-baseline-bridge.js RELEASE_MANIFEST.json _site/
-          cp scope-context.js scope-repository.js scope-ui.js _site/
-
-      - name: Promover RC14.4.4 RC9 como versión pública
-        run: |
-          test -f preview-rc14.4.4/index.html
-          test -f preview-rc14.4.4/access-gate-preview.js
-          test -f preview-rc14.4.4/access-core.js
-          test -f preview-rc14.4.4/access-ui.js
-          test -f preview-rc14.4.4/access-form.js
-          test -f preview-rc14.4.4/action-r023-core.js
-          test -f preview-rc14.4.4/action-r023-page.js
-          test -f preview-rc14.4.4/action-r023-form.js
-          test -f preview-rc14.4.4/latest-data-update.js
-          test -f preview-rc14.4.4/followup-completion-20260730.js
-          test -f preview-rc14.4.4/los-rios-plan-correction-20260730.js
-          test -f preview-rc14.4.4/scientific-quality-fix-20260731.js
-          test -f preview-rc14.4.4/plan-receipt-status-fix-20260731.js
-          test -f preview-rc14.4.4/review-performance-fix-20260731.js
-          test -f preview-rc14.4.4/territorial-scope-guard-20260731.js
-          test -f preview-rc14.4.4/risk-reports-5y-data.js
-          test -f preview-rc14.4.4/risk-reports-5y-ui.js
-
-          cp -R preview-rc14.4.4/. _site/
-
-          python - <<'PY'
-          import json
-          from pathlib import Path
-
-          index = Path("_site/index.html")
-          html = index.read_text(encoding="utf-8")
-          html = html.replace('href="../', 'href="')
-          html = html.replace('src="../', 'src="')
-          index.write_text(html, encoding="utf-8")
-
-          gate = Path("_site/access-gate-preview.js")
-          js = gate.read_text(encoding="utf-8")
-          old = 'PRE=`${APP}preview-rc14.4.4/`'
-          if old not in js:
-              raise SystemExit("No se encontró la ruta previa RC14.4.4")
-          gate.write_text(js.replace(old, 'PRE=APP'), encoding="utf-8")
-
-          manifest = json.loads(Path("RELEASE_MANIFEST.json").read_text(encoding="utf-8"))
-          health = {
-              "status": "ok",
-              "product": manifest["product"],
-              "release": manifest["release"],
-              "build": manifest["build"],
-              "dataVersion": manifest["dataVersion"],
-              "completionVersion": manifest["completionVersion"],
-              "correctionVersion": manifest["correctionVersion"],
-              "scientificCorrectionVersion": manifest["scientificCorrectionVersion"],
-              "planReceiptCorrectionVersion": manifest["planReceiptCorrectionVersion"],
-              "reviewPerformanceVersion": manifest["reviewPerformanceVersion"],
-              "territorialScopeVersion": manifest["territorialScopeVersion"],
-              "riskReportsVersion": manifest["riskReportsVersion"],
-              "riskReportsWindowYears": manifest["riskReportsWindowYears"],
-              "reviewObserverStrategy": "idempotent-disconnect-write-reconnect",
-              "scopeStrategy": "filter-global-packages-and-render-boundary",
-              "riskReportsStrategy": "rolling-five-year-window-by-province-canton",
-              "dataCut": manifest["dataCut"],
-              "counts": manifest["counts"]
-          }
-          Path("_site/HEALTH.json").write_text(json.dumps(health, ensure_ascii=False, indent=2), encoding="utf-8")
-          PY
-
+          rsync -a --exclude '.git' --exclude '.github' --exclude '_site' ./ _site/
+          test -f _site/index.html
+          test -f _site/informes-contextuales.js
+          test -f _site/informes-contextuales.css
           printf '%s\n' \
-            'SmartRisk CZ5 RC14.4.4 RC9' \
-            'Seguimiento R02.3 · datos consolidados al 31-07-2026' \
-            '56 entidades · 56 planes disponibles · 106 seguimientos territoriales' \
-            'Perfiles territoriales: paquetes globales y render filtrados por alcance' \
-            'Informes de riesgo: ventana móvil de cinco años y fichas cantonales' \
-            'Índice inicial: 6 informes verificados en 4 cantones' \
-            'Recepción, archivo, firma, revisión y validación se muestran por separado' \
+            'SmartRisk CZ5 · versión ajustada' \
+            'Informes técnicos distribuidos en Territorios y Cartografía' \
+            'Sin pestaña independiente de informes técnicos' \
             > _site/VERSION.txt
-
-          test ! -d _site/preview-rc14.4.4
-          test -f _site/pilot-baseline-data.js
-          test -f _site/pilot-baseline-bridge.js
-          test -f _site/RELEASE_MANIFEST.json
-          test -f _site/HEALTH.json
-          test -f _site/scope-context.js
-          test -f _site/scope-repository.js
-          test -f _site/scope-ui.js
-          test -f _site/plan-receipt-status-fix-20260731.js
-          test -f _site/review-performance-fix-20260731.js
-          test -f _site/territorial-scope-guard-20260731.js
-          test -f _site/risk-reports-5y-data.js
-          test -f _site/risk-reports-5y-ui.js
-
-          grep -q "VERSIÓN ESTABLE · RC14.4.4 RC9 · DATOS 30-07-2026" _site/index.html
-          grep -q 'access-gate-preview.js?v=14.4.4-rc9' _site/index.html
-          grep -q 'territorial-scope-guard-20260731.js?v=14.4.4-rc9' _site/index.html
-          grep -q 'BUILD="14.4.4-rc9"' _site/access-gate-preview.js
-          grep -q 'stable-territorial-risk-reports-5y' _site/access-gate-preview.js
-          grep -q 'risk-reports-5y-data.js' _site/access-gate-preview.js
-          grep -q 'risk-reports-5y-ui.js' _site/access-gate-preview.js
-          grep -q 'filterReviews(index)' _site/territorial-scope-guard-20260731.js
-          grep -q 'window.F03_CARTOGRAPHY=window.F03_CARTOGRAPHY.filter' _site/territorial-scope-guard-20260731.js
-          grep -q 'data=window.SmartRiskScope.filterData(data)' _site/territorial-scope-guard-20260731.js
-          grep -q 'window.render=function' _site/territorial-scope-guard-20260731.js
-          grep -q 'missingPlans:missing' _site/territorial-scope-guard-20260731.js
-          grep -q 'observerStrategy:"idempotent-disconnect-write-reconnect"' _site/plan-receipt-status-fix-20260731.js
-          grep -q 'observer.disconnect()' _site/plan-receipt-status-fix-20260731.js
-          grep -q 'CHECKLIST_BATCH=25' _site/review-performance-fix-20260731.js
-          grep -q 'if(element&&element.textContent!==value)' _site/scope-ui.js
-          grep -q 'rollingWindowYears:5' _site/risk-reports-5y-data.js
-          grep -q 'IR-GYE-CIUDAD-OLIMPO-2026' _site/risk-reports-5y-data.js
-          grep -q 'IR-SANTA-ELENA-SANTUARIO-OLON-2022' _site/risk-reports-5y-data.js
-          grep -q 'reportsForTerritory' _site/risk-reports-5y-ui.js
-          grep -q 'CONSULTAR_FICHA_INFORME_RIESGO' _site/risk-reports-5y-ui.js
-          grep -q 'ABRIR_INFORME_RIESGO' _site/risk-reports-5y-ui.js
-          grep -q '"riskReportsStrategy": "rolling-five-year-window-by-province-canton"' _site/HEALTH.json
-          grep -q '"status": "ok"' _site/HEALTH.json
-          ! grep -q 'href="../' _site/index.html
-          ! grep -q 'src="../' _site/index.html
-
-          echo "SmartRisk RC14.4.4 RC9 quedó preparada con informes de riesgo cantonales de cinco años."
-          cat _site/VERSION.txt
 
       - name: Configurar GitHub Pages
         uses: actions/configure-pages@v5
 
-      - name: Subir sitio para Pages
-        uses: actions/upload-pages-artifact@v4
+      - name: Subir sitio
+        uses: actions/upload-pages-artifact@v3
         with:
           path: _site
-          include-hidden-files: true
 
   deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-
     runs-on: ubuntu-latest
     needs: build
-
     steps:
       - name: Publicar SmartRisk
         id: deployment
