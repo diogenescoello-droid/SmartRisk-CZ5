@@ -1,7 +1,7 @@
 (() => {
   "use strict";
-  const BUILD_VERSION="14.3.2";
-  const SUPPORT_SCRIPTS=["data.js","enos-data.js","enos-reviews.js","risk-locations.js","f03-data.js","cases-data.js","pilot-baseline-data.js","pilot-baseline-bridge.js"];
+  const BUILD_VERSION="14.3.3";
+  const SUPPORT_SCRIPTS=["profile-role-compat.js","data.js","enos-data.js","enos-reviews.js","risk-locations.js","f03-data.js","cases-data.js","pilot-baseline-data.js","pilot-baseline-bridge.js"];
   const $=selector=>document.querySelector(selector);
   const normalizeEmail=value=>String(value||"").trim().toLowerCase();
   let loaded=false,loading=false;
@@ -77,5 +77,5 @@
     if(loaded){localStorage.removeItem("smartrisk-cz5-data-v1");location.reload();return}
     showLogin();
   });
-  window.SMART_RISK_ACCESS_GATE={version:"14.3.2",mode:"unified-application-by-scope",support:"diogenes.coello@gestionderiesgos.gob.ec"};
+  window.SMART_RISK_ACCESS_GATE={version:"14.3.3",mode:"unified-application-by-scope",support:"diogenes.coello@gestionderiesgos.gob.ec"};
 })();
