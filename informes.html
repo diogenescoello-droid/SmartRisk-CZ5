@@ -5,16 +5,106 @@
 <title>SmartRisk CZ5 · Informes técnicos</title>
 <link rel="stylesheet" href="styles.css">
 <style>
-:root{font-family:Inter,system-ui,sans-serif;color:#183047;background:#f4f7fa}*{box-sizing:border-box}body{margin:0}.shell{display:grid;grid-template-columns:250px 1fr;min-height:100vh}.side{background:#102b3d;color:white;padding:24px 18px}.brand{font-size:22px;font-weight:800}.brand small{display:block;font-size:12px;font-weight:500;opacity:.75;margin-top:5px}.back{display:block;margin-top:28px;padding:12px 14px;border-radius:10px;background:rgba(255,255,255,.1);color:white;text-decoration:none}.main{padding:26px}.head{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:20px}.head h1{margin:0 0 6px}.head p{margin:0;color:#5d7180}.kpis{display:grid;grid-template-columns:repeat(4,minmax(140px,1fr));gap:12px;margin:18px 0}.kpi{background:white;border:1px solid #dce5eb;border-radius:14px;padding:16px}.kpi b{font-size:26px;display:block}.kpi span{font-size:12px;color:#637886}.notice{background:#fff8dd;border:1px solid #f1d886;border-radius:12px;padding:13px 15px;margin-bottom:16px;font-size:13px}.frame{height:calc(100vh - 235px);min-height:560px;background:white;border:1px solid #dce5eb;border-radius:14px;overflow:hidden}.frame iframe{width:100%;height:100%;border:0}@media(max-width:850px){.shell{display:block}.side{padding:14px}.main{padding:14px}.kpis{grid-template-columns:repeat(2,1fr)}.frame{height:70vh}.back{margin-top:12px}}
+:root{font-family:Inter,system-ui,sans-serif;color:#183047;background:#f4f7fa}*{box-sizing:border-box}body{margin:0}.shell{display:grid;grid-template-columns:250px 1fr;min-height:100vh}.side{background:#102b3d;color:#fff;padding:24px 18px;position:sticky;top:0;height:100vh}.brand{font-size:22px;font-weight:800}.brand small{display:block;font-size:12px;font-weight:500;opacity:.75;margin-top:5px}.back{display:block;margin-top:28px;padding:12px 14px;border-radius:10px;background:rgba(255,255,255,.1);color:#fff;text-decoration:none}.main{padding:26px;min-width:0}.head{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:18px}.head h1{margin:0 0 6px}.head p{margin:0;color:#5d7180}.badge{background:#e7f3ff;color:#135f9b;padding:8px 12px;border-radius:999px;font-size:12px;font-weight:700}.kpis{display:grid;grid-template-columns:repeat(4,minmax(140px,1fr));gap:12px;margin:18px 0}.kpi{background:#fff;border:1px solid #dce5eb;border-radius:14px;padding:16px}.kpi b{font-size:26px;display:block}.kpi span{font-size:12px;color:#637886}.notice{background:#eef7ff;border:1px solid #bedcf2;border-radius:12px;padding:13px 15px;margin-bottom:16px;font-size:13px}.filters{display:grid;grid-template-columns:2fr repeat(4,minmax(130px,1fr));gap:10px;background:#fff;border:1px solid #dce5eb;border-radius:14px;padding:14px;margin-bottom:14px}.filters input,.filters select{width:100%;border:1px solid #cad7df;border-radius:9px;padding:10px;background:#fff;color:#183047}.toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:12px 0;color:#5d7180;font-size:13px}.table-wrap{background:#fff;border:1px solid #dce5eb;border-radius:14px;overflow:auto}.reports{width:100%;border-collapse:collapse;min-width:1050px}.reports th{position:sticky;top:0;background:#f2f6f9;text-align:left;padding:11px;border-bottom:1px solid #dce5eb;font-size:12px;color:#506778}.reports td{padding:12px 11px;border-bottom:1px solid #edf1f4;vertical-align:top;font-size:13px}.reports tr:hover{background:#f8fbfd}.title{font-weight:750;color:#17354a;max-width:360px}.muted{color:#6b7f8d;font-size:12px;margin-top:4px}.chips{display:flex;gap:5px;flex-wrap:wrap}.chip{background:#edf3f6;border-radius:999px;padding:4px 7px;font-size:11px}.priority{font-weight:800}.priority.P1{color:#a4382a}.priority.P2{color:#996000}.priority.P3{color:#276c4d}.open{display:inline-block;text-decoration:none;background:#116a8b;color:#fff;border-radius:8px;padding:7px 9px;font-size:12px;font-weight:700;white-space:nowrap}.state{padding:34px;text-align:center;color:#607684}.pager{display:flex;justify-content:center;align-items:center;gap:8px;margin:16px 0}.pager button{border:1px solid #cbd8df;background:#fff;border-radius:8px;padding:8px 12px;cursor:pointer}.pager button:disabled{opacity:.45;cursor:not-allowed}.pager span{font-size:13px;color:#5d7180}@media(max-width:1050px){.filters{grid-template-columns:1fr 1fr}.kpis{grid-template-columns:repeat(2,1fr)}}@media(max-width:760px){.shell{display:block}.side{height:auto;position:static;padding:14px}.main{padding:14px}.back{margin-top:12px}.head{display:block}.badge{display:inline-block;margin-top:10px}.filters{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
 <div class="shell">
 <aside class="side"><div class="brand">SmartRisk<small>CZ5 · Memoria técnica territorial</small></div><a class="back" href="index.html">← Volver a la plataforma</a></aside>
 <main class="main">
-<div class="head"><div><h1>Informes técnicos CZ5GR</h1><p>Inventario maestro de antecedentes técnicos de los últimos cinco años.</p></div></div>
-<div class="kpis"><div class="kpi"><b>234</b><span>fichas territoriales</span></div><div class="kpi"><b>220</b><span>documentos con enlace único</span></div><div class="kpi"><b>232</b><span>registros aprobados para consulta</span></div><div class="kpi"><b>2</b><span>pendientes de normalización</span></div></div>
-<div class="notice"><b>Vista piloto:</b> esta pantalla consulta directamente la hoja maestra. Los informes siguen siendo insumos documentales; no crean sitios críticos ni acciones y no modifican indicadores.</div>
-<div class="frame"><iframe src="https://docs.google.com/spreadsheets/d/1OlOy360iTwcDaata2A2fJyLR1-yYLQbLfea1rIMYTH0/edit#gid=0" title="Inventario maestro de informes técnicos"></iframe></div>
+<div class="head"><div><h1>Informes técnicos CZ5GR</h1><p>Antecedentes técnicos georreferenciados de los últimos cinco años.</p></div><span class="badge">Inventario nativo</span></div>
+<div class="kpis"><div class="kpi"><b id="kTotal">—</b><span>fichas territoriales</span></div><div class="kpi"><b id="kDocs">—</b><span>documentos únicos</span></div><div class="kpi"><b id="kReady">—</b><span>listos para consulta</span></div><div class="kpi"><b id="kPending">—</b><span>pendientes de normalización</span></div></div>
+<div class="notice"><b>Alcance:</b> los informes son insumos documentales. No crean sitios críticos ni acciones y no modifican los indicadores de riesgo o cumplimiento.</div>
+<div class="filters">
+<input id="q" type="search" placeholder="Buscar código, sector, resumen o amenaza…">
+<select id="province"><option value="">Todas las provincias</option></select>
+<select id="canton"><option value="">Todos los cantones</option></select>
+<select id="year"><option value="">Todos los años</option></select>
+<select id="threat"><option value="">Todas las amenazas</option></select>
+</div>
+<div class="toolbar"><span id="resultCount">Cargando inventario…</span><select id="pageSize"><option>25</option><option selected>50</option><option>100</option></select></div>
+<div class="table-wrap"><table class="reports"><thead><tr><th>Informe</th><th>Territorio</th><th>Fecha</th><th>Amenazas</th><th>Estado</th><th>Prioridad</th><th>Fuente</th></tr></thead><tbody id="rows"><tr><td colspan="7" class="state">Cargando los informes técnicos…</td></tr></tbody></table></div>
+<div class="pager"><button id="prev">Anterior</button><span id="pageInfo">Página 1</span><button id="next">Siguiente</button></div>
 </main></div>
+<script>
+(() => {
+  const SHEET_ID='1OlOy360iTwcDaata2A2fJyLR1-yYLQbLfea1rIMYTH0';
+  const CSV_URL=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=IMPORT_REPORTES_5A`;
+  const el=id=>document.getElementById(id);
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+  const norm=v=>String(v??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+  let all=[],filtered=[],page=1;
+
+  function parseCSV(text){
+    const rows=[];let row=[],field='',quoted=false;
+    for(let i=0;i<text.length;i++){
+      const c=text[i],n=text[i+1];
+      if(c==='"'&&quoted&&n==='"'){field+='"';i++;continue}
+      if(c==='"'){quoted=!quoted;continue}
+      if(c===','&&!quoted){row.push(field);field='';continue}
+      if((c==='\n'||c==='\r')&&!quoted){if(c==='\r'&&n==='\n')i++;row.push(field);field='';if(row.some(x=>x!==''))rows.push(row);row=[];continue}
+      field+=c;
+    }
+    if(field||row.length){row.push(field);rows.push(row)}
+    const headers=rows.shift()||[];
+    return rows.map(cols=>Object.fromEntries(headers.map((h,i)=>[h,cols[i]??''])));
+  }
+  function jsonArray(v){try{const x=JSON.parse(v||'[]');return Array.isArray(x)?x:[]}catch{return []}}
+  function unique(values){return [...new Set(values.filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b),'es'))}
+  function optionFill(id,values,label){const node=el(id),current=node.value;node.innerHTML=`<option value="">${label}</option>`+values.map(v=>`<option>${esc(v)}</option>`).join('');node.value=current}
+  function reportKey(r){return r.URL||`${r.CODE}|${r.TITLE}`}
+  function isPending(r){return /REQUIERE_|PENDIENTE/i.test(`${r.QC_STATUS} ${r.RC9_STATUS}`)}
+  function refreshKPIs(){
+    el('kTotal').textContent=all.length;
+    el('kDocs').textContent=new Set(all.map(reportKey)).size;
+    el('kReady').textContent=all.filter(r=>!isPending(r)).length;
+    el('kPending').textContent=all.filter(isPending).length;
+  }
+  function buildFilters(){
+    optionFill('province',unique(all.map(r=>r.PROVINCE)),'Todas las provincias');
+    optionFill('canton',unique(all.map(r=>r.CANTON)),'Todos los cantones');
+    optionFill('year',unique(all.map(r=>(r.DATE||'').slice(0,4)).filter(x=>/^\d{4}$/.test(x))).reverse(),'Todos los años');
+    optionFill('threat',unique(all.flatMap(r=>jsonArray(r.THREATS_JSON))),'Todas las amenazas');
+  }
+  function apply(){
+    const q=norm(el('q').value),province=el('province').value,canton=el('canton').value,year=el('year').value,threat=el('threat').value;
+    filtered=all.filter(r=>{
+      const hay=norm([r.CODE,r.TITLE,r.PROVINCE,r.CANTON,r.PARISH,r.SECTORS_JSON,r.THREATS_JSON,r.SUMMARY,r.SOURCE].join(' '));
+      return (!q||hay.includes(q))&&(!province||r.PROVINCE===province)&&(!canton||r.CANTON===canton)&&(!year||(r.DATE||'').startsWith(year))&&(!threat||jsonArray(r.THREATS_JSON).includes(threat));
+    });
+    page=1;render();
+  }
+  function render(){
+    const size=Number(el('pageSize').value)||50,totalPages=Math.max(1,Math.ceil(filtered.length/size));
+    if(page>totalPages)page=totalPages;
+    const start=(page-1)*size,items=filtered.slice(start,start+size);
+    el('resultCount').textContent=`${filtered.length} fichas encontradas`;
+    el('pageInfo').textContent=`Página ${page} de ${totalPages}`;
+    el('prev').disabled=page<=1;el('next').disabled=page>=totalPages;
+    el('rows').innerHTML=items.length?items.map(r=>{
+      const threats=jsonArray(r.THREATS_JSON),sectors=jsonArray(r.SECTORS_JSON);
+      const state=isPending(r)?'Pendiente de normalización':(r.STATUS||'Indexado');
+      return `<tr><td><div class="title">${esc(r.TITLE||'Informe técnico')}</div><div class="muted">${esc(r.CODE||'Sin código')} · ${esc(sectors.join(' · '))}</div><div class="muted">${esc(r.SUMMARY||'')}</div></td><td><b>${esc(r.CANTON||'—')}</b><div class="muted">${esc(r.PROVINCE||'')} ${r.PARISH?'· '+esc(r.PARISH):''}</div></td><td>${esc(r.DATE||'—')}</td><td><div class="chips">${threats.map(t=>`<span class="chip">${esc(t)}</span>`).join('')}</div></td><td>${esc(state)}</td><td><span class="priority ${esc(r.PRIORITY)}">${esc(r.PRIORITY||'—')}</span></td><td>${r.URL?`<a class="open" href="${esc(r.URL)}" target="_blank" rel="noopener">Abrir informe</a>`:'<span class="muted">Sin enlace</span>'}<div class="muted">${esc(r.SOURCE||'')}</div></td></tr>`;
+    }).join(''):'<tr><td colspan="7" class="state">No se encontraron informes con esos filtros.</td></tr>';
+  }
+  async function load(){
+    try{
+      const response=await fetch(CSV_URL,{cache:'no-store'});
+      if(!response.ok)throw new Error(`HTTP ${response.status}`);
+      all=parseCSV(await response.text()).filter(r=>r.ID);
+      if(!all.length)throw new Error('Inventario vacío');
+      refreshKPIs();buildFilters();filtered=[...all];render();
+    }catch(error){
+      console.error(error);
+      el('rows').innerHTML='<tr><td colspan="7" class="state"><b>No fue posible leer el inventario maestro.</b><br>Verifique que la hoja tenga permiso de lectura mediante enlace.</td></tr>';
+      el('resultCount').textContent='Inventario no disponible';
+    }
+  }
+  ['q','province','canton','year','threat'].forEach(id=>el(id).addEventListener(id==='q'?'input':'change',apply));
+  el('pageSize').addEventListener('change',()=>{page=1;render()});
+  el('prev').addEventListener('click',()=>{if(page>1){page--;render()}});
+  el('next').addEventListener('click',()=>{const size=Number(el('pageSize').value)||50;if(page<Math.ceil(filtered.length/size)){page++;render()}});
+  load();
+})();
+</script>
 </body></html>
