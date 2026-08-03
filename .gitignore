@@ -1,3 +1,8 @@
 node_modules/
 .vscode/
 *.log
+pilot-credentials-*.json
+firebase-access-audit-*.json
+service-account*.json
+.env
+.env.*
