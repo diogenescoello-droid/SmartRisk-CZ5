@@ -15,6 +15,7 @@
     "rc13-menu.js",
     "access-gate.js",
     "app.js",
+    "smartrisk-operational-core.js",
     "data.js",
     "enos-data.js",
     "enos-reviews.js",
