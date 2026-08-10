@@ -3,6 +3,7 @@
     ".nojekyll",
     "404.html",
     "index.html",
+    "mobile-preview.html",
     "styles.css",
     "rc13-menu.css",
     "firebase-config.js",

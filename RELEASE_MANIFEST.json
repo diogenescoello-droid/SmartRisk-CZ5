@@ -50,6 +50,7 @@
   ],
   "requiredFiles": [
     "index.html",
+    "mobile-preview.html",
     "plan-sources.js",
     "access-gate.js",
     "release-config.js",
