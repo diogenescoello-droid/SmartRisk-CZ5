@@ -13,6 +13,12 @@
   "riskReportsVersion": "2026-07-31T14:13:00-05:00",
   "riskReportsWindowYears": 5,
   "status": "stable",
+  "deploymentTrace": {
+    "id": "pages-2026-08-10-supervision-ejecutiva-daule",
+    "requestedAt": "2026-08-10T23:30:00Z",
+    "sourceMergeCommit": "171ce8144d23833c04584498263232e005f97bfe",
+    "reason": "Publicar supervisión ejecutiva, trazabilidad documental y vínculo oficial de Daule"
+  },
   "publicPath": "./",
   "dataCut": "2026-07-30",
   "counts": {
