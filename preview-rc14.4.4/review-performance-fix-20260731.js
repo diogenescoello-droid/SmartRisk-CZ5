@@ -144,7 +144,7 @@
       ${review.score==null?'<div class="empty">El paquete no contiene un plan evaluable para este territorio. Debe solicitarse el documento oficial y sus anexos.</div>':`<div class="detail-badges"><span class="review-score ${review.score>=80?"good":review.score>=60?"warn":"danger"}">${html(review.score)}% global</span><span class="badge neutral">${html(review.pages)} páginas</span><span class="badge neutral">${html(review.totalChecklist)} ítems de checklist</span>${review.status?.includes("OCR")?'<span class="badge warn">Fuente procesada con OCR</span>':""}</div>
       <h4>Evaluación por componente</h4><div class="criteria-list">${criteria.map(item=>`<article class="criterion"><div><b>${html(item?.name)}</b><small>${html(item?.score)}% · ${html(item?.status)}</small></div><span class="criterion-state ${item?.status==="Cumple"?"good":item?.status==="Parcial"?"warn":"danger"}">${html(item?.status)}</span>${item?.evidence?.length?`<p><b>Evidencia:</b> pág. ${html(item.evidence.map(value=>value?.page).filter(Boolean).join(", "))} · ${html(snippet(item.evidence[0]?.snippet))}</p>`:'<p class="danger-text">No se encontró evidencia suficiente en el documento.</p>'}${item?.newAction?`<p><b>Acción nueva:</b> ${html(item.newAction)}</p>`:""}</article>`).join("")}</div>
       <div class="detail-actions-heading"><h4>Checklist operativo</h4><small>Se muestran ${shown} de ${checklist.length} registros</small></div><div class="checklist-list"></div><div class="review-checklist-controls"></div>`}
-      <div class="dialog-actions"><button type="button" class="secondary cancel-bottom">Cerrar</button></div></div>`;
+      <div class="dialog-actions">${window.SmartRiskPlanSource?.buttonFor?.(review)||'<button type="button" class="secondary" disabled>PDF original no vinculado</button>'}<button type="button" class="secondary cancel-bottom">Cerrar</button></div></div>`;
 
     document.body.append(dialog);
     const checklistContainer=dialog.querySelector(".checklist-list");
@@ -158,6 +158,7 @@
     paintChecklist();
     dialog.showModal();
     const close=()=>{dialog.close();dialog.remove()};
+    dialog.querySelector(".open-original-plan")?.addEventListener("click",()=>window.SmartRiskPlanSource?.open?.(review));
     dialog.querySelectorAll(".cancel,.cancel-bottom").forEach(button=>button.onclick=close);
     dialog.addEventListener("cancel",()=>dialog.remove());
   }
