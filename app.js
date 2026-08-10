@@ -409,7 +409,17 @@ function dashboard(){
  const followupEntities=data.entidadesSeguimiento||[],followupPending=followupEntities.filter(item=>normalizeText(item.baselineStatus).includes('sin remision')).length,followupReported=Math.max(0,followupEntities.length-followupPending);
  const followupCut=data._pilotFollowup?.config?.cutDate||window.SMART_RISK_PILOT_BASELINE?.config?.cutDate||'';
  const quality=scientificQualitySnapshot();
+ const executive=window.SmartRiskOperational.aggregate(data);
+ const money=value=>new Intl.NumberFormat('es-EC',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(value||0);
  $('#content').innerHTML=`<div class="risk-lead"><div><span class="eyebrow">Panorama estratégico con trazabilidad</span><h3>¿Qué está documentado y qué falta validar?</h3><p>Datos extraídos de planes ENOS reales. Los hallazgos de revisión automática se identifican como preliminares y no sustituyen la validación territorial.</p></div><button id="riskGuide" class="secondary">Explícame este panorama</button></div>
+ <section class="executive-supervision"><div class="executive-supervision-heading"><div><span class="eyebrow">Supervisión ejecutiva ENOS</span><h3>¿Qué se ha reportado, asignado y financiado?</h3><p>Corte automático: ${escapeHtml(new Date(executive.cutAt).toLocaleString('es-EC'))}. Solo cuenta sitios identificados o validados y acciones vinculadas a ellos.</p></div><button id="printExecutiveReport" class="secondary">Generar reporte oficial / PDF</button></div>
+ <div class="executive-supervision-grid">
+  <button data-target="sitios"><span>Sitios, zonas o tramos accionables</span><strong>${executive.sites}</strong><small>${executive.sitesWithActions} con al menos una acción vinculada</small></button>
+  <button data-target="acciones"><span>Acciones asignadas</span><strong>${executive.actions}</strong><small>${executive.completedActions} completadas con criterio de cierre</small></button>
+  <button data-target="acciones"><span>Presupuesto asignado</span><strong>${money(executive.assignedBudget)}</strong><small>${money(executive.executedBudget)} ejecutado · ${executive.actionsWithBudget}/${executive.actions} acciones presupuestadas</small></button>
+  <button data-target="sitios"><span>Brechas activas / solventadas</span><strong>${executive.activeGapPct}% / ${executive.solvedGapPct}%</strong><small>${executive.activeGaps} activas · ${executive.solvedGaps} solventadas</small></button>
+ </div>
+ <div class="executive-territory-table"><table><thead><tr><th>Cantón</th><th>Sitios</th><th>Acciones</th><th>Asignado</th><th>Ejecutado</th><th>Brechas A/S</th></tr></thead><tbody>${executive.rows.map(row=>`<tr><td><b>${escapeHtml(row.canton)}</b><small>${escapeHtml(row.province)}</small></td><td>${row.sites}</td><td>${row.actions}</td><td>${money(row.assignedBudget)}</td><td>${money(row.executedBudget)}</td><td>${row.activeGaps} / ${row.solvedGaps}</td></tr>`).join('')||'<tr><td colspan="6">No existen sitios accionables validados al corte.</td></tr>'}</tbody></table></div></section>
  <section class="technical-overview"><div><span class="eyebrow">Contexto técnico-científico</span><h3>${technical.length} fichas disponibles · ${newTechnical} pendientes de revisión</h3><p>Boletines y observaciones se contrastan con territorio, exposición, vulnerabilidad y capacidad. Cada uso conserva la referencia del documento fuente.</p></div><div>${technical.slice(0,3).map(fiche=>`<button class="open-technical-fiche" data-fiche="${escapeHtml(fiche.id)}"><span>${escapeHtml(fiche.institucion)} ${escapeHtml(fiche.numero)}</span><b>${escapeHtml(fiche.amenaza)}</b><small>${escapeHtml(fiche.nivel)} · Ver fuente y vincular →</small></button>`).join('')}</div></section>
  <div class="cards risk-cards">
   <button class="card risk-kpi risk-kpi-attention" data-target="revision"><span>Territorios con brechas por validar</span><strong>${territoriesAttention}</strong><small>Hallazgo documental preliminar en planes reales; requiere revisión técnica</small><em>Revisar evidencia →</em></button>
@@ -425,6 +435,7 @@ function dashboard(){
  $('#content').onclick=event=>{const route=event.target.closest('[data-target]')?.dataset.target;if(route){current=route;render()}};
  $('#riskGuide').onclick=()=>startGuide('dashboard',true);
  $('#openScientificQuality').onclick=openScientificQuality;
+ $('#printExecutiveReport').onclick=()=>{auditChange('GENERAR_REPORTE_EJECUTIVO','reporte','supervision-enos',executive.cutAt);save();window.print()};
 }
 function deriveDecisions(){
  const decisions=[];
@@ -1556,6 +1567,7 @@ function openSiteForm(record){
   <label>Nivel de criticidad<select name="nivel" required><option value="">Selecciona</option>${levels.map(value=>`<option ${selected(value,record?.nivel)}>${value}</option>`).join('')}</select></label>
   <label>Facilidad de solución<select name="facilidadSolucion" required><option value="">Selecciona</option>${feasibilities.map(value=>`<option ${selected(value,record?.facilidadSolucion)}>${value}</option>`).join('')}</select></label>
   <label class="full">Brecha principal<select name="brechaPrincipal" required>${gapTypes.map(value=>`<option ${selected(value,record?.brechaPrincipal||'Sin brecha')}>${value}</option>`).join('')}</select></label>
+  <label>Estado de la brecha<select name="estadoBrecha" required>${['Activa','Solventada','Sin brecha'].map(value=>`<option ${selected(value,record?.estadoBrecha||(record?.brechaPrincipal==='Sin brecha'?'Sin brecha':'Activa'))}>${value}</option>`).join('')}</select></label>
   <label>Estado<select name="estado" required>${statuses.map(value=>`<option ${selected(value,record?.estado||'Identificado')}>${value}</option>`).join('')}</select></label>
   <label>Fecha de identificación<input name="fechaRegistro" type="date" value="${escapeHtml(record?.fechaRegistro||new Date().toISOString().slice(0,10))}" required></label>
   <label>Latitud<input name="latitud" type="number" min="-5.1" max="1.6" step="any" value="${escapeHtml(record?.latitud)}" placeholder="-2.170998"></label>
@@ -1578,7 +1590,7 @@ function openSiteForm(record){
   if((values.latitud&&!values.longitud)||(!values.latitud&&values.longitud)){error.textContent='Ingresa tanto la latitud como la longitud, o deja ambas vacías.';return}
   const siteValues={
    nombre:values.nombre.trim(),territorio:values.territorio,amenaza:values.amenaza,nivel:values.nivel,estado:values.estado,
-   facilidadSolucion:values.facilidadSolucion,brechaPrincipal:values.brechaPrincipal,brechas:values.brechas.trim(),
+   facilidadSolucion:values.facilidadSolucion,brechaPrincipal:values.brechaPrincipal,estadoBrecha:values.estadoBrecha,brechas:values.brechas.trim(),
    fechaRegistro:values.fechaRegistro,latitud:values.latitud?Number(values.latitud):'',longitud:values.longitud?Number(values.longitud):'',
    direccion:values.direccion.trim(),descripcion:values.descripcion.trim(),origen:record?.origen||'Reporte territorial',actualizadoEn:new Date().toISOString()
   };
@@ -1632,7 +1644,8 @@ function openActionForm(record,defaultSiteId=''){
   <label>Fecha de inicio<input name="fechaInicio" type="date" value="${escapeHtml(record?.fechaInicio||new Date().toISOString().slice(0,10))}" required></label>
   <label>Fecha límite<input name="fechaLimite" type="date" value="${escapeHtml(record?.fechaLimite)}" required></label>
   <label>Avance (%)<input name="avance" type="number" min="0" max="100" step="1" value="${escapeHtml(record?.avance??0)}" required></label>
-  <label>Costo estimado (USD)<input name="costoEstimado" type="number" min="0" step="0.01" value="${escapeHtml(record?.costoEstimado)}"></label>
+  <label>Presupuesto asignado (USD)<input name="presupuestoAsignado" type="number" min="0" step="0.01" value="${escapeHtml(record?.presupuestoAsignado??record?.costoEstimado)}"></label>
+  <label>Presupuesto ejecutado (USD)<input name="presupuestoEjecutado" type="number" min="0" step="0.01" value="${escapeHtml(record?.presupuestoEjecutado)}"></label>
   <label>Producto esperado<input name="producto" value="${escapeHtml(record?.producto)}" maxlength="240" required placeholder="Obra, informe, servicio o condición conseguida"></label>
   <label>Indicador de cumplimiento<input name="indicador" value="${escapeHtml(record?.indicador)}" maxlength="240" required placeholder="Unidad, cantidad, cobertura o porcentaje"></label>
   <label class="full">Criterio de cierre<input name="criterioCierre" value="${escapeHtml(record?.criterioCierre)}" maxlength="360" required placeholder="Qué debe comprobarse antes de marcarla como completada"></label>
@@ -1646,10 +1659,11 @@ function openActionForm(record,defaultSiteId=''){
  form.onsubmit=event=>{
   event.preventDefault();const values=Object.fromEntries(new FormData(form));const error=dialog.querySelector('.form-error');
   if(values.fechaLimite<values.fechaInicio){error.textContent='La fecha límite no puede ser anterior a la fecha de inicio.';return}
+  const budgetError=window.SmartRiskOperational.validateActionBudget(values);if(budgetError){error.textContent=budgetError;return}
   if(values.estado==='Completada'&&!values.evidencia.trim()){error.textContent='Para completar una acción debes registrar una evidencia verificable.';return}
   if(values.estado==='Completada')values.avance='100';
   const actionValues={sitioId:values.sitioId,accion:values.accion.trim(),objetivo:values.objetivo.trim(),responsable:values.responsable.trim(),dependencia:values.dependencia.trim(),estado:values.estado,
-   fechaInicio:values.fechaInicio,fechaLimite:values.fechaLimite,avance:Number(values.avance),costoEstimado:values.costoEstimado?Number(values.costoEstimado):'',
+   fechaInicio:values.fechaInicio,fechaLimite:values.fechaLimite,avance:Number(values.avance),presupuestoAsignado:values.presupuestoAsignado?Number(values.presupuestoAsignado):0,presupuestoEjecutado:values.presupuestoEjecutado?Number(values.presupuestoEjecutado):0,
    producto:values.producto.trim(),indicador:values.indicador.trim(),criterioCierre:values.criterioCierre.trim(),evidencia:values.evidencia.trim(),observaciones:values.observaciones.trim(),actualizadoEn:new Date().toISOString()};
   if(record)Object.assign(record,actionValues);
   else data.acciones.push({id:crypto.randomUUID(),...actionValues,creadoEn:new Date().toISOString(),creadoPor:session?.email||''});
