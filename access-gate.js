@@ -7,9 +7,11 @@
   };
   const BUILD_VERSION = RELEASE.build;
   const SUPPORT_SCRIPTS = [
+    "smartrisk-operational-core.js",
     "data.js",
     "enos-data.js",
     "enos-reviews.js",
+    "plan-sources.js",
     "risk-locations.js",
     "f03-data.js",
     "cases-data.js",
