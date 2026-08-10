@@ -1,5 +1,5 @@
-Warning: truncated output (original token count: 70176)
-Total output lines: 1878
+Warning: truncated output (original token count: 70236)
+Total output lines: 1880
 
 const STORE='smartrisk-cz5-data-v1';
 const ADMIN_EMAILS=['geopro.ec2@gmail.com','dcoellom2@unemi.edu.ec','diogenes.coello@gestionderiesgos.gob.ec'];
@@ -496,7 +496,7 @@ function decisionsPage(){
   <div class="card"><span>Decisiones abiertas</span><strong>${open.length}</strong></div><div class="card"><span>Urgentes</span><strong>${urgent}</strong></div>
   <div class="card"><span>En gestión</span><strong>${decisions.filter(x=>x.status==='En gestión').length}</strong></div><div class="card"><span>Resueltas</span><strong>${resolved}</strong></div>
  </div><div class="decision-intro"><div><span class="eyebrow">Cerebro SmartRisk</span><h3>Del hallazgo a la decisión</h3><p>Trabaja por bandejas: valida planes, resuelve mitigación territorial y destraba ejecución.</p></div><button id="startDecisionGuide" class="secondary">¿Cómo usar esta bandeja?</button></div>
- <div class="panel decision-control"><div class="decision-category-tabs">${categories.map(category=>`<button data-decision-category="${category}" class="${ca…40176 tokens truncated…rmalizeText(item.canton)===normalizeText(assignedUser.canton))).sort((a,b)=>`${a.provincia}${a.canton}`.localeCompare(`${b.provincia}${b.canton}`,'es'));
+ <div class="panel decision-control"><div class="decision-category-tabs">${categories.map(category=>`<button data-decision-category="${category}" class="${ca…40236 tokens truncated…rmalizeText(item.canton)===normalizeText(assignedUser.canton))).sort((a,b)=>`${a.provincia}${a.canton}`.localeCompare(`${b.provincia}${b.canton}`,'es'));
  $('#content').innerHTML=`<div class="risk-lead workgroup-lead"><div><span class="eyebrow">Implementación técnica y soporte operativo</span><h3>¿Qué debe producir cada mesa y qué está impidiendo cumplirlo?</h3><p>Gestiona objetivos, responsables, participantes, entradas, actividades, productos y entrega de información a Sala de Situación y Plenaria.</p></div><button id="workgroupGuide" class="secondary">¿Cómo gestionar una mesa?</button></div>
  <div class="panel workgroup-panel"><div class="toolbar workgroup-filters"><select id="workTerritory">${territories.map(item=>`<option value="${escapeHtml(item.id)}">${escapeHtml(item.provincia)} · ${escapeHtml(item.canton)}</option>`).join('')}</select>
  <select id="workType"><option value="">MTT y grupos de trabajo</option><option>MTT humanitaria</option><option>MTT complementaria</option><option>Grupo de trabajo</option></select><button id="newWorkActivity">Nueva actividad</button></div>
