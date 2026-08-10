@@ -37,7 +37,7 @@ Una fuente solo podrá marcarse como conectada cuando cumpla simultáneamente:
 
 La revisión de planes ofrece el botón **Abrir PDF original** únicamente cuando existe una URL HTTPS registrada en el plan o en su entidad territorial. Si no existe una fuente verificable, se muestra **PDF original no vinculado** y no se construyen enlaces por inferencia. La apertura queda registrada en la auditoría de la plataforma.
 
-La carpeta institucional de planes fue recorrida el 2026-08-10: contiene 56 carpetas territoriales, 8 con archivos y 6 con un plan original identificable. Se vincularon Guayas provincial, Bolívar provincial, Los Ríos provincial, Galápagos provincial, Santa Elena provincial y La Libertad. Guayaquil contiene únicamente un informe Word de revisión; no se lo trató como plan original. Los demás territorios requieren incorporar su PDF oficial antes de habilitar el botón.
+La carpeta institucional de planes fue recorrida en profundidad el 2026-08-10. La revisión confirmó PDF en 55 territorios; San Cristóbal conserva únicamente archivos de control porque su plan fue devuelto y continúa pendiente de firma y oficio. Daule fue incorporado posteriormente con su PDF oficial. El catálogo inicial de enlaces verificables incluye Guayas provincial, Daule, Bolívar provincial, Los Ríos provincial, Galápagos provincial, Santa Elena provincial y La Libertad. Los demás enlaces deben incorporarse progresivamente, después de verificar que cada archivo corresponda al plan original y no a un informe o anexo.
 
 ## Decisión de arquitectura pendiente de despliegue
 

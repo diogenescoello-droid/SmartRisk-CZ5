@@ -15,6 +15,7 @@ assert.match(app,/PDF original no vinculado/,'Debe informar cuando no existe una
 assert.match(optimized,/SmartRiskPlanSource/,'La vista optimizada debe conservar el acceso al documento original');
 assert.match(app,/SMART_RISK_PLAN_SOURCES/,'Debe consultar el catálogo institucional de documentos');
 assert.match(sources,/1QnrVSNXHdz8uTSZ0VRAR-efC_b2qkYUB/,'Debe vincular el plan provincial firmado de Guayas');
+assert.match(sources,/1azf3vR1zhlpXpcgX0ag64xGTZuhWevYy/,'Debe vincular el plan oficial cantonal de Daule');
 assert.match(sources,/1QmyQ4eLj-6gfxgMEEKgdQ4rWpd-lPlU-/,'Debe vincular la versión validada del plan provincial de Bolívar');
 assert.match(sources,/1Pel8lEhcurc3yxLuUmAAwSp1QtRQ_yyA/,'Debe vincular el plan provincial de Santa Elena');
 assert.match(sources,/1PB2E0JxMh-XCHYlSOUuvs7CiUzPZ2W2B/,'Debe vincular el plan cantonal de La Libertad');
