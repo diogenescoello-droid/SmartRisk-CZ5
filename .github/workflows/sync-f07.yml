@@ -1,0 +1,33 @@
+name: Sincronizar F07 Kobo
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: sync-f07-public
+  cancel-in-progress: true
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Leer y normalizar respuestas públicas del F07
+        run: node scripts/sync-f07-public.mjs
+      - name: Verificar plataforma
+        run: node scripts/test-release.mjs
+      - name: Registrar cambios verificables
+        run: |
+          if git diff --quiet -- f07-current-data.js; then
+            echo "F07 sin cambios"
+            exit 0
+          fi
+          git config user.name "SmartRisk F07 Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add f07-current-data.js
+          git commit -m "Actualizar seguimiento F07 desde Kobo"
+          git push

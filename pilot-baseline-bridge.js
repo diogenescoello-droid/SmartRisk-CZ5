@@ -27,9 +27,47 @@
     entityMap.set(item.entityId, record);
     return record;
   });
-  const followups = (baseline.followups || []).map(item => {
+  const currentF07 = window.SMART_RISK_F07_CURRENT;
+  const followupSource = currentF07?.followups?.length ? currentF07.followups : (baseline.followups || []);
+  const followups = followupSource.map(item => {
     const entity = entityMap.get(item.entityId);
-    return {...item, territorioId: entity?.territorioId || '', provincia: entity?.provincia || item.province || '', canton: entity?.canton || item.canton || '', accionId: item.accionId || '', sitioId: item.sitioId || ''};
+    const evidence = item.evidenceUrl || item.evidenceFile || item.evidenceDescription || '';
+    return {
+      ...item,
+      tipo: 'Acción · seguimiento F07',
+      title: item.actionTitle || item.actionCode || 'Seguimiento F07 sin título',
+      detail: item.progressDescription || item.nextStep || item.criticalGap || 'Seguimiento territorial recibido',
+      estado: item.status || 'Sin estado',
+      avance: item.declaredProgress,
+      responsable: item.responsible || '',
+      evidencia: evidence,
+      updatedAt: item.submissionTime || '',
+      territorioId: entity?.territorioId || '',
+      provincia: entity?.provincia || item.province || '',
+      canton: entity?.canton || item.canton || '',
+      accionId: item.actionId || item.accionId || '',
+      sitioId: item.siteId || item.sitioId || '',
+      payload: {
+        origen: 'F07',
+        formato: item.sourceFormat || '',
+        periodo: item.period || '',
+        codigoAccion: item.actionCode || '',
+        accion: item.actionTitle || '',
+        estado: item.status || '',
+        avance: item.declaredProgress,
+        descripcionAvance: item.progressDescription || '',
+        brechaCritica: item.criticalGap || '',
+        proximoPaso: item.nextStep || '',
+        responsable: item.responsible || '',
+        proximaFechaReporte: item.nextReportDate || '',
+        evidencia: evidence,
+        estadoEvidencia: item.evidenceState || '',
+        observaciones: item.observations || '',
+        fechaEnvio: item.submissionTime || '',
+        vinculacionAccion: item.actionLinkState || '',
+        vinculacionSitio: item.siteLinkState || ''
+      }
+    };
   });
   const mergeBy = (base, incoming, key) => {
     const map = new Map((base || []).map(item => [item?.[key], item]));
@@ -38,6 +76,8 @@
   };
   seed.entidadesSeguimiento = mergeBy(seed.entidadesSeguimiento || [], entities, 'entityId');
   seed.seguimientos = mergeBy(seed.seguimientos || [], followups, 'followupId');
-  seed._pilotFollowup = {config: baseline.config, summary: baseline.summary};
+  seed._pilotFollowup = currentF07
+    ? {config: currentF07.config, summary: currentF07.summary}
+    : {config: baseline.config, summary: baseline.summary};
   window.SMART_RISK_PILOT_BRIDGE = Object.freeze({version:'14.3.0', mode:'current-interface-data-bridge'});
 })();
