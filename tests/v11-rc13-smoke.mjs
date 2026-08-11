@@ -17,14 +17,14 @@ const architecture = fs.readFileSync(path.resolve(process.cwd(), "docs/RC13_MENU
 
 new vm.Script(menu, { filename: "rc13-menu.js" });
 
-const rolloutPosition = index.indexOf("v11-rollout.js?v=11.0.0-rc16.1");
+const rolloutPosition = index.indexOf("v11-rollout.js?v=11.0.0-rc16.2");
 const menuPosition = index.indexOf("rc13-menu.js?v=1.0.0-piloto-estable");
-const gatePosition = index.indexOf("access-gate.js?v=11.0.0-rc16.1");
+const gatePosition = index.indexOf("access-gate.js?v=11.0.0-rc16.2");
 
 ok(rolloutPosition >= 0 && rolloutPosition < gatePosition, "Rollout V11 restaurado antes de la compuerta de acceso");
 ok(menuPosition > rolloutPosition && menuPosition < gatePosition, "Capa RC13 cargada antes de iniciar la aplicación");
 ok(index.includes("rc13-menu.css?v=1.0.0-piloto-estable"), "Hoja de estilos RC13 usa la caché de la versión estable");
-ok(rollout.includes('BUILD_VERSION = "11.0.0-rc16.1"'), "RC13 preservada bajo la caché vigente RC15");
+ok(rollout.includes('BUILD_VERSION = "11.0.0-rc16.2"'), "RC13 preservada bajo la caché vigente RC15");
 ok(menu.includes("supportedNavigationModes") && ["legacy", "scoped", "v11"].every(mode => menu.includes(`"${mode}"`)), "Tres modos de navegación compatibles");
 ok(menu.includes('button[data-route]') && menu.includes("v11Navigation"), "Navegación V11 integrada por data-route");
 ok(["inicio", "dashboard", "respuesta-coe", "coe", "acciones", "monitoreo", "riesgos", "mapas", "instituciones", "reportes", "herramientas", "configuracion"].every(route => menu.includes(`route: "${route}"`)), "Doce rutas V11 conservadas en RC13");

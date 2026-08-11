@@ -24,7 +24,7 @@ expect(manifest.acceptance.processedReviewedValidatedSeparated===true,'procesado
 expect(manifest.acceptance.territorialGlobalsFiltered===true,'los indicadores territoriales deben recalcularse por alcance');
 
 includes(gate,'scientific-quality-fix-20260731.js','compuerta');
-includes(index,'access-gate.js?v=11.0.0-rc16.1','caché');
+includes(index,'access-gate.js?v=11.0.0-rc16.2','caché');
 includes(gate,'territorial-scope-guard-20260731.js','alcance');
 includes(fix,'missingPlans=Math.max(0,canonical-plansReceived)','faltantes zonales');
 includes(fix,'missingPlans,','persistencia de faltantes');
