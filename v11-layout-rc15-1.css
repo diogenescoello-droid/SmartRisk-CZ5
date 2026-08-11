@@ -1,0 +1,73 @@
+/* RC15.1: compactación visual posterior a validación en escritorio. */
+.sr15-enabled .sr15-hierarchy button span { color: inherit; }
+
+@media (min-width: 821px) {
+  .sr15-enabled #app.v11-shell {
+    grid-template-columns: 248px minmax(0, 1fr) !important;
+  }
+  .sr15-enabled .sr-sidebar {
+    width: 248px;
+    padding: 16px 12px;
+  }
+  .sr15-enabled .sr-brand {
+    display: flex !important;
+    min-height: 62px;
+    align-items: center;
+    gap: 9px;
+    padding: 0 7px 14px;
+  }
+  .sr15-enabled .sr-brand .sr-logo-mark { display: block !important; flex: 0 0 38px; width: 38px; height: 38px; }
+  .sr15-enabled .sr-brand div { display: block !important; min-width: 0; }
+  .sr15-enabled .sr-brand b { display: block !important; font-size: 16px; white-space: nowrap; }
+  .sr15-enabled .sr-brand span { display: block !important; max-width: 170px; font-size: 9.5px; line-height: 1.25; }
+
+  .sr15-enabled #nav .rc13-module-toggle {
+    padding-block: 9px;
+    font-size: 10px;
+  }
+  .sr15-enabled #nav .rc13-nav-item {
+    display: flex;
+    min-height: 55px;
+    justify-content: flex-start;
+    padding: 8px 9px 21px 10px;
+    gap: 9px;
+  }
+  .sr15-enabled #nav .rc13-nav-item > span {
+    display: inline !important;
+    min-width: 0;
+    overflow: hidden;
+    font-size: 12px;
+    line-height: 1.15;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .sr15-enabled #nav .rc13-nav-item::after {
+    left: 39px;
+    font-size: 9px;
+  }
+
+  .sr15-enabled #srHeader {
+    display: grid;
+    grid-template-columns: minmax(260px, .52fr) minmax(650px, 1.48fr);
+    align-items: start;
+    gap: 14px;
+  }
+  .sr15-enabled #srHeader .sr-page-heading { min-width: 0; }
+  .sr15-enabled #srHeader .sr10-viewbar {
+    grid-template-columns: minmax(230px, 1fr) minmax(170px, 210px) auto;
+    min-width: 0;
+    margin-top: 0;
+  }
+  .sr15-enabled #srHeader .sr10-viewbar > label.hidden { display: none; }
+  .sr15-enabled #srHeader .sr10-viewbar > button { white-space: nowrap; }
+
+  .sr15-enabled .sr-assistant-dock { right: 14px; bottom: 18px; gap: 5px; }
+  .sr15-enabled .sr-assistant-dock button svg { width: 43px; height: 43px; padding: 9px; }
+}
+
+@media (min-width: 821px) and (max-width: 1180px) {
+  .sr15-enabled #app.v11-shell { grid-template-columns: 220px minmax(0, 1fr) !important; }
+  .sr15-enabled .sr-sidebar { width: 220px; }
+  .sr15-enabled #srHeader { grid-template-columns: 1fr; }
+  .sr15-enabled #srHeader .sr10-viewbar { grid-template-columns: minmax(230px, 1fr) 190px auto; }
+}

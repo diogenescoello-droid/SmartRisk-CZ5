@@ -75,7 +75,7 @@
     document.documentElement.dataset.smartRiskUi = "rc15";
     document.body.classList.add("sr15-enabled");
     const subtitle = $(".sr-brand span");
-    if (subtitle) subtitle.textContent = "Secretaría de Gestión de Riesgos";
+    if (subtitle) subtitle.textContent = "SNGR · Gestión de Riesgos";
   }
 
   function closeMenu() {
