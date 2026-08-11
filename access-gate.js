@@ -240,6 +240,14 @@
       window.SmartRiskScope.init({ user, profile, db, auth });
       for (const src of SUPPORT_SCRIPTS) await loadScript(src);
       await window.SmartRiskScopeRepository.init({ user, profile, db, auth });
+      if (window.SmartRiskV11Rollout?.decide) {
+        status("Aplicando interfaz territorial RC15...", "saving");
+        const v11Enabled = await window.SmartRiskV11Rollout.decide(user, profile);
+        if (v11Enabled) {
+          loaded = true;
+          return;
+        }
+      }
       status(`Cargando ${window.SmartRiskScope.scopeLabel()}...`, "saving");
       await loadScript("app.js");
       for (const src of FEATURE_SCRIPTS) await loadScript(`modules/${src}`);

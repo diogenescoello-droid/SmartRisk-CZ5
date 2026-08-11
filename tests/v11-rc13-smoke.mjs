@@ -19,7 +19,7 @@ new vm.Script(menu, { filename: "rc13-menu.js" });
 
 const rolloutPosition = index.indexOf("v11-rollout.js?v=11.0.0-rc15");
 const menuPosition = index.indexOf("rc13-menu.js?v=1.0.0-piloto-estable");
-const gatePosition = index.indexOf("access-gate.js?v=1.0.0-piloto-estable");
+const gatePosition = index.indexOf("access-gate.js?v=11.0.0-rc15");
 
 ok(rolloutPosition >= 0 && rolloutPosition < gatePosition, "Rollout V11 restaurado antes de la compuerta de acceso");
 ok(menuPosition > rolloutPosition && menuPosition < gatePosition, "Capa RC13 cargada antes de iniciar la aplicación");
