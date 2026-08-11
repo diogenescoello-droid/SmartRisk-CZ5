@@ -23,7 +23,7 @@ ok(governance.includes("Los reportes son productos del ciclo"), "Reportes difere
 ok(governance.includes("documentRecords") && governance.includes("canonical"), "Inventario documental derivado de registros existentes");
 ok(css.includes(".sr12-monitor-strip") && css.includes(".sr12-cycle") && css.includes(".sr12-doc-table"), "Estilos de arquitectura y documentos presentes");
 ok(css.includes(".sr11-weather") && css.includes(".sr11-cantons"), "Corrección visual RC11 incluida");
-ok(rollout.includes('11.0.0-rc13') && index.includes('11.0.0-rc13'), "Caché vigente consistente");
+ok(rollout.includes('11.0.0-rc15') && index.includes('11.0.0-rc15'), "Caché vigente consistente");
 ok(rollout.includes("v11-governance-rc12.css") && rollout.includes("v11-governance-rc12.js"), "Capa RC12 cargada por rollout");
 ok(rollout.includes("v11-intelligence-rc11.js"), "RC11 se conserva bajo RC12");
 ok(!/\.collection\([^)]*\)\.(add|set|update|delete)\s*\(/.test(governance), "RC12 no introduce escrituras Firestore");
