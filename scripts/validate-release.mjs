@@ -47,7 +47,7 @@ const completion=read('preview-rc14.4.4/followup-completion-20260730.js');
 
 includes(index,'V1.0.0 PILOTO ESTABLE','index');
 includes(index,'release-config.js?v=1.0.0-piloto-estable','index');
-includes(index,'access-gate.js?v=11.0.0-rc15','index');
+includes(index,'access-gate.js?v=11.0.0-rc16.1','index');
 includes(gate,'const BUILD_VERSION = RELEASE.build','compuerta');
 includes(gate,'uid-profile-scope-canonical-artifact','compuerta');
 includes(gate,'risk-reports-5y-data.js','compuerta');
