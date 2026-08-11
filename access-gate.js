@@ -16,6 +16,7 @@
     "f03-data.js",
     "cases-data.js",
     "pilot-baseline-data.js",
+    "f07-current-data.js",
     "pilot-baseline-bridge.js"
   ];
   const FEATURE_SCRIPTS = [

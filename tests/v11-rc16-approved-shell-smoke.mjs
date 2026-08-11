@@ -12,6 +12,8 @@ const checks=[
  ["Retorno conserva pantalla de origen",js.includes("runtime.returnView")&&js.includes("currentView")],
  ["Selector territorial accesible",js.includes("data-sr16-scope")&&js.includes("sr16ScopeCard")],
  ["Datos canónicos conectados",["ENOS_REVIEWS","ENOS_RISK_LOCATIONS","SMART_RISK_PILOT_BASELINE","SMART_RISK_PLAN_SOURCES"].every(v=>js.includes(v))],
+ ["Actualización F07 verificable",js.includes("Actualizado F07")&&js.includes("actualización automática")&&js.includes("último envío incorporado")],
+ ["Ficha F07 enriquecida",js.includes("Brecha crítica")&&js.includes("Próximo paso")&&js.includes("Vinculación con sitio")],
  ["Flujos Kobo separados",js.includes("aEcQSdRP")&&js.includes("0pXtskTZ")],
  ["Contenedor visual aprobado",css.includes("width:min(100%,720px)")&&css.includes("sr16-bottom")],
  ["Activos de publicación",assets.files.includes("v11-approved-rc16.js")&&assets.files.includes("v11-approved-rc16.css")],
