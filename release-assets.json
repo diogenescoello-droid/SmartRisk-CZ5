@@ -59,7 +59,8 @@
   ],
   "directories": [
     "vendor",
-    "geo"
+    "geo",
+    "consultoria-mvp"
   ],
   "mappedFiles": {
     "riesgo-bolivar-web.geojson": "geo/riesgo-bolivar-web.geojson",
