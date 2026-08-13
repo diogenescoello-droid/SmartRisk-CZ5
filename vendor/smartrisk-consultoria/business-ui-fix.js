@@ -13,4 +13,9 @@
     previousRenderProjects();
   };
   renderAll();
+  ['executive-polish.js','guided-tour.js'].forEach(src=>{
+    if(document.querySelector(`script[data-sr-extra="${src}"]`))return;
+    const script=document.createElement('script');
+    script.src=src;script.dataset.srExtra=src;document.body.appendChild(script);
+  });
 })();
