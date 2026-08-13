@@ -1,0 +1,1 @@
+(() => { const previousView = renderMain; renderMain = function(){ if(s.section === 'direccion'){ const html = direction(); $('main').innerHTML = html; return; } previousView(); }; })();
