@@ -12,6 +12,17 @@
     if(projectFilterBar)projectFilterBar.classList.remove('hidden');
     previousRenderProjects();
   };
+
+  const previousRenderMain=renderMain;
+  renderMain=function(){
+    if(s.section==='acciones'){
+      const p=project();
+      $('main').innerHTML=actions(p);
+      return;
+    }
+    previousRenderMain();
+  };
+
   renderAll();
   const script=document.createElement('script');script.src='executive-polish.js';document.body.appendChild(script);
 })();
