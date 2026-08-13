@@ -1,0 +1,1 @@
+(() => { const prior = renderMain; renderMain = function(){ if(s.section === 'control'){ $('main').innerHTML = control(project()); return; } prior(); }; })();
