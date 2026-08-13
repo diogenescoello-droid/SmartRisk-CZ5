@@ -13,4 +13,5 @@
     previousRenderProjects();
   };
   renderAll();
+  const script=document.createElement('script');script.src='executive-polish.js';document.body.appendChild(script);
 })();
