@@ -1,0 +1,1 @@
+(()=>{if(!new URLSearchParams(location.search).has('scenario'))return;setTimeout(()=>{const s=document.createElement('script');s.src='sercop-case-loader.js';document.body.appendChild(s)},700)})();
