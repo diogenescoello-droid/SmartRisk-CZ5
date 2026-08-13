@@ -60,6 +60,60 @@ service cloud.firestore {
         ]);
     }
 
+    // SmartRisk Consultoría usa perfiles y datos separados de la plataforma institucional.
+    function consultoriaProfileExists() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/consultoria_perfiles/$(request.auth.uid));
+    }
+
+    function consultoriaProfile() {
+      return get(/databases/$(database)/documents/consultoria_perfiles/$(request.auth.uid)).data;
+    }
+
+    function consultoriaActive() {
+      return consultoriaProfileExists()
+        && consultoriaProfile().get('estado', '') == 'Activo';
+    }
+
+    function consultoriaRole() {
+      return consultoriaActive() ? consultoriaProfile().get('rol', '') : '';
+    }
+
+    function consultoriaManager() {
+      return adminEmail() || consultoriaRole() == 'gerencia';
+    }
+
+    function consultoriaEconomics() {
+      return consultoriaManager() || consultoriaRole() == 'finanzas';
+    }
+
+    function consultoriaAssigned(projectId) {
+      return consultoriaManager()
+        || (
+          consultoriaActive()
+          && exists(/databases/$(database)/documents/consultoria_proyectos/$(projectId))
+          && get(/databases/$(database)/documents/consultoria_proyectos/$(projectId)).data.get('usuarios', []) is list
+          && request.auth.uid in get(/databases/$(database)/documents/consultoria_proyectos/$(projectId)).data.get('usuarios', [])
+        );
+    }
+
+    function consultoriaClientAssigned(projectId) {
+      return consultoriaActive()
+        && exists(/databases/$(database)/documents/consultoria_proyectos/$(projectId))
+        && get(/databases/$(database)/documents/consultoria_proyectos/$(projectId)).data.get('clienteUids', []) is list
+        && request.auth.uid in get(/databases/$(database)/documents/consultoria_proyectos/$(projectId)).data.get('clienteUids', []);
+    }
+
+    function consultoriaInternalRole() {
+      return consultoriaRole() in [
+        'gerencia','comercial','tecnico','geotecnia','geofisica','sig','contractual','finanzas','qaqc'
+      ];
+    }
+
+    function consultoriaCanEditProject() {
+      return consultoriaRole() in ['gerencia','comercial','tecnico','contractual'];
+    }
+
     // La base global queda reservada a administradores para escritura.
     // Los perfiles territoriales trabajan exclusivamente en su documento de alcance.
     match /plataforma/datos {
@@ -68,7 +122,7 @@ service cloud.firestore {
       allow delete: if false;
     }
 
-    // El UID de Authentication es el identificador canónico del perfil.
+    // El UID de Authentication es el identificador canónico del perfil institucional.
     match /perfiles/{uid} {
       allow get: if signedIn() && (request.auth.uid == uid || admin());
       allow list: if admin();
@@ -76,7 +130,7 @@ service cloud.firestore {
       allow update: if admin() || ownPasswordStateUpdate(uid);
     }
 
-    // Registro mínimo de actividad. Cada cuenta solo puede escribir su propio UID.
+    // Registro mínimo de actividad institucional.
     match /accesos/{uid} {
       allow get: if signedIn() && (request.auth.uid == uid || admin());
       allow list: if admin();
@@ -87,7 +141,7 @@ service cloud.firestore {
       allow delete: if admin();
     }
 
-    // Registros y estado operativo segmentados por alcance autorizado.
+    // Registros y estado operativo institucional segmentados por alcance autorizado.
     match /alcances/{scopeKey} {
       allow get, list: if admin() || scopeAllowed(scopeKey);
       allow create, update, delete: if admin();
@@ -109,7 +163,80 @@ service cloud.firestore {
       }
     }
 
-    // Catálogos y procesos administrativos no usados directamente por usuarios finales.
+    // ===================== SMART RISK CONSULTORÍA =====================
+    // Perfiles comerciales/técnicos separados del perfil institucional.
+    match /consultoria_perfiles/{uid} {
+      allow get: if signedIn() && (request.auth.uid == uid || consultoriaManager());
+      allow list: if consultoriaManager();
+      allow create: if consultoriaManager();
+      allow update, delete: if consultoriaManager();
+    }
+
+    // Catálogos compartidos del módulo privado.
+    match /consultoria_catalogos/{document=**} {
+      allow read: if consultoriaActive() || adminEmail();
+      allow write: if consultoriaManager();
+    }
+
+    match /consultoria_territorios/{document=**} {
+      allow read: if consultoriaActive() || adminEmail();
+      allow write: if consultoriaManager();
+    }
+
+    // El documento principal del proyecto NO contiene costos internos ni margen.
+    // Los datos económicos viven en /economia/resumen y tienen permisos más estrictos.
+    match /consultoria_proyectos/{projectId} {
+      allow get: if consultoriaAssigned(projectId) || consultoriaClientAssigned(projectId);
+      allow list: if consultoriaManager()
+        || (
+          consultoriaActive()
+          && resource.data.get('usuarios', []) is list
+          && request.auth.uid in resource.data.get('usuarios', [])
+        );
+      allow create: if consultoriaManager() || consultoriaRole() == 'comercial';
+      allow update: if consultoriaAssigned(projectId) && consultoriaCanEditProject();
+      allow delete: if consultoriaManager();
+
+      match /economia/{economicId} {
+        allow read, create, update: if consultoriaAssigned(projectId) && consultoriaEconomics();
+        allow delete: if consultoriaManager();
+      }
+
+      match /acciones/{actionId} {
+        allow read: if consultoriaAssigned(projectId) || consultoriaClientAssigned(projectId);
+        allow create, update: if consultoriaAssigned(projectId) && consultoriaInternalRole();
+        allow delete: if consultoriaManager();
+      }
+
+      match /gates/{gateId} {
+        allow read: if consultoriaAssigned(projectId) || consultoriaClientAssigned(projectId);
+        allow create, update: if consultoriaAssigned(projectId)
+          && consultoriaRole() in ['gerencia','tecnico','contractual','qaqc'];
+        allow delete: if consultoriaManager();
+      }
+
+      match /documentos/{documentId} {
+        allow read: if consultoriaAssigned(projectId) || consultoriaClientAssigned(projectId);
+        allow create, update: if consultoriaAssigned(projectId) && consultoriaInternalRole();
+        allow delete: if consultoriaManager();
+      }
+
+      match /observaciones_cliente/{observationId} {
+        allow read: if consultoriaAssigned(projectId) || consultoriaClientAssigned(projectId);
+        allow create: if consultoriaClientAssigned(projectId) || consultoriaAssigned(projectId);
+        allow update: if consultoriaAssigned(projectId);
+        allow delete: if consultoriaManager();
+      }
+
+      // Auditoría inmutable: se agrega, nunca se reescribe.
+      match /auditoria/{auditId} {
+        allow read: if consultoriaAssigned(projectId);
+        allow create: if consultoriaAssigned(projectId) && consultoriaInternalRole();
+        allow update, delete: if false;
+      }
+    }
+
+    // Catálogos y procesos administrativos institucionales no usados directamente por usuarios finales.
     match /provincias/{document=**} {
       allow read, write: if admin();
     }
