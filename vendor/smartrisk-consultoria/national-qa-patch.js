@@ -2,6 +2,8 @@
   const ECUADOR_PROVINCES = ['Azuay','Bolívar','Cañar','Carchi','Chimborazo','Cotopaxi','El Oro','Esmeraldas','Galápagos','Guayas','Imbabura','Loja','Los Ríos','Manabí','Morona Santiago','Napo','Orellana','Pastaza','Pichincha','Santa Elena','Santo Domingo de los Tsáchilas','Sucumbíos','Tungurahua','Zamora Chinchipe'];
   const TERRITORIES = [['Azuay','Cuenca'],['Bolívar','Guaranda'],['Cañar','Azogues'],['Carchi','Tulcán'],['Chimborazo','Riobamba'],['Cotopaxi','Latacunga'],['El Oro','Machala'],['Esmeraldas','Esmeraldas'],['Galápagos','San Cristóbal'],['Guayas','Guayaquil'],['Imbabura','Ibarra'],['Loja','Loja'],['Los Ríos','Babahoyo'],['Manabí','Portoviejo'],['Morona Santiago','Morona'],['Napo','Tena'],['Orellana','Francisco de Orellana'],['Pastaza','Pastaza'],['Pichincha','Quito'],['Santa Elena','Salinas'],['Santo Domingo de los Tsáchilas','Santo Domingo'],['Sucumbíos','Lago Agrio'],['Tungurahua','Ambato'],['Zamora Chinchipe','Zamora']];
   const STAGES = [['G0','Prospección'],['G1','Oportunidad'],['G2','Prefactibilidad'],['G3','Diseño técnico-económico'],['G4','Oferta'],['G5','Contratación'],['G6','Ejecución'],['G7','Procesamiento'],['G8','Entrega'],['G9','Recepción y cobro'],['G10','Cierre / postventa']];
+  const QA_SERVICES = ['Microzonificación sísmica integral','Estudio técnico base','Campaña geotécnica-geofísica'];
+  let qaLoaded=false;
 
   function optionList(values, selected=''){
     return values.map(v=>`<option${v===selected?' selected':''}>${v}</option>`).join('');
@@ -24,6 +26,55 @@
     select.innerHTML=`<option>Todas</option>${optionList(stages,current)}`;
     select.value=current;
     s.stage=current;
+  }
+
+  function qaAlerts(index,gateIndex){
+    const a=[];
+    if(index%4===0)a.push('Validación documental pendiente');
+    if(index%7===0)a.push('Responsable o fecha objetivo por confirmar');
+    if(gateIndex===5&&index%3===0)a.push('Garantía contractual por verificar');
+    if(gateIndex===6&&index%5===0)a.push('Acceso de campo requiere coordinación');
+    if(gateIndex===7&&index%6===0)a.push('Resultado técnico en revisión QA/QC');
+    if(gateIndex===9&&index%3===1)a.push('Cobro o acta de recepción pendiente');
+    return a;
+  }
+
+  function makeQaProject(index){
+    const [province,canton]=TERRITORIES[index%TERRITORIES.length];
+    const gateIndex=index%STAGES.length;
+    const [gate,stage]=STAGES[gateIndex];
+    const progress=[20,40,60,80,100][index%5];
+    const service=QA_SERVICES[index%QA_SERVICES.length];
+    const price=gateIndex<3?0:145000+(index%18)*11750;
+    const cost=price?Math.round(price*(0.69+(index%7)*0.015)):0;
+    const stageRatio=gateIndex/(STAGES.length-1);
+    const actual=cost?Math.round(cost*Math.min(1,stageRatio*.92)):0;
+    const committed=cost?Math.max(actual,Math.round(cost*Math.min(1,stageRatio+.16))):0;
+    return {id:`qa-${String(index+1).padStart(3,'0')}`,code:`MZS-QA-2026-${String(index+1).padStart(3,'0')}`,province,canton,stage,service,price,cost,committed,actual,gate,progress,req:`${Math.max(1,Math.round(progress/10))} de 10`,alerts:qaAlerts(index,gateIndex),qa:true};
+  }
+
+  function loadQaFixtures(){
+    if(qaLoaded)return;
+    for(let i=0;i<100;i++)data.push(makeQaProject(i));
+    qaLoaded=true;
+    s.selected='qa-001';
+    s.province='Todas';
+    s.stage='Todas';
+    s.q='';
+    s.filter='all';
+    if($('q'))$('q').value='';
+    refreshProvinceFilter();
+    refreshStageFilter();
+    renderAll();
+  }
+
+  function clearQaFixtures(){
+    for(let i=data.length-1;i>=0;i--)if(data[i].qa)data.splice(i,1);
+    qaLoaded=false;
+    s.selected=data[0]?.id||'';
+    refreshProvinceFilter();
+    refreshStageFilter();
+    renderAll();
   }
 
   function toast(message){
@@ -85,6 +136,14 @@
   refreshStageFilter();
   renderAll();
 
-  // Catálogo auxiliar para formularios y pruebas automáticas. No genera casos visibles.
-  window.SmartRiskConsultoriaQA={provinces:ECUADOR_PROVINCES,territories:TERRITORIES,stages:STAGES};
+  // Interfaz técnica para pruebas automatizadas. No instala botones ni casos en la UI.
+  window.SmartRiskConsultoriaQA={
+    provinces:ECUADOR_PROVINCES,
+    territories:TERRITORIES,
+    stages:STAGES,
+    load100:loadQaFixtures,
+    clear100:clearQaFixtures,
+    makeProject:makeQaProject,
+    get loaded(){return qaLoaded;}
+  };
 })();
