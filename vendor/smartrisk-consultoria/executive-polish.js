@@ -1,0 +1,3 @@
+(() => {
+  window.SmartRiskExecutivePolish = window.SmartRiskExecutivePolish || {};
+})();
