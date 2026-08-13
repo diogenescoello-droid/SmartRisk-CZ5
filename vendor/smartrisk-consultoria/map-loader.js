@@ -1,0 +1,6 @@
+(() => {
+  function loadCss(href){if([...document.styleSheets].some(s=>s.href===href))return;const l=document.createElement('link');l.rel='stylesheet';l.href=href;document.head.appendChild(l)}
+  function loadScript(src){return new Promise((resolve,reject)=>{const old=[...document.scripts].find(s=>s.src===src);if(old){if(old.dataset.loaded==='1')return resolve();old.addEventListener('load',resolve,{once:true});old.addEventListener('error',reject,{once:true});return}const s=document.createElement('script');s.src=src;s.async=false;s.onload=()=>{s.dataset.loaded='1';resolve()};s.onerror=reject;document.head.appendChild(s)})}
+  async function start(){try{loadCss('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css');await loadScript('https://unpkg.com/leaflet@1.9.4/dist/leaflet.js');await loadScript('https://unpkg.com/jszip@3.10.1/dist/jszip.min.js');await loadScript(new URL('map-workspace.js',document.currentScript?.src||location.href).href)}catch(e){console.error('SmartRisk mapa:',e)}}
+  start();
+})();
