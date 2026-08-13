@@ -1,0 +1,1 @@
+(() => { const baseView = renderMain; renderMain = function(){ if(s.section === 'operacion'){ const p = project(); $('main').innerHTML = operation(p); return; } baseView(); }; })();
