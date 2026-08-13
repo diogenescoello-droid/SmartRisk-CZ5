@@ -24,5 +24,6 @@
   };
 
   renderAll();
+  const moduleScript=document.createElement('script');moduleScript.src='module-actions.js';document.body.appendChild(moduleScript);
   const script=document.createElement('script');script.src='executive-polish.js';document.body.appendChild(script);
 })();
