@@ -7,57 +7,106 @@
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand">
-      <div class="brand-mark">SR</div>
-      <div>
-        <strong>SmartRisk Consultoría</strong>
-        <span>Control técnico · contractual · económico</span>
+  <div id="authGate" class="auth-shell">
+    <section class="auth-card">
+      <div class="auth-brand">
+        <div class="brand-mark large">SR</div>
+        <div>
+          <h1>SmartRisk Consultoría</h1>
+          <p>Gestión integral de consultorías técnicas</p>
+        </div>
       </div>
-    </div>
-    <div class="top-actions">
-      <label class="field compact">
-        <span>Rol activo</span>
-        <select id="roleSelect"></select>
-      </label>
-      <button id="newProjectBtn" class="btn primary">＋ Nuevo proyecto</button>
-    </div>
-  </header>
-
-  <main class="app-shell">
-    <section class="kpi-grid" id="kpiGrid"></section>
-
-    <section class="filter-panel card">
-      <div class="filter-row">
-        <label class="field search-field">
-          <span>Buscar</span>
-          <input id="searchInput" placeholder="Proyecto, GAD, cantón o código..." />
-        </label>
-        <label class="field">
-          <span>Provincia</span>
-          <select id="provinceFilter"></select>
-        </label>
-        <label class="field">
-          <span>Cantón</span>
-          <select id="cantonFilter"></select>
-        </label>
-        <label class="field">
-          <span>Estado</span>
-          <select id="stageFilter"></select>
-        </label>
+      <div class="auth-note">
+        Acceso individual con trazabilidad. Los permisos dependen del rol y de los proyectos asignados.
       </div>
-      <div class="chip-row" id="quickFilters"></div>
+      <form id="loginForm" class="auth-form">
+        <label class="field">
+          <span>Correo</span>
+          <input id="loginEmail" type="email" autocomplete="username" required />
+        </label>
+        <label class="field">
+          <span>Contraseña</span>
+          <input id="loginPassword" type="password" autocomplete="current-password" required />
+        </label>
+        <button class="btn primary full" type="submit">Ingresar a la plataforma</button>
+      </form>
+      <div id="loginMessage" class="auth-message" role="alert"></div>
+      <button id="demoModeBtn" class="btn full" type="button">Abrir modo demostración</button>
+      <small>El modo demostración no escribe datos en Firestore.</small>
     </section>
+  </div>
 
-    <section class="workspace">
-      <aside class="sidebar card" id="sidebar"></aside>
+  <div id="appRoot" class="is-hidden">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">SR</div>
+        <div>
+          <strong>SmartRisk Consultoría</strong>
+          <span>Control técnico · contractual · económico</span>
+        </div>
+      </div>
+      <div class="top-actions">
+        <span id="dataMode" class="session-pill">Conectando…</span>
+        <div class="session-box">
+          <div>
+            <strong id="sessionName">Usuario</strong>
+            <span id="sessionRole">Rol</span>
+          </div>
+          <button id="logoutBtn" class="icon-btn light" title="Cerrar sesión" aria-label="Cerrar sesión">↪</button>
+        </div>
+        <label class="field compact role-switcher">
+          <span>Vista de rol</span>
+          <select id="roleSelect"></select>
+        </label>
+        <button id="newProjectBtn" class="btn primary">＋ Nuevo proyecto</button>
+      </div>
+    </header>
 
-      <section class="content-column">
-        <div id="projectCards" class="project-grid"></div>
-        <div id="mainPanel" class="card main-panel"></div>
+    <main class="app-shell">
+      <section class="kpi-grid" id="kpiGrid"></section>
+
+      <section class="filter-panel card">
+        <div class="filter-row">
+          <label class="field search-field">
+            <span>Buscar</span>
+            <input id="searchInput" placeholder="Proyecto, GAD, cantón o código..." />
+          </label>
+          <label class="field">
+            <span>Provincia</span>
+            <select id="provinceFilter"></select>
+          </label>
+          <label class="field">
+            <span>Cantón</span>
+            <select id="cantonFilter"></select>
+          </label>
+          <label class="field">
+            <span>Estado</span>
+            <select id="stageFilter"></select>
+          </label>
+        </div>
+        <div class="chip-row" id="quickFilters"></div>
       </section>
-    </section>
-  </main>
+
+      <section class="workspace">
+        <aside class="sidebar card" id="sidebar"></aside>
+
+        <section class="content-column">
+          <div class="section-toolbar">
+            <div>
+              <strong>Proyectos</strong>
+              <span id="projectCountLabel">0 visibles</span>
+            </div>
+            <div class="view-switch">
+              <button class="icon-btn active" data-project-view="cards" title="Tarjetas">▦</button>
+              <button class="icon-btn" data-project-view="list" title="Lista">☷</button>
+            </div>
+          </div>
+          <div id="projectCards" class="project-grid"></div>
+          <div id="mainPanel" class="card main-panel"></div>
+        </section>
+      </section>
+    </main>
+  </div>
 
   <div id="drawer" class="drawer" aria-hidden="true">
     <div class="drawer-backdrop" data-close-drawer></div>
@@ -87,12 +136,22 @@
       <div id="wizardBody" class="wizard-body"></div>
       <div class="wizard-footer">
         <button id="wizardBack" class="btn">Atrás</button>
-        <button id="wizardNext" class="btn primary">Continuar</button>
+        <div class="wizard-actions">
+          <button id="wizardSaveDraft" class="btn">Guardar borrador</button>
+          <button id="wizardNext" class="btn primary">Continuar</button>
+        </div>
       </div>
     </section>
   </div>
 
+  <div id="toast" class="toast" aria-live="polite"></div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+  <script src="../firebase-config.js"></script>
   <script src="./data.js"></script>
+  <script src="./firebase-adapter.js"></script>
   <script src="./app.js"></script>
 </body>
 </html>
