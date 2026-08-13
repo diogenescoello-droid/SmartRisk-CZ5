@@ -1,113 +1,63 @@
 (() => {
-  const safe=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
-  let routeMain=renderMain;
+  const baseRenderMain=renderMain;
+  const main=()=>document.getElementById('main');
+  const go=sec=>{s.section=sec;renderAll();window.scrollTo({top:0,behavior:'smooth'})};
 
-  function go(sec){
-    s.section=sec;
-    renderAll();
-    window.scrollTo({top:0,behavior:'smooth'});
+  function safeRender(){
+    if(s.section==='negocios'){baseRenderMain();return}
+    const p=project();
+    if(s.section==='panel')main().innerHTML=panel(p);
+    else if(s.section==='acciones')main().innerHTML=actions(p);
+    else if(s.section==='control')main().innerHTML=control(p);
+    else if(s.section==='operacion')main().innerHTML=operation(p);
+    else if(s.section==='direccion')main().innerHTML=direction();
+    else if(s.section==='documentos')main().innerHTML=documents(p);
+    else if(s.section==='alertas')main().innerHTML=alerts(p);
+    else baseRenderMain();
   }
 
-  function ensureDetailModal(){
-    if(document.getElementById('moduleDetailModal')) return document.getElementById('moduleDetailModal');
-    const wrap=document.createElement('div');
-    wrap.id='moduleDetailModal';
-    wrap.className='modal';
-    wrap.innerHTML=`<div class="back" data-module-close></div><section class="modal-card"><div class="modal-head"><div><strong id="moduleDetailTitle">Detalle</strong><div class="muted" id="moduleDetailSub"></div></div><button class="btn" data-module-close>✕</button></div><div class="modal-body" id="moduleDetailBody"></div><div class="modal-foot"><button class="btn" data-module-close>Cerrar</button></div></section>`;
-    document.body.appendChild(wrap);
-    wrap.querySelectorAll('[data-module-close]').forEach(b=>b.onclick=()=>wrap.classList.remove('open'));
-    return wrap;
-  }
-
-  function openDetail(title,sub,body){
-    const m=ensureDetailModal();
-    document.getElementById('moduleDetailTitle').textContent=title;
-    document.getElementById('moduleDetailSub').textContent=sub||'';
-    document.getElementById('moduleDetailBody').innerHTML=body;
-    m.classList.add('open');
+  function detailModal(title,sub,body){
+    let m=document.getElementById('srModuleModal');
+    if(!m){m=document.createElement('div');m.id='srModuleModal';m.className='modal';m.innerHTML='<div class="back" data-x></div><section class="modal-card"><div class="modal-head"><div><strong id="srModuleTitle"></strong><div class="muted" id="srModuleSub"></div></div><button class="btn" data-x>✕</button></div><div class="modal-body" id="srModuleBody"></div><div class="modal-foot"><button class="btn" data-x>Cerrar</button></div></section>';document.body.appendChild(m);m.querySelectorAll('[data-x]').forEach(b=>b.onclick=()=>m.classList.remove('open'))}
+    document.getElementById('srModuleTitle').textContent=title;document.getElementById('srModuleSub').textContent=sub||'';document.getElementById('srModuleBody').innerHTML=body;m.classList.add('open');
   }
 
   function bindHeader(){
-    if(s.section==='negocios'||s.section==='mapa') return;
-    const actions=document.querySelector('#main .panel-head .panel-actions');
-    if(!actions) return;
-    const buttons=actions.querySelectorAll('.btn');
-    if(buttons[0]) buttons[0].onclick=()=>go('panel');
-    if(buttons[1]) buttons[1].onclick=()=>go('acciones');
+    if(['negocios','mapa'].includes(s.section))return;
+    const a=main()?.querySelector('.panel-head .panel-actions');if(!a)return;const b=a.querySelectorAll('.btn');
+    if(b[0])b[0].onclick=()=>go('panel');if(b[1])b[1].onclick=()=>go('acciones');
   }
 
   function bindActions(){
-    if(s.section!=='acciones') return;
-    const p=project();
-    document.querySelectorAll('#main .listrow .btn.primary').forEach((btn,i)=>{
-      btn.onclick=()=>{
-        const task=roles[s.role].tasks[i]||'Acción';
-        openDetail(task,`${roles[s.role].label} · ${p.code}`,`<div class="callout"><strong>Responsable</strong><div class="muted">${safe(roles[s.role].label)}</div></div><div class="box" style="margin-top:10px"><h3>Ruta de gestión</h3><div class="listrow"><span>1. Revisar antecedentes y evidencia</span><span class="status warn">Pendiente</span></div><div class="listrow"><span>2. Ejecutar o coordinar la acción</span><span class="status">Siguiente</span></div><div class="listrow"><span>3. Registrar resultado y evidencia</span><span class="status">Cierre</span></div></div>`);
-      };
-    });
+    if(s.section!=='acciones')return;const p=project();
+    main().querySelectorAll('.listrow .btn.primary').forEach((b,i)=>b.onclick=()=>detailModal(roles[s.role].tasks[i]||'Acción',`${roles[s.role].label} · ${p.code}`,'<div class="box"><h3>Ruta de gestión</h3><div class="listrow"><span>Revisar antecedentes y evidencia</span><span class="status warn">Pendiente</span></div><div class="listrow"><span>Ejecutar / coordinar</span><span class="status">Siguiente</span></div><div class="listrow"><span>Registrar resultado y evidencia</span><span class="status">Cierre</span></div></div>'));
   }
 
   function bindControl(){
-    if(s.section!=='control') return;
-    const p=project(),tabs=[...document.querySelectorAll('#main .tabs .tab')],detail=document.querySelector('#main .detail');
-    if(!detail||tabs.length<3) return;
-    const gateHtml=detail.innerHTML;
-    const cronograma=`<div class="box"><h3>Cronograma operativo</h3>${[['Revisión de alcance','Coordinación técnica','75%'],['Control contractual','Gestión contractual','60%'],['QA previo al siguiente Gate','QA/QC','35%']].map(x=>`<div class="listrow"><div><strong>${x[0]}</strong><small>${x[1]} · ${p.canton}</small></div><span class="status warn">${x[2]}</span></div>`).join('')}<div class="callout"><strong>Regla:</strong><div class="muted">Las actividades críticas vencidas o con avance insuficiente alimentan Alertas.</div></div></div>`;
-    const docs=`<div class="box"><h3>Documentos requeridos para ${p.gate}</h3>${['Alcance / TDR vigente','Presupuesto aprobado','Cronograma vigente','Evidencia técnica','QA/QC del hito'].map((x,i)=>`<div class="listrow"><div><strong>${x}</strong><small>Versión, responsable y fecha de control</small></div><span class="status ${i<2?'ok':'warn'}">${i<2?'Vigente':'Pendiente'}</span></div>`).join('')}<button class="btn primary" id="controlGoDocs" style="margin-top:10px">Abrir gestión documental</button></div>`;
-    const panes=[gateHtml,cronograma,docs];
-    tabs.forEach((tab,i)=>tab.onclick=()=>{
-      tabs.forEach((t,j)=>t.classList.toggle('active',i===j));
-      detail.innerHTML=panes[i];
-      document.getElementById('controlGoDocs')?.addEventListener('click',()=>go('documentos'));
-    });
+    if(s.section!=='control')return;const p=project(),tabs=[...main().querySelectorAll('.tabs .tab')],detail=main().querySelector('.detail');if(!detail||tabs.length<3)return;const gate=detail.innerHTML;
+    const schedule='<div class="box"><h3>Cronograma operativo</h3><div class="listrow"><div><strong>Revisión de alcance</strong><small>Coordinación técnica</small></div><span class="status warn">75%</span></div><div class="listrow"><div><strong>Control contractual</strong><small>Gestión contractual</small></div><span class="status warn">60%</span></div><div class="listrow"><div><strong>QA previo al siguiente Gate</strong><small>QA/QC</small></div><span class="status warn">35%</span></div><div class="callout">Las tareas críticas vencidas o con bajo avance alimentan Alertas.</div></div>';
+    const docs=`<div class="box"><h3>Documentos requeridos para ${p.gate}</h3>${['Alcance / TDR vigente','Presupuesto aprobado','Cronograma vigente','Evidencia técnica','QA/QC del hito'].map((x,i)=>`<div class="listrow"><div><strong>${x}</strong><small>Versión, responsable y fecha</small></div><span class="status ${i<2?'ok':'warn'}">${i<2?'Vigente':'Pendiente'}</span></div>`).join('')}<button class="btn primary" id="goDocuments">Abrir gestión documental</button></div>`;
+    [gate,schedule,docs].forEach((html,i)=>tabs[i].onclick=()=>{tabs.forEach((t,j)=>t.classList.toggle('active',i===j));detail.innerHTML=html;document.getElementById('goDocuments')?.addEventListener('click',()=>go('documentos'))});
   }
 
   function bindOperation(){
-    if(s.section!=='operacion') return;
-    const p=project(),tabs=[...document.querySelectorAll('#main .tabs .tab')],tabsHost=document.querySelector('#main .tabs');
-    if(!tabsHost||tabs.length<5) return;
-    let pane=document.getElementById('operationPane');
-    if(!pane){
-      pane=document.createElement('div');pane.id='operationPane';
-      let n=tabsHost.nextSibling;while(n){const next=n.nextSibling;pane.appendChild(n);n=next}
-      tabsHost.insertAdjacentElement('afterend',pane);
-    }
-    const perforaciones=pane.innerHTML;
-    const muestras=`<div class="box" style="margin-top:11px"><h3>Muestras / Laboratorio</h3>${[['M-001','P-01 · 3,0 m','Granulometría + Atterberg','Completado'],['M-014','P-07 · 9,0 m','Corte directo','En laboratorio'],['M-021','P-12 · 6,0 m','Consolidación','Pendiente']].map(x=>`<div class="listrow"><div><strong>${x[0]} · ${x[1]}</strong><small>${x[2]}</small></div><span class="status ${x[3]==='Completado'?'ok':'warn'}">${x[3]}</span></div>`).join('')}</div>`;
-    const geofisica=`<div class="box" style="margin-top:11px"><h3>Geofísica</h3>${[['VS-14','Vs30','286 m/s','Procesado'],['H-17','HVSR','Repetir adquisición','Observado'],['H-22','HVSR','Periodo validado','Aprobado']].map(x=>`<div class="listrow"><div><strong>${x[0]} · ${x[1]}</strong><small>${x[2]}</small></div><span class="status ${x[3]==='Aprobado'||x[3]==='Procesado'?'ok':'warn'}">${x[3]}</span></div>`).join('')}</div>`;
-    const sig=`<div class="box" style="margin-top:11px"><h3>SIG / Modelación</h3>${[['Superficie Vs30','V03','En revisión QA'],['Puntos de investigación','V02','Vigente'],['Microzonas preliminares','V01','Borrador']].map(x=>`<div class="listrow"><div><strong>${x[0]}</strong><small>${x[1]} · ${p.canton}</small></div><span class="status warn">${x[2]}</span></div>`).join('')}<button class="btn" id="operationGoMap">Ver capas en mapa</button></div>`;
-    const qaqc=`<div class="box" style="margin-top:11px"><h3>QA/QC</h3>${[['NC-016','Coherencia HVSR H-17','Alta','Abierta'],['OBS-021','Metadatos cartográficos','Media','En corrección']].map(x=>`<div class="listrow"><div><strong>${x[0]} · ${x[1]}</strong><small>Severidad ${x[2]}</small></div><span class="status warn">${x[3]}</span></div>`).join('')}<div class="callout warn"><strong>Separación de funciones</strong><div class="muted">QA/QC observa y aprueba; no modifica el resultado técnico original.</div></div></div>`;
-    const panes=[perforaciones,muestras,geofisica,sig,qaqc];
-    tabs.forEach((tab,i)=>tab.onclick=()=>{
-      tabs.forEach((t,j)=>t.classList.toggle('active',i===j));pane.innerHTML=panes[i];
-      document.getElementById('operationGoMap')?.addEventListener('click',()=>go('mapa'));
-    });
+    if(s.section!=='operacion')return;const p=project(),tabs=[...main().querySelectorAll('.tabs .tab')],host=main().querySelector('.tabs');if(!host||tabs.length<5)return;let pane=document.getElementById('operationPane');if(!pane){pane=document.createElement('div');pane.id='operationPane';let n=host.nextSibling;while(n){const next=n.nextSibling;pane.appendChild(n);n=next}host.insertAdjacentElement('afterend',pane)}const drilling=pane.innerHTML;
+    const samples='<div class="box" style="margin-top:11px"><h3>Muestras / Laboratorio</h3><div class="listrow"><div><strong>M-001 · P-01</strong><small>Granulometría + Atterberg</small></div><span class="status ok">Completado</span></div><div class="listrow"><div><strong>M-014 · P-07</strong><small>Corte directo</small></div><span class="status warn">En laboratorio</span></div></div>';
+    const geo='<div class="box" style="margin-top:11px"><h3>Geofísica</h3><div class="listrow"><div><strong>VS-14 · Vs30</strong><small>286 m/s</small></div><span class="status ok">Procesado</span></div><div class="listrow"><div><strong>H-17 · HVSR</strong><small>Repetir adquisición</small></div><span class="status warn">Observado</span></div></div>';
+    const sig=`<div class="box" style="margin-top:11px"><h3>SIG / Modelación</h3><div class="listrow"><div><strong>Superficie Vs30</strong><small>V03 · ${p.canton}</small></div><span class="status warn">En revisión QA</span></div><div class="listrow"><div><strong>Microzonas preliminares</strong><small>V01</small></div><span class="status warn">Borrador</span></div><button class="btn" id="goMap">Ver capas en mapa</button></div>`;
+    const qa='<div class="box" style="margin-top:11px"><h3>QA/QC</h3><div class="listrow"><div><strong>NC-016 · Coherencia HVSR H-17</strong><small>Severidad alta</small></div><span class="status warn">Abierta</span></div><div class="listrow"><div><strong>OBS-021 · Metadatos cartográficos</strong><small>Severidad media</small></div><span class="status warn">En corrección</span></div><div class="callout warn">QA/QC observa y aprueba; no modifica el resultado técnico original.</div></div>';
+    [drilling,samples,geo,sig,qa].forEach((html,i)=>tabs[i].onclick=()=>{tabs.forEach((t,j)=>t.classList.toggle('active',i===j));pane.innerHTML=html;document.getElementById('goMap')?.addEventListener('click',()=>go('mapa'))});
   }
 
   function bindDocuments(){
-    if(s.section!=='documentos') return;
-    const p=project();
-    document.querySelectorAll('#main .box .listrow').forEach((row,i)=>{
-      if(row.querySelector('.doc-open')) return;
-      const b=document.createElement('button');b.className='btn doc-open';b.textContent='Abrir';
-      b.onclick=()=>{const title=row.querySelector('strong')?.textContent||'Documento';openDetail(title,p.code,`<div class="box"><h3>Control documental</h3><div class="listrow"><span>Versión vigente</span><strong>${i<3?'Registrada':'Pendiente'}</strong></div><div class="listrow"><span>Responsable</span><strong>${i<4?'Gestión contractual':'Coordinación técnica'}</strong></div><div class="listrow"><span>Estado</span><span class="status ${i<3?'ok':'warn'}">${i<3?'Vigente':'Pendiente'}</span></div></div>`)};
-      row.appendChild(b);
-    });
+    if(s.section!=='documentos')return;const p=project();main().querySelectorAll('.box .listrow').forEach((r,i)=>{if(r.querySelector('.docOpen'))return;const b=document.createElement('button');b.className='btn docOpen';b.textContent='Abrir';b.onclick=()=>detailModal(r.querySelector('strong')?.textContent||'Documento',p.code,`<div class="box"><div class="listrow"><span>Versión</span><strong>${i<3?'Registrada':'Pendiente'}</strong></div><div class="listrow"><span>Responsable</span><strong>${i<4?'Gestión contractual':'Coordinación técnica'}</strong></div></div>`);r.appendChild(b)});
   }
 
   function bindAlerts(){
-    if(s.section!=='alertas') return;
-    const p=project();
-    document.querySelectorAll('#main .callout').forEach((c,i)=>{
-      if(c.querySelector('.alert-open'))return;
-      const b=document.createElement('button');b.className='btn alert-open';b.style.marginTop='8px';b.textContent='Gestionar';
-      b.onclick=()=>openDetail(p.alerts[i]||'Alerta',p.code,`<div class="box"><h3>Plan de cierre</h3><div class="listrow"><span>Asignar responsable</span><span class="status warn">Pendiente</span></div><div class="listrow"><span>Definir fecha objetivo</span><span class="status warn">Pendiente</span></div><div class="listrow"><span>Adjuntar evidencia de cierre</span><span class="status">Requerido</span></div></div>`);
-      c.appendChild(b);
-    });
+    if(s.section!=='alertas')return;const p=project();main().querySelectorAll('.callout').forEach((r,i)=>{if(r.querySelector('.alertOpen'))return;const b=document.createElement('button');b.className='btn alertOpen';b.textContent='Gestionar';b.style.marginTop='8px';b.onclick=()=>detailModal(p.alerts[i]||'Alerta',p.code,'<div class="box"><div class="listrow"><span>Asignar responsable</span><span class="status warn">Pendiente</span></div><div class="listrow"><span>Definir fecha objetivo</span><span class="status warn">Pendiente</span></div><div class="listrow"><span>Adjuntar evidencia de cierre</span><span class="status">Requerido</span></div></div>');r.appendChild(b)});
   }
 
-  function bindAll(){bindHeader();bindActions();bindControl();bindOperation();bindDocuments();bindAlerts()}
-  renderMain=function(){routeMain();setTimeout(bindAll,0)};
-  setTimeout(bindAll,0);
-  window.SmartRiskModuleActions={go,bindAll};
+  function bind(){bindHeader();bindActions();bindControl();bindOperation();bindDocuments();bindAlerts()}
+  renderMain=function(){safeRender();setTimeout(bind,0)};
+  window.SmartRiskModuleActions={go,bind};
 })();
