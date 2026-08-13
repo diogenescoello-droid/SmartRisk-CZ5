@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SmartRisk Consultoría</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">SR</div>
+      <div>
+        <strong>SmartRisk Consultoría</strong>
+        <span>Control técnico · contractual · económico</span>
+      </div>
+    </div>
+    <div class="top-actions">
+      <label class="field compact">
+        <span>Rol activo</span>
+        <select id="roleSelect"></select>
+      </label>
+      <button id="newProjectBtn" class="btn primary">＋ Nuevo proyecto</button>
+    </div>
+  </header>
+
+  <main class="app-shell">
+    <section class="kpi-grid" id="kpiGrid"></section>
+
+    <section class="filter-panel card">
+      <div class="filter-row">
+        <label class="field search-field">
+          <span>Buscar</span>
+          <input id="searchInput" placeholder="Proyecto, GAD, cantón o código..." />
+        </label>
+        <label class="field">
+          <span>Provincia</span>
+          <select id="provinceFilter"></select>
+        </label>
+        <label class="field">
+          <span>Cantón</span>
+          <select id="cantonFilter"></select>
+        </label>
+        <label class="field">
+          <span>Estado</span>
+          <select id="stageFilter"></select>
+        </label>
+      </div>
+      <div class="chip-row" id="quickFilters"></div>
+    </section>
+
+    <section class="workspace">
+      <aside class="sidebar card" id="sidebar"></aside>
+
+      <section class="content-column">
+        <div id="projectCards" class="project-grid"></div>
+        <div id="mainPanel" class="card main-panel"></div>
+      </section>
+    </section>
+  </main>
+
+  <div id="drawer" class="drawer" aria-hidden="true">
+    <div class="drawer-backdrop" data-close-drawer></div>
+    <section class="drawer-panel">
+      <div class="drawer-header">
+        <div>
+          <strong id="drawerTitle">Acción</strong>
+          <span id="drawerSubtitle">Detalle</span>
+        </div>
+        <button class="icon-btn" data-close-drawer aria-label="Cerrar">✕</button>
+      </div>
+      <div id="drawerContent" class="drawer-content"></div>
+    </section>
+  </div>
+
+  <div id="wizard" class="modal" aria-hidden="true">
+    <div class="modal-backdrop" data-close-wizard></div>
+    <section class="modal-card">
+      <div class="modal-header">
+        <div>
+          <strong>Nuevo proyecto</strong>
+          <span>Cliente → Territorio → Servicio → Presupuesto</span>
+        </div>
+        <button class="icon-btn" data-close-wizard>✕</button>
+      </div>
+      <div class="stepper" id="wizardSteps"></div>
+      <div id="wizardBody" class="wizard-body"></div>
+      <div class="wizard-footer">
+        <button id="wizardBack" class="btn">Atrás</button>
+        <button id="wizardNext" class="btn primary">Continuar</button>
+      </div>
+    </section>
+  </div>
+
+  <script src="./data.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
