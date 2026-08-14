@@ -53,6 +53,7 @@
     const province = normalize(provinceValue);
     const canton = normalize(cantonValue);
     const official = level === "canton" ? OFFICIAL[`${province}|${canton}`] : null;
+    const reviews = (window.ENOS_REVIEWS?.reviews || []).filter(item => level === "zona" || (normalize(item.province) === province && (level === "provincia" || normalize(item.territory) === canton)));
     const inScope = item => level === "zona" || (normalize(item.province) === province && (level === "provincia" || normalize(item.canton || item.shortName) === canton));
     const entities = baseline.entities.filter(entity => level === "zona" || (normalize(entity.province) === province && (level === "provincia" || normalize(entity.shortName) === canton)));
     const entityIds = new Set(entities.map(entity => entity.entityId));
@@ -64,7 +65,7 @@
     const actions = uniqueBy(followups.filter(item => item.actionTitle), item => `${item.actionTitle}|${item.entityId}`);
     const territory = level === "zona" ? "Zona 5" : level === "provincia" ? `Provincia ${provinceValue}` : `${cantonValue} · ${provinceValue}`;
     return {
-      level, province: provinceValue, canton: cantonValue, territory, entities, followups, forms, emails,
+      level, province: provinceValue, canton: cantonValue, territory, entities, followups, forms, emails, reviews,
       sites, actions, official,
       cut: `Línea base F07 · corte ${baseline.config.cutDate}`,
       active: followups.filter(item => !isClosed(item.status)).length,
@@ -106,6 +107,21 @@
 
   function authoritativeRecords(record, route, filter) {
     const base = { territory: record.territory, source: record.cut };
+    if (route === "dashboard" && filter === "revision") return record.reviews.flatMap(review => (review.criteria || []).map(criterion => ({
+      ...base,
+      title: criterion.name,
+      status: criterion.status,
+      evidence: `${criterion.evidence?.length || 0} respaldo(s) del plan`,
+      detail: criterion.newAction || `Resultado de la revisión técnica: ${criterion.status}.`,
+      fields: [
+        ["Territorio revisado", `${review.territory} · ${review.province}`],
+        ["Calificación del criterio", `${criterion.score}%`],
+        ["Resultado", criterion.status],
+        ["Páginas de respaldo", (criterion.evidence || []).map(item => item.page).join(", ") || "No identificadas"],
+        ["Hallazgo / acción recomendada", criterion.newAction || "No genera acción correctiva"],
+        ["Estado de la revisión", review.status]
+      ]
+    })));
     if (record.official) {
       const official = record.official;
       if (route === "riesgos" || route === "mapas") return official.sitesList.map((site, index) => ({
@@ -175,7 +191,8 @@
     const module = document.querySelector("#sr16Module");
     if (!item || !module) return;
     const fields = [["Estado", item.status], ["Territorio", item.territory], ["Fuente", item.source], ...(item.fields || []), ["Detalle", item.detail]];
-    module.innerHTML = `<div class="sr16-module-head"><button data-authoritative-list="${route}|${filter}">←</button><div><h1>${escapeHtml(item.title)}</h1><p>Ficha individual con trazabilidad</p></div></div><div class="sr16-record-detail">${fields.map(([label, value]) => `<div><small>${escapeHtml(label)}</small><b>${escapeHtml(value)}</b></div>`).join("")}</div>${item.url ? `<div class="sr16-module-actions"><a href="${escapeHtml(item.url)}" target="_blank" rel="noopener">Abrir documento original ↗</a><button class="secondary" data-authoritative-list="${route}|${filter}">Volver al listado</button></div>` : `<div class="sr16-module-actions"><button class="secondary" data-authoritative-list="${route}|${filter}">Volver al listado</button></div>`}`;
+    const workflowAction = route === "dashboard" && filter !== "revision" ? '<button data-sr16-full="acciones" data-sr16-filter="pendientes">Gestionar acción correctiva →</button>' : route === "dashboard" ? '<button data-sr16-full="dashboard" data-sr16-filter="brechas">Ver brechas derivadas →</button>' : "";
+    module.innerHTML = `<div class="sr16-module-head"><button data-authoritative-list="${route}|${filter}">←</button><div><h1>${escapeHtml(item.title)}</h1><p>Ficha individual con trazabilidad</p></div></div><div class="sr16-record-detail">${fields.map(([label, value]) => `<div><small>${escapeHtml(label)}</small><b>${escapeHtml(value)}</b></div>`).join("")}</div><div class="sr16-module-actions">${item.url ? `<a href="${escapeHtml(item.url)}" target="_blank" rel="noopener">Abrir documento original ↗</a>` : workflowAction}${item.url && workflowAction ? workflowAction : ""}<button class="secondary" data-authoritative-list="${route}|${filter}">Volver al listado</button></div>`;
   }
 
   function bindSitesDetail() {
