@@ -40,12 +40,37 @@
     .trim()
     .toLowerCase();
 
+  const uniqueBy = (items, key) => [...new Map(items.map(item => [normalize(key(item)), item])).values()];
+  const isClosed = value => /cumpl|cerrad|finaliz|complet/.test(normalize(value));
+  const isUsefulSite = value => value && !/no encuentro|pendiente|sin sitio|no aplica/.test(normalize(value));
+
   const selectedRecord = () => {
-    const level = document.querySelector("#sr16Level")?.value;
-    if (level !== "canton") return null;
-    const province = normalize(document.querySelector("#sr16Province")?.value);
-    const canton = normalize(document.querySelector("#sr16Canton")?.value);
-    return OFFICIAL[`${province}|${canton}`] || null;
+    const baseline = window.SMART_RISK_PILOT_BASELINE;
+    if (!baseline) return null;
+    const level = document.querySelector("#sr16Level")?.value || "canton";
+    const provinceValue = document.querySelector("#sr16Province")?.value || "";
+    const cantonValue = document.querySelector("#sr16Canton")?.value || "";
+    const province = normalize(provinceValue);
+    const canton = normalize(cantonValue);
+    const official = level === "canton" ? OFFICIAL[`${province}|${canton}`] : null;
+    const inScope = item => level === "zona" || (normalize(item.province) === province && (level === "provincia" || normalize(item.canton || item.shortName) === canton));
+    const entities = baseline.entities.filter(entity => level === "zona" || (normalize(entity.province) === province && (level === "provincia" || normalize(entity.shortName) === canton)));
+    const entityIds = new Set(entities.map(entity => entity.entityId));
+    const scoped = item => entityIds.has(item.entityId) || inScope(item);
+    const followups = baseline.followups.filter(scoped);
+    const forms = baseline.forms.filter(scoped);
+    const emails = baseline.emailRecords.filter(scoped);
+    const sites = uniqueBy(followups.filter(item => isUsefulSite(item.siteReference)), item => item.siteReference);
+    const actions = uniqueBy(followups.filter(item => item.actionTitle), item => `${item.actionTitle}|${item.entityId}`);
+    const territory = level === "zona" ? "Zona 5" : level === "provincia" ? `Provincia ${provinceValue}` : `${cantonValue} · ${provinceValue}`;
+    return {
+      level, province: provinceValue, canton: cantonValue, territory, entities, followups, forms, emails,
+      sites, actions, official,
+      cut: `Línea base F07 · corte ${baseline.config.cutDate}`,
+      active: followups.filter(item => !isClosed(item.status)).length,
+      solved: followups.filter(item => isClosed(item.status)).length,
+      evidence: followups.filter(item => item.evidenceUrl || item.evidenceFile).length
+    };
   };
 
   const setText = (selector, value) => {
@@ -80,29 +105,49 @@
   let returnView = "territorio";
 
   function authoritativeRecords(record, route, filter) {
-    const base = { territory: "Daule · Guayas", source: record.cut };
-    if (route === "riesgos" || route === "mapas") return record.sitesList.map((site, index) => ({
-      ...base, title: site.name, status: site.status, evidence: "Plan ENOS · páginas 3 y 5", detail: site.detail,
-      fields: [["Código", `DAU-SIT-${String(index + 1).padStart(2, "0")}`], ["Tipo", site.type], ["Amenaza", site.threat], ["Prioridad", site.priority], ["Estado", site.status]]
+    const base = { territory: record.territory, source: record.cut };
+    if (record.official) {
+      const official = record.official;
+      if (route === "riesgos" || route === "mapas") return official.sitesList.map((site, index) => ({
+        ...base, title: site.name, status: site.status, evidence: "Plan ENOS · páginas 3 y 5", detail: site.detail,
+        fields: [["Código", `DAU-SIT-${String(index + 1).padStart(2, "0")}`], ["Tipo", site.type], ["Amenaza", site.threat], ["Prioridad", site.priority]]
+      }));
+      if (route === "acciones") return official.actionsList.map((title, index) => ({
+        ...base, title, status: index < official.pendingActions ? "Sin seguimiento" : "F07 preliminar", evidence: index < official.pendingActions ? "Plan ENOS" : "F07 preliminar sin homologar", detail: "Acción priorizada del Plan ENOS 2026–2027 del GAD Municipal de Daule.",
+        fields: [["Código", `DAU-ACC-${String(index + 1).padStart(2, "0")}`], ["Presupuesto", official.budget], ["Vinculación", "Pendiente de codificación sitio–acción"]]
+      }));
+      if (route === "dashboard") return official.actionsList.slice(0, official.pendingActions).map((title, index) => ({
+        ...base, title: `Brecha ${index + 1}: acción sin seguimiento`, status: "Activa", evidence: "Plan ENOS", detail: title,
+        fields: [["Acción relacionada", title], ["Brecha", "No registra seguimiento homologado"], ["Próximo control", "Solicitar actualización F07 y verificable"]]
+      }));
+    }
+    if (route === "riesgos" || route === "mapas") return record.sites.map((item, index) => ({
+      ...base, title: item.siteReference, status: item.siteLinkState || "Reportado", evidence: item.evidenceState || item.sourceType, detail: item.progressDescription || item.criticalGap || "Sitio mencionado en seguimiento territorial.", url: item.evidenceUrl,
+      fields: [["Código de acción", item.actionCode || "Pendiente de homologación"], ["Acción relacionada", item.actionTitle], ["Responsable", item.responsible], ["Periodo", item.period]]
     }));
-    if (route === "acciones") return record.actionsList.map((title, index) => ({
-      ...base, title, status: index < record.pendingActions ? "Sin seguimiento" : "F07 preliminar", evidence: index < record.pendingActions ? "Plan ENOS" : "F07 preliminar sin homologar", detail: "Acción priorizada del Plan ENOS 2026–2027 del GAD Municipal de Daule.",
-      fields: [["Código", `DAU-ACC-${String(index + 1).padStart(2, "0")}`], ["Estado", index < record.pendingActions ? "Pendiente de seguimiento" : "Evidencia preliminar"], ["Presupuesto", record.budget], ["Vinculación", "Pendiente de codificación sitio–acción"]]
+    if (route === "acciones") return record.actions.filter(item => {
+      const status = normalize(item.status);
+      if (filter === "pendientes") return !status || /pend|sin iniciar|program/.test(status);
+      if (filter === "ejecucion" || filter === "avance") return /proceso|ejec|curso|activo/.test(status);
+      if (filter === "completadas") return isClosed(status);
+      if (filter === "vinculadas") return !/pendiente/.test(normalize(item.actionLinkState));
+      return true;
+    }).map(item => ({
+      ...base, title: item.actionTitle, status: item.status || "Sin estado", evidence: item.evidenceState || "Sin evidencia", detail: item.progressDescription || item.nextStep || "Seguimiento F07 territorial.", url: item.evidenceUrl,
+      fields: [["Código", item.actionCode || "Pendiente de homologación"], ["Avance declarado", item.declaredProgress === null ? "No informado" : `${item.declaredProgress}%`], ["Responsable", item.responsible], ["Brecha crítica", item.criticalGap], ["Próximo paso", item.nextStep], ["Próximo reporte", item.nextReportDate], ["Vinculación con sitio", item.siteLinkState]]
     }));
-    if (route === "dashboard") return record.actionsList.slice(0, record.pendingActions).map((title, index) => ({
-      ...base, title: `Brecha ${index + 1}: acción sin seguimiento`, status: "Activa", evidence: "Plan ENOS", detail: title,
-      fields: [["Acción relacionada", title], ["Brecha", "No registra seguimiento homologado"], ["Estado", "Activa"], ["Próximo control", "Solicitar actualización F07 y verificable"]]
+    if (route === "dashboard") return record.followups.filter(item => !isClosed(item.status)).map((item, index) => ({
+      ...base, title: item.criticalGap || `Brecha ${index + 1}: seguimiento pendiente`, status: "Activa", evidence: item.evidenceState || "Sin evidencia", detail: item.actionTitle || item.progressDescription || "Seguimiento pendiente de cierre.", url: item.evidenceUrl,
+      fields: [["Acción relacionada", item.actionTitle], ["Estado reportado", item.status], ["Responsable", item.responsible], ["Próximo paso", item.nextStep], ["Próximo reporte", item.nextReportDate]]
     }));
     if (route === "documentos") {
-      if (filter === "evidencias") return [1, 2].map(number => ({ ...base, title: `F07 preliminar ${number}`, status: "Sin homologar", evidence: "Registro Kobo conservado", detail: "Evidencia preliminar pendiente de vinculación a código de sitio y acción.", fields: [["Tipo", "Seguimiento F07"], ["Estado", "Pendiente de homologación"], ["Validez para avance", "Aún no computable"]] }));
-      return [{ ...base, title: "Plan de Acción ENOS 2026–2027 – Daule", status: "Oficial", evidence: "Documento firmado", detail: "Plan territorial oficial utilizado como fuente primaria de la conciliación.", url: record.planUrl, fields: [["Código", "GADDAULE-ENOS-2026-001"], ["Fecha", "22 de junio de 2026"], ["Responsable técnico", "Stalin Quiñónez Arreaga"], ["Extensión", "17 páginas"], ["Estado", "Oficial"]] }];
+      if (record.official && filter !== "evidencias") return [{ ...base, title: "Plan de Acción ENOS 2026–2027 – Daule", status: "Oficial", evidence: "Documento firmado", detail: "Plan territorial oficial utilizado como fuente primaria de la conciliación.", url: record.official.planUrl, fields: [["Código", "GADDAULE-ENOS-2026-001"], ["Fecha", "22 de junio de 2026"], ["Responsable técnico", "Stalin Quiñónez Arreaga"], ["Extensión", "17 páginas"]] }];
+      if (filter === "evidencias") return record.followups.filter(item => item.evidenceUrl || item.evidenceFile).map(item => ({ ...base, title: item.evidenceFile || item.evidenceDescription || `Evidencia ${item.formId}`, status: item.evidenceState, evidence: item.sourceType, detail: item.actionTitle || item.progressDescription, url: item.evidenceUrl, fields: [["Formulario", item.formId], ["Periodo", item.period], ["Responsable", item.responsible], ["Acción", item.actionTitle]] }));
+      return [...record.forms.map(item => ({ ...base, title: `Formulario territorial ${item.formId}`, status: item.status || "Recibido", evidence: item.sourceType, detail: `Remisión de ${item.institution || record.territory}.`, fields: [["Fecha de envío", item.submissionTime], ["Periodo", item.period], ["Institución", item.institution]] })), ...record.emails.map(item => ({ ...base, title: item.recordType, status: item.status, evidence: item.sourceType, detail: item.notes }))];
     }
-    if (route === "reportes") return [{ ...base, title: "Informe técnico conciliado ENOS Daule", status: "Validado para tablero", evidence: "Revisión Plan–formularios–SmartRisk", detail: "Consolida 3 sitios, 11 acciones, presupuesto no cuantificado y 2 F07 preliminares.", fields: [["Sitios priorizados", "3"], ["Acciones", "11"], ["Brechas activas", "9"], ["F07 preliminares", "2"], ["Presupuesto", record.budget]] }];
-    if (route === "herramientas") return [
-      { ...base, title: "Conciliación de sitios", status: "Aplicada", evidence: "Informe técnico", detail: "Las 21 menciones documentales fueron depuradas a 3 sitios prioritarios." },
-      { ...base, title: "Conciliación de acciones", status: "Aplicada", evidence: "Matriz del plan", detail: "Las 33 propuestas automáticas fueron reemplazadas por 11 acciones priorizadas." },
-      { ...base, title: "Control de seguimientos", status: "Pendiente", evidence: "2 F07 preliminares", detail: "Los F07 deben homologarse a sitio y acción antes de computar avance." }
-    ];
+    if (route === "reportes") return record.entities.map(entity => ({ ...base, title: `Estado territorial – ${entity.shortName}`, status: entity.baselineStatus, evidence: `${entity.formCount} formulario(s) · ${entity.evidenceAttachedCount} evidencia(s)`, detail: `${entity.followupCount} seguimientos F07; último periodo ${entity.latestPeriod || "no informado"}.`, fields: [["Nivel", entity.level], ["Seguimientos", entity.followupCount], ["Avance declarado", entity.declaredProgressLatestPeriod === null ? "No informado" : `${entity.declaredProgressLatestPeriod}%`], ["Requiere atención", entity.requiresAttention ? "Sí" : "No"]] }));
+    if (route === "herramientas") return record.entities.map(entity => ({ ...base, title: `Control de calidad – ${entity.shortName}`, status: entity.requiresAttention ? "Requiere atención" : "Conforme", evidence: `${entity.formCount + entity.emailRecordCount} remisión(es)`, detail: entity.baselineStatus, fields: [["Entidad", entity.name], ["Nivel", entity.level], ["Acciones vinculadas", entity.linkedActionCount], ["Sitios vinculados", entity.linkedSiteCount], ["Evidencias adjuntas", entity.evidenceAttachedCount]] }));
+    if (route === "coe" || route === "instituciones") return record.entities.map(entity => ({ ...base, title: entity.name, status: entity.baselineStatus, evidence: `${entity.formCount + entity.emailRecordCount} remisión(es)`, detail: `${entity.entityType} dentro del alcance seleccionado.`, fields: [["Nivel", entity.level], ["Provincia", entity.province], ["Seguimientos", entity.followupCount], ["Último periodo", entity.latestPeriod || "No informado"]] }));
     return [];
   }
 
@@ -113,15 +158,15 @@
 
   function renderAuthoritativeList(record, route, filter, sourceButton) {
     const records = authoritativeRecords(record, route, filter);
-    const titles = { riesgos: "Sitios y riesgos", acciones: "Acciones", dashboard: "Brechas territoriales", documentos: "Planes y fuentes", reportes: "Reportes", mapas: "Cartografía", herramientas: "Auditoría" };
-    const subtitles = { riesgos: "Amenazas, exposición y puntos críticos", acciones: "Ejecución, evidencia y seguimiento", dashboard: "Activas, solventadas y pendientes de validación", documentos: "Documentos originales, revisión y evidencia", reportes: "Productos oficiales y verificables", mapas: "Sitios, capas y trabajo de campo", herramientas: "Calidad, trazabilidad y controles" };
+    const titles = { riesgos: "Sitios y riesgos", acciones: "Acciones", dashboard: "Brechas territoriales", documentos: "Planes y fuentes", reportes: "Reportes", mapas: "Cartografía", herramientas: "Auditoría", coe: "COE y actores", instituciones: "Entidades territoriales" };
+    const subtitles = { riesgos: "Amenazas, exposición y puntos críticos", acciones: "Ejecución, evidencia y seguimiento", dashboard: "Activas, solventadas y pendientes de validación", documentos: "Documentos originales, revisión y evidencia", reportes: "Productos oficiales y verificables", mapas: "Sitios, capas y trabajo de campo", herramientas: "Calidad, trazabilidad y controles", coe: "Actores dentro del alcance", instituciones: "Competencias y responsables" };
     const current = document.querySelector("[data-sr16-view].active")?.dataset.sr16View;
     if (current && current !== "modulo") returnView = current;
     const module = document.querySelector("#sr16Module");
     if (!module) return;
     const active = records.filter(item => !/oficial|aplicada|validado/i.test(item.status)).length;
     const withEvidence = records.filter(item => item.evidence).length;
-    module.innerHTML = `<div class="sr16-module-head"><button data-authoritative-back>←</button><div><h1>${titles[route]}</h1><p>${subtitles[route]} · ${escapeHtml(sourceButton?.textContent?.trim() || filter)}</p></div></div><section class="sr16-module-summary"><article><small>Registros filtrados</small><b>${records.length}</b></article><article><small>Activos o pendientes</small><b>${active}</b></article><article><small>Con respaldo</small><b>${withEvidence}</b></article></section><div class="sr16-module-list">${records.map((item, index) => `<button class="sr16-record" data-authoritative-record="${index}" data-authoritative-route="${route}" data-authoritative-filter="${filter}"><span>!</span><div><b>${escapeHtml(item.title)}</b><small>${escapeHtml(item.territory)} · ${escapeHtml(item.evidence)}</small></div><em>${escapeHtml(item.status)}</em></button>`).join("")}</div>${route === "mapas" ? `<div class="sr16-module-actions"><a href="https://ee.kobotoolbox.org/x/aEcQSdRP" target="_blank" rel="noopener">Nuevo sitio ↗</a><a class="secondary" href="https://ee.kobotoolbox.org/x/0pXtskTZ" target="_blank" rel="noopener">Actualizar acción ↗</a></div>` : ""}`;
+    module.innerHTML = `<div class="sr16-module-head"><button data-authoritative-back>←</button><div><h1>${titles[route]}</h1><p>${subtitles[route]} · ${escapeHtml(sourceButton?.textContent?.trim() || filter)}</p></div></div><section class="sr16-module-summary"><article><small>Registros filtrados</small><b>${records.length}</b></article><article><small>Activos o pendientes</small><b>${active}</b></article><article><small>Con respaldo</small><b>${withEvidence}</b></article></section>${records.length ? `<label class="sr16-record-search"><span>Buscar en este listado</span><input type="search" data-authoritative-search placeholder="Acción, sitio, entidad o estado"></label>` : ""}<div class="sr16-module-list">${records.map((item, index) => `<button class="sr16-record" data-authoritative-record="${index}" data-authoritative-route="${route}" data-authoritative-filter="${filter}" data-authoritative-text="${escapeHtml(normalize(`${item.title} ${item.status} ${item.evidence} ${item.detail}`))}"><span>!</span><div><b>${escapeHtml(item.title)}</b><small>${escapeHtml(item.territory)} · ${escapeHtml(item.evidence)}</small></div><em>${escapeHtml(item.status)}</em></button>`).join("") || '<div class="sr16-empty">No existen registros para este filtro y territorio.</div>'}</div>${route === "mapas" ? `<div class="sr16-module-actions"><a href="https://ee.kobotoolbox.org/x/aEcQSdRP" target="_blank" rel="noopener">Nuevo sitio ↗</a><a class="secondary" href="https://ee.kobotoolbox.org/x/0pXtskTZ" target="_blank" rel="noopener">Actualizar acción ↗</a></div>` : ""}`;
     showModule();
   }
 
@@ -134,11 +179,23 @@
   }
 
   function bindSitesDetail() {
+    document.addEventListener("input", event => {
+      const search = event.target.closest("[data-authoritative-search]");
+      if (!search) return;
+      const query = normalize(search.value);
+      document.querySelectorAll("#sr16Module [data-authoritative-text]").forEach(row => { row.hidden = !row.dataset.authoritativeText.includes(query); });
+    });
     document.addEventListener("click", event => {
       const record = selectedRecord();
       if (!record) return;
       const full = event.target.closest("[data-sr16-full]");
-      const supported = new Set(["riesgos", "acciones", "dashboard", "documentos", "reportes", "mapas", "herramientas"]);
+      const supported = new Set(["riesgos", "acciones", "dashboard", "documentos", "reportes", "mapas", "herramientas", "coe", "instituciones"]);
+      const search = event.target.closest("[data-authoritative-search]");
+      if (search) {
+        const query = normalize(search.value);
+        document.querySelectorAll("#sr16Module [data-authoritative-text]").forEach(row => { row.hidden = !row.dataset.authoritativeText.includes(query); });
+        return;
+      }
       const site = event.target.closest("[data-daule-site]");
       const list = event.target.closest("[data-daule-sites-list]");
       const back = event.target.closest("[data-daule-sites-back]");
@@ -181,24 +238,32 @@
   function render() {
     const record = selectedRecord();
     if (!record) return;
+    const official = record.official;
+    const sites = official?.sites ?? record.sites.length;
+    const actions = official?.actions ?? record.actions.length;
+    const activeCount = official?.pendingActions ?? record.active;
+    const solvedCount = official?.solvedGaps ?? record.solved;
+    const total = activeCount + solvedCount;
+    const activePct = total ? Math.round(activeCount * 100 / total) : 0;
+    const solvedPct = total ? 100 - activePct : 0;
 
-    setText("#sr16Sites", record.sites);
-    setText("#sr16SitesDetail", `${record.sites} sitios priorizados · ${record.siteMentions} menciones documentales depuradas`);
-    setText("#sr16Actions", record.actions);
-    setText("#sr16ActionsDetail", `${record.actions} acciones del plan · ${record.followups} F07 preliminares · ${record.homologatedFollowups} homologados`);
-    setText("#sr16Budget", record.budget);
-    setText("#sr16Gaps", "100% / 0%");
-    setText("#sr16GapsDetail", `${record.pendingActions} sin seguimiento · ${record.solvedGaps} solventadas`);
-    setText("#sr16GapTitle", `${record.pendingActions} brechas activas · ${record.solvedGaps} solventadas`);
-    setText("#sr16GapDetail", `${record.followups} F07 conservados como evidencia preliminar; aún no homologados a sitio y acción.`);
+    setText("#sr16Sites", sites);
+    setText("#sr16SitesDetail", official ? `${sites} sitios priorizados · ${official.siteMentions} menciones depuradas` : `${record.sites.length} sitios referenciados en F07`);
+    setText("#sr16Actions", actions);
+    setText("#sr16ActionsDetail", official ? `${actions} acciones del plan · ${official.followups} F07 preliminares` : `${record.actions.length} acciones reportadas · ${record.followups.length} seguimientos F07`);
+    setText("#sr16Budget", official?.budget || "Sin consolidar");
+    setText("#sr16Gaps", total ? `${activePct}% / ${solvedPct}%` : "Sin seguimiento");
+    setText("#sr16GapsDetail", `${activeCount} activas · ${solvedCount} solventadas`);
+    setText("#sr16GapTitle", `${activeCount} brechas activas · ${solvedCount} solventadas`);
+    setText("#sr16GapDetail", `${record.followups.length} seguimientos · ${record.evidence} con evidencia · ${record.entities.length} entidades en el alcance.`);
 
     const active = document.querySelector("#sr16GapActive");
     const solved = document.querySelector("#sr16GapSolved");
-    if (active) active.style.width = "100%";
-    if (solved) solved.style.width = "0%";
+    if (active) active.style.width = `${activePct}%`;
+    if (solved) solved.style.width = `${solvedPct}%`;
 
     const source = document.querySelector("#sr16Source");
-    if (source) source.innerHTML = `<b>Origen:</b> ${record.cut}. ${record.sites} sitios prioritarios · ${record.actions} acciones · presupuesto ${record.budget.toLowerCase()} · ${record.followups} F07 preliminares sin homologar.`;
+    if (source) source.innerHTML = `<b>Origen:</b> ${escapeHtml(record.cut)}. ${sites} sitios · ${actions} acciones · ${record.followups.length} seguimientos · ${record.evidence} evidencias. Los registros pendientes de homologación se conservan visibles y no se presentan como validados.`;
   }
 
   function afterAppStart() {
