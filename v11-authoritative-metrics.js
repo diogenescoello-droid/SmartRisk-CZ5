@@ -11,7 +11,12 @@
       pendingActions: 9,
       solvedGaps: 0,
       budget: "No cuantificado",
-      cut: "Informe técnico conciliado ENOS 2026–2027"
+      cut: "Informe técnico conciliado ENOS 2026–2027",
+      sitesList: Object.freeze([
+        Object.freeze({ name: "Bella Esperanza", type: "Sitio crítico", threat: "Inundación", priority: "Alta", status: "Priorizado", detail: "Unidad Educativa y entorno expuesto identificados en la conciliación técnica del Plan ENOS de Daule." }),
+        Object.freeze({ name: "Boca de las Piñas", type: "Sitio crítico", threat: "Inundación", priority: "Crítica", status: "Priorizado", detail: "Unidad Educativa y sector expuesto identificados en la conciliación técnica del Plan ENOS de Daule." }),
+        Object.freeze({ name: "Río Pula", type: "Tramo crítico", threat: "Inundación y socavamiento", priority: "Alta", status: "Priorizado", detail: "Tramo fluvial relacionado con acciones de limpieza, desazolve y reducción del riesgo." })
+      ])
     })
   });
 
@@ -33,6 +38,58 @@
     const element = document.querySelector(selector);
     if (element) element.textContent = value;
   };
+
+  const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, character => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  })[character]);
+
+  function showModule() {
+    document.querySelectorAll("[data-sr16-view]").forEach(view => view.classList.toggle("active", view.dataset.sr16View === "modulo"));
+    document.querySelectorAll(".sr16-bottom button").forEach(button => button.classList.remove("active"));
+  }
+
+  function renderSitesList(record) {
+    const module = document.querySelector("#sr16Module");
+    if (!module) return;
+    module.innerHTML = `<div class="sr16-module-head"><button data-daule-sites-back>←</button><div><h1>Sitios y riesgos</h1><p>Amenazas, exposición y puntos críticos · Sitios priorizados</p></div></div><section class="sr16-module-summary"><article><small>Registros filtrados</small><b>${record.sitesList.length}</b></article><article><small>Activos o pendientes</small><b>${record.sitesList.length}</b></article><article><small>Con respaldo documental</small><b>${record.sitesList.length}</b></article></section><div class="sr16-module-list">${record.sitesList.map((site, index) => `<button class="sr16-record" data-daule-site="${index}"><span>!</span><div><b>${escapeHtml(site.name)}</b><small>Daule · Guayas · ${escapeHtml(site.threat)}</small></div><em>${escapeHtml(site.priority)}</em></button>`).join("")}</div>`;
+    showModule();
+  }
+
+  function renderSiteDetail(record, index) {
+    const site = record.sitesList[index];
+    const module = document.querySelector("#sr16Module");
+    if (!site || !module) return;
+    const fields = [["Estado", site.status], ["Territorio", "Daule · Guayas"], ["Tipo", site.type], ["Amenaza", site.threat], ["Prioridad", site.priority], ["Fuente", record.cut], ["Detalle", site.detail]];
+    module.innerHTML = `<div class="sr16-module-head"><button data-daule-sites-list>←</button><div><h1>${escapeHtml(site.name)}</h1><p>Ficha individual con trazabilidad</p></div></div><div class="sr16-record-detail">${fields.map(([label, value]) => `<div><small>${label}</small><b>${escapeHtml(value)}</b></div>`).join("")}</div><div class="sr16-module-actions"><button class="secondary" data-daule-sites-list>Volver al listado</button></div>`;
+  }
+
+  function bindSitesDetail() {
+    document.addEventListener("click", event => {
+      const record = selectedRecord();
+      if (!record) return;
+      const open = event.target.closest('[data-sr16-full="riesgos"][data-sr16-filter="sitios"]');
+      const site = event.target.closest("[data-daule-site]");
+      const list = event.target.closest("[data-daule-sites-list]");
+      const back = event.target.closest("[data-daule-sites-back]");
+      if (open) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        renderSitesList(record);
+      } else if (site) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        renderSiteDetail(record, Number(site.dataset.dauleSite));
+      } else if (list) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        renderSitesList(record);
+      } else if (back) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        document.querySelector('[data-sr16-tab="inicio"]')?.click();
+      }
+    }, true);
+  }
 
   function render() {
     const record = selectedRecord();
@@ -65,6 +122,7 @@
     document.querySelector("#sr16Level")?.addEventListener("change", () => queueMicrotask(render));
     document.querySelector("#sr16Province")?.addEventListener("change", () => queueMicrotask(render));
     document.querySelector("#sr16Canton")?.addEventListener("change", () => queueMicrotask(render));
+    bindSitesDetail();
   }
 
   window.SmartRiskAuthoritativeMetrics = { afterAppStart, render, records: OFFICIAL };
