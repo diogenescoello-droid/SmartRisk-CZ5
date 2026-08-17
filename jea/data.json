@@ -1,5 +1,5 @@
 {
-  "cut":"2026-08-17T15:31:00-05:00",
+  "cut":"2026-08-17T15:45:00-05:00",
   "cohort":1386,
   "metrics":{
     "interacted":280,
@@ -9,6 +9,29 @@
     "bankOriginalRejected":3,
     "bankUpdated":2,
     "bankPending":1
+  },
+  "planFamiliaFisico":{
+    "source":"CZ5 GUAYAS-Enlace de registro cumplimiento de la actividad Plan Familiar en Físico. (respuestas).xlsx",
+    "totalResponses":2027,
+    "assignedResponses":965,
+    "unassignedResponses":1062,
+    "matchMethods":{
+      "cedula":851,
+      "correo":107,
+      "telefono":6,
+      "nombre":1,
+      "sinCoincidencia":1062
+    },
+    "coordinators":[
+      {"name":"Daniel Coello","responses":227,"assignedRoster":1386},
+      {"name":"Bryan","responses":165,"assignedRoster":906},
+      {"name":"Benjamín Ayala","responses":101,"assignedRoster":866},
+      {"name":"David Vinces","responses":164,"assignedRoster":866},
+      {"name":"José Smith","responses":185,"assignedRoster":865},
+      {"name":"Julio Auquilla","responses":123,"assignedRoster":864},
+      {"name":"SIN ASIGNAR","responses":1062,"assignedRoster":null}
+    ],
+    "note":"La separación prioriza cédula. Cuando no coincide, se usa correo, teléfono o nombre solo si la coincidencia con el responsable es única. SIN ASIGNAR no se fuerza a ningún coordinador."
   },
   "actions":[
     {"priority":1,"label":"Novedad bancaria individual pendiente","detail":"Resolver y cerrar con evidencia administrativa.","count":1},
@@ -20,6 +43,7 @@
     {"name":"Base oficial / Drive","status":"Operativa","detail":"Fuente maestra de identidad y asignación; no sustituir con matrices antiguas."},
     {"name":"Gmail institucional","status":"Operativa","detail":"Confirma comunicaciones, certificados, respuestas y novedades individuales."},
     {"name":"Formularios / Kobo","status":"Operativa","detail":"Mide interacción, avance y auto-reporte; ausencia de enlace no equivale a incumplimiento."},
+    {"name":"Plan Familiar físico","status":"Actualizada","detail":"2.027 respuestas cruzadas contra la matriz de funcionarios responsables; 965 asignadas y 1.062 en revisión de asignación."},
     {"name":"Conversaciones de gestión","status":"Asistida","detail":"Ajusta criterios y reglas de interpretación; se incorpora mediante revisión programada."}
   ],
   "method":[
