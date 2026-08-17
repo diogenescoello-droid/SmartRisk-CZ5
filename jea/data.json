@@ -1,0 +1,31 @@
+{
+  "cut":"2026-08-17T15:31:00-05:00",
+  "cohort":1386,
+  "metrics":{
+    "interacted":280,
+    "progress":275,
+    "families5":267,
+    "noInteraction":1106,
+    "bankOriginalRejected":3,
+    "bankUpdated":2,
+    "bankPending":1
+  },
+  "actions":[
+    {"priority":1,"label":"Novedad bancaria individual pendiente","detail":"Resolver y cerrar con evidencia administrativa.","count":1},
+    {"priority":2,"label":"Interactuaron sin producto identificado","detail":"Contacto individual breve para identificar fricción y siguiente acción.","count":5},
+    {"priority":3,"label":"Avance parcial de actividad","detail":"Completar pendientes sin reiniciar el proceso ya realizado.","count":7},
+    {"priority":3,"label":"Sin interacción Kobo identificable","detail":"Segmentar por grupo, territorio y canal antes de contactar masivamente.","count":1106}
+  ],
+  "sources":[
+    {"name":"Base oficial / Drive","status":"Operativa","detail":"Fuente maestra de identidad y asignación; no sustituir con matrices antiguas."},
+    {"name":"Gmail institucional","status":"Operativa","detail":"Confirma comunicaciones, certificados, respuestas y novedades individuales."},
+    {"name":"Formularios / Kobo","status":"Operativa","detail":"Mide interacción, avance y auto-reporte; ausencia de enlace no equivale a incumplimiento."},
+    {"name":"Conversaciones de gestión","status":"Asistida","detail":"Ajusta criterios y reglas de interpretación; se incorpora mediante revisión programada."}
+  ],
+  "method":[
+    {"title":"1. Estado","text":"Ubica a cada participante: sin interacción, interactuó, avance parcial, producto reportado o caso administrativo."},
+    {"title":"2. Fricción","text":"Identifica qué impide avanzar: acceso, comprensión, documentación, datos bancarios, evidencia o falta de contacto."},
+    {"title":"3. Siguiente acción","text":"Asigna una sola acción concreta por caso o segmento; evita mensajes generales cuando la causa ya es conocida."},
+    {"title":"4. Evidencia","text":"Cierra con una señal verificable adecuada al caso. No confundas falta de foto o link con ausencia de trabajo."}
+  ]
+}
