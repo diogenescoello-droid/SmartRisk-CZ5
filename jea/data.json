@@ -1,55 +1,65 @@
 {
-  "cut":"2026-08-17T15:45:00-05:00",
-  "cohort":1386,
-  "metrics":{
-    "interacted":280,
-    "progress":275,
-    "families5":267,
-    "noInteraction":1106,
-    "bankOriginalRejected":3,
-    "bankUpdated":2,
-    "bankPending":1
+  "cut": "2026-08-17T17:18:00-05:00",
+  "cohort": 1386,
+  "metrics": {
+    "interacted": 280,
+    "progress": 275,
+    "families5": 267,
+    "noInteraction": 1106,
+    "bankOriginalRejected": 3,
+    "bankUpdated": 2,
+    "bankPending": 1
   },
-  "planFamiliaFisico":{
-    "source":"CZ5 GUAYAS-Enlace de registro cumplimiento de la actividad Plan Familiar en Físico. (respuestas).xlsx",
-    "totalResponses":2027,
-    "assignedResponses":965,
-    "unassignedResponses":1062,
-    "matchMethods":{
-      "cedula":851,
-      "correo":107,
-      "telefono":6,
-      "nombre":1,
-      "sinCoincidencia":1062
+  "planFamiliaFisico": {
+    "source": "CZ5 GUAYAS-Enlace de registro cumplimiento de la actividad Plan Familiar en Físico. (respuestas).xlsx",
+    "totalResponses": 2027,
+    "assignedResponses": 965,
+    "unassignedResponses": 1062,
+    "matchMethods": {
+      "cedula": 851,
+      "correo": 107,
+      "telefono": 6,
+      "nombre": 1,
+      "sinCoincidencia": 1062
     },
-    "coordinators":[
-      {"name":"Daniel Coello","responses":227,"assignedRoster":1386},
-      {"name":"Bryan","responses":165,"assignedRoster":906},
-      {"name":"Benjamín Ayala","responses":101,"assignedRoster":866},
-      {"name":"David Vinces","responses":164,"assignedRoster":866},
-      {"name":"José Smith","responses":185,"assignedRoster":865},
-      {"name":"Julio Auquilla","responses":123,"assignedRoster":864},
-      {"name":"SIN ASIGNAR","responses":1062,"assignedRoster":null}
+    "coordinators": [
+      {"name": "Daniel Coello", "responses": 227, "assignedRoster": 1386},
+      {"name": "Bryan", "responses": 165, "assignedRoster": 906},
+      {"name": "Benjamín Ayala", "responses": 101, "assignedRoster": 866},
+      {"name": "David Vinces", "responses": 164, "assignedRoster": 866},
+      {"name": "José Smith", "responses": 185, "assignedRoster": 865},
+      {"name": "Julio Auquilla", "responses": 123, "assignedRoster": 864},
+      {"name": "SIN ASIGNAR", "responses": 1062, "assignedRoster": null}
     ],
-    "note":"La separación prioriza cédula. Cuando no coincide, se usa correo, teléfono o nombre solo si la coincidencia con el responsable es única. SIN ASIGNAR no se fuerza a ningún coordinador."
+    "followUp": {
+      "reviewCut": "2026-08-17T17:18:00-05:00",
+      "correctionEmailsSent": 118,
+      "clarifiedOnlineModality": 2,
+      "confirmedFivePhotosButLinkStillPending": 1,
+      "correctedEvidenceButFormLocked": 1,
+      "physicalEvidenceCorrectionPathOpen": 116,
+      "note": "Las respuestas por correo posteriores al corte anterior confirman que al menos dos destinatarios realizaron el Plan Familiar en modalidad en línea y no deben ser tratados como incumplimiento físico. Un caso confirma disponer de cinco fotos pero aún requiere enlace; otro reporta evidencia corregida pero el formulario no permite reemplazar el enlace. No se publican datos nominales."
+    },
+    "note": "La separación prioriza cédula. Cuando no coincide, se usa correo, teléfono o nombre solo si la coincidencia con el responsable es única. SIN ASIGNAR no se fuerza a ningún coordinador."
   },
-  "actions":[
-    {"priority":1,"label":"Novedad bancaria individual pendiente","detail":"Resolver y cerrar con evidencia administrativa.","count":1},
-    {"priority":2,"label":"Interactuaron sin producto identificado","detail":"Contacto individual breve para identificar fricción y siguiente acción.","count":5},
-    {"priority":3,"label":"Avance parcial de actividad","detail":"Completar pendientes sin reiniciar el proceso ya realizado.","count":7},
-    {"priority":3,"label":"Sin interacción Kobo identificable","detail":"Segmentar por grupo, territorio y canal antes de contactar masivamente.","count":1106}
+  "actions": [
+    {"priority": 1, "label": "Novedad bancaria individual pendiente", "detail": "Resolver y cerrar con evidencia administrativa.", "count": 1},
+    {"priority": 2, "label": "Regularización de respaldo Plan Familiar físico", "detail": "Dar seguimiento solo a casos que realmente usaron modalidad física; excluir los confirmados en línea y resolver enlaces o acceso al formulario sin pedir repetir la actividad.", "count": 116},
+    {"priority": 2, "label": "Interactuaron sin producto identificado", "detail": "Contacto individual breve para identificar fricción y siguiente acción.", "count": 5},
+    {"priority": 3, "label": "Avance parcial de actividad", "detail": "Completar pendientes sin reiniciar el proceso ya realizado.", "count": 7},
+    {"priority": 3, "label": "Sin interacción Kobo identificable", "detail": "Segmentar por grupo, territorio y canal antes de contactar masivamente.", "count": 1106}
   ],
-  "sources":[
-    {"name":"Base oficial / Drive","status":"Operativa","detail":"Fuente maestra de identidad y asignación; no sustituir con matrices antiguas."},
-    {"name":"Gmail institucional","status":"Operativa","detail":"Confirma comunicaciones, certificados, respuestas y novedades individuales."},
-    {"name":"Formularios / Kobo","status":"Operativa","detail":"Mide interacción, avance y auto-reporte; ausencia de enlace no equivale a incumplimiento."},
-    {"name":"Plan Familiar físico","status":"Actualizada","detail":"2.027 respuestas cruzadas contra la matriz de funcionarios responsables; 965 asignadas y 1.062 en revisión de asignación."},
-    {"name":"Conversaciones de gestión","status":"Asistida","detail":"Ajusta criterios y reglas de interpretación; se incorpora mediante revisión programada."}
+  "sources": [
+    {"name": "Base oficial / Drive", "status": "Operativa", "detail": "Fuente maestra de identidad y asignación; no sustituir con matrices antiguas."},
+    {"name": "Gmail institucional", "status": "Actualizada", "detail": "Revisión hasta 17:18 del 17-08-2026: nuevas respuestas al seguimiento de Plan Familiar aclaran modalidad en línea, disponibilidad de evidencias y bloqueo para corregir un enlace."},
+    {"name": "Formularios / Kobo", "status": "Sin cambio material", "detail": "Sin nuevas respuestas desde 16-08-2026 14:04:30. Sincronización 17-08-2026 16:58:29 mantiene 3.697 respuestas, 2.183 cédulas únicas, 757 coincidencias en base, 110 pendientes y 738 validados en el maestro secundario."},
+    {"name": "Plan Familiar físico", "status": "Actualizada", "detail": "2.027 respuestas cruzadas contra la matriz de funcionarios responsables; 965 asignadas y 1.062 en revisión de asignación. El seguimiento por correo se registra aparte sin alterar esos conteos de origen."},
+    {"name": "Conversaciones de gestión", "status": "Asistida", "detail": "Ajusta criterios y reglas de interpretación; se incorpora mediante revisión programada."}
   ],
-  "method":[
-    {"title":"1. Estado","text":"Ubica a cada participante: sin interacción, interactuó, avance parcial, producto reportado o caso administrativo."},
-    {"title":"2. Fricción","text":"Identifica qué impide avanzar: acceso, comprensión, documentación, datos bancarios, evidencia o falta de contacto."},
-    {"title":"3. Siguiente acción","text":"Asigna una sola acción concreta por caso o segmento; evita mensajes generales cuando la causa ya es conocida."},
-    {"title":"4. Evidencia","text":"Cierra con una señal verificable adecuada al caso. No confundas falta de foto o link con ausencia de trabajo."}
+  "method": [
+    {"title": "1. Estado", "text": "Ubica a cada participante: sin interacción, interactuó, avance parcial, producto reportado o caso administrativo."},
+    {"title": "2. Fricción", "text": "Identifica qué impide avanzar: acceso, comprensión, documentación, datos bancarios, evidencia o falta de contacto."},
+    {"title": "3. Siguiente acción", "text": "Asigna una sola acción concreta por caso o segmento; evita mensajes generales cuando la causa ya es conocida."},
+    {"title": "4. Evidencia", "text": "Cierra con una señal verificable adecuada al caso. No confundas falta de foto o link con ausencia de trabajo."}
   ]
 }
