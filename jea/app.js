@@ -5,6 +5,7 @@
   const app = $("#app");
   const error = $("#loginError");
   const tipbox = $("#tooltip");
+  let currentData = null;
 
   function pct(n,d){ return d ? Math.round((n/d)*1000)/10 : 0; }
   function fmt(n){ return new Intl.NumberFormat("es-EC").format(n); }
@@ -17,7 +18,46 @@
     return res.json();
   }
 
+  function renderCoordinator(data, selectedName="TODOS"){
+    const pf=data.planFamiliaFisico;
+    if(!pf) return;
+    const select=$("#coordinatorSelect");
+    if(!select.dataset.ready){
+      select.innerHTML=[`<option value="TODOS">Todos los coordinadores</option>`]
+        .concat(pf.coordinators.map(c=>`<option value="${c.name}">${c.name}</option>`)).join("");
+      select.dataset.ready="1";
+    }
+    if(select.value!==selectedName) select.value=selectedName;
+
+    const selected = selectedName === "TODOS" ? null : pf.coordinators.find(c=>c.name===selectedName);
+    const responses = selected ? selected.responses : pf.totalResponses;
+    const assigned = selected ? selected.assignedRoster : null;
+    const share = pct(responses,pf.totalResponses);
+    const assignmentLabel = selectedName === "SIN ASIGNAR" ? "Requiere depuración" : selected ? "Asignación identificada" : "Vista consolidada";
+
+    $("#coordinatorSource").textContent = `${fmt(pf.totalResponses)} respuestas · ${fmt(pf.assignedResponses)} asignadas`;
+    $("#coordinatorKpis").innerHTML = [
+      [fmt(responses), selected ? "Respuestas del coordinador" : "Respuestas totales", `${share}% del archivo recibido`],
+      [selected && assigned ? fmt(assigned) : "—", selected && assigned ? "Participantes asignados en matriz" : "Base asignada", selected && assigned ? "Dato de referencia; no se interpreta aquí como cumplimiento" : "Selecciona un coordinador para ver su base"],
+      [selectedName === "SIN ASIGNAR" ? fmt(pf.unassignedResponses) : fmt(pf.assignedResponses), selectedName === "SIN ASIGNAR" ? "Sin asignación inequívoca" : "Cruces asignados", selectedName === "SIN ASIGNAR" ? "No forzar responsable hasta depurar" : "Cédula o coincidencia única de respaldo"],
+      [assignmentLabel, "Estado de lectura", selectedName === "TODOS" ? "Compara sin mezclar datos nominales" : "Filtro activo en este módulo"]
+    ].map(([v,l,s])=>`<article class="mini-kpi"><strong>${v}</strong><span>${l}</span><small>${s}</small></article>`).join("");
+
+    $("#coordinatorList").innerHTML=pf.coordinators.map(c=>{
+      const active = selectedName===c.name ? " active" : "";
+      const roster = c.assignedRoster ? `<small>Base asignada: ${fmt(c.assignedRoster)}</small>` : `<small>Pendiente de asignación</small>`;
+      return `<button class="coord-row${active}" data-coordinator="${c.name}"><span><b>${c.name}</b>${roster}</span><strong>${fmt(c.responses)}</strong><em>respuestas</em></button>`;
+    }).join("");
+
+    const mm=pf.matchMethods;
+    $("#matchMethods").innerHTML=[
+      ["Cédula",mm.cedula], ["Correo",mm.correo], ["Teléfono",mm.telefono], ["Nombre",mm.nombre], ["Sin coincidencia",mm.sinCoincidencia]
+    ].map(([l,v])=>`<div class="match-row"><span>${l}</span><b>${fmt(v)}</b></div>`).join("");
+    $("#coordNote").textContent=pf.note;
+  }
+
   function render(data){
+    currentData=data;
     const m=data.metrics, total=data.cohort;
     const cut = new Date(data.cut);
     $("#cutLabel").textContent = `Corte operativo: ${cut.toLocaleString("es-EC", {dateStyle:"long", timeStyle:"short"})}`;
@@ -29,6 +69,7 @@
       [fmt(m.noInteraction),"Sin interacción Kobo",`${pct(m.noInteraction,total)}% · requiere segmentación`]
     ].map(([v,l,s])=>`<article class="kpi"><strong>${v}</strong><span>${l}</span><small>${s}</small></article>`).join("");
 
+    renderCoordinator(data,"TODOS");
     $("#actions").innerHTML=data.actions.map(a=>`<div class="action"><span class="priority p${Math.min(a.priority,3)}">P${a.priority}</span><div><b>${a.label}</b><small>${a.detail}</small></div><span class="count">${fmt(a.count)}</span></div>`).join("");
     $("#sources").innerHTML=data.sources.map(s=>`<div class="source"><b>${s.name}</b><span class="badge soft"><span class="dot"></span>${s.status}</span><small>${s.detail}</small></div>`).join("");
     const funnel=[
@@ -53,6 +94,11 @@
     }catch(err){ error.textContent="No fue posible ingresar. Verifica correo y contraseña."; }
   });
   $("#logout").addEventListener("click",()=>auth.signOut());
+  $("#coordinatorSelect").addEventListener("change",e=>currentData&&renderCoordinator(currentData,e.target.value));
+  $("#coordinatorList").addEventListener("click",e=>{
+    const row=e.target.closest("[data-coordinator]");
+    if(row&&currentData) renderCoordinator(currentData,row.dataset.coordinator);
+  });
 
   auth.onAuthStateChanged(async user=>{
     if(user){ showApp(); await boot(); }

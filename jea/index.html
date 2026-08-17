@@ -43,6 +43,31 @@
 
     <section id="kpis" class="kpi-grid"></section>
 
+    <section class="card coordinator-card">
+      <div class="card-head">
+        <div><p class="eyebrow">Plan Familiar en Físico</p><h2>Respuestas separadas por coordinador</h2></div>
+        <button class="tip" data-tip="La asignación se hace primero por cédula. Si no coincide, se usa correo, teléfono o nombre solo cuando existe una coincidencia única con el responsable. Los casos dudosos permanecen en Sin asignar.">?</button>
+      </div>
+      <div class="coordinator-toolbar">
+        <label>Ver coordinador
+          <select id="coordinatorSelect"></select>
+        </label>
+        <span id="coordinatorSource" class="badge soft"></span>
+      </div>
+      <div id="coordinatorKpis" class="mini-kpi-grid"></div>
+      <div id="coordinatorList" class="coordinator-list"></div>
+      <div class="grid two compact-grid">
+        <div>
+          <p class="eyebrow">Calidad del cruce</p>
+          <div id="matchMethods" class="match-methods"></div>
+        </div>
+        <div>
+          <p class="eyebrow">Criterio</p>
+          <p id="coordNote" class="muted coord-note"></p>
+        </div>
+      </div>
+    </section>
+
     <section class="grid two">
       <article class="card">
         <div class="card-head"><div><p class="eyebrow">Prioridades</p><h2>Cola de acción</h2></div><button class="tip" data-tip="Empieza por los casos con una acción individual concreta. Luego gestiona avances parciales y, al final, segmentos masivos sin interacción.">?</button></div>
