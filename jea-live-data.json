@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-17T15:04:00-05:00",
+  "generatedAt": "2026-08-17T15:11:32-05:00",
   "cohort": {
     "name": "Jóvenes en Acción · Daniel Coello",
     "officialTotal": 1386,
@@ -15,23 +15,46 @@
     "confirmedPending": 1,
     "pendingNames": ["Tamara Rebeca Rosado Rosado"]
   },
+  "operationalSubset": {
+    "source": "JEA_Zona8_Kobo_Maestro",
+    "scopeNote": "Fuente operativa secundaria; no sustituye el total oficial de 1.386 hasta validar equivalencia de alcance.",
+    "assigned": 867,
+    "respondedWithinBase": 757,
+    "pending": 110,
+    "validated": 738,
+    "requiresContact": 18,
+    "progressPct": 87.3,
+    "lastKoboResponse": "2026-08-16T14:04:30-05:00",
+    "lastSync": "2026-08-17T14:58:20-05:00"
+  },
+  "physicalPlan": {
+    "status": "new-source",
+    "sourceFile": "CZ5 GUAYAS-Enlace de registro cumplimiento de la actividad Plan Familiar en Físico. (respuestas).xlsx",
+    "receivedAt": "2026-08-17T14:34:48-05:00",
+    "completeRowsVisibleAtLeast": 880,
+    "lastCompleteTimestampVisible": "2026-08-11T21:58:11.527-05:00",
+    "scopeNote": "Base recibida para verificar cumplimiento del Plan Familiar físico. El conteo es mínimo porque la vista del adjunto se truncó durante la lectura; requiere cruce por cédula con la base oficial antes de convertirlo en porcentaje de la cohorte."
+  },
   "sources": [
     {"id":"official-base","label":"Base oficial JEA","status":"ok","detail":"1.386 participantes oficiales"},
-    {"id":"kobo","label":"Formularios / Kobo","status":"ok","detail":"Cruce operativo disponible"},
+    {"id":"kobo","label":"Formularios / Kobo","status":"ok","detail":"Cruce operativo disponible; fuente secundaria sincronizada 17-08-2026 14:58"},
+    {"id":"physical-plan","label":"Plan Familiar físico","status":"attention","detail":"Nueva base recibida; al menos 880 registros completos visibles, pendiente cruce por cédula"},
     {"id":"gmail","label":"Gmail institucional","status":"ok","detail":"Novedades y confirmaciones revisadas"},
     {"id":"drive","label":"Google Drive","status":"ok","detail":"Base y archivos operativos conectados"},
-    {"id":"banking","label":"Actualización bancaria","status":"attention","detail":"1 pendiente confirmado en el último cruce"}
+    {"id":"banking","label":"Actualización bancaria","status":"attention","detail":"1 pendiente confirmado en el último cruce; formulario con disponibilidad inconsistente reportada"}
   ],
   "actionQueue": [
     {"priority":1,"title":"Pendiente bancario confirmado","count":1,"action":"Contactar, validar actualización y cerrar novedad"},
-    {"priority":2,"title":"Interacción sin producto reportado","count":5,"action":"Contacto individual y acompañamiento corto"},
-    {"priority":3,"title":"Avance parcial / otra vía","count":8,"action":"Identificar bloqueo y completar producto"},
-    {"priority":4,"title":"Sin interacción Kobo identificable","count":1106,"action":"Segmentar por canal, grupo y nivel de contacto antes de escalar"}
+    {"priority":2,"title":"Cruzar Plan Familiar físico","count":880,"countQualifier":"mínimo visible","action":"Cruzar por cédula contra la base oficial antes de reclasificar cumplimiento"},
+    {"priority":3,"title":"Interacción sin producto reportado","count":5,"action":"Contacto individual y acompañamiento corto"},
+    {"priority":4,"title":"Avance parcial / otra vía","count":8,"action":"Identificar bloqueo y completar producto"},
+    {"priority":5,"title":"Sin interacción Kobo identificable","count":1106,"action":"Segmentar por canal, grupo y nivel de contacto antes de escalar"}
   ],
   "guides": [
     {"id":"interaction","title":"¿Qué significa interacción?","text":"La persona dejó al menos un registro identificable. No equivale automáticamente a cumplimiento completo."},
     {"id":"evidence","title":"¿Qué significa evidencia?","text":"Un enlace verificable ayuda a auditar, pero su ausencia no significa que la actividad no se realizó; varias entregas fueron virtuales."},
-    {"id":"priority","title":"¿Cómo leer la prioridad?","text":"Prioridad 1 requiere acción individual inmediata. Prioridades 3 y 4 deben trabajarse por segmentación para no saturar la gestión."},
+    {"id":"priority","title":"¿Cómo leer la prioridad?","text":"Prioridad 1 requiere acción individual inmediata. Las prioridades masivas deben trabajarse por cruce y segmentación antes de contactar persona por persona."},
+    {"id":"physical-plan-guide","title":"¿Cómo leer Plan Familiar físico?","text":"La nueva base es una fuente de verificación adicional. No debe sumarse directamente al cumplimiento Kobo: primero se cruza por cédula para evitar duplicados y falsos pendientes."},
     {"id":"cohort","title":"Enfoque de cohorte","text":"Gestionar por estados de avance, fricciones y siguiente mejor acción, no únicamente por asistencia o por una lista de pendientes."}
   ]
 }
