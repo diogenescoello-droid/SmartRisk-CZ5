@@ -1,0 +1,37 @@
+{
+  "generatedAt": "2026-08-17T15:04:00-05:00",
+  "cohort": {
+    "name": "Jóvenes en Acción · Daniel Coello",
+    "officialTotal": 1386,
+    "interacted": 280,
+    "reportedFiveFamilies": 267,
+    "concreteProgress": 275,
+    "withEvidenceUrl": 69,
+    "withoutIdentifiableKoboInteraction": 1106
+  },
+  "banking": {
+    "originallyRejectedAssigned": 3,
+    "confirmedUpdated": 2,
+    "confirmedPending": 1,
+    "pendingNames": ["Tamara Rebeca Rosado Rosado"]
+  },
+  "sources": [
+    {"id":"official-base","label":"Base oficial JEA","status":"ok","detail":"1.386 participantes oficiales"},
+    {"id":"kobo","label":"Formularios / Kobo","status":"ok","detail":"Cruce operativo disponible"},
+    {"id":"gmail","label":"Gmail institucional","status":"ok","detail":"Novedades y confirmaciones revisadas"},
+    {"id":"drive","label":"Google Drive","status":"ok","detail":"Base y archivos operativos conectados"},
+    {"id":"banking","label":"Actualización bancaria","status":"attention","detail":"1 pendiente confirmado en el último cruce"}
+  ],
+  "actionQueue": [
+    {"priority":1,"title":"Pendiente bancario confirmado","count":1,"action":"Contactar, validar actualización y cerrar novedad"},
+    {"priority":2,"title":"Interacción sin producto reportado","count":5,"action":"Contacto individual y acompañamiento corto"},
+    {"priority":3,"title":"Avance parcial / otra vía","count":8,"action":"Identificar bloqueo y completar producto"},
+    {"priority":4,"title":"Sin interacción Kobo identificable","count":1106,"action":"Segmentar por canal, grupo y nivel de contacto antes de escalar"}
+  ],
+  "guides": [
+    {"id":"interaction","title":"¿Qué significa interacción?","text":"La persona dejó al menos un registro identificable. No equivale automáticamente a cumplimiento completo."},
+    {"id":"evidence","title":"¿Qué significa evidencia?","text":"Un enlace verificable ayuda a auditar, pero su ausencia no significa que la actividad no se realizó; varias entregas fueron virtuales."},
+    {"id":"priority","title":"¿Cómo leer la prioridad?","text":"Prioridad 1 requiere acción individual inmediata. Prioridades 3 y 4 deben trabajarse por segmentación para no saturar la gestión."},
+    {"id":"cohort","title":"Enfoque de cohorte","text":"Gestionar por estados de avance, fricciones y siguiente mejor acción, no únicamente por asistencia o por una lista de pendientes."}
+  ]
+}
