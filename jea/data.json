@@ -1,5 +1,5 @@
 {
-  "cut": "2026-08-18T11:15:27-05:00",
+  "cut": "2026-08-18T12:02:58-05:00",
   "cohort": 1386,
   "metrics": {
     "interacted": 280,
@@ -32,29 +32,29 @@
       {"name": "SIN ASIGNAR", "responses": 1062, "assignedRoster": null}
     ],
     "followUp": {
-      "reviewCut": "2026-08-18T11:15:27-05:00",
+      "reviewCut": "2026-08-18T12:02:58-05:00",
       "correctionEmailsSent": 118,
       "clarifiedOnlineModality": 6,
       "confirmedFivePhotosButLinkStillPending": 1,
       "correctedEvidenceButFormLocked": 9,
       "physicalEvidenceCorrectionPathOpen": 110,
-      "note": "Desde el corte de 09:04 se confirmaron por correo dos casos adicionales que realizaron el Plan Familiar en modalidad en línea. Se excluyen correctamente de la ruta de regularización física: los confirmados en línea suben de 4 a 6 y la ruta física abierta baja de 112 a 110. Los 9 casos con evidencia corregida pero formulario bloqueado se mantienen. No se publican datos nominales ni se fuerza asignación de coordinador cuando no existe coincidencia inequívoca."
+      "note": "Después del corte 11:15 ingresó un nuevo correo con evidencia de Plan Familiar físico. El participante fue conciliado por cédula contra la base oficial y corresponde inequívocamente a Daniel Coello. El correo incluye cinco evidencias familiares y manifiesta que ya compartió su carpeta Drive; el caso no se descuenta todavía de la ruta abierta hasta confirmar que el enlace quede trazado en el formulario oficial. Se mantienen 6 casos confirmados en línea, 9 casos con evidencia corregida pero formulario bloqueado y 110 casos en la ruta física abierta. No se publican datos nominales ni se fuerza asignación de coordinador cuando no existe coincidencia inequívoca."
     },
     "note": "La separación prioriza cédula. Cuando no coincide, se usa correo, teléfono o nombre solo si la coincidencia con el responsable es única. SIN ASIGNAR no se fuerza a ningún coordinador."
   },
   "actions": [
-    {"priority": 1, "label": "Informe mensual Jóvenes en Acción", "detail": "Preparar y remitir el informe mensual con el formato de informe y el control de asistencia/cumplimiento recibidos por correo institucional. La comunicación indica entrega hasta el 19-08-2026.", "count": 1},
+    {"priority": 1, "label": "Informe mensual Jóvenes en Acción", "detail": "Preparar y remitir el informe mensual con el formato de informe y el control de asistencia/cumplimiento recibidos por correo institucional. La comunicación indica entrega hasta el 19-08-2026 y a las 11:40 del 18-08-2026 la Coordinación Zonal reiteró cumplir estrictamente con los tiempos.", "count": 1},
     {"priority": 1, "label": "Verificación administrativa de pago", "detail": "La actualización bancaria ya consta como realizada; verificar administrativamente el pago no reflejado sin solicitar una nueva actualización de cuenta. Además, se recibió un archivo institucional de rechazos de pago con 975 registros nacionales y 304 de Guayas; no se incorporan esos valores a la cohorte de Daniel hasta completar el cruce por cédula contra la base oficial.", "count": 1},
-    {"priority": 2, "label": "Regularización de respaldo Plan Familiar físico", "detail": "Dar seguimiento solo a casos que realmente usaron modalidad física; ya son 6 los casos confirmados en línea y quedan 110 casos en la ruta física abierta. Se mantienen 9 casos con evidencia corregida cuyo formulario no permite reemplazar el enlace y 1 caso con cinco planes verificables cuyo respaldo aún debe quedar trazado mediante el enlace/carpeta correspondiente.", "count": 110},
+    {"priority": 2, "label": "Regularización de respaldo Plan Familiar físico", "detail": "Dar seguimiento solo a casos que realmente usaron modalidad física; se mantienen 6 casos confirmados en línea y 110 casos en la ruta física abierta. Persisten 9 casos con evidencia corregida cuyo formulario no permite reemplazar el enlace. Después del corte 11:15 se recibió un nuevo respaldo con cinco evidencias familiares, asignado a Daniel Coello por cédula; debe confirmarse la trazabilidad del enlace en el formulario oficial antes de cerrar el caso.", "count": 110},
     {"priority": 2, "label": "Interactuaron sin producto identificado", "detail": "Contacto individual breve para identificar fricción y siguiente acción.", "count": 5},
     {"priority": 3, "label": "Avance parcial de actividad", "detail": "Completar pendientes sin reiniciar el proceso ya realizado.", "count": 7},
     {"priority": 3, "label": "Sin interacción Kobo identificable", "detail": "Segmentar por grupo, territorio y canal antes de contactar masivamente.", "count": 1106}
   ],
   "sources": [
-    {"name": "Base oficial / Drive", "status": "Operativa", "detail": "Fuente maestra de identidad y asignación; no se detectó una modificación posterior que altere el universo oficial. No sustituir con matrices antiguas."},
-    {"name": "Gmail institucional", "status": "Actualizada", "detail": "Revisión hasta 11:15 del 18-08-2026: dos participantes adicionales confirmaron modalidad en línea del Plan Familiar, por lo que salen de la ruta de regularización física. También se recibió el paquete para el informe mensual JEA y un archivo institucional de rechazos de pago; este último requiere cruce por cédula antes de afectar métricas de cohorte."},
-    {"name": "Formularios / Kobo", "status": "Actualizada sin cambio en coincidencias oficiales", "detail": "Última sincronización registrada 18-08-2026 10:58:06. Se mantienen 3.698 respuestas, 2.184 cédulas únicas, 757 coincidencias en la base oficial, 110 pendientes y 738 validados. La última respuesta Kobo reportada por la hoja continúa en 2026-08-18 4:17:46."},
-    {"name": "Plan Familiar físico", "status": "Seguimiento actualizado", "detail": "Se mantienen 2.027 respuestas cruzadas, 965 asignadas y 1.062 en revisión de asignación. La ruta física abierta baja a 110 al excluir dos casos adicionales confirmados en línea; permanecen 9 casos con evidencia corregida pero formulario bloqueado."},
+    {"name": "Base oficial / Drive", "status": "Operativa", "detail": "Fuente maestra de identidad y asignación; el nuevo caso de evidencia física fue conciliado por cédula y corresponde a Daniel Coello. No sustituir la base oficial con matrices antiguas."},
+    {"name": "Gmail institucional", "status": "Actualizada", "detail": "Revisión hasta 12:02 del 18-08-2026: ingresó un nuevo correo de evidencia de Plan Familiar físico con cinco evidencias familiares; el participante fue asignado a Daniel Coello por coincidencia exacta de cédula. A las 11:40 la Coordinación Zonal reiteró el cumplimiento del plazo del informe mensual JEA. No se detectaron nuevas novedades bancarias materiales posteriores al corte anterior."},
+    {"name": "Formularios / Kobo", "status": "Actualizada sin cambio material verificado", "detail": "La hoja JEA_Zona8_Kobo_Maestro presenta actualización técnica hasta aproximadamente las 11:58 del 18-08-2026. No se identificó evidencia suficiente de cambio en los resultados consolidados posteriores al corte 11:15, por lo que se preservan 3.698 respuestas, 2.184 cédulas únicas, 757 coincidencias en la base oficial, 110 pendientes y 738 validados hasta nueva confirmación."},
+    {"name": "Plan Familiar físico", "status": "Seguimiento actualizado", "detail": "Se mantienen 2.027 respuestas cruzadas, 965 asignadas y 1.062 en revisión de asignación. La ruta física abierta permanece en 110. Se añadió trazabilidad de un nuevo respaldo recibido por correo, conciliado por cédula a Daniel Coello, pendiente de confirmar en el formulario oficial antes de contabilizar cierre."},
     {"name": "Rechazos de pago", "status": "Recibido, pendiente de cruce de cohorte", "detail": "Archivo institucional recibido el 18-08-2026: 975 rechazos a nivel nacional y 304 correspondientes a Guayas. No se publican datos nominales ni se trasladan estos totales a la cohorte de Daniel sin cruce por cédula."},
     {"name": "Conversaciones de gestión", "status": "Asistida", "detail": "Ajusta criterios y reglas de interpretación; se incorpora mediante revisión programada."}
   ],
