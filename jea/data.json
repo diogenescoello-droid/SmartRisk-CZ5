@@ -1,5 +1,5 @@
 {
-  "cut": "2026-08-18T15:09:18-05:00",
+  "cut": "2026-08-18T17:14:40-05:00",
   "cohort": 1386,
   "metrics": {
     "interacted": 280,
@@ -23,48 +23,169 @@
       "sinCoincidencia": 1062
     },
     "coordinators": [
-      {"name": "Daniel Coello", "responses": 227, "assignedRoster": 1386},
-      {"name": "Bryan", "responses": 165, "assignedRoster": 906},
-      {"name": "Benjamín Ayala", "responses": 101, "assignedRoster": 866},
-      {"name": "David Vinces", "responses": 164, "assignedRoster": 866},
-      {"name": "José Smith", "responses": 185, "assignedRoster": 865},
-      {"name": "Julio Auquilla", "responses": 123, "assignedRoster": 864},
-      {"name": "SIN ASIGNAR", "responses": 1062, "assignedRoster": null}
+      {
+        "name": "Daniel Coello",
+        "responses": 227,
+        "assignedRoster": 1386
+      },
+      {
+        "name": "Bryan",
+        "responses": 165,
+        "assignedRoster": 906
+      },
+      {
+        "name": "Benjamín Ayala",
+        "responses": 101,
+        "assignedRoster": 866
+      },
+      {
+        "name": "David Vinces",
+        "responses": 164,
+        "assignedRoster": 866
+      },
+      {
+        "name": "José Smith",
+        "responses": 185,
+        "assignedRoster": 865
+      },
+      {
+        "name": "Julio Auquilla",
+        "responses": 123,
+        "assignedRoster": 864
+      },
+      {
+        "name": "SIN ASIGNAR",
+        "responses": 1062,
+        "assignedRoster": null
+      }
     ],
     "followUp": {
-      "reviewCut": "2026-08-18T15:09:18-05:00",
+      "reviewCut": "2026-08-18T17:14:40-05:00",
       "correctionEmailsSent": 118,
       "clarifiedOnlineModality": 6,
       "confirmedFivePhotosButLinkStillPending": 1,
       "correctedEvidenceButFormLocked": 9,
       "physicalEvidenceCorrectionPathOpen": 110,
-      "note": "Después del corte de 14:14 se recibieron tres nuevos respaldos físicos por correo/Drive mediante archivos o enlaces directos (incluidos PDF/archivo individual), pero ninguno aporta evidencia suficiente para cerrar la trazabilidad como carpeta Drive registrada según la guía. Dos de los mensajes reportan además dificultad para usar el formulario; uno corresponde a un caso de bloqueo ya contabilizado. No se reduce la ruta física abierta ni se fuerza asignación de coordinador sin cédula o coincidencia auxiliar inequívoca. Se mantienen 6 casos confirmados en línea, 9 casos con evidencia corregida pero formulario bloqueado y 110 casos en la ruta física abierta."
+      "note": "Sin cierres adicionales verificados después del corte 15:09. Los respaldos físicos recibidos inmediatamente antes de ese corte continúan pendientes de regularización como carpeta Drive trazable o confirmación en formulario. No se reduce la ruta física abierta ni se fuerza asignación de coordinador sin cédula o coincidencia auxiliar inequívoca."
     },
     "note": "La separación prioriza cédula. Cuando no coincide, se usa correo, teléfono o nombre solo si la coincidencia con el responsable es única. SIN ASIGNAR no se fuerza a ningún coordinador."
   },
   "actions": [
-    {"priority": 1, "label": "Informe mensual Jóvenes en Acción", "detail": "Preparar y remitir el informe mensual con el formato de informe y el control de asistencia/cumplimiento recibidos por correo institucional. La comunicación indica entrega hasta el 19-08-2026 y a las 11:40 del 18-08-2026 la Coordinación Zonal reiteró cumplir estrictamente con los tiempos.", "count": 1},
-    {"priority": 1, "label": "Verificación administrativa de pago", "detail": "La actualización bancaria ya consta como realizada; verificar administrativamente el pago no reflejado sin solicitar una nueva actualización de cuenta. Además, se recibió un archivo institucional de rechazos de pago con 975 registros nacionales y 304 de Guayas; no se incorporan esos valores a la cohorte de Daniel hasta completar el cruce por cédula contra la base oficial.", "count": 1},
-    {"priority": 2, "label": "Regularización de respaldo Plan Familiar físico", "detail": "Dar seguimiento solo a casos que realmente usaron modalidad física; se mantienen 6 casos confirmados en línea y 110 casos en la ruta física abierta. Persisten 9 casos con evidencia corregida cuyo formulario no permite reemplazar el enlace. Tras el corte anterior llegaron tres nuevos respaldos por archivo/enlace directo que todavía requieren carpeta Drive trazable o confirmación en el formulario; no deben contarse como cierres todavía.", "count": 110},
-    {"priority": 2, "label": "Discrepancia de asignación JEA", "detail": "Un participante reportó por correo que otra base lo ubica bajo una asignación distinta. El cruce por cédula contra la base oficial 1386 confirma que pertenece a Daniel Coello, no consta en BASE_867 y no presenta respuesta Kobo coincidente. Resolver la discrepancia usando la base oficial como fuente maestra y evitar reasignarlo por datos secundarios.", "count": 1},
-    {"priority": 2, "label": "Postulaciones para actividades presenciales", "detail": "Se recibieron tres comunicaciones adicionales de disponibilidad/postulación presencial después del corte anterior, elevando el total operativo reciente de 5 a 8. Mantenerlas como candidaturas y conciliar cada una contra la base oficial antes de incorporarlas a métricas, grupos o asignaciones.", "count": 8},
-    {"priority": 2, "label": "Interactuaron sin producto identificado", "detail": "Contacto individual breve para identificar fricción y siguiente acción.", "count": 5},
-    {"priority": 3, "label": "Avance parcial de actividad", "detail": "Completar pendientes sin reiniciar el proceso ya realizado.", "count": 7},
-    {"priority": 3, "label": "Confirmación de liderazgo Grupo General 08", "detail": "Una participante de la cohorte confirmó por correo su aceptación de la preselección de liderazgo. La base oficial la identifica de forma inequívoca y ya constaba VALIDADA en Kobo, por lo que no se modifican métricas de cumplimiento. Incorporar esta confirmación al control operativo de líderes.", "count": 1},
-    {"priority": 3, "label": "Sin interacción Kobo identificable", "detail": "Segmentar por grupo, territorio y canal antes de contactar masivamente.", "count": 1106}
+    {
+      "priority": 1,
+      "label": "Informe mensual Jóvenes en Acción",
+      "detail": "Preparar y remitir el informe mensual con el formato de informe y el control de asistencia/cumplimiento recibidos por correo institucional. La comunicación indica entrega hasta el 19-08-2026 y a las 11:40 del 18-08-2026 la Coordinación Zonal reiteró cumplir estrictamente con los tiempos.",
+      "count": 1
+    },
+    {
+      "priority": 1,
+      "label": "Verificación administrativa de pago",
+      "detail": "La actualización bancaria ya consta como realizada; verificar administrativamente el pago no reflejado sin solicitar una nueva actualización de cuenta. Además, se recibió un archivo institucional de rechazos de pago con 975 registros nacionales y 304 de Guayas; no se incorporan esos valores a la cohorte de Daniel hasta completar el cruce por cédula contra la base oficial.",
+      "count": 1
+    },
+    {
+      "priority": 2,
+      "label": "Regularización de respaldo Plan Familiar físico",
+      "detail": "Dar seguimiento solo a casos que realmente usaron modalidad física; se mantienen 6 casos confirmados en línea y 110 casos en la ruta física abierta. Persisten 9 casos con evidencia corregida cuyo formulario no permite reemplazar el enlace. No se verificaron cierres adicionales posteriores al corte 15:09.",
+      "count": 110
+    },
+    {
+      "priority": 2,
+      "label": "Discrepancia de asignación JEA",
+      "detail": "Un participante reportó por correo que otra base lo ubica bajo una asignación distinta. El cruce por cédula contra la base oficial 1386 confirma que pertenece a Daniel Coello, no consta en BASE_867 y no presenta respuesta Kobo coincidente. Resolver la discrepancia usando la base oficial como fuente maestra y evitar reasignarlo por datos secundarios.",
+      "count": 1
+    },
+    {
+      "priority": 2,
+      "label": "Postulaciones para actividades presenciales",
+      "detail": "Se recibieron tres comunicaciones nuevas de disponibilidad/postulación presencial después del corte 15:09, elevando el total operativo reciente de 8 a 11. Estas tres nuevas comunicaciones no presentan coincidencia inequívoca por correo o nombre en la base oficial consultada, por lo que deben mantenerse pendientes de conciliación antes de incorporarlas a métricas, grupos o asignaciones.",
+      "count": 11
+    },
+    {
+      "priority": 2,
+      "label": "Acceso a grupo oficial JEA",
+      "detail": "Un participante confirmó por correo que aún no ha sido incorporado a su grupo. La base oficial lo identifica inequívocamente como asignado a Daniel Coello, con Grupo 1, y sin respuesta Kobo. Verificar/invitar al grupo correcto y luego orientar el siguiente paso.",
+      "count": 1
+    },
+    {
+      "priority": 2,
+      "label": "Coordinación de apoyo técnico especializado",
+      "detail": "Se enviaron 8 comunicaciones de coordinación de apoyo técnico especializado a perfiles JEA identificados para posibles tareas de soporte. Mantenerlas como gestión operativa hasta recibir aceptación y conciliar cualquier caso que requiera confirmación de identidad/asignación antes de contabilizar participación.",
+      "count": 8
+    },
+    {
+      "priority": 2,
+      "label": "Interactuaron sin producto identificado",
+      "detail": "Contacto individual breve para identificar fricción y siguiente acción.",
+      "count": 5
+    },
+    {
+      "priority": 3,
+      "label": "Avance parcial de actividad",
+      "detail": "Completar pendientes sin reiniciar el proceso ya realizado.",
+      "count": 7
+    },
+    {
+      "priority": 3,
+      "label": "Confirmación de liderazgo Grupo General 08",
+      "detail": "Una participante de la cohorte confirmó por correo su aceptación de la preselección de liderazgo. La base oficial la identifica de forma inequívoca y ya constaba VALIDADA en Kobo, por lo que no se modifican métricas de cumplimiento. Incorporar esta confirmación al control operativo de líderes.",
+      "count": 1
+    },
+    {
+      "priority": 3,
+      "label": "Sin interacción Kobo identificable",
+      "detail": "Segmentar por grupo, territorio y canal antes de contactar masivamente.",
+      "count": 1106
+    }
   ],
   "sources": [
-    {"name": "Base oficial / Drive", "status": "Operativa", "detail": "Fuente maestra de identidad y asignación. Se mantiene el criterio de priorizar cédula y no asignar por datos secundarios cuando la coincidencia no sea inequívoca."},
-    {"name": "Gmail institucional", "status": "Actualizada", "detail": "Revisión hasta 15:09 del 18-08-2026: después del corte anterior se recibieron tres nuevas postulaciones presenciales y tres nuevos respaldos físicos por archivo/enlace directo. Los respaldos no se cierran todavía porque no demuestran la carpeta Drive trazable exigida o reportan dificultad de formulario. No se detectaron novedades bancarias materiales nuevas."},
-    {"name": "Formularios / Kobo", "status": "Actualizada sin cambio material verificado", "detail": "La hoja JEA_Zona8_Kobo_Maestro mantiene 3.698 respuestas, 2.184 cédulas únicas, 757 coincidencias en la base oficial, 110 pendientes y 738 validados. La última respuesta Kobo detectada sigue siendo del 18-08-2026 04:17:46; la última sincronización disponible es 14:58:33. No hay cambio material en los consolidados."},
-    {"name": "Plan Familiar físico", "status": "Seguimiento actualizado", "detail": "Se mantienen 2.027 respuestas cruzadas, 965 asignadas y 1.062 en revisión de asignación. La ruta física abierta permanece en 110. Tres respaldos adicionales recibidos por correo/Drive quedan pendientes de regularización documental y no modifican todavía los totales de cierre."},
-    {"name": "Rechazos de pago", "status": "Recibido, pendiente de cruce de cohorte", "detail": "Archivo institucional recibido el 18-08-2026: 975 rechazos a nivel nacional y 304 correspondientes a Guayas. No se publican datos nominales ni se trasladan estos totales a la cohorte de Daniel sin cruce por cédula."},
-    {"name": "Conversaciones de gestión", "status": "Asistida", "detail": "Ajusta criterios y reglas de interpretación; se incorpora mediante revisión programada."}
+    {
+      "name": "Base oficial / Drive",
+      "status": "Operativa",
+      "detail": "Fuente maestra de identidad y asignación. Se mantiene el criterio de priorizar cédula y no asignar por datos secundarios cuando la coincidencia no sea inequívoca. Un nuevo caso de acceso a grupo quedó confirmado en la base oficial como asignado a Daniel Coello, Grupo 1 y sin respuesta Kobo."
+    },
+    {
+      "name": "Gmail institucional",
+      "status": "Actualizada",
+      "detail": "Revisión hasta 17:14 del 18-08-2026: después del corte 15:09 se recibieron tres nuevas postulaciones/disponibilidades presenciales pendientes de conciliación, un caso confirmado de falta de acceso a grupo y se enviaron 8 comunicaciones de coordinación de apoyo técnico especializado. No se detectaron novedades bancarias materiales nuevas ni cierres adicionales verificables de Plan Familiar físico."
+    },
+    {
+      "name": "Formularios / Kobo",
+      "status": "Actualizada sin cambio material verificado",
+      "detail": "JEA_Zona8_Kobo_Maestro mantiene 3.698 respuestas y 2.184 cédulas únicas; la última respuesta detectada sigue siendo del 18-08-2026 04:17:46. Las sincronizaciones de 15:58:30 y 16:58:32 finalizaron correctamente sin cambio en esos consolidados."
+    },
+    {
+      "name": "Plan Familiar físico",
+      "status": "Seguimiento sin cambio de cierre",
+      "detail": "Se mantienen 2.027 respuestas cruzadas, 965 asignadas y 1.062 en revisión de asignación. La ruta física abierta permanece en 110 y no se verificaron cierres adicionales posteriores al corte 15:09."
+    },
+    {
+      "name": "Rechazos de pago",
+      "status": "Recibido, pendiente de cruce de cohorte",
+      "detail": "Archivo institucional recibido el 18-08-2026: 975 rechazos a nivel nacional y 304 correspondientes a Guayas. No se publican datos nominales ni se trasladan estos totales a la cohorte de Daniel sin cruce por cédula."
+    },
+    {
+      "name": "Conversaciones de gestión",
+      "status": "Asistida",
+      "detail": "Ajusta criterios y reglas de interpretación; se incorpora mediante revisión programada."
+    }
   ],
   "method": [
-    {"title": "1. Estado", "text": "Ubica a cada participante: sin interacción, interactuó, avance parcial, producto reportado o caso administrativo."},
-    {"title": "2. Fricción", "text": "Identifica qué impide avanzar: acceso, comprensión, documentación, datos bancarios, evidencia o falta de contacto."},
-    {"title": "3. Siguiente acción", "text": "Asigna una sola acción concreta por caso o segmento; evita mensajes generales cuando la causa ya es conocida."},
-    {"title": "4. Evidencia", "text": "Cierra con una señal verificable adecuada al caso. No confundas falta de foto o link con ausencia de trabajo."}
+    {
+      "title": "1. Estado",
+      "text": "Ubica a cada participante: sin interacción, interactuó, avance parcial, producto reportado o caso administrativo."
+    },
+    {
+      "title": "2. Fricción",
+      "text": "Identifica qué impide avanzar: acceso, comprensión, documentación, datos bancarios, evidencia o falta de contacto."
+    },
+    {
+      "title": "3. Siguiente acción",
+      "text": "Asigna una sola acción concreta por caso o segmento; evita mensajes generales cuando la causa ya es conocida."
+    },
+    {
+      "title": "4. Evidencia",
+      "text": "Cierra con una señal verificable adecuada al caso. No confundas falta de foto o link con ausencia de trabajo."
+    }
   ]
 }
