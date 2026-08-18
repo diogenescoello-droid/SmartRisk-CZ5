@@ -1,5 +1,5 @@
 {
-  "cut": "2026-08-17T22:13:07-05:00",
+  "cut": "2026-08-17T23:01:26-05:00",
   "cohort": 1386,
   "metrics": {
     "interacted": 280,
@@ -32,29 +32,28 @@
       {"name": "SIN ASIGNAR", "responses": 1062, "assignedRoster": null}
     ],
     "followUp": {
-      "reviewCut": "2026-08-17T22:13:07-05:00",
+      "reviewCut": "2026-08-17T23:01:26-05:00",
       "correctionEmailsSent": 118,
-      "clarifiedOnlineModality": 2,
+      "clarifiedOnlineModality": 3,
       "confirmedFivePhotosButLinkStillPending": 0,
-      "correctedEvidenceButFormLocked": 4,
-      "physicalEvidenceCorrectionPathOpen": 114,
-      "note": "Posterior al corte anterior, un caso adicional confirmó que la carpeta de evidencia física ya fue corregida, pero el formulario oficial aparece respondido y no permite sustituir el enlace anterior. Se suma a los casos con evidencia corregida y formulario bloqueado; la ruta abierta total permanece en 114 porque la trazabilidad aún no puede cerrarse. No se solicita repetir la actividad y no se publican datos nominales."
+      "correctedEvidenceButFormLocked": 7,
+      "physicalEvidenceCorrectionPathOpen": 113,
+      "note": "Posterior al corte anterior, un caso adicional confirmó que finalmente realizó el Plan Familiar en modalidad en línea y sale de la ruta de regularización física. Además, tres casos adicionales informaron de forma explícita que el formulario ya aparece respondido y no permite sustituir el enlace anterior; se mantienen como evidencia corregida con trazabilidad documental pendiente. Un caso adicional reportó dificultad de acceso al formulario, pero aún no se clasifica como bloqueo hasta recibir confirmación del mensaje mostrado. No se solicita repetir la actividad y no se publican datos nominales."
     },
     "note": "La separación prioriza cédula. Cuando no coincide, se usa correo, teléfono o nombre solo si la coincidencia con el responsable es única. SIN ASIGNAR no se fuerza a ningún coordinador."
   },
   "actions": [
     {"priority": 1, "label": "Verificación administrativa de pago", "detail": "La actualización bancaria ya consta como realizada; una nueva confirmación por correo no cambia el estado agregado. Verificar administrativamente el pago no reflejado sin solicitar una nueva actualización de cuenta.", "count": 1},
-    {"priority": 2, "label": "Regularización de respaldo Plan Familiar físico", "detail": "Dar seguimiento solo a casos que realmente usaron modalidad física; excluir los confirmados en línea y resolver enlaces o acceso al formulario sin pedir repetir la actividad. Ya son 4 los casos con evidencia corregida cuyo formulario no permite reemplazar el enlace.", "count": 114},
-    {"priority": 2, "label": "Acceso a grupo oficial JEA", "detail": "Existe 1 caso nuevo pendiente de conciliación con la base vigente para confirmar coordinador/grupo antes de remitir el acceso correspondiente.", "count": 1},
+    {"priority": 2, "label": "Regularización de respaldo Plan Familiar físico", "detail": "Dar seguimiento solo a casos que realmente usaron modalidad física; excluir los confirmados en línea y resolver enlaces o acceso al formulario sin pedir repetir la actividad. Ya son 7 los casos con evidencia corregida cuyo formulario no permite reemplazar el enlace, y existe 1 reporte adicional de dificultad de acceso aún por clasificar.", "count": 113},
     {"priority": 2, "label": "Interactuaron sin producto identificado", "detail": "Contacto individual breve para identificar fricción y siguiente acción.", "count": 5},
     {"priority": 3, "label": "Avance parcial de actividad", "detail": "Completar pendientes sin reiniciar el proceso ya realizado.", "count": 7},
     {"priority": 3, "label": "Sin interacción Kobo identificable", "detail": "Segmentar por grupo, territorio y canal antes de contactar masivamente.", "count": 1106}
   ],
   "sources": [
     {"name": "Base oficial / Drive", "status": "Operativa", "detail": "Fuente maestra de identidad y asignación; no sustituir con matrices antiguas."},
-    {"name": "Gmail institucional", "status": "Actualizada", "detail": "Revisión hasta 22:13 del 17-08-2026: un caso adicional confirmó carpeta de evidencia física corregida, pero el formulario no permite reemplazar el enlace; además hay 1 caso nuevo pendiente de conciliación para acceso al grupo oficial. Una confirmación bancaria recibida no modifica los agregados ya registrados."},
-    {"name": "Formularios / Kobo", "status": "Sin cambio material", "detail": "Última sincronización 17-08-2026 21:58:17. Se mantienen 3.697 respuestas, 2.183 cédulas únicas, 757 coincidencias en base, 110 pendientes y 738 validados; la última respuesta Kobo continúa siendo del 16-08-2026 14:04:30."},
-    {"name": "Plan Familiar físico", "status": "Actualizada", "detail": "2.027 respuestas cruzadas contra la matriz de funcionarios responsables; 965 asignadas y 1.062 en revisión de asignación. La ruta abierta permanece en 114 casos y los casos con evidencia corregida pero formulario bloqueado aumentan de 3 a 4."},
+    {"name": "Gmail institucional", "status": "Actualizada", "detail": "Revisión hasta 23:01 del 17-08-2026: un caso adicional confirmó modalidad en línea y sale del seguimiento físico; tres casos adicionales confirmaron formulario bloqueado para sustituir el enlace; un reporte adicional de dificultad de acceso queda pendiente de clasificación. El caso pendiente de conciliación para acceso al grupo oficial fue resuelto por cédula y se confirmó su grupo correspondiente."},
+    {"name": "Formularios / Kobo", "status": "Sin cambio material", "detail": "Última sincronización 17-08-2026 22:58:23. Se mantienen 3.697 respuestas, 2.183 cédulas únicas, 757 coincidencias en base, 110 pendientes y 738 validados; la última respuesta Kobo continúa siendo del 16-08-2026 14:04:30."},
+    {"name": "Plan Familiar físico", "status": "Actualizada", "detail": "2.027 respuestas cruzadas contra la matriz de funcionarios responsables; 965 asignadas y 1.062 en revisión de asignación. La ruta abierta baja a 113 casos tras reclasificar un caso a modalidad en línea; los casos con evidencia corregida pero formulario bloqueado aumentan de 4 a 7."},
     {"name": "Conversaciones de gestión", "status": "Asistida", "detail": "Ajusta criterios y reglas de interpretación; se incorpora mediante revisión programada."}
   ],
   "method": [
