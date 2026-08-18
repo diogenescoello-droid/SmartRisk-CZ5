@@ -1,5 +1,5 @@
 {
-  "cut": "2026-08-17T18:13:00-05:00",
+  "cut": "2026-08-17T19:13:00-05:00",
   "cohort": 1386,
   "metrics": {
     "interacted": 280,
@@ -7,8 +7,8 @@
     "families5": 267,
     "noInteraction": 1106,
     "bankOriginalRejected": 3,
-    "bankUpdated": 2,
-    "bankPending": 1
+    "bankUpdated": 3,
+    "bankPending": 0
   },
   "planFamiliaFisico": {
     "source": "CZ5 GUAYAS-Enlace de registro cumplimiento de la actividad Plan Familiar en Físico. (respuestas).xlsx",
@@ -32,28 +32,28 @@
       {"name": "SIN ASIGNAR", "responses": 1062, "assignedRoster": null}
     ],
     "followUp": {
-      "reviewCut": "2026-08-17T18:13:00-05:00",
+      "reviewCut": "2026-08-17T19:13:00-05:00",
       "correctionEmailsSent": 118,
       "clarifiedOnlineModality": 2,
       "confirmedFivePhotosButLinkStillPending": 0,
-      "correctedEvidenceButFormLocked": 1,
-      "physicalEvidenceCorrectionPathOpen": 115,
-      "note": "Posterior al corte anterior, un participante que había confirmado disponer de las cinco evidencias respondió que ya tiene todo subido, por lo que sale de la ruta abierta de regularización. Se mantienen dos casos aclarados como modalidad en línea y un caso con evidencia corregida pero formulario bloqueado. No se publican datos nominales."
+      "correctedEvidenceButFormLocked": 2,
+      "physicalEvidenceCorrectionPathOpen": 114,
+      "note": "Posterior al corte anterior se verificó una nueva carpeta de respaldo accesible con al menos cinco imágenes, por lo que un caso sale de la ruta abierta de regularización. Se recibió además un nuevo reporte de formulario bloqueado para reemplazar el enlace; queda pendiente resolver ese mecanismo sin pedir repetir la actividad. No se publican datos nominales."
     },
     "note": "La separación prioriza cédula. Cuando no coincide, se usa correo, teléfono o nombre solo si la coincidencia con el responsable es única. SIN ASIGNAR no se fuerza a ningún coordinador."
   },
   "actions": [
-    {"priority": 1, "label": "Novedad bancaria individual pendiente", "detail": "Resolver y cerrar con evidencia administrativa.", "count": 1},
-    {"priority": 2, "label": "Regularización de respaldo Plan Familiar físico", "detail": "Dar seguimiento solo a casos que realmente usaron modalidad física; excluir los confirmados en línea y resolver enlaces o acceso al formulario sin pedir repetir la actividad.", "count": 115},
+    {"priority": 1, "label": "Verificación administrativa de pago", "detail": "La actualización bancaria ya consta como realizada por la participante; verificar administrativamente el pago no reflejado sin solicitar una nueva actualización de cuenta.", "count": 1},
+    {"priority": 2, "label": "Regularización de respaldo Plan Familiar físico", "detail": "Dar seguimiento solo a casos que realmente usaron modalidad física; excluir los confirmados en línea y resolver enlaces o acceso al formulario sin pedir repetir la actividad.", "count": 114},
     {"priority": 2, "label": "Interactuaron sin producto identificado", "detail": "Contacto individual breve para identificar fricción y siguiente acción.", "count": 5},
     {"priority": 3, "label": "Avance parcial de actividad", "detail": "Completar pendientes sin reiniciar el proceso ya realizado.", "count": 7},
     {"priority": 3, "label": "Sin interacción Kobo identificable", "detail": "Segmentar por grupo, territorio y canal antes de contactar masivamente.", "count": 1106}
   ],
   "sources": [
     {"name": "Base oficial / Drive", "status": "Operativa", "detail": "Fuente maestra de identidad y asignación; no sustituir con matrices antiguas."},
-    {"name": "Gmail institucional", "status": "Actualizada", "detail": "Revisión hasta 18:13 del 17-08-2026: un caso de regularización confirmó que ya tiene todas sus evidencias subidas; además consultó por el inicio de actividades operativas."},
-    {"name": "Formularios / Kobo", "status": "Sin cambio material", "detail": "Sin nuevas respuestas desde 16-08-2026 14:04:30. Sincronización 17-08-2026 17:58:33 mantiene 3.697 respuestas, 2.183 cédulas únicas, 757 coincidencias en base, 110 pendientes y 738 validados en el maestro secundario."},
-    {"name": "Plan Familiar físico", "status": "Actualizada", "detail": "2.027 respuestas cruzadas contra la matriz de funcionarios responsables; 965 asignadas y 1.062 en revisión de asignación. El seguimiento por correo se registra aparte sin alterar esos conteos de origen."},
+    {"name": "Gmail institucional", "status": "Actualizada", "detail": "Revisión hasta 19:13 del 17-08-2026: una actualización bancaria fue confirmada como registrada desde julio y queda solo revisión administrativa del pago; además ingresó un nuevo caso de formulario bloqueado para reemplazar enlace de respaldo."},
+    {"name": "Formularios / Kobo", "status": "Sin cambio material", "detail": "Sin nuevas respuestas desde 16-08-2026 14:04:30. Sincronización 17-08-2026 18:58:22 mantiene 3.697 respuestas, 2.183 cédulas únicas, 757 coincidencias en base, 110 pendientes y 738 validados en el maestro secundario."},
+    {"name": "Plan Familiar físico", "status": "Actualizada", "detail": "2.027 respuestas cruzadas contra la matriz de funcionarios responsables; 965 asignadas y 1.062 en revisión de asignación. Se verificó una nueva carpeta de respaldo accesible con al menos cinco imágenes y la ruta abierta de regularización baja a 114 casos."},
     {"name": "Conversaciones de gestión", "status": "Asistida", "detail": "Ajusta criterios y reglas de interpretación; se incorpora mediante revisión programada."}
   ],
   "method": [
