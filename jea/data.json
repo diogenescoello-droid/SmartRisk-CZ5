@@ -1,5 +1,5 @@
 {
-  "cut": "2026-08-17T19:13:00-05:00",
+  "cut": "2026-08-17T20:16:00-05:00",
   "cohort": 1386,
   "metrics": {
     "interacted": 280,
@@ -32,13 +32,13 @@
       {"name": "SIN ASIGNAR", "responses": 1062, "assignedRoster": null}
     ],
     "followUp": {
-      "reviewCut": "2026-08-17T19:13:00-05:00",
+      "reviewCut": "2026-08-17T20:16:00-05:00",
       "correctionEmailsSent": 118,
       "clarifiedOnlineModality": 2,
       "confirmedFivePhotosButLinkStillPending": 0,
-      "correctedEvidenceButFormLocked": 2,
+      "correctedEvidenceButFormLocked": 3,
       "physicalEvidenceCorrectionPathOpen": 114,
-      "note": "Posterior al corte anterior se verificó una nueva carpeta de respaldo accesible con al menos cinco imágenes, por lo que un caso sale de la ruta abierta de regularización. Se recibió además un nuevo reporte de formulario bloqueado para reemplazar el enlace; queda pendiente resolver ese mecanismo sin pedir repetir la actividad. No se publican datos nominales."
+      "note": "Desde el corte anterior se recibió una nueva confirmación de carpeta corregida con cinco fotografías, pero el formulario no permite reemplazar el enlace previamente registrado. El caso permanece abierto solo por regularización documental, elevando a 3 los bloqueos de formulario; no se solicita repetir la actividad. También ingresó una consulta de apoyo para corregir un enlace de un Plan Familiar realizado físicamente. No se publican datos nominales."
     },
     "note": "La separación prioriza cédula. Cuando no coincide, se usa correo, teléfono o nombre solo si la coincidencia con el responsable es única. SIN ASIGNAR no se fuerza a ningún coordinador."
   },
@@ -51,9 +51,9 @@
   ],
   "sources": [
     {"name": "Base oficial / Drive", "status": "Operativa", "detail": "Fuente maestra de identidad y asignación; no sustituir con matrices antiguas."},
-    {"name": "Gmail institucional", "status": "Actualizada", "detail": "Revisión hasta 19:13 del 17-08-2026: una actualización bancaria fue confirmada como registrada desde julio y queda solo revisión administrativa del pago; además ingresó un nuevo caso de formulario bloqueado para reemplazar enlace de respaldo."},
-    {"name": "Formularios / Kobo", "status": "Sin cambio material", "detail": "Sin nuevas respuestas desde 16-08-2026 14:04:30. Sincronización 17-08-2026 18:58:22 mantiene 3.697 respuestas, 2.183 cédulas únicas, 757 coincidencias en base, 110 pendientes y 738 validados en el maestro secundario."},
-    {"name": "Plan Familiar físico", "status": "Actualizada", "detail": "2.027 respuestas cruzadas contra la matriz de funcionarios responsables; 965 asignadas y 1.062 en revisión de asignación. Se verificó una nueva carpeta de respaldo accesible con al menos cinco imágenes y la ruta abierta de regularización baja a 114 casos."},
+    {"name": "Gmail institucional", "status": "Actualizada", "detail": "Revisión hasta 20:16 del 17-08-2026: una nueva participante confirmó que ya preparó la carpeta correcta con cinco fotografías, pero el formulario no permite sustituir el enlace anterior; los bloqueos de corrección suben a 3. Ingresó además una consulta de apoyo sobre cómo corregir el enlace de un Plan Familiar físico. Sin nuevas novedades bancarias materiales."},
+    {"name": "Formularios / Kobo", "status": "Sin cambio material", "detail": "Sin nuevas respuestas desde 16-08-2026 14:04:30. Sincronización 17-08-2026 19:58:27 mantiene 3.697 respuestas, 2.183 cédulas únicas, 757 coincidencias en base, 110 pendientes y 738 validados en el maestro secundario."},
+    {"name": "Plan Familiar físico", "status": "Actualizada", "detail": "2.027 respuestas cruzadas contra la matriz de funcionarios responsables; 965 asignadas y 1.062 en revisión de asignación. Se mantiene la ruta abierta de regularización en 114 casos y aumentan a 3 los casos con evidencia corregida cuyo formulario no permite reemplazar el enlace."},
     {"name": "Conversaciones de gestión", "status": "Asistida", "detail": "Ajusta criterios y reglas de interpretación; se incorpora mediante revisión programada."}
   ],
   "method": [
