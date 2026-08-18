@@ -1,5 +1,5 @@
 {
-  "cut": "2026-08-18T01:08:08-05:00",
+  "cut": "2026-08-18T08:07:48-05:00",
   "cohort": 1386,
   "metrics": {
     "interacted": 280,
@@ -32,28 +32,28 @@
       {"name": "SIN ASIGNAR", "responses": 1062, "assignedRoster": null}
     ],
     "followUp": {
-      "reviewCut": "2026-08-18T01:08:08-05:00",
+      "reviewCut": "2026-08-18T08:07:48-05:00",
       "correctionEmailsSent": 118,
       "clarifiedOnlineModality": 4,
-      "confirmedFivePhotosButLinkStillPending": 0,
+      "confirmedFivePhotosButLinkStillPending": 1,
       "correctedEvidenceButFormLocked": 8,
       "physicalEvidenceCorrectionPathOpen": 112,
-      "note": "Desde el corte anterior, una nueva respuesta por Gmail confirmó que el Plan Familiar fue realizado en línea mediante Survey; ese caso sale de la ruta de regularización física. Los casos confirmados en modalidad en línea suben de 3 a 4 y la ruta física abierta baja de 113 a 112. No se solicita repetir la actividad y no se publican datos nominales."
+      "note": "Desde el corte de 01:08 se recibió y verificó un nuevo respaldo físico asignado a Daniel Coello por cédula. El archivo contiene cinco Planes Familiares verificables, pero fue compartido como PDF individual y no como la carpeta/enlace exigida por la guía; por ello se registra como evidencia recibida con regularización de enlace pendiente y no se reduce todavía la ruta física abierta. No se solicita repetir la actividad y no se publican datos nominales."
     },
     "note": "La separación prioriza cédula. Cuando no coincide, se usa correo, teléfono o nombre solo si la coincidencia con el responsable es única. SIN ASIGNAR no se fuerza a ningún coordinador."
   },
   "actions": [
-    {"priority": 1, "label": "Verificación administrativa de pago", "detail": "La actualización bancaria ya consta como realizada; no se detectaron novedades bancarias materiales en este corte. Verificar administrativamente el pago no reflejado sin solicitar una nueva actualización de cuenta.", "count": 1},
-    {"priority": 2, "label": "Regularización de respaldo Plan Familiar físico", "detail": "Dar seguimiento solo a casos que realmente usaron modalidad física; excluir los confirmados en línea y resolver enlaces o acceso al formulario sin pedir repetir la actividad. Se mantienen 8 casos con evidencia corregida cuyo formulario no permite reemplazar el enlace.", "count": 112},
+    {"priority": 1, "label": "Verificación administrativa de pago", "detail": "La actualización bancaria ya consta como realizada; el certificado bancario recibido nuevamente en este corte corresponde a documentación ya remitida previamente y no genera una nueva actualización. Verificar administrativamente el pago no reflejado sin solicitar una nueva actualización de cuenta.", "count": 1},
+    {"priority": 2, "label": "Regularización de respaldo Plan Familiar físico", "detail": "Dar seguimiento solo a casos que realmente usaron modalidad física; excluir los confirmados en línea y resolver enlaces o acceso al formulario sin pedir repetir la actividad. Se mantienen 8 casos con evidencia corregida cuyo formulario no permite reemplazar el enlace y 1 caso con cinco planes verificables cuyo respaldo aún debe quedar trazado mediante el enlace/carpeta correspondiente.", "count": 112},
     {"priority": 2, "label": "Interactuaron sin producto identificado", "detail": "Contacto individual breve para identificar fricción y siguiente acción.", "count": 5},
     {"priority": 3, "label": "Avance parcial de actividad", "detail": "Completar pendientes sin reiniciar el proceso ya realizado.", "count": 7},
     {"priority": 3, "label": "Sin interacción Kobo identificable", "detail": "Segmentar por grupo, territorio y canal antes de contactar masivamente.", "count": 1106}
   ],
   "sources": [
-    {"name": "Base oficial / Drive", "status": "Operativa", "detail": "Fuente maestra de identidad y asignación; no sustituir con matrices antiguas."},
-    {"name": "Gmail institucional", "status": "Actualizada", "detail": "Revisión hasta 01:08 del 18-08-2026: una nueva confirmación posterior al corte anterior indica modalidad en línea mediante Survey, por lo que se excluye de regularización física. No se detectaron novedades bancarias materiales adicionales."},
-    {"name": "Formularios / Kobo", "status": "Actualizada sin cambio en coincidencias oficiales", "detail": "Última sincronización registrada 18-08-2026 00:58:23. Se mantienen 3.698 respuestas, 2.184 cédulas únicas, 757 coincidencias en la base oficial, 110 pendientes y 738 validados. La última respuesta Kobo reportada por la hoja es 2026-08-18 4:17:46."},
-    {"name": "Plan Familiar físico", "status": "Seguimiento actualizado", "detail": "Se mantienen 2.027 respuestas cruzadas, 965 asignadas y 1.062 en revisión de asignación. La ruta abierta baja de 113 a 112 por una nueva confirmación de modalidad en línea; permanecen 8 casos con evidencia corregida pero formulario bloqueado."},
+    {"name": "Base oficial / Drive", "status": "Operativa", "detail": "Fuente maestra de identidad y asignación; el nuevo caso de respaldo físico se contrastó por cédula y corresponde a Daniel Coello. No sustituir con matrices antiguas."},
+    {"name": "Gmail institucional", "status": "Actualizada", "detail": "Revisión hasta 08:07 del 18-08-2026: se recibió un nuevo respaldo de Plan Familiar físico que contiene cinco planes verificables, pero aún requiere regularización del enlace/carpeta según la guía. El certificado bancario recibido esta mañana duplica documentación ya remitida el 15-08-2026 y no cambia el estado bancario agregado."},
+    {"name": "Formularios / Kobo", "status": "Actualizada sin cambio en coincidencias oficiales", "detail": "Última sincronización registrada 18-08-2026 07:58:35. Se mantienen 3.698 respuestas, 2.184 cédulas únicas, 757 coincidencias en la base oficial, 110 pendientes y 738 validados. La última respuesta Kobo reportada por la hoja es 2026-08-18 4:17:46."},
+    {"name": "Plan Familiar físico", "status": "Seguimiento actualizado", "detail": "Se mantienen 2.027 respuestas cruzadas, 965 asignadas y 1.062 en revisión de asignación. La ruta física abierta permanece en 112: un nuevo respaldo contiene cinco planes verificables, pero todavía no cumple la trazabilidad final mediante carpeta/enlace; permanecen además 8 casos con evidencia corregida pero formulario bloqueado."},
     {"name": "Conversaciones de gestión", "status": "Asistida", "detail": "Ajusta criterios y reglas de interpretación; se incorpora mediante revisión programada."}
   ],
   "method": [
