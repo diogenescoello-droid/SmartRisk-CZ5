@@ -1,5 +1,5 @@
 {
-  "cut": "2026-08-18T20:05:23-05:00",
+  "cut": "2026-08-18T21:00:03-05:00",
   "cohort": 1386,
   "metrics": {
     "interacted": 280,
@@ -104,8 +104,8 @@
     {
       "priority": 2,
       "label": "Acceso a grupo oficial JEA",
-      "detail": "Un participante confirmó por correo que aún no ha sido incorporado a su grupo. La base oficial lo identifica inequívocamente como asignado a Daniel Coello, con Grupo 1, y sin respuesta Kobo. Verificar/invitar al grupo correcto y luego orientar el siguiente paso.",
-      "count": 1
+      "detail": "Se mantienen dos casos de orientación/acceso a grupo. Uno está identificado en la base oficial como asignado a Daniel Coello, Grupo 1, y aún no presenta respuesta Kobo. El nuevo caso posterior al corte fue conciliado por cédula de forma inequívoca como Daniel Coello, Grupo 3; además ya registra una respuesta Kobo VALIDADA. Orientar a cada participante hacia su grupo oficial sin reasignar por datos secundarios.",
+      "count": 2
     },
     {
       "priority": 2,
@@ -116,7 +116,7 @@
     {
       "priority": 2,
       "label": "Coordinación de apoyo técnico especializado",
-      "detail": "Se enviaron 8 comunicaciones de coordinación de apoyo técnico especializado a perfiles JEA identificados para posibles tareas de soporte. Mantenerlas como gestión operativa hasta recibir aceptación y conciliar cualquier caso que requiera confirmación de identidad/asignación antes de contabilizar participación.",
+      "detail": "Se enviaron 8 comunicaciones de coordinación de apoyo técnico especializado a perfiles JEA identificados para posibles tareas de soporte. Después del corte se recibió una respuesta con experiencia técnica parcial y disponibilidad para presentarse; el correo y nombre no producen una coincidencia inequívoca en la base oficial consultada, por lo que no se asigna coordinador ni se contabiliza como participación hasta conciliar identidad.",
       "count": 8
     },
     {
@@ -148,17 +148,17 @@
     {
       "name": "Base oficial / Drive",
       "status": "Operativa",
-      "detail": "Fuente maestra de identidad y asignación. Se mantiene el criterio de priorizar cédula y no asignar por datos secundarios cuando la coincidencia no sea inequívoca. La nueva postulación posterior al corte no coincide de forma única por correo, teléfono ni nombre y queda pendiente de conciliación, sin asignación forzada."
+      "detail": "Fuente maestra de identidad y asignación. La nueva respuesta Kobo posterior al corte coincide inequívocamente por cédula con un participante asignado a Daniel Coello, Grupo 3. La respuesta de apoyo técnico recibida a las 21:00 no coincide de forma única por correo ni nombre y se mantiene sin asignación hasta conciliación."
     },
     {
       "name": "Gmail institucional",
-      "status": "Corte confirmado 20:05",
-      "detail": "Después del corte 19:04 se recibió una nueva hoja de vida con disponibilidad horaria para apoyo operativo. El caso no presenta coincidencia inequívoca en la base oficial y se mantiene pendiente de conciliación. No se detectaron nuevas novedades bancarias ni cierres verificables de Plan Familiar en el intervalo revisado."
+      "status": "Corte confirmado 21:00",
+      "detail": "Posterior al corte 20:05 se recibió una consulta sobre identificación de grupo de un participante ya conciliado por cédula como Daniel Coello, Grupo 3, y una respuesta a coordinación de apoyo técnico especializado que permanece pendiente de conciliación de identidad. No se detectaron nuevas novedades bancarias ni cierres verificables de Plan Familiar en el intervalo revisado."
     },
     {
       "name": "Formularios / Kobo",
-      "status": "Sin cambio de consolidado; sincronizado 19:58",
-      "detail": "JEA_Zona8_Kobo_Maestro registra 3.699 respuestas y 2.184 cédulas únicas. Se mantienen 757 coincidencias con la base, 110 pendientes, 738 validados y 1.492 respuestas duplicadas. La sincronización más reciente verificada es 18-08-2026 19:58:13; no modifica el cumplimiento oficial respecto del corte anterior."
+      "status": "Cambio material; sincronizado 20:58",
+      "detail": "JEA_Zona8_Kobo_Maestro registra 3.700 respuestas y 2.185 cédulas únicas. Las coincidencias con la base suben a 758, los pendientes bajan a 109 y los validados suben a 739; se mantienen 1.492 respuestas duplicadas. La nueva respuesta validada fue registrada a las 20:28 del 18-08-2026 y se concilió por cédula con la base oficial. La última sincronización verificada es 18-08-2026 20:58:20."
     },
     {
       "name": "Plan Familiar físico",
