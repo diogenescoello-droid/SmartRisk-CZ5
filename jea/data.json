@@ -1,5 +1,5 @@
 {
-  "cut": "2026-08-18T18:03:50-05:00",
+  "cut": "2026-08-18T19:04:02-05:00",
   "cohort": 1386,
   "metrics": {
     "interacted": 280,
@@ -60,13 +60,13 @@
       }
     ],
     "followUp": {
-      "reviewCut": "2026-08-18T18:03:50-05:00",
+      "reviewCut": "2026-08-18T19:04:02-05:00",
       "correctionEmailsSent": 118,
       "clarifiedOnlineModality": 6,
       "confirmedFivePhotosButLinkStillPending": 1,
       "correctedEvidenceButFormLocked": 9,
       "physicalEvidenceCorrectionPathOpen": 110,
-      "note": "Después del corte 17:14 se detectó en Drive una nueva carpeta de Plan Familiar con cinco archivos PDF escaneados creados entre 17:16 y 17:17. La carpeta contiene cinco respaldos verificables, pero no aporta una cédula o identidad del JEA que permita asignar responsable de forma inequívoca; por seguridad se mantiene sin asignación y no se descuenta de la ruta física abierta hasta conciliarlo contra la base oficial o el formulario."
+      "note": "Se mantienen sin cambio los conteos de regularización. Después del corte anterior se recibió por correo evidencia física identificada por una cédula que no aparece en la base oficial consultada, por lo que no se fuerza asignación y queda SIN ASIGNAR hasta conciliación. En Drive apareció además un nuevo PDF escaneado creado a las 18:31 sin identidad o cédula legible en el contenido indexado; tampoco se descuenta de la ruta abierta."
     },
     "note": "La separación prioriza cédula. Cuando no coincide, se usa correo, teléfono o nombre solo si la coincidencia con el responsable es única. SIN ASIGNAR no se fuerza a ningún coordinador."
   },
@@ -86,7 +86,7 @@
     {
       "priority": 2,
       "label": "Regularización de respaldo Plan Familiar físico",
-      "detail": "Dar seguimiento solo a casos que realmente usaron modalidad física; se mantienen 6 casos confirmados en línea y 110 casos en la ruta física abierta. Persisten 9 casos con evidencia corregida cuyo formulario no permite reemplazar el enlace. Se detectó además una nueva carpeta Drive con cinco respaldos físicos, pero su responsable no puede determinarse de forma inequívoca sin cédula; conciliarla antes de cerrar o asignar el caso.",
+      "detail": "Dar seguimiento solo a casos que realmente usaron modalidad física; se mantienen 6 casos confirmados en línea y 110 casos en la ruta física abierta. Persisten 9 casos con evidencia corregida cuyo formulario no permite reemplazar el enlace. Se recibió nueva evidencia física por correo y un PDF escaneado nuevo en Drive, pero ninguno permite cerrar o reasignar un caso con seguridad contra la base oficial; mantenerlos SIN ASIGNAR hasta conciliación.",
       "count": 110
     },
     {
@@ -98,13 +98,19 @@
     {
       "priority": 2,
       "label": "Postulaciones para actividades presenciales",
-      "detail": "Se recibieron tres comunicaciones nuevas de disponibilidad/postulación presencial después del corte 15:09, elevando el total operativo reciente de 8 a 11. Estas tres nuevas comunicaciones no presentan coincidencia inequívoca por correo o nombre en la base oficial consultada, por lo que deben mantenerse pendientes de conciliación antes de incorporarlas a métricas, grupos o asignaciones.",
-      "count": 11
+      "detail": "Se recibieron dos nuevas hojas de vida/disponibilidades después del corte anterior, elevando el total operativo reciente de 11 a 13 comunicaciones. Una coincide de forma única por correo con la base oficial y ya constaba VALIDADA en Kobo, por lo que no modifica cumplimiento; la otra no presenta coincidencia inequívoca por correo en la base oficial y debe permanecer pendiente de conciliación antes de asignar grupo o contabilizar participación.",
+      "count": 13
     },
     {
       "priority": 2,
       "label": "Acceso a grupo oficial JEA",
       "detail": "Un participante confirmó por correo que aún no ha sido incorporado a su grupo. La base oficial lo identifica inequívocamente como asignado a Daniel Coello, con Grupo 1, y sin respuesta Kobo. Verificar/invitar al grupo correcto y luego orientar el siguiente paso.",
+      "count": 1
+    },
+    {
+      "priority": 2,
+      "label": "Incidencia de carga de certificado",
+      "detail": "Se recibió un reporte nuevo de imposibilidad para subir el certificado al Drive porque no aparecía la opción de agregar la carpeta. Verificar que el canal de carga esté habilitado y responder por correo con la vía documental correcta, sin trasladar el trámite a WhatsApp.",
       "count": 1
     },
     {
@@ -142,22 +148,22 @@
     {
       "name": "Base oficial / Drive",
       "status": "Operativa",
-      "detail": "Fuente maestra de identidad y asignación. Se mantiene el criterio de priorizar cédula y no asignar por datos secundarios cuando la coincidencia no sea inequívoca. Un nuevo respaldo físico detectado en Drive queda pendiente de conciliación porque la carpeta y los escaneos no exponen una cédula del JEA que permita asignar coordinador con seguridad."
+      "detail": "Fuente maestra de identidad y asignación. Se mantiene el criterio de priorizar cédula y no asignar por datos secundarios cuando la coincidencia no sea inequívoca. Una nueva postulación coincide de forma única por correo con la base oficial; otra comunicación y nuevas evidencias físicas permanecen sin asignación cuando no existe coincidencia inequívoca."
     },
     {
       "name": "Gmail institucional",
-      "status": "Último corte confirmado 17:14",
-      "detail": "El conector de Gmail no permitió refrescar mensajes posteriores durante este corte. Se conserva el último estado confirmado de las comunicaciones sin inferir correos nuevos ni modificar métricas a partir de información no verificada."
+      "status": "Corte confirmado 19:04",
+      "detail": "Se verificaron dos nuevas comunicaciones de disponibilidad/hoja de vida, nueva evidencia física remitida por correo y un reporte de dificultad de carga de certificado. No se publican datos nominales y los casos no conciliados se mantienen sin asignación."
     },
     {
       "name": "Formularios / Kobo",
-      "status": "Archivo actualizado; sin cambio material verificable",
-      "detail": "JEA_Zona8_Kobo_Maestro fue modificado después del corte anterior, pero no se pudo verificar un cambio en los consolidados oficiales. Se conservan 3.698 respuestas y 2.184 cédulas únicas hasta contar con una cifra nueva inequívoca."
+      "status": "Actualizado; nuevo envío duplicado",
+      "detail": "JEA_Zona8_Kobo_Maestro registra 3.699 respuestas y 2.184 cédulas únicas. Se mantienen 757 coincidencias con la base, 110 pendientes y 738 validados; las respuestas duplicadas aumentan a 1.492. El nuevo envío no representa un nuevo participante ni cambia el cumplimiento oficial."
     },
     {
       "name": "Plan Familiar físico",
-      "status": "Nuevo respaldo pendiente de conciliación",
-      "detail": "Se mantienen 2.027 respuestas cruzadas, 965 asignadas y 1.062 en revisión de asignación. Después de 17:14 apareció una carpeta Drive con cinco PDFs escaneados; como no se identifica de forma inequívoca al JEA, no se altera la separación por coordinador ni la ruta física abierta de 110 casos."
+      "status": "Nuevos respaldos sin cierre verificable",
+      "detail": "Se mantienen 2.027 respuestas cruzadas, 965 asignadas y 1.062 en revisión de asignación. Se recibió evidencia adicional por correo y apareció un PDF escaneado nuevo en Drive; al no existir una coincidencia inequívoca con la base oficial para cerrar esos casos, no se altera la separación por coordinador ni la ruta física abierta de 110 casos."
     },
     {
       "name": "Rechazos de pago",
