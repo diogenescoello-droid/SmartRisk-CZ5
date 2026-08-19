@@ -1,5 +1,5 @@
 {
-  "cut": "2026-08-18T21:00:03-05:00",
+  "cut": "2026-08-18T23:00:54-05:00",
   "cohort": 1386,
   "metrics": {
     "interacted": 280,
@@ -66,7 +66,7 @@
       "confirmedFivePhotosButLinkStillPending": 1,
       "correctedEvidenceButFormLocked": 9,
       "physicalEvidenceCorrectionPathOpen": 110,
-      "note": "Se mantienen sin cambio los conteos de regularización. Después del corte anterior se recibió por correo evidencia física identificada por una cédula que no aparece en la base oficial consultada, por lo que no se fuerza asignación y queda SIN ASIGNAR hasta conciliación. En Drive apareció además un nuevo PDF escaneado creado a las 18:31 sin identidad o cédula legible en el contenido indexado; tampoco se descuenta de la ruta abierta."
+      "note": "Se mantienen sin cambio los conteos de regularización. Después del corte anterior se recibió por correo evidencia física identificada por una cédula que no aparece en la base oficial consultada, por lo que no se fuerza asignación y queda SIN ASIGNAR hasta conciliación. En Drive apareció además un PDF escaneado sin identidad o cédula legible en el contenido indexado. Posteriormente se compartió una nueva carpeta de evidencias asociada a un participante de la cohorte, pero el contenido visible no permite clasificarla de forma segura como respaldo de Plan Familiar; no se descuenta de la ruta abierta ni se modifica la separación por coordinador hasta verificar su finalidad documental."
     },
     "note": "La separación prioriza cédula. Cuando no coincide, se usa correo, teléfono o nombre solo si la coincidencia con el responsable es única. SIN ASIGNAR no se fuerza a ningún coordinador."
   },
@@ -86,8 +86,14 @@
     {
       "priority": 2,
       "label": "Regularización de respaldo Plan Familiar físico",
-      "detail": "Dar seguimiento solo a casos que realmente usaron modalidad física; se mantienen 6 casos confirmados en línea y 110 casos en la ruta física abierta. Persisten 9 casos con evidencia corregida cuyo formulario no permite reemplazar el enlace. Se recibió nueva evidencia física por correo y un PDF escaneado nuevo en Drive, pero ninguno permite cerrar o reasignar un caso con seguridad contra la base oficial; mantenerlos SIN ASIGNAR hasta conciliación.",
+      "detail": "Dar seguimiento solo a casos que realmente usaron modalidad física; se mantienen 6 casos confirmados en línea y 110 casos en la ruta física abierta. Persisten 9 casos con evidencia corregida cuyo formulario no permite reemplazar el enlace. Las evidencias nuevas detectadas no permiten cerrar o reasignar un caso con seguridad contra la base oficial; mantener cualquier caso no conciliado como SIN ASIGNAR hasta verificación.",
       "count": 110
+    },
+    {
+      "priority": 2,
+      "label": "Clasificación de nueva carpeta de evidencias JEA",
+      "detail": "Se compartió después del corte anterior una nueva carpeta de evidencias asociada a un participante de la cohorte. Contiene múltiples archivos e imágenes, pero el contenido indexado no permite determinar de forma segura si corresponde al respaldo de Plan Familiar físico u otra actividad. Revisar y clasificar antes de contabilizar cumplimiento; no modificar planFamiliaFisico ni asignación por coordinador hasta verificar la finalidad documental.",
+      "count": 1
     },
     {
       "priority": 2,
@@ -147,23 +153,23 @@
   "sources": [
     {
       "name": "Base oficial / Drive",
-      "status": "Operativa",
-      "detail": "Fuente maestra de identidad y asignación. La nueva respuesta Kobo posterior al corte coincide inequívocamente por cédula con un participante asignado a Daniel Coello, Grupo 3. La respuesta de apoyo técnico recibida a las 21:00 no coincide de forma única por correo ni nombre y se mantiene sin asignación hasta conciliación."
+      "status": "Operativa; nueva evidencia pendiente de clasificación",
+      "detail": "Fuente maestra de identidad y asignación. Después del corte anterior se compartió una nueva carpeta de evidencias asociada a un participante de la cohorte. El contenido visible no permite clasificarla de forma segura como Plan Familiar u otra actividad, por lo que no se modifica cumplimiento ni asignación hasta verificarla."
     },
     {
       "name": "Gmail institucional",
-      "status": "Corte confirmado 21:00",
-      "detail": "Posterior al corte 20:05 se recibió una consulta sobre identificación de grupo de un participante ya conciliado por cédula como Daniel Coello, Grupo 3, y una respuesta a coordinación de apoyo técnico especializado que permanece pendiente de conciliación de identidad. No se detectaron nuevas novedades bancarias ni cierres verificables de Plan Familiar en el intervalo revisado."
+      "status": "Corte confirmado 23:00",
+      "detail": "No se detectaron correos JEA materiales posteriores al corte 21:00 dentro del intervalo revisado. Se mantienen sin cambio las novedades bancarias, de Plan Familiar y de acceso a grupos previamente registradas."
     },
     {
       "name": "Formularios / Kobo",
-      "status": "Cambio material; sincronizado 20:58",
-      "detail": "JEA_Zona8_Kobo_Maestro registra 3.700 respuestas y 2.185 cédulas únicas. Las coincidencias con la base suben a 758, los pendientes bajan a 109 y los validados suben a 739; se mantienen 1.492 respuestas duplicadas. La nueva respuesta validada fue registrada a las 20:28 del 18-08-2026 y se concilió por cédula con la base oficial. La última sincronización verificada es 18-08-2026 20:58:20."
+      "status": "Sin cambio de resultados; sincronizado 22:58",
+      "detail": "JEA_Zona8_Kobo_Maestro mantiene 3.700 respuestas y 2.185 cédulas únicas, con 1.492 respuestas duplicadas. La última respuesta detectada sigue siendo la registrada a las 20:28 del 18-08-2026; no hubo nuevas respuestas en las sincronizaciones posteriores. La última sincronización verificada es 18-08-2026 22:58:34."
     },
     {
       "name": "Plan Familiar físico",
-      "status": "Sin cambio material posterior al corte",
-      "detail": "Se mantienen 2.027 respuestas cruzadas, 965 asignadas y 1.062 en revisión de asignación, con 110 casos en ruta física abierta y 9 formularios bloqueados para sustitución de enlace. No se identificó un cierre adicional verificable posterior al corte 19:04."
+      "status": "Sin cambio cuantitativo; nueva carpeta sin clasificar",
+      "detail": "Se mantienen 2.027 respuestas cruzadas, 965 asignadas y 1.062 en revisión de asignación, con 110 casos en ruta física abierta y 9 formularios bloqueados para sustitución de enlace. La nueva carpeta compartida no se contabiliza como cierre hasta confirmar que corresponde a esta actividad y que cumple los criterios de evidencia."
     },
     {
       "name": "Rechazos de pago",
