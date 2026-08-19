@@ -1,5 +1,5 @@
 {
-  "cut": "2026-08-19T07:14:08-05:00",
+  "cut": "2026-08-19T08:11:11-05:00",
   "cohort": 1386,
   "metrics": {
     "interacted": 280,
@@ -61,11 +61,11 @@
     {"priority": 3, "label": "Sin interacción Kobo identificable", "detail": "Segmentar por grupo, territorio y canal antes de contactar masivamente.", "count": 1106}
   ],
   "sources": [
-    {"name": "Base oficial / Drive", "status": "Operativa; nueva disponibilidad conciliada y documentos operativos actualizados", "detail": "Fuente maestra de identidad y asignación. La nueva confirmación de disponibilidad presencial coincide de forma única por correo con la base oficial 1.386 y permanece asignada a Daniel Coello, aunque todavía figura fuera de BASE_867. Drive registra además modificaciones recientes en documentos de planificación y capacitación previa. No se alteran métricas de cumplimiento por estas novedades operativas."},
-    {"name": "Gmail institucional", "status": "1 novedad material al 19-08-2026 07:14", "detail": "Se recibió una nueva confirmación de disponibilidad para apoyo presencial. La identidad fue conciliada de forma única contra la base oficial; se incorpora al control operativo, sin publicar datos nominales ni contabilizarla como cumplimiento."},
-    {"name": "Formularios / Kobo", "status": "Sin cambio de resultados; sincronizado 06:58", "detail": "JEA_Zona8_Kobo_Maestro mantiene 3.700 respuestas, 2.185 cédulas únicas, 758 coincidencias, 109 pendientes y 739 validados, con 1.492 respuestas duplicadas. La última respuesta detectada figura a las 01:28:19 y la última sincronización verificada es 19-08-2026 06:58:37. No se trasladan a la cohorte respuestas que no coinciden con la base oficial."},
+    {"name": "Base oficial / Drive", "status": "Sin novedad material posterior al corte anterior", "detail": "Fuente maestra de identidad y asignación. No se detectaron archivos operativos JEA nuevos posteriores al corte anterior que justifiquen modificar participantes, cumplimiento, planFamiliaFisico o asignaciones por coordinador."},
+    {"name": "Gmail institucional", "status": "Sin novedad material posterior al corte anterior", "detail": "No se detectaron correos entrantes JEA posteriores al corte anterior que modifiquen participantes, cumplimiento, interacción, respaldos físicos o estado bancario."},
+    {"name": "Formularios / Kobo", "status": "1 envío adicional duplicado; sincronizado 07:58", "detail": "JEA_Zona8_Kobo_Maestro registra 3.701 respuestas, 2.185 cédulas únicas, 758 coincidencias, 109 pendientes y 739 validados, con 1.492 respuestas duplicadas. La última respuesta detectada figura a las 12:54:03 y la última sincronización verificada es 19-08-2026 07:58:25. El incremento de una respuesta no incorpora una nueva cédula y no modifica el cumplimiento real de la cohorte."},
     {"name": "Plan Familiar físico", "status": "Sin cambio cuantitativo", "detail": "Se mantienen 2.027 respuestas cruzadas, 965 asignadas y 1.062 en revisión de asignación, con 110 casos en ruta física abierta y 9 formularios bloqueados para sustitución de enlace. No se detectó una nueva respuesta verificable posterior al corte que justifique modificar estos conteos ni la separación por coordinador."},
-    {"name": "Rechazos de pago", "status": "Recibido, pendiente de cruce de cohorte", "detail": "Archivo institucional recibido el 18-08-2026: 975 rechazos a nivel nacional y 304 correspondientes a Guayas. No se publican datos nominales ni se trasladan estos totales a la cohorte de Daniel sin cruce por cédula."},
+    {"name": "Rechazos de pago", "status": "Sin cambio; pendiente de cruce de cohorte", "detail": "Se mantiene como referencia el archivo institucional recibido el 18-08-2026 con 975 rechazos nacionales y 304 de Guayas. No se trasladan esos totales a la cohorte de Daniel sin cruce por cédula."},
     {"name": "Conversaciones de gestión", "status": "Asistida", "detail": "Ajusta criterios y reglas de interpretación; se incorpora mediante revisión programada."}
   ],
   "method": [
