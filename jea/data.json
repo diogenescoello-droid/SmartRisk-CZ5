@@ -1,5 +1,5 @@
 {
-  "cut": "2026-08-18T19:04:02-05:00",
+  "cut": "2026-08-18T20:05:23-05:00",
   "cohort": 1386,
   "metrics": {
     "interacted": 280,
@@ -98,8 +98,8 @@
     {
       "priority": 2,
       "label": "Postulaciones para actividades presenciales",
-      "detail": "Se recibieron dos nuevas hojas de vida/disponibilidades después del corte anterior, elevando el total operativo reciente de 11 a 13 comunicaciones. Una coincide de forma única por correo con la base oficial y ya constaba VALIDADA en Kobo, por lo que no modifica cumplimiento; la otra no presenta coincidencia inequívoca por correo en la base oficial y debe permanecer pendiente de conciliación antes de asignar grupo o contabilizar participación.",
-      "count": 13
+      "detail": "Se recibió una nueva hoja de vida/disponibilidad posterior al corte anterior, elevando el total operativo reciente de 13 a 14 comunicaciones. El correo, teléfono y nombre declarados no producen una coincidencia inequívoca en la base oficial, por lo que este caso debe permanecer pendiente de conciliación y no contabilizarse como participación ni asignarse a un coordinador hasta confirmar identidad por cédula o una coincidencia única verificable.",
+      "count": 14
     },
     {
       "priority": 2,
@@ -148,22 +148,22 @@
     {
       "name": "Base oficial / Drive",
       "status": "Operativa",
-      "detail": "Fuente maestra de identidad y asignación. Se mantiene el criterio de priorizar cédula y no asignar por datos secundarios cuando la coincidencia no sea inequívoca. Una nueva postulación coincide de forma única por correo con la base oficial; otra comunicación y nuevas evidencias físicas permanecen sin asignación cuando no existe coincidencia inequívoca."
+      "detail": "Fuente maestra de identidad y asignación. Se mantiene el criterio de priorizar cédula y no asignar por datos secundarios cuando la coincidencia no sea inequívoca. La nueva postulación posterior al corte no coincide de forma única por correo, teléfono ni nombre y queda pendiente de conciliación, sin asignación forzada."
     },
     {
       "name": "Gmail institucional",
-      "status": "Corte confirmado 19:04",
-      "detail": "Se verificaron dos nuevas comunicaciones de disponibilidad/hoja de vida, nueva evidencia física remitida por correo y un reporte de dificultad de carga de certificado. No se publican datos nominales y los casos no conciliados se mantienen sin asignación."
+      "status": "Corte confirmado 20:05",
+      "detail": "Después del corte 19:04 se recibió una nueva hoja de vida con disponibilidad horaria para apoyo operativo. El caso no presenta coincidencia inequívoca en la base oficial y se mantiene pendiente de conciliación. No se detectaron nuevas novedades bancarias ni cierres verificables de Plan Familiar en el intervalo revisado."
     },
     {
       "name": "Formularios / Kobo",
-      "status": "Actualizado; nuevo envío duplicado",
-      "detail": "JEA_Zona8_Kobo_Maestro registra 3.699 respuestas y 2.184 cédulas únicas. Se mantienen 757 coincidencias con la base, 110 pendientes y 738 validados; las respuestas duplicadas aumentan a 1.492. El nuevo envío no representa un nuevo participante ni cambia el cumplimiento oficial."
+      "status": "Sin cambio de consolidado; sincronizado 19:58",
+      "detail": "JEA_Zona8_Kobo_Maestro registra 3.699 respuestas y 2.184 cédulas únicas. Se mantienen 757 coincidencias con la base, 110 pendientes, 738 validados y 1.492 respuestas duplicadas. La sincronización más reciente verificada es 18-08-2026 19:58:13; no modifica el cumplimiento oficial respecto del corte anterior."
     },
     {
       "name": "Plan Familiar físico",
-      "status": "Nuevos respaldos sin cierre verificable",
-      "detail": "Se mantienen 2.027 respuestas cruzadas, 965 asignadas y 1.062 en revisión de asignación. Se recibió evidencia adicional por correo y apareció un PDF escaneado nuevo en Drive; al no existir una coincidencia inequívoca con la base oficial para cerrar esos casos, no se altera la separación por coordinador ni la ruta física abierta de 110 casos."
+      "status": "Sin cambio material posterior al corte",
+      "detail": "Se mantienen 2.027 respuestas cruzadas, 965 asignadas y 1.062 en revisión de asignación, con 110 casos en ruta física abierta y 9 formularios bloqueados para sustitución de enlace. No se identificó un cierre adicional verificable posterior al corte 19:04."
     },
     {
       "name": "Rechazos de pago",
