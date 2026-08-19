@@ -1,5 +1,5 @@
 {
-  "cut": "2026-08-18T23:00:54-05:00",
+  "cut": "2026-08-19T00:03:36-05:00",
   "cohort": 1386,
   "metrics": {
     "interacted": 280,
@@ -145,6 +145,12 @@
     },
     {
       "priority": 3,
+      "label": "Nuevo expediente operativo JEA",
+      "detail": "Se detectó en Drive un nuevo expediente operativo con registro de asistencia, justificación, certificado y fotografías de trabajo. El participante fue conciliado de forma inequívoca contra la base oficial como asignado a Daniel Coello, Grupo 1, y ya constaba VALIDADO en Kobo. Archivar la evidencia en su seguimiento documental; no modifica cumplimiento ni planFamiliaFisico.",
+      "count": 1
+    },
+    {
+      "priority": 3,
       "label": "Sin interacción Kobo identificable",
       "detail": "Segmentar por grupo, territorio y canal antes de contactar masivamente.",
       "count": 1106
@@ -153,23 +159,23 @@
   "sources": [
     {
       "name": "Base oficial / Drive",
-      "status": "Operativa; nueva evidencia pendiente de clasificación",
-      "detail": "Fuente maestra de identidad y asignación. Después del corte anterior se compartió una nueva carpeta de evidencias asociada a un participante de la cohorte. El contenido visible no permite clasificarla de forma segura como Plan Familiar u otra actividad, por lo que no se modifica cumplimiento ni asignación hasta verificarla."
+      "status": "Operativa; nuevo expediente operativo conciliado",
+      "detail": "Fuente maestra de identidad y asignación. Después del corte anterior se detectó un nuevo expediente operativo con asistencia, justificación, certificado y fotos de trabajo. La identidad fue conciliada de forma inequívoca contra la base oficial como participante asignado a Daniel Coello, Grupo 1, y ya VALIDADO en Kobo. No corresponde a Plan Familiar físico y no altera sus conteos. Se mantiene además pendiente de clasificación la carpeta de evidencias detectada en el corte anterior."
     },
     {
       "name": "Gmail institucional",
-      "status": "Corte confirmado 23:00",
-      "detail": "No se detectaron correos JEA materiales posteriores al corte 21:00 dentro del intervalo revisado. Se mantienen sin cambio las novedades bancarias, de Plan Familiar y de acceso a grupos previamente registradas."
+      "status": "Sin novedades materiales al 19-08-2026 00:03",
+      "detail": "No se detectaron correos JEA materiales posteriores al corte 23:00 del 18-08-2026. Se mantienen sin cambio las novedades bancarias, de Plan Familiar y de acceso a grupos previamente registradas."
     },
     {
       "name": "Formularios / Kobo",
-      "status": "Sin cambio de resultados; sincronizado 22:58",
-      "detail": "JEA_Zona8_Kobo_Maestro mantiene 3.700 respuestas y 2.185 cédulas únicas, con 1.492 respuestas duplicadas. La última respuesta detectada sigue siendo la registrada a las 20:28 del 18-08-2026; no hubo nuevas respuestas en las sincronizaciones posteriores. La última sincronización verificada es 18-08-2026 22:58:34."
+      "status": "Sin cambio de resultados; sincronizado 23:58",
+      "detail": "JEA_Zona8_Kobo_Maestro mantiene 3.700 respuestas, 2.185 cédulas únicas, 758 coincidencias, 109 pendientes y 739 validados, con 1.492 respuestas duplicadas. La última respuesta real conciliada sigue siendo la registrada a las 20:28 del 18-08-2026; el indicador de fecha visible en la hoja refleja el timestamp de origen con desfase horario. La última sincronización verificada es 18-08-2026 23:58:31."
     },
     {
       "name": "Plan Familiar físico",
-      "status": "Sin cambio cuantitativo; nueva carpeta sin clasificar",
-      "detail": "Se mantienen 2.027 respuestas cruzadas, 965 asignadas y 1.062 en revisión de asignación, con 110 casos en ruta física abierta y 9 formularios bloqueados para sustitución de enlace. La nueva carpeta compartida no se contabiliza como cierre hasta confirmar que corresponde a esta actividad y que cumple los criterios de evidencia."
+      "status": "Sin cambio cuantitativo",
+      "detail": "Se mantienen 2.027 respuestas cruzadas, 965 asignadas y 1.062 en revisión de asignación, con 110 casos en ruta física abierta y 9 formularios bloqueados para sustitución de enlace. El nuevo expediente operativo detectado en Drive no corresponde a esta actividad y no se contabiliza aquí."
     },
     {
       "name": "Rechazos de pago",
