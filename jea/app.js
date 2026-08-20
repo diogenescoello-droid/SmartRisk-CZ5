@@ -1,6 +1,7 @@
 (() => {
   "use strict";
   const $ = s => document.querySelector(s);
+  const $$ = s => [...document.querySelectorAll(s)];
   const login = $("#login");
   const app = $("#app");
   const error = $("#loginError");
@@ -11,6 +12,12 @@
   function fmt(n){ return new Intl.NumberFormat("es-EC").format(n); }
   function showApp(){ login.classList.add("hidden"); app.classList.remove("hidden"); }
   function showLogin(){ app.classList.add("hidden"); login.classList.remove("hidden"); }
+
+  function showSection(id){
+    $$(".view-section").forEach(section=>section.classList.toggle("active-view", section.id===id));
+    $$(".nav-chip").forEach(button=>button.classList.toggle("active", button.dataset.target===id));
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
 
   async function loadData(){
     const res = await fetch(`data.json?v=${Date.now()}`, {cache:"no-store"});
@@ -38,9 +45,9 @@
     $("#coordinatorSource").textContent = `${fmt(pf.totalResponses)} respuestas · ${fmt(pf.assignedResponses)} asignadas`;
     $("#coordinatorKpis").innerHTML = [
       [fmt(responses), selected ? "Respuestas del coordinador" : "Respuestas totales", `${share}% del archivo recibido`],
-      [selected && assigned ? fmt(assigned) : "—", selected && assigned ? "Participantes asignados en matriz" : "Base asignada", selected && assigned ? "Dato de referencia; no se interpreta aquí como cumplimiento" : "Selecciona un coordinador para ver su base"],
-      [selectedName === "SIN ASIGNAR" ? fmt(pf.unassignedResponses) : fmt(pf.assignedResponses), selectedName === "SIN ASIGNAR" ? "Sin asignación inequívoca" : "Cruces asignados", selectedName === "SIN ASIGNAR" ? "No forzar responsable hasta depurar" : "Cédula o coincidencia única de respaldo"],
-      [assignmentLabel, "Estado de lectura", selectedName === "TODOS" ? "Compara sin mezclar datos nominales" : "Filtro activo en este módulo"]
+      [selected && assigned ? fmt(assigned) : "—", selected && assigned ? "Participantes asignados" : "Base asignada", selected && assigned ? "Dato de referencia" : "Selecciona un coordinador"],
+      [selectedName === "SIN ASIGNAR" ? fmt(pf.unassignedResponses) : fmt(pf.assignedResponses), selectedName === "SIN ASIGNAR" ? "Sin asignación" : "Cruces asignados", selectedName === "SIN ASIGNAR" ? "Requiere depuración" : "Cédula o coincidencia única"],
+      [assignmentLabel, "Estado", selectedName === "TODOS" ? "Vista general" : "Filtro activo"]
     ].map(([v,l,s])=>`<article class="mini-kpi"><strong>${v}</strong><span>${l}</span><small>${s}</small></article>`).join("");
 
     $("#coordinatorList").innerHTML=pf.coordinators.map(c=>{
@@ -60,13 +67,13 @@
     currentData=data;
     const m=data.metrics, total=data.cohort;
     const cut = new Date(data.cut);
-    $("#cutLabel").textContent = `Corte operativo: ${cut.toLocaleString("es-EC", {dateStyle:"long", timeStyle:"short"})}`;
+    $("#cutLabel").textContent = `Corte: ${cut.toLocaleString("es-EC", {dateStyle:"medium", timeStyle:"short"})}`;
     $("#kpis").innerHTML = [
       [fmt(total),"Cohorte oficial","Base maestra vigente"],
-      [fmt(m.interacted),"Con interacción identificada",`${pct(m.interacted,total)}% de la cohorte`],
-      [fmt(m.progress),"Con avance o producto",`${pct(m.progress,total)}% de la cohorte`],
-      [fmt(m.families5),"Reportaron 5 familias",`${pct(m.families5,total)}% de la cohorte`],
-      [fmt(m.noInteraction),"Sin interacción Kobo",`${pct(m.noInteraction,total)}% · requiere segmentación`]
+      [fmt(m.interacted),"Con interacción",`${pct(m.interacted,total)}% de la cohorte`],
+      [fmt(m.progress),"Con avance",`${pct(m.progress,total)}% de la cohorte`],
+      [fmt(m.families5),"5 familias",`${pct(m.families5,total)}% reportado`],
+      [fmt(m.noInteraction),"Sin interacción Kobo",`${pct(m.noInteraction,total)}% por revisar`]
     ].map(([v,l,s])=>`<article class="kpi"><strong>${v}</strong><span>${l}</span><small>${s}</small></article>`).join("");
 
     renderCoordinator(data,"TODOS");
@@ -99,9 +106,10 @@
     const row=e.target.closest("[data-coordinator]");
     if(row&&currentData) renderCoordinator(currentData,row.dataset.coordinator);
   });
+  $$(".nav-chip").forEach(button=>button.addEventListener("click",()=>showSection(button.dataset.target)));
 
   auth.onAuthStateChanged(async user=>{
-    if(user){ showApp(); await boot(); }
+    if(user){ showApp(); showSection("resumen"); await boot(); }
     else showLogin();
   });
 
@@ -110,8 +118,8 @@
     if(!btn){ if(!e.target.closest("#tooltip")) tipbox.classList.add("hidden"); return; }
     const r=btn.getBoundingClientRect();
     tipbox.textContent=btn.dataset.tip||"";
-    tipbox.style.left=`${Math.min(window.innerWidth-360,Math.max(15,r.left-12))}px`;
-    tipbox.style.top=`${Math.min(window.innerHeight-120,r.bottom+10)}px`;
+    tipbox.style.left=`${Math.max(12,Math.min(window.innerWidth-tipbox.offsetWidth-12,r.left-10))}px`;
+    tipbox.style.top=`${Math.min(window.innerHeight-110,r.bottom+8)}px`;
     tipbox.classList.remove("hidden");
   });
 })();
