@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#0f766e">
-  <title>Jóvenes en Acción · Gestión de Cohorte</title>
+  <title>Jóvenes en Acción · Control JEA</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -13,7 +13,7 @@
       <div class="brand">JEA</div>
       <p class="eyebrow">Coordinación Zonal 5</p>
       <h1>Jóvenes en Acción</h1>
-      <p class="muted">Gestión viva de cohorte, seguimiento y acciones.</p>
+      <p class="muted">Control simple de participantes, pendientes y evidencias.</p>
       <form id="loginForm">
         <label>Correo institucional o autorizado<input id="email" type="email" required autocomplete="username"></label>
         <label>Contraseña<input id="password" type="password" required autocomplete="current-password"></label>
@@ -24,76 +24,101 @@
   </main>
 
   <div id="app" class="app hidden">
-    <header class="topbar">
+    <header class="mobile-header">
       <div>
         <p class="eyebrow">Jóvenes en Acción · CZ5</p>
-        <h1>Centro de gestión de cohorte</h1>
-        <p id="cutLabel" class="muted"></p>
+        <h1>Control JEA</h1>
+        <p id="cutLabel" class="cut-label"></p>
       </div>
-      <div class="top-actions">
-        <span id="syncBadge" class="badge">Sincronización activa</span>
-        <button id="logout" class="secondary">Cerrar sesión</button>
-      </div>
+      <button id="logout" class="icon-button" aria-label="Cerrar sesión">Salir</button>
     </header>
 
-    <section class="notice">
-      <div><b>Lectura recomendada:</b> Estado → Fricción → Siguiente acción → Evidencia.</div>
-      <button class="tip" data-tip="Esta secuencia evita confundir ausencia de evidencia con incumplimiento y ayuda a decidir qué hacer con cada participante.">?</button>
+    <section class="status-strip">
+      <span id="syncBadge" class="badge">Datos actualizados</span>
+      <span class="status-copy">Primero revisa pendientes y acciones.</span>
     </section>
 
-    <section id="kpis" class="kpi-grid"></section>
+    <nav class="quick-nav" aria-label="Secciones principales">
+      <button class="nav-chip active" data-target="resumen">🏠<span>Resumen</span></button>
+      <button class="nav-chip" data-target="pendientes">⚠️<span>Pendientes</span></button>
+      <button class="nav-chip" data-target="plan-familiar">📁<span>Plan familiar</span></button>
+      <button class="nav-chip" data-target="fuentes">🔄<span>Fuentes</span></button>
+    </nav>
 
-    <section class="card coordinator-card">
-      <div class="card-head">
-        <div><p class="eyebrow">Plan Familiar en Físico</p><h2>Respuestas separadas por coordinador</h2></div>
-        <button class="tip" data-tip="La asignación se hace primero por cédula. Si no coincide, se usa correo, teléfono o nombre solo cuando existe una coincidencia única con el responsable. Los casos dudosos permanecen en Sin asignar.">?</button>
+    <section id="resumen" class="view-section active-view">
+      <div class="section-title">
+        <div><p class="eyebrow">Estado general</p><h2>¿Cómo vamos?</h2></div>
+        <button class="tip" data-tip="Aquí ves solamente los números principales. Entra a Pendientes para saber qué requiere acción.">?</button>
       </div>
-      <div class="coordinator-toolbar">
-        <label>Ver coordinador
-          <select id="coordinatorSelect"></select>
-        </label>
-        <span id="coordinatorSource" class="badge soft"></span>
-      </div>
-      <div id="coordinatorKpis" class="mini-kpi-grid"></div>
-      <div id="coordinatorList" class="coordinator-list"></div>
-      <div class="grid two compact-grid">
-        <div>
-          <p class="eyebrow">Calidad del cruce</p>
-          <div id="matchMethods" class="match-methods"></div>
-        </div>
-        <div>
-          <p class="eyebrow">Criterio</p>
-          <p id="coordNote" class="muted coord-note"></p>
-        </div>
-      </div>
-    </section>
+      <section id="kpis" class="kpi-grid"></section>
 
-    <section class="grid two">
-      <article class="card">
-        <div class="card-head"><div><p class="eyebrow">Prioridades</p><h2>Cola de acción</h2></div><button class="tip" data-tip="Empieza por los casos con una acción individual concreta. Luego gestiona avances parciales y, al final, segmentos masivos sin interacción.">?</button></div>
-        <div id="actions" class="stack"></div>
-      </article>
-      <article class="card">
-        <div class="card-head"><div><p class="eyebrow">Fuentes</p><h2>Salud de sincronización</h2></div><button class="tip" data-tip="Cada fuente tiene un rol distinto: Drive consolida bases y archivos; Gmail registra comunicaciones; formularios miden interacción y avance; las conversaciones afinan reglas y criterios.">?</button></div>
-        <div id="sources" class="source-list"></div>
-      </article>
-    </section>
-
-    <section class="grid two">
-      <article class="card">
-        <div class="card-head"><div><p class="eyebrow">Embudo</p><h2>Participación de la cohorte</h2></div><button class="tip" data-tip="Interacción no equivale a cumplimiento. El embudo separa contacto, avance y producto reportado.">?</button></div>
+      <article class="card compact-card">
+        <div class="card-head"><div><p class="eyebrow">Participación</p><h2>Avance de la cohorte</h2></div></div>
         <div id="funnel" class="funnel"></div>
       </article>
-      <article class="card">
-        <div class="card-head"><div><p class="eyebrow">Gestión</p><h2>Cómo trabajar esta cohorte</h2></div><button class="tip" data-tip="No gestiones 1.386 personas como una lista plana. Segmenta por estado y fricción, y asigna una siguiente acción única por segmento o caso.">?</button></div>
-        <div id="method" class="method"></div>
+    </section>
+
+    <section id="pendientes" class="view-section">
+      <div class="section-title">
+        <div><p class="eyebrow">Atención inmediata</p><h2>¿Qué falta resolver?</h2></div>
+        <button class="tip" data-tip="Empieza por P1. Después continúa con P2 y P3.">?</button>
+      </div>
+      <article class="card action-card">
+        <div id="actions" class="stack"></div>
+      </article>
+
+      <details class="card details-card">
+        <summary>Cómo trabajar estos pendientes</summary>
+        <div id="method" class="method details-body"></div>
+      </details>
+    </section>
+
+    <section id="plan-familiar" class="view-section">
+      <div class="section-title">
+        <div><p class="eyebrow">Plan Familiar físico</p><h2>Respuestas por coordinador</h2></div>
+        <button class="tip" data-tip="La asignación se hace primero por cédula. Casos ambiguos permanecen en SIN ASIGNAR.">?</button>
+      </div>
+
+      <article class="card coordinator-card">
+        <div class="coordinator-toolbar">
+          <label>Coordinador
+            <select id="coordinatorSelect"></select>
+          </label>
+          <span id="coordinatorSource" class="badge soft"></span>
+        </div>
+        <div id="coordinatorKpis" class="mini-kpi-grid"></div>
+
+        <details class="inline-details">
+          <summary>Ver todos los coordinadores</summary>
+          <div id="coordinatorList" class="coordinator-list"></div>
+        </details>
+
+        <details class="inline-details">
+          <summary>Ver calidad del cruce</summary>
+          <div class="details-body">
+            <div id="matchMethods" class="match-methods"></div>
+            <p id="coordNote" class="muted coord-note"></p>
+          </div>
+        </details>
       </article>
     </section>
 
-    <section class="card">
-      <div class="card-head"><div><p class="eyebrow">Exploración</p><h2>Buscador de participante</h2></div><span class="badge soft">Backend seguro pendiente</span></div>
-      <p class="muted">El buscador nominal se conectará a Firestore/API autenticada. No se publican cédulas, teléfonos ni correos en el sitio estático.</p>
-      <div class="search-disabled"><input disabled placeholder="Buscar por nombre, cédula o teléfono"><button disabled>Buscar</button></div>
+    <section id="fuentes" class="view-section">
+      <div class="section-title">
+        <div><p class="eyebrow">Sincronización</p><h2>¿De dónde salen los datos?</h2></div>
+        <button class="tip" data-tip="Revisa aquí si Drive, Gmail o formularios tienen novedades o problemas.">?</button>
+      </div>
+      <article class="card">
+        <div id="sources" class="source-list"></div>
+      </article>
+
+      <details class="card details-card">
+        <summary>Buscador de participante</summary>
+        <div class="details-body">
+          <p class="muted">El buscador nominal requiere un backend autenticado. No se publican cédulas, teléfonos ni correos en el sitio estático.</p>
+          <div class="search-disabled"><input disabled placeholder="Buscar participante"><button disabled>Buscar</button></div>
+        </div>
+      </details>
     </section>
   </div>
 
