@@ -24,6 +24,8 @@
     "enos-matrix-ui.js",
     "enos-matrix.css",
     "enos-matrix-v11.js",
+    "enos-operational-v11.css",
+    "enos-operational-v11.js",
     "plan-sources.js",
     "risk-locations.js",
     "f03-data.js",
