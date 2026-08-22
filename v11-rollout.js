@@ -9,7 +9,7 @@
     "geopro.ec5@gmail.com"
   ]);
 
-  const BUILD_VERSION = "11.0.0-rc16.6";
+  const BUILD_VERSION = "11.0.0-rc16.7";
   const loadedResources = new Set();
   const normalizeEmail = value => String(value || "").trim().toLowerCase();
 
@@ -76,6 +76,7 @@
     await loadScript("v11-mobile-rc15.js");
     await loadScript("v11-approved-rc16.js");
     await loadScript("v11-authoritative-metrics.js");
+    await loadScript("enos-matrix-audit-20260822.js");
     await loadScript("enos-matrix-v11.js");
     await loadScript("enos-operational-v11.js");
     await window.SmartRiskV11App.start({ user, profile, db, auth });
