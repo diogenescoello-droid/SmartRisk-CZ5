@@ -11,6 +11,8 @@
     "data.js",
     "enos-data.js",
     "enos-reviews.js",
+    "enos-matrix-preliminary.js",
+    "enos-matrix-ui.js",
     "plan-sources.js",
     "risk-locations.js",
     "f03-data.js",
