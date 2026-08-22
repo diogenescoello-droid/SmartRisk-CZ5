@@ -1,0 +1,15 @@
+import fs from "node:fs";
+import assert from "node:assert/strict";
+const read = file => fs.readFileSync(new URL(`../${file}`, import.meta.url), "utf8");
+const rollout=read("v11-rollout.js"), ui=read("enos-operational-v11.js"), css=read("enos-operational-v11.css");
+assert.match(rollout,/enos-operational-v11\.css/);
+assert.match(rollout,/enos-operational-v11\.js/);
+assert.match(ui,/ESPACIO DE TRABAJO TERRITORIAL/);
+assert.match(ui,/TABLERO DE ACCIONES/);
+assert.match(ui,/CARTOGRAFÍA VERIFICABLE/);
+assert.match(ui,/provincias-zonal5\.geojson/);
+assert.match(ui,/riesgo-guayas-web\.geojson/);
+assert.match(ui,/riesgo-bolivar\.geojson/);
+assert.match(ui,/no se colocan puntos aproximados/i);
+assert.match(css,/\.sr16-map\{height:440px/);
+console.log("PASS vistas operativas integrales y cartografía verificable");
