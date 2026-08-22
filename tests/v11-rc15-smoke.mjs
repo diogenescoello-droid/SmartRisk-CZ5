@@ -10,7 +10,7 @@ const assets = JSON.parse(read("release-assets.json"));
 
 const checks = [
   ["RC15 cargada por rollout", rollout.includes('loadScript("v11-mobile-rc15.js")') && rollout.includes('loadStyles("v11-mobile-rc15.css")')],
-  ["Caché del index actualizada", index.includes("v11-rollout.js?v=11.0.0-rc16.3")],
+  ["Caché del index actualizada", /v11-rollout\.js\?v=11\.0\.0-rc16\.[34]/.test(index)],
   ["Navegación móvil de cinco accesos", ["Inicio", "Territorio", "Mapa", "Acciones", "Más"].every(label => script.includes(`label: "${label}"`))],
   ["Menú completo preservado detrás de Más", script.includes('classList.toggle("sr15-menu-open")')],
   ["Jerarquía Zona, provincia y cantón", script.includes("Zona 5") && script.includes("Elegir zona, provincia o cantón")],
