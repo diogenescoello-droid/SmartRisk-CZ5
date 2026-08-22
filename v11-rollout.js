@@ -75,6 +75,7 @@
     await loadScript("v11-mobile-rc15.js");
     await loadScript("v11-approved-rc16.js");
     await loadScript("v11-authoritative-metrics.js");
+    await loadScript("enos-matrix-v11.js");
     await window.SmartRiskV11App.start({ user, profile, db, auth });
     window.SmartRiskV11UX?.afterAppStart?.();
     window.SmartRiskV11DashboardRC8?.afterAppStart?.();
@@ -84,6 +85,7 @@
     window.SmartRiskV11MobileRC15?.afterAppStart?.();
     window.SmartRiskV11ApprovedRC16?.afterAppStart?.();
     window.SmartRiskAuthoritativeMetrics?.afterAppStart?.();
+    window.SmartRiskMatrixV11?.afterAppStart?.();
     return true;
   }
 
