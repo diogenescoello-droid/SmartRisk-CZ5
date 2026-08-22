@@ -1,0 +1,13 @@
+import fs from "node:fs";
+import assert from "node:assert/strict";
+const read=file=>fs.readFileSync(new URL(`../${file}`,import.meta.url),"utf8");
+const ui=read("enos-matrix-v11.js"),css=read("enos-matrix.css"),index=read("index.html");
+assert.match(ui,/Financiamiento de las acciones/);
+assert.match(ui,/Acciones con monto/);
+assert.match(ui,/Crédito o préstamo/);
+assert.match(ui,/En gestión o solicitado/);
+assert.match(ui,/no se interpreta como USD 0/);
+assert.match(css,/visibility:visible!important/);
+assert.match(css,/repeat\(auto-fit,minmax\(145px,1fr\)\)/);
+assert.match(index,/enos-matrix\.css\?v=2026\.08\.22\.2/);
+console.log("PASS lectura financiera y tarjetas F01–F07 legibles");
