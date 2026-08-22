@@ -1,0 +1,11 @@
+import fs from "node:fs";
+import assert from "node:assert/strict";
+const read=file=>fs.readFileSync(new URL(`../${file}`,import.meta.url),"utf8");
+const gate=read("access-gate.js"),css=read("styles.css"),index=read("index.html");
+assert.match(gate,/startInterfaceTransition\(\)/);
+assert.match(gate,/finishInterfaceTransition\(\)/);
+assert.match(gate,/Preparando SmartRisk/);
+assert.match(css,/body\.interface-loading #app/);
+assert.match(css,/\.interface-loading-screen/);
+assert.match(index,/access-gate\.js\?v=11\.0\.0-rc16\.5/);
+console.log("PASS transición sin exposición de la interfaz anterior");
