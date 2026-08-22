@@ -70,11 +70,25 @@
   let loading = false;
   let pendingLoginPassword = "";
 
+  function startInterfaceTransition() {
+    document.body.classList.add("interface-loading");
+    if (document.querySelector("#interfaceLoading")) return;
+    document.body.insertAdjacentHTML("beforeend", `<section id="interfaceLoading" class="interface-loading-screen" role="status" aria-live="polite">
+      <div><span class="interface-loading-mark">SR</span><h2>Preparando SmartRisk</h2><p>Cargando su territorio, acciones y cartografía…</p><i></i></div>
+    </section>`);
+  }
+
+  function finishInterfaceTransition() {
+    document.body.classList.remove("interface-loading");
+    document.querySelector("#interfaceLoading")?.remove();
+  }
+
   function loginMessage(message = "") {
     if ($("#loginError")) $("#loginError").textContent = message;
   }
 
   function showLogin(message = "") {
+    finishInterfaceTransition();
     $("#app")?.classList.add("hidden");
     $("#login")?.classList.remove("hidden");
     $("#guideHelp")?.classList.add("hidden");
@@ -248,6 +262,7 @@
         const v11Enabled = await window.SmartRiskV11Rollout.decide(user, profile);
         if (v11Enabled) {
           loaded = true;
+          finishInterfaceTransition();
           return;
         }
       }
@@ -255,6 +270,7 @@
       await loadScript("app.js");
       for (const src of FEATURE_SCRIPTS) await loadScript(`modules/${src}`);
       loaded = true;
+      finishInterfaceTransition();
     } finally {
       loading = false;
     }
@@ -271,6 +287,7 @@
         return;
       }
       if (!await requireFirstPasswordChange(user, profile)) return;
+      startInterfaceTransition();
       await loadApplication(user, { ...profile, requiereCambioClave: false });
     } catch (error) {
       console.error(error);
