@@ -22,6 +22,7 @@
     "enos-reviews.js",
     "enos-matrix-preliminary.js",
     "enos-matrix-audit-20260822.js",
+    "enos-matrix-audit-ui-20260822.js",
     "enos-matrix-ui.js",
     "enos-matrix.css",
     "enos-matrix-v11.js",
