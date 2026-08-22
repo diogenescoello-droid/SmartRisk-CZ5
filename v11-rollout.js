@@ -77,6 +77,7 @@
     await loadScript("v11-approved-rc16.js");
     await loadScript("v11-authoritative-metrics.js");
     await loadScript("enos-matrix-audit-20260822.js");
+    await loadScript("enos-matrix-audit-ui-20260822.js");
     await loadScript("enos-matrix-v11.js");
     await loadScript("enos-operational-v11.js");
     await window.SmartRiskV11App.start({ user, profile, db, auth });
