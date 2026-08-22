@@ -9,7 +9,7 @@
     "geopro.ec5@gmail.com"
   ]);
 
-  const BUILD_VERSION = "11.0.0-rc16.3";
+  const BUILD_VERSION = "11.0.0-rc16.6";
   const loadedResources = new Set();
   const normalizeEmail = value => String(value || "").trim().toLowerCase();
 
@@ -63,6 +63,7 @@
     await loadStyles("v11-mobile-rc15.css");
     await loadStyles("v11-layout-rc15-1.css");
     await loadStyles("v11-approved-rc16.css");
+    await loadStyles("enos-operational-v11.css");
     await loadScript("v11-router.js");
     await loadScript("v11-permissions.js");
     await loadScript("v11-data-adapter.js");
@@ -76,6 +77,7 @@
     await loadScript("v11-approved-rc16.js");
     await loadScript("v11-authoritative-metrics.js");
     await loadScript("enos-matrix-v11.js");
+    await loadScript("enos-operational-v11.js");
     await window.SmartRiskV11App.start({ user, profile, db, auth });
     window.SmartRiskV11UX?.afterAppStart?.();
     window.SmartRiskV11DashboardRC8?.afterAppStart?.();
@@ -86,6 +88,7 @@
     window.SmartRiskV11ApprovedRC16?.afterAppStart?.();
     window.SmartRiskAuthoritativeMetrics?.afterAppStart?.();
     window.SmartRiskMatrixV11?.afterAppStart?.();
+    window.SmartRiskOperationalV11?.afterAppStart?.();
     return true;
   }
 
