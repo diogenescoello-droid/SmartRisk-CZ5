@@ -9,5 +9,5 @@ assert.match(ui,/En gestión o solicitado/);
 assert.match(ui,/no se interpreta como USD 0/);
 assert.match(css,/visibility:visible!important/);
 assert.match(css,/repeat\(auto-fit,minmax\(145px,1fr\)\)/);
-assert.match(index,/enos-matrix\.css\?v=2026\.08\.22\.2/);
+assert.match(index,/enos-matrix\.css\?v=2026\.08\.22\.3/);
 console.log("PASS lectura financiera y tarjetas F01–F07 legibles");
