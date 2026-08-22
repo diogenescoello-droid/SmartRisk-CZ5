@@ -6,7 +6,7 @@
     release: "V1.0.0 PILOTO ESTABLE",
     build: "1.0.0-piloto-estable",
     tag: "v1.0.0-piloto-estable",
-    dataCut: "2026-07-30",
+    dataCut: "2026-08-22",
     channel: "production"
   });
 })();
