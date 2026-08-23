@@ -40,10 +40,12 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Construir y validar artefacto canónico
+      - id: validate
+        name: Construir y validar artefacto canónico
         run: node scripts/test-release.mjs
 
-      - name: Publicar canal live de Firebase Hosting
+      - id: deploy
+        name: Publicar canal live de Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
@@ -51,22 +53,30 @@ jobs:
           channelId: live
           projectId: smartrisk-cz5-produccion
 
-      - name: Registrar despliegue confirmado
+      - name: Registrar resultado verificable del despliegue
+        if: always()
+        env:
+          VALIDATE_OUTCOME: "${{ steps.validate.outcome }}"
+          DEPLOY_OUTCOME: "${{ steps.deploy.outcome }}"
         run: |
           node - <<'NODE'
           const fs = require('fs');
+          const validate = process.env.VALIDATE_OUTCOME || 'unknown';
+          const deploy = process.env.DEPLOY_OUTCOME || 'unknown';
           fs.writeFileSync('DEPLOYMENT_STATUS.json', JSON.stringify({
             product: 'SmartRisk CZ5',
             projectId: 'smartrisk-cz5-produccion',
             channel: 'live',
             url: 'https://smartrisk-cz5-produccion.web.app/',
             sourceCommit: process.env.GITHUB_SHA,
-            deployedAt: new Date().toISOString(),
-            status: 'deployed'
+            checkedAt: new Date().toISOString(),
+            validation: validate,
+            deployment: deploy,
+            status: validate === 'success' && deploy === 'success' ? 'deployed' : 'failed'
           }, null, 2) + '\n');
           NODE
           git config user.name "SmartRisk Deploy Bot"
           git config user.email "actions@users.noreply.github.com"
           git add DEPLOYMENT_STATUS.json
-          git commit -m "Record verified Firebase deployment" || exit 0
+          git commit -m "Record Firebase deployment outcome" || exit 0
           git push
