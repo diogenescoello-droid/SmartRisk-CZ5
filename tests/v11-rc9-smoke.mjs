@@ -52,10 +52,10 @@ ok(adapterCode.includes("structuredPayload(record)"), "Campos planos de Firestor
 ok(app.includes("Plan localizado; acciones aún no estructuradas"), "Estado vacío distingue plan existente de cero acciones");
 ok(app.includes("sr9-plan-source"), "Tabla muestra plan de origen");
 ok(dashboard.includes("recuperadas de planes"), "Dashboard informa acciones recuperadas");
-ok(rollout.includes("11.0.0-rc16.6") && index.includes("11.0.0-rc16.6"), "Caché vigente consistente");
+ok(rollout.includes("11.0.0-rc17-operativo-p0") && index.includes("v11-rollout.js?v=11.0.0-rc17-operativo-p0"), "Caché operativa vigente consistente");
 ok(rollout.includes("v11-normalizer-rc9.css"), "Estilos RC9 cargados");
 ok(css.includes(".sr9-normalization") && css.includes(".sr9-plan-empty"), "Estados visuales RC9 presentes");
-ok(!/\.collection\([^)]*\)\.(add|set|update|delete)\s*\(/.test(adapterCode), "RC9 no introduce escrituras Firestore");
-ok(!/\.doc\([^)]*\)\.(set|update|delete)\s*\(/.test(adapterCode), "RC9 mantiene solo lectura");
+ok(!/\.collection\([^)]*\)\.(add|set|update|delete)\s*\(/.test(adapterCode), "RC9 no introduce escrituras Firestore directas");
+ok(!/\.doc\([^)]*\)\.(set|update|delete)\s*\(/.test(adapterCode), "RC9 conserva separación entre normalización y repositorio");
 
-console.log("\nTodas las pruebas consolidadas RC9 pasaron.");
+console.log("\nTodas las pruebas consolidadas RC9 pasaron sobre P0.");
