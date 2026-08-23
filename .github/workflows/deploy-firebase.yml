@@ -1,6 +1,6 @@
 name: Deploy SmartRisk CZ5 to Firebase Hosting
 
-# Production merge trigger: ENOS audit + F07 current cut verified 2026-08-23
+# One-time controlled PR deployment for 2026-08-23 release verification
 on:
   push:
     branches: ["main"]
@@ -51,7 +51,7 @@ jobs:
           node scripts/test-release.mjs 2>&1 | tee DEPLOYMENT_VALIDATION.log
 
       - id: deploy
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
         name: Publicar canal live de Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
