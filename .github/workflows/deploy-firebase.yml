@@ -1,0 +1,52 @@
+name: Deploy SmartRisk CZ5 to Firebase Hosting
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "index.html"
+      - "access-gate.js"
+      - "release-config.js"
+      - "RELEASE_MANIFEST.json"
+      - "release-assets.json"
+      - "firebase.json"
+      - "enos-*.js"
+      - "f07-current-data.js"
+      - "data.js"
+      - "app.js"
+      - "scripts/**"
+      - "tests/**"
+      - "preview-rc14.4.4/**"
+      - ".github/workflows/deploy-firebase.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  checks: write
+
+concurrency:
+  group: firebase-hosting-production
+  cancel-in-progress: true
+
+jobs:
+  build_test_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Preparar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Construir y validar artefacto canónico
+        run: node scripts/test-release.mjs
+
+      - name: Publicar canal live de Firebase Hosting
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_SMARTRISK_CZ5_PRODUCCION }}"
+          channelId: live
+          projectId: smartrisk-cz5-produccion
