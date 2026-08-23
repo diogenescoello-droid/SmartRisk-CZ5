@@ -18,6 +18,8 @@ on:
       - "tests/**"
       - "preview-rc14.4.4/**"
       - ".github/workflows/deploy-firebase.yml"
+  pull_request:
+    branches: ["main"]
   workflow_dispatch:
 
 permissions:
@@ -25,7 +27,7 @@ permissions:
   checks: write
 
 concurrency:
-  group: firebase-hosting-production
+  group: firebase-hosting-production-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -48,6 +50,7 @@ jobs:
           node scripts/test-release.mjs 2>&1 | tee DEPLOYMENT_VALIDATION.log
 
       - id: deploy
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         name: Publicar canal live de Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
@@ -57,7 +60,7 @@ jobs:
           projectId: smartrisk-cz5-produccion
 
       - name: Registrar resultado verificable del despliegue
-        if: always()
+        if: always() && github.event_name == 'push'
         env:
           VALIDATE_OUTCOME: "${{ steps.validate.outcome }}"
           DEPLOY_OUTCOME: "${{ steps.deploy.outcome }}"
