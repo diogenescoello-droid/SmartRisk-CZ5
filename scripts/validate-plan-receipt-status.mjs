@@ -40,7 +40,7 @@ expect(scopeText.includes('pack.reviews=pack.reviews.filter'),'los planes no se 
 expect(gate.includes('plan-receipt-status-fix-20260731.js'),'la compuerta no carga la reconciliación');
 expect(gate.includes('review-performance-fix-20260731.js'),'la compuerta no carga el optimizador');
 expect(gate.includes('const BUILD_VERSION = RELEASE.build'),'la compuerta no usa la versión canónica');
-expect(index.includes('access-gate.js?v=11.0.0-rc16.6'),'caché de compuerta incorrecta');
+expect(index.includes('access-gate.js?v=11.0.0-rc16.7'),'caché de compuerta incorrecta');
 expect(gate.includes('territorial-scope-guard-20260731.js'),'falta el guardián territorial');
 expect(index.includes('V1.0.0 PILOTO ESTABLE'),'la interfaz no identifica la versión estable');
 expect(manifest.planReceiptCorrectionVersion==='2026-07-31T12:15:00-05:00','versión documental incorrecta');
