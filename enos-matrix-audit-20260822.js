@@ -46,7 +46,9 @@
       gad.auditState="Auditado 2026-08-23";
       gad.auditCut="F07 sincronizado 2026-08-23; última entrega 2026-08-21 17:39:13 + documentación posterior verificada";
     });
-    matrix.auditVersion="2026-08-23.1";
+    matrix.cutDate="2026-08-23";
+    matrix.status="Autoauditoría consolidada";
+    matrix.auditVersion="2026-08-23.2";
     matrix.auditScope="GAD 25-56 auditados y corregidos; F07 sincronizado el 23-ago con última entrega el 21-ago; referencias posteriores separadas de registros homologados.";
     matrix.auditRule="No atribuir por cantón solamente. Usar institución + código de caso + tipo de usuario y conservar submission_uuid/repeat_index para resolver colisiones.";
     matrix.platformUpdatedAt="2026-08-23";
