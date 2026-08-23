@@ -42,7 +42,10 @@ jobs:
 
       - id: validate
         name: Construir y validar artefacto canónico
-        run: node scripts/test-release.mjs
+        shell: bash
+        run: |
+          set -o pipefail
+          node scripts/test-release.mjs 2>&1 | tee DEPLOYMENT_VALIDATION.log
 
       - id: deploy
         name: Publicar canal live de Firebase Hosting
@@ -77,6 +80,6 @@ jobs:
           NODE
           git config user.name "SmartRisk Deploy Bot"
           git config user.email "actions@users.noreply.github.com"
-          git add DEPLOYMENT_STATUS.json
+          git add DEPLOYMENT_STATUS.json DEPLOYMENT_VALIDATION.log
           git commit -m "Record Firebase deployment outcome" || exit 0
           git push
