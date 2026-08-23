@@ -33,6 +33,10 @@ Los formularios F01–F07 se conservan como taxonomía metodológica y compatibi
 
 **Criterios de cierre:** permisos coherentes UI/backend; create/update territorial autorizado; consulta sin escritura; revisión + autor + fecha persistidos; bitácora no editable; prueba automatizada aprobada.
 
+**Estado de cierre de código: APROBADO — 23-ago-2026.** La suite canónica completa `scripts/test-release.mjs` quedó aprobada en GitHub Actions, corrida **#597**, incluyendo el control específico `v11-operativo-p0-smoke.mjs` y las regresiones históricas RC6–RC16.
+
+**Condición de activación en producción:** las reglas de `firestore.rules` están aprobadas en repositorio, pero su despliegue efectivo en el proyecto Firebase debe verificarse explícitamente. Hasta esa comprobación, P0 se considera **cerrado en código y listo para integración**, no “escritura territorial activada en backend”.
+
 ### P1 — Acciones y seguimiento integrado
 
 **Brecha:** el editor operativo existe en la capa legacy, mientras V11 consulta y deriva actualización a Kobo.
@@ -135,10 +139,10 @@ Los formularios F01–F07 se conservan como taxonomía metodológica y compatibi
 
 ## Matriz de control
 
-| Bloque | Prioridad | Estado inicial | Dependencia | Resultado esperado |
+| Bloque | Prioridad | Estado | Dependencia | Resultado esperado |
 |---|---|---|---|---|
-| P0 Núcleo | P0 crítica | EN EJECUCIÓN | Ninguna | escritura segura por registro |
-| P1 Acciones/F07 | P0 crítica | Pendiente | P0 | workspace diario del técnico |
+| P0 Núcleo | P0 crítica | **APROBADO EN CÓDIGO · LISTO PARA INTEGRACIÓN** | Ninguna | escritura segura por registro |
+| P1 Acciones/F07 | P0 crítica | Pendiente | P0 integrado | workspace diario del técnico |
 | P2 Sitios/riesgo | P1 alta | Pendiente | P0 | identidad territorial canónica |
 | P3 Recursos/presupuesto | P1 alta | Pendiente | P1–P2 | operación y costos comparables |
 | P4 Evidencias/documentos | P1 alta | Pendiente | P1–P2 | trazabilidad documental completa |
@@ -155,15 +159,22 @@ Los formularios F01–F07 se conservan como taxonomía metodológica y compatibi
 - Despliegue y validación de servidor posterior a integración.
 - Cada bloque genera documentación de qué cambió, cómo verificarlo y cómo revertirlo.
 
-## Estado de P0 al iniciar
+## Cierre técnico P0
 
-Se implementan en la rama `operativo/p0-core-escritura`:
+Implementado en la rama `operativo/p0-core-escritura`:
 - RBAC V11 operativo/consulta.
 - Persistencia granular por registro.
 - Revisión incremental.
+- Identidad canónica inmovilizada durante actualizaciones.
 - Bitácora append-only.
 - Reglas Firestore de create/update territorial con alcance.
 - Prohibición de eliminación territorial.
+- Cache bust específico del núcleo operativo.
 - Prueba automatizada específica del bloque.
+- Reconciliación de controles de release que conservaban referencias de caché obsoletas, sin retirar verificaciones funcionales.
 
-El overlay heredado y la lectura global permanecen temporalmente por compatibilidad. Su retiro pertenece a P6, después de que P1–P5 dejen de depender de ellos.
+**Evidencia de calidad:** GitHub Actions `Validar release SmartRisk`, corrida #597, resultado `success`.
+
+**Compatibilidad temporal:** el overlay heredado y la lectura global permanecen para no romper la versión vigente. Su retiro controlado pertenece a P6, después de que los módulos nativos de P1–P5 dejen de depender de ellos.
+
+**Pendiente externo al cierre de código:** verificar/desplegar `firestore.rules` en Firebase y ejecutar una prueba real de escritura con perfiles territorial, consulta y administrador antes de declarar activa la operación multiusuario en producción.
