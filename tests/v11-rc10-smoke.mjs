@@ -20,9 +20,9 @@ ok(["Reporte de monitoreo","Validación técnica","Coordinación institucional",
 ok(admin.includes("registros consolidados leídos") && admin.includes("registros virtuales derivados de planes"), "Conciliación entre fuente consolidada y derivados RC9");
 ok(admin.includes("campos faltantes") && admin.includes("Sugerencia:"), "Brechas y sugerencias operativas visibles");
 ok(admin.includes("data-sr10-route"), "Acceso directo al módulo relacionado");
-ok(rollout.includes('11.0.0-rc16.6') && index.includes('11.0.0-rc16.6'), "Caché vigente consistente");
+ok(rollout.includes('11.0.0-rc17-operativo-p0') && index.includes('v11-rollout.js?v=11.0.0-rc17-operativo-p0'), "Caché vigente consistente con P0");
 ok(rollout.includes("v11-admin-rc10.css") && rollout.includes("v11-admin-rc10.js"), "Capa RC10 cargada por rollout");
 ok(css.includes(".sr10-viewbar") && css.includes(".sr10-drawer") && css.includes(".sr10-stage-list"), "Estilos administrativos y de auditoría presentes");
-ok(!/\.collection\([^)]*\)\.(add|set|update|delete)\s*\(/.test(admin), "RC10 no introduce escrituras Firestore");
-ok(!/\.doc\([^)]*\)\.(set|update|delete)\s*\(/.test(admin), "RC10 conserva solo lectura");
-console.log("\nTodas las pruebas consolidadas RC10 pasaron.");
+ok(!/\.collection\([^)]*\)\.(add|set|update|delete)\s*\(/.test(admin), "RC10 no introduce escrituras Firestore directas");
+ok(!/\.doc\([^)]*\)\.(set|update|delete)\s*\(/.test(admin), "RC10 conserva separación entre UI y repositorio");
+console.log("\nTodas las pruebas consolidadas RC10 pasaron sobre P0.");

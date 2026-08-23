@@ -3,6 +3,12 @@
 
   const STORE = "smartrisk-cz5-data-v1";
   const CLOUD_DOC = "plataforma/datos";
+  const SCHEMA_VERSION = "2.0";
+  const OPERATIONAL_TYPES = new Set([
+    "sitios", "infraestructura", "cartografiaOperativa", "acciones", "alojamientos",
+    "capacidades", "recursos", "seguimientos", "evidencias", "decisiones",
+    "validaciones", "actividadesCOE", "fichasTecnicas", "planes"
+  ]);
   const clone = value => typeof structuredClone === "function"
     ? structuredClone(value)
     : JSON.parse(JSON.stringify(value));
@@ -10,24 +16,48 @@
 
   function emptyData() {
     return {
-      territorios: [], instituciones: [], usuarios: [], sitios: [], acciones: [],
-      seguimientos: [], entidadesSeguimiento: [], decisiones: [], validaciones: [],
+      territorios: [], instituciones: [], usuarios: [], sitios: [], infraestructura: [],
+      acciones: [], alojamientos: [], capacidades: [], recursos: [], seguimientos: [],
+      evidencias: [], entidadesSeguimiento: [], decisiones: [], validaciones: [],
       auditoria: [], actoresCOE: [], equiposCOE: [], actividadesCOE: [],
       capasGeograficas: [], sesionesCabina: [], tareasCabina: [],
-      cartografiaOperativa: [], fichasTecnicas: [], _revision: 0
+      cartografiaOperativa: [], fichasTecnicas: [], planes: [], _revision: 0
     };
   }
 
   function normalizeType(value) {
     const key = String(value || "").trim().toLowerCase();
     return ({
-      territorio: "territorios", institucion: "instituciones", usuario: "usuarios",
-      sitio: "sitios", accion: "acciones", decision: "decisiones",
-      validacion: "validaciones", actorcoe: "actoresCOE", equipocoe: "equiposCOE",
+      territorio: "territorios", territorios: "territorios",
+      institucion: "instituciones", instituciones: "instituciones",
+      usuario: "usuarios", usuarios: "usuarios",
+      sitio: "sitios", sitios: "sitios",
+      infraestructura: "infraestructura",
+      accion: "acciones", acciones: "acciones",
+      alojamiento: "alojamientos", alojamientos: "alojamientos",
+      capacidad: "capacidades", capacidades: "capacidades",
+      recurso: "recursos", recursos: "recursos",
+      seguimiento: "seguimientos", seguimientos: "seguimientos",
+      evidencia: "evidencias", evidencias: "evidencias",
+      decision: "decisiones", decisiones: "decisiones",
+      validacion: "validaciones", validaciones: "validaciones",
+      plan: "planes", planes: "planes",
+      actorcoe: "actoresCOE", equipocoe: "equiposCOE",
       actividadcoe: "actividadesCOE", capageografica: "capasGeograficas",
       sesioncabina: "sesionesCabina", tareacabina: "tareasCabina",
-      cartografiaoperativa: "cartografiaOperativa", fichatecnica: "fichasTecnicas"
+      cartografia: "cartografiaOperativa", cartografiaoperativa: "cartografiaOperativa",
+      fichatecnica: "fichasTecnicas"
     })[key] || key;
+  }
+
+  function singularType(collectionKey) {
+    return ({
+      sitios: "sitio", infraestructura: "infraestructura", cartografiaOperativa: "cartografia",
+      acciones: "accion", alojamientos: "alojamiento", capacidades: "capacidad",
+      recursos: "recurso", seguimientos: "seguimiento", evidencias: "evidencia",
+      decisiones: "decision", validaciones: "validacion", actividadesCOE: "actividadcoe",
+      fichasTecnicas: "fichatecnica", planes: "plan"
+    })[collectionKey] || collectionKey;
   }
 
   function recordsToData(records) {
@@ -37,6 +67,13 @@
       if (!Array.isArray(data[key])) data[key] = [];
       const payload = clone(record.payload || {});
       payload.id = payload.id || record.sourceId || record.id;
+      payload._recordId = record.id;
+      payload._scopeKey = record.scopeKey || record._scopeKey || null;
+      payload._revision = Number(record.revision || 0);
+      payload._createdAt = record.createdAt || null;
+      payload._createdBy = record.createdBy || null;
+      payload._updatedAt = record.updatedAt || null;
+      payload._updatedBy = record.updatedBy || null;
       data[key].push(payload);
     });
     return data;
@@ -64,7 +101,11 @@
     for (const key of keys) {
       try {
         const snapshot = await db.collection("alcances").doc(key).collection("registros").get();
-        snapshot.forEach(document => records.set(document.id, { id: document.id, ...document.data() }));
+        snapshot.forEach(document => records.set(`${key}/${document.id}`, {
+          id: document.id,
+          _scopeKey: key,
+          ...document.data()
+        }));
       } catch (error) {
         console.warn(`No fue posible consultar el alcance ${key}`, error);
       }
@@ -80,6 +121,142 @@
       metadata: { fromCache: false, hasPendingWrites: false },
       data: () => clone(data)
     };
+  }
+
+  function randomId(prefix = "rec") {
+    const token = globalThis.crypto?.randomUUID?.()
+      || `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`;
+    return `${prefix}-${token}`;
+  }
+
+  function hashText(value) {
+    let hash = 2166136261;
+    for (const character of String(value || "")) {
+      hash ^= character.charCodeAt(0);
+      hash = Math.imul(hash, 16777619);
+    }
+    return (hash >>> 0).toString(36);
+  }
+
+  function stableRecordId(type, canonicalId) {
+    const safe = String(canonicalId || "")
+      .replace(/[^a-zA-Z0-9_-]/g, "-")
+      .replace(/-+/g, "-")
+      .slice(0, 54)
+      .replace(/^-|-$/g, "") || "registro";
+    return `${safe}-${hashText(`${type}|${canonicalId}`)}`;
+  }
+
+  function cleanPayload(payload) {
+    const result = clone(payload || {});
+    [
+      "_recordId", "_scopeKey", "_revision", "_createdAt", "_createdBy",
+      "_updatedAt", "_updatedBy"
+    ].forEach(key => delete result[key]);
+    return result;
+  }
+
+  function requestedScopeKey(payload, options = {}) {
+    const context = window.SmartRiskScope.getState?.() || {};
+    const available = window.SmartRiskScope.scopeKeys?.() || [];
+    const requested = options.scopeKey || payload?._scopeKey || null;
+    if (requested && (window.SmartRiskScope.isAdministrator() || available.includes(requested))) return requested;
+
+    const territoryId = payload?.territorioId || payload?.territorio || payload?.territoryId || null;
+    if (territoryId) {
+      const candidates = [String(territoryId), `TER:${territoryId}`];
+      const matched = available.find(key => candidates.includes(key));
+      if (matched) return matched;
+    }
+
+    if (window.SmartRiskScope.isAdministrator()) return options.scopeKey || "ZONA:CZ5";
+    return repositoryState?.parentKey || available[0] || `USR:${repositoryState?.user?.uid || context.scopeType || "sin-alcance"}`;
+  }
+
+  function refreshRuntimeData() {
+    if (!repositoryState) return;
+    const merged = mergeData(repositoryState.sourceData || {}, repositoryState.overlay || {});
+    const filtered = window.SmartRiskScope.filterData(merged);
+    repositoryState.currentData = filtered;
+    repositoryState.syncCurrentData?.(filtered);
+    localStorage.setItem(STORE, JSON.stringify(filtered));
+  }
+
+  function applyRecordToSourceData(record) {
+    if (!repositoryState) return;
+    const key = normalizeType(record.tipo);
+    if (!Array.isArray(repositoryState.sourceData[key])) repositoryState.sourceData[key] = [];
+    const payload = recordsToData([{ id: record.id, ...record }])[key][0];
+    const rows = repositoryState.sourceData[key];
+    const index = rows.findIndex(item => item?._recordId === record.id || item?.id === payload.id);
+    if (index >= 0) rows[index] = payload;
+    else rows.push(payload);
+    refreshRuntimeData();
+  }
+
+  async function saveRecord(type, payload, options = {}) {
+    if (!repositoryState?.db || !repositoryState?.user) throw new Error("SMART_RISK_REPOSITORY_NOT_READY");
+    const collectionKey = normalizeType(type);
+    if (!OPERATIONAL_TYPES.has(collectionKey)) throw new Error(`SMART_RISK_UNSUPPORTED_RECORD_TYPE:${collectionKey}`);
+    if (!window.SmartRiskScope.canWrite(collectionKey)) throw new Error("SMART_RISK_READ_ONLY_PROFILE");
+
+    const clean = cleanPayload(payload);
+    const canonicalId = String(clean.id || options.canonicalId || randomId(singularType(collectionKey))).trim();
+    clean.id = canonicalId;
+    const scopeKey = requestedScopeKey(payload, options);
+    const recordId = options.recordId || payload?._recordId || stableRecordId(collectionKey, canonicalId);
+    const recordRef = repositoryState.db.collection("alcances").doc(scopeKey).collection("registros").doc(recordId);
+    const existing = await recordRef.get();
+    const previous = existing.exists ? existing.data() : null;
+    const now = new Date().toISOString();
+    const email = repositoryState.user.email || "sin-correo";
+    const revision = Number(previous?.revision || 0) + 1;
+    const record = {
+      schemaVersion: SCHEMA_VERSION,
+      scopeKey,
+      sourceId: previous?.sourceId || canonicalId,
+      tipo: singularType(collectionKey),
+      payload: clean,
+      createdAt: previous?.createdAt || now,
+      createdBy: previous?.createdBy || email,
+      updatedAt: now,
+      updatedBy: email,
+      revision
+    };
+    const changeId = randomId("chg");
+    const changeRef = repositoryState.db.collection("alcances").doc(scopeKey).collection("cambios").doc(changeId);
+    const change = {
+      schemaVersion: SCHEMA_VERSION,
+      scopeKey,
+      recordId,
+      sourceId: record.sourceId,
+      tipo: record.tipo,
+      operation: existing.exists ? "update" : "create",
+      revision,
+      changedAt: now,
+      changedBy: email,
+      updatedBy: email
+    };
+
+    if (typeof repositoryState.db.batch === "function") {
+      const batch = repositoryState.db.batch();
+      batch.set(recordRef, record);
+      batch.set(changeRef, change);
+      await batch.commit();
+    } else {
+      await recordRef.set(record);
+      await changeRef.set(change);
+    }
+
+    applyRecordToSourceData({ id: recordId, ...record });
+    return clone({ recordId, ...record });
+  }
+
+  async function getRecord(scopeKey, recordId) {
+    if (!repositoryState?.db) throw new Error("SMART_RISK_REPOSITORY_NOT_READY");
+    const ref = repositoryState.db.collection("alcances").doc(scopeKey).collection("registros").doc(recordId);
+    const snap = await ref.get();
+    return snap.exists ? { recordId: snap.id, ...snap.data() } : null;
   }
 
   function installProfileBridge(db, user) {
@@ -125,6 +302,7 @@
   function installVirtualCloud(db, overlayRef, initialData) {
     const originalDoc = db.doc.bind(db);
     let currentData = clone(initialData);
+    repositoryState.syncCurrentData = value => { currentData = clone(value); };
     const virtualRef = {
       __smartRiskVirtual: true,
       path: CLOUD_DOC,
@@ -141,6 +319,7 @@
           updatedAt: new Date().toISOString()
         };
         await overlayRef.set(filtered);
+        repositoryState.overlay = clone(filtered);
         currentData = clone(filtered);
       },
       onSnapshot: (success, failure) => {
@@ -148,8 +327,9 @@
         try {
           return overlayRef.onSnapshot(snap => {
             if (!snap.exists) return;
+            repositoryState.overlay = clone(snap.data());
             currentData = window.SmartRiskScope.filterData(
-              mergeData(repositoryState.sourceData, snap.data())
+              mergeData(repositoryState.sourceData, repositoryState.overlay)
             );
             success(snapshot(currentData, virtualRef));
           }, failure);
@@ -181,15 +361,18 @@
 
   async function init({ user, profile, db }) {
     installProfileBridge(db, user);
+    const seed = clone(window.SEED_DATA || {});
 
     if (window.SmartRiskScope.isAdministrator()) {
       localStorage.removeItem("smartrisk-active-territorial-scope");
-      return { mode: "zonal-global" };
+      repositoryState = {
+        user, profile, db, sourceData: seed, overlay: {}, currentData: seed, parentKey: "ZONA:CZ5"
+      };
+      return { mode: "zonal-global", recordWrites: "granular" };
     }
 
     const scopeKeys = window.SmartRiskScope.scopeKeys();
     const records = await loadRecords(db, scopeKeys);
-    const seed = clone(window.SEED_DATA || {});
     const sourceData = window.SmartRiskScope.filterData(mergeData(seed, recordsToData(records)));
     const context = window.SmartRiskScope.getState();
     const parentKey = scopeKeys[0] || `USR:${user.uid}`;
@@ -212,18 +395,22 @@
     localStorage.removeItem(STORE);
     localStorage.setItem(STORE, JSON.stringify(initialData));
     localStorage.setItem("smartrisk-active-territorial-scope", parentKey);
-    repositoryState = { user, profile, db, sourceData, overlayRef, parentKey };
+    repositoryState = { user, profile, db, sourceData, overlay, currentData: initialData, overlayRef, parentKey };
     installVirtualCloud(db, overlayRef, initialData);
     return {
-      mode: window.SmartRiskScope.isReadOnly() ? "territorial-read-only" : "territorial-overlay",
+      mode: window.SmartRiskScope.isReadOnly() ? "territorial-read-only" : "territorial-granular",
       scopeKey: parentKey,
-      scopeLabel: window.SmartRiskScope.scopeLabel()
+      scopeLabel: window.SmartRiskScope.scopeLabel(),
+      recordWrites: "granular"
     };
   }
 
   window.SmartRiskScopeRepository = {
     init,
+    saveRecord,
+    getRecord,
+    normalizeType,
     version: window.SMART_RISK_RELEASE?.build || "1.0.0-piloto-estable",
-    architecture: "unified-ui-secured-scope-overlay"
+    architecture: "unified-ui-secured-scope-records-v2"
   };
 })();

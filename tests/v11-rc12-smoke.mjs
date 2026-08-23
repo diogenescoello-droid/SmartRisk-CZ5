@@ -23,10 +23,10 @@ ok(governance.includes("Los reportes son productos del ciclo"), "Reportes difere
 ok(governance.includes("documentRecords") && governance.includes("canonical"), "Inventario documental derivado de registros existentes");
 ok(css.includes(".sr12-monitor-strip") && css.includes(".sr12-cycle") && css.includes(".sr12-doc-table"), "Estilos de arquitectura y documentos presentes");
 ok(css.includes(".sr11-weather") && css.includes(".sr11-cantons"), "Corrección visual RC11 incluida");
-ok(rollout.includes('11.0.0-rc16.6') && index.includes('11.0.0-rc16.6'), "Caché vigente consistente");
+ok(rollout.includes('11.0.0-rc17-operativo-p0') && index.includes('v11-rollout.js?v=11.0.0-rc17-operativo-p0'), "Caché vigente consistente con P0");
 ok(rollout.includes("v11-governance-rc12.css") && rollout.includes("v11-governance-rc12.js"), "Capa RC12 cargada por rollout");
 ok(rollout.includes("v11-intelligence-rc11.js"), "RC11 se conserva bajo RC12");
-ok(!/\.collection\([^)]*\)\.(add|set|update|delete)\s*\(/.test(governance), "RC12 no introduce escrituras Firestore");
-ok(!/\.doc\([^)]*\)\.(set|update|delete)\s*\(/.test(governance), "RC12 conserva solo lectura");
+ok(!/\.collection\([^)]*\)\.(add|set|update|delete)\s*\(/.test(governance), "RC12 no introduce escrituras Firestore directas");
+ok(!/\.doc\([^)]*\)\.(set|update|delete)\s*\(/.test(governance), "RC12 conserva separación entre UI y repositorio");
 
-console.log("\nTodas las pruebas consolidadas RC12 pasaron.");
+console.log("\nTodas las pruebas consolidadas RC12 pasaron sobre P0.");

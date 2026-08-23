@@ -50,6 +50,61 @@ service cloud.firestore {
         && scopeKey in profile().get('scopeKeys', []);
     }
 
+    function scopedOperationalWriter(scopeKey) {
+      return scopeAllowed(scopeKey) && !readOnlyProfile();
+    }
+
+    function allowedOperationalType(value) {
+      return value in [
+        'sitio', 'infraestructura', 'cartografia', 'accion', 'alojamiento',
+        'capacidad', 'recurso', 'seguimiento', 'evidencia', 'decision',
+        'validacion', 'actividadcoe', 'fichatecnica', 'plan'
+      ];
+    }
+
+    function validScopedRecordCreate(scopeKey) {
+      return request.resource.data.keys().hasAll([
+          'schemaVersion', 'scopeKey', 'sourceId', 'tipo', 'payload',
+          'createdAt', 'createdBy', 'updatedAt', 'updatedBy', 'revision'
+        ])
+        && request.resource.data.get('scopeKey', '') == scopeKey
+        && request.resource.data.get('updatedBy', '') == request.auth.token.email
+        && request.resource.data.get('createdBy', '') == request.auth.token.email
+        && request.resource.data.get('revision', 0) == 1
+        && request.resource.data.get('payload', {}) is map
+        && request.resource.data.get('payload', {}).get('id', '') == request.resource.data.get('sourceId', '')
+        && allowedOperationalType(request.resource.data.get('tipo', ''));
+    }
+
+    function validScopedRecordUpdate(scopeKey) {
+      return request.resource.data.get('scopeKey', '') == scopeKey
+        && resource.data.get('scopeKey', '') == scopeKey
+        && request.resource.data.get('scopeKey', '') == resource.data.get('scopeKey', '')
+        && request.resource.data.get('sourceId', '') == resource.data.get('sourceId', '')
+        && request.resource.data.get('tipo', '') == resource.data.get('tipo', '')
+        && request.resource.data.get('createdAt', '') == resource.data.get('createdAt', '')
+        && request.resource.data.get('createdBy', '') == resource.data.get('createdBy', '')
+        && request.resource.data.get('updatedBy', '') == request.auth.token.email
+        && request.resource.data.get('revision', 0) == resource.data.get('revision', 0) + 1
+        && request.resource.data.get('payload', {}) is map
+        && request.resource.data.get('payload', {}).get('id', '') == resource.data.get('payload', {}).get('id', '')
+        && request.resource.data.get('payload', {}).get('id', '') == resource.data.get('sourceId', '')
+        && allowedOperationalType(request.resource.data.get('tipo', ''));
+    }
+
+    function validChangeCreate(scopeKey) {
+      return request.resource.data.keys().hasAll([
+          'schemaVersion', 'scopeKey', 'recordId', 'sourceId', 'tipo',
+          'operation', 'revision', 'changedAt', 'changedBy', 'updatedBy'
+        ])
+        && request.resource.data.get('scopeKey', '') == scopeKey
+        && request.resource.data.get('changedBy', '') == request.auth.token.email
+        && request.resource.data.get('updatedBy', '') == request.auth.token.email
+        && request.resource.data.get('revision', 0) > 0
+        && request.resource.data.get('operation', '') in ['create', 'update']
+        && allowedOperationalType(request.resource.data.get('tipo', ''));
+    }
+
     function ownPasswordStateUpdate(uid) {
       return signedIn()
         && request.auth.uid == uid
@@ -60,8 +115,8 @@ service cloud.firestore {
         ]);
     }
 
-    // La base global queda reservada a administradores para escritura.
-    // Los perfiles territoriales trabajan exclusivamente en su documento de alcance.
+    // Compatibilidad de lectura durante la migración operativa.
+    // La escritura global permanece exclusivamente administrativa.
     match /plataforma/datos {
       allow read: if admin() || activeProfile();
       allow create, update: if admin();
@@ -87,22 +142,35 @@ service cloud.firestore {
       allow delete: if admin();
     }
 
-    // Registros y estado operativo segmentados por alcance autorizado.
+    // Registros operativos segmentados por alcance autorizado.
     match /alcances/{scopeKey} {
       allow get, list: if admin() || scopeAllowed(scopeKey);
       allow create, update, delete: if admin();
 
       match /registros/{recordId} {
         allow read: if admin() || scopeAllowed(scopeKey);
-        allow write: if admin();
+        allow create: if admin()
+          || (scopedOperationalWriter(scopeKey) && validScopedRecordCreate(scopeKey));
+        allow update: if admin()
+          || (scopedOperationalWriter(scopeKey) && validScopedRecordUpdate(scopeKey));
+        // El usuario territorial no elimina historia: los cierres se modelan como estado.
+        allow delete: if admin();
       }
 
+      // Bitácora append-only. Un cambio autorizado puede crearse, pero no reescribirse.
+      match /cambios/{changeId} {
+        allow read: if admin() || scopeAllowed(scopeKey);
+        allow create: if admin()
+          || (scopedOperationalWriter(scopeKey) && validChangeCreate(scopeKey));
+        allow update, delete: if false;
+      }
+
+      // Overlay heredado: se conserva temporalmente para compatibilidad V11 durante P0.
       match /estado/{stateId} {
         allow read: if admin() || scopeAllowed(scopeKey);
         allow create, update: if admin()
           || (
-            scopeAllowed(scopeKey)
-            && !readOnlyProfile()
+            scopedOperationalWriter(scopeKey)
             && request.resource.data.get('_scope', {}).get('updatedBy', '') == request.auth.token.email
           );
         allow delete: if admin();

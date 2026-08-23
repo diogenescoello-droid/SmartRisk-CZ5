@@ -18,8 +18,8 @@ new vm.Script(ux, { filename: 'v11-ux-rc7.js' });
 new vm.Script(rollout, { filename: 'v11-rollout.js' });
 ok(true, 'Sintaxis JavaScript RC7');
 
-ok(rollout.includes('11.0.0-rc16.6'), 'Capa RC7 conservada en rollout vigente');
-ok(index.includes('11.0.0-rc16.6'), 'Capa RC7 conservada en index vigente');
+ok(rollout.includes('11.0.0-rc17-operativo-p0'), 'Capa RC7 conservada en rollout operativo vigente');
+ok(index.includes('v11-rollout.js?v=11.0.0-rc17-operativo-p0'), 'Capa RC7 conservada en index operativo vigente');
 ok(rollout.includes('v11-ux-rc7.css') && rollout.includes('v11-ux-rc7.js'), 'Capa UX cargada después de V11');
 ok(ux.includes('setTimeout(() =>') && ux.includes('}, 2000)'), 'Inicio automático de la guía a los dos segundos');
 ok(ux.includes('sr-tour-overlay') && css.includes('.sr-tour-overlay.intro'), 'Spotlight inicial con pantalla opaca');
@@ -37,7 +37,7 @@ ok(ux.includes('.sr-gpt-options button:not'), 'Opciones del Especialista GPT con
 ok(ux.includes('notificaciones') && ux.includes('guia dinamica') && ux.includes('vista compacta'), 'Preferencias funcionales');
 ok(Object.keys((ux.match(/\n\s{4}[a-z"-]+:\s*\[/g) || {})).length >= 0, 'Recorridos por módulo incluidos');
 ok(['inicio:', '"respuesta-coe":', 'monitoreo:', 'coe:', 'riesgos:', 'acciones:', 'instituciones:', 'reportes:', 'mapas:', 'herramientas:', 'configuracion:'].every(value => ux.includes(value)), 'Guías específicas para once pantallas');
-ok(!/\.collection\([^)]*\)\.(add|set|update|delete)\s*\(/.test(ux), 'RC7 no introduce escrituras Firestore');
-ok(!/\.doc\([^)]*\)\.(set|update|delete)\s*\(/.test(ux), 'RC7 conserva el piloto de solo lectura');
+ok(!/\.collection\([^)]*\)\.(add|set|update|delete)\s*\(/.test(ux), 'RC7 no introduce escrituras Firestore directas');
+ok(!/\.doc\([^)]*\)\.(set|update|delete)\s*\(/.test(ux), 'RC7 conserva separación entre UX y repositorio');
 
-console.log('\nTodas las pruebas consolidadas RC7 pasaron.');
+console.log('\nTodas las pruebas consolidadas RC7 pasaron sobre P0.');

@@ -19,9 +19,9 @@ ok(["Preparación", "Análisis", "Respuesta"].every(text => intelligence.include
 ok(intelligence.includes("2021") && intelligence.includes("2026") && intelligence.includes("Pendiente de indexación"), "Inventario histórico 2021-2026 visible");
 ok(intelligence.includes("No activar ni escalar únicamente por este pronóstico"), "Evita escalamiento automático por pronóstico");
 ok(intelligence.includes("sin acceso de Gmail desde el navegador") || intelligence.includes("no se leen desde GitHub Pages"), "Límite seguro del conector Gmail comunicado");
-ok(rollout.includes('11.0.0-rc16.6') && index.includes('11.0.0-rc16.6'), "Caché vigente consistente");
+ok(rollout.includes('11.0.0-rc17-operativo-p0') && index.includes('v11-rollout.js?v=11.0.0-rc17-operativo-p0'), "Caché vigente consistente con P0");
 ok(rollout.includes("v11-intelligence-rc11.css") && rollout.includes("v11-intelligence-rc11.js"), "Capa RC11 cargada por rollout");
 ok(css.includes(".sr11-hero") && css.includes(".sr11-history") && css.includes(".sr11-pipeline"), "Estilos de inteligencia territorial presentes");
-ok(!/\.collection\([^)]*\)\.(add|set|update|delete)\s*\(/.test(intelligence), "RC11 no introduce escrituras Firestore");
-ok(!/\.doc\([^)]*\)\.(set|update|delete)\s*\(/.test(intelligence), "RC11 conserva solo lectura");
-console.log("\nTodas las pruebas consolidadas RC11 pasaron.");
+ok(!/\.collection\([^)]*\)\.(add|set|update|delete)\s*\(/.test(intelligence), "RC11 no introduce escrituras Firestore directas");
+ok(!/\.doc\([^)]*\)\.(set|update|delete)\s*\(/.test(intelligence), "RC11 conserva separación entre UI y repositorio");
+console.log("\nTodas las pruebas consolidadas RC11 pasaron sobre P0.");
