@@ -21,7 +21,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   checks: write
 
 concurrency:
@@ -50,3 +50,23 @@ jobs:
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_SMARTRISK_CZ5_PRODUCCION }}"
           channelId: live
           projectId: smartrisk-cz5-produccion
+
+      - name: Registrar despliegue confirmado
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          fs.writeFileSync('DEPLOYMENT_STATUS.json', JSON.stringify({
+            product: 'SmartRisk CZ5',
+            projectId: 'smartrisk-cz5-produccion',
+            channel: 'live',
+            url: 'https://smartrisk-cz5-produccion.web.app/',
+            sourceCommit: process.env.GITHUB_SHA,
+            deployedAt: new Date().toISOString(),
+            status: 'deployed'
+          }, null, 2) + '\n');
+          NODE
+          git config user.name "SmartRisk Deploy Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add DEPLOYMENT_STATUS.json
+          git commit -m "Record verified Firebase deployment" || exit 0
+          git push
