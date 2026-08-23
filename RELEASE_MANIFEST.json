@@ -3,7 +3,7 @@
   "release": "V1.0.0 PILOTO ESTABLE",
   "build": "1.0.0-piloto-estable",
   "tag": "v1.0.0-piloto-estable",
-  "dataVersion": "2026-07-30T20:41:00-05:00",
+  "dataVersion": "2026-08-23T13:25:00-05:00",
   "completionVersion": "2026-07-30T20:41:00-05:00",
   "correctionVersion": "2026-07-30T22:56:00-05:00",
   "scientificCorrectionVersion": "2026-07-31T13:20:00-05:00",
@@ -14,20 +14,21 @@
   "riskReportsWindowYears": 5,
   "status": "stable",
   "deploymentTrace": {
-    "id": "pages-2026-08-10-supervision-ejecutiva-daule",
-    "requestedAt": "2026-08-10T23:30:00Z",
-    "sourceMergeCommit": "171ce8144d23833c04584498263232e005f97bfe",
-    "reason": "Publicar supervisión ejecutiva, trazabilidad documental y vínculo oficial de Daule"
+    "id": "enos-audit-2026-08-23-f07-current",
+    "requestedAt": "2026-08-23T18:25:00Z",
+    "reason": "Publicar matriz ENOS auditada, estados finales y trazabilidad del corte F07"
   },
   "publicPath": "./",
-  "dataCut": "2026-07-30",
+  "dataCut": "2026-08-23",
+  "f07SyncedAt": "2026-08-23T17:57:45.664Z",
+  "latestF07SubmissionAt": "2026-08-21T17:39:13",
   "counts": {
     "territories": 56,
     "plansAvailable": 56,
     "formalPlanDeliveries": 53,
     "validatedPlans": 52,
     "returnedPlans": 4,
-    "followupsMinimum": 106,
+    "followupsMinimum": 116,
     "riskReportsIndexed": 6,
     "cantonsWithRiskReports": 4
   },
@@ -36,8 +37,8 @@
     "completionRawSha256": "15f8465d1c41c37aba924a5c6c46447e117179958645f50891b9126bccb54ebc"
   },
   "sources": [
-    {"name":"Kobo F07 ENOS CZ5","role":"seguimiento operativo","cut":"2026-07-30","sourceFileSha256":"a8cdef870e8bb3a9a7d128036786309acc705887d31df5ac612b42bf288c5022"},
-    {"name":"Matriz_ENOS_CZ5_COMPLETA_GoogleSheets","role":"estado documental de planes y reconciliación de recepción","driveFileId":"14pw4tCwW2gp0Vn_xd9dxOmjj84_4-m6m2qXpbrGkxPw","cut":"2026-07-31"},
+    {"name":"Kobo F07 ENOS CZ5","role":"seguimiento operativo","cut":"2026-08-21","syncedAt":"2026-08-23T17:57:45.664Z","latestSubmissionAt":"2026-08-21T17:39:13","followups":116},
+    {"name":"Matriz colaborativa ENOS CZ5 · 56 GAD · Lecturas ejecutivas V4","role":"estado documental, control F01-F07 y autoauditoría","driveFileId":"1tKY10jIL9ztFB_s--VNk7-OvdHQSOcvdA_ZCzdxgaTo","cut":"2026-08-23","auditScope":"GAD 25-56 auditados y corregidos"},
     {"name":"Base_RIESGO_CANTONAL_ENOS_CZ5","role":"estructura territorial para amenaza, vulnerabilidad, capacidad, brechas, acciones y enlaces de informes","driveFileId":"1Lz99D_XLzuwgbdntRAyi75EYk5mOWysGRU4oIQ2YUJo","cut":"2026-07-31"},
     {"name":"Repositorio de informes de riesgo CZ5","role":"documentos fuente y enlaces de expedientes técnicos de los últimos cinco años","cut":"2026-07-31","indexedReports":6},
     {"name":"Plan provincial de Galápagos ENOS 2026–2027","role":"plan recibido, firmado y revisión técnica progresiva","driveFileId":"1M79_NXC7Q3oZsXTS8ZJnd5XTUaRfjtIp","reviewReportDriveFileId":"1VtlXrd5qoL2jW-2UUw-6GD8dduyQedzn","receivedAt":"2026-06-24","reviewScore":84,"classification":"Plan defendible"},
@@ -45,7 +46,7 @@
     {"name":"Plan provincial de Los Ríos ENOS 2026–2027","role":"plan firmado, revisión técnica y estado progresivo","driveFileId":"1OORaykZcWJHJe3zPWB9dXn_pCc84RKDT","reviewReportDriveFileId":"11cWFIu56jVBp-VWVB_gyeBumfrF4u1_I","receivedAt":"2026-06-25","reviewScore":68,"classification":"Plan funcional parcial"},
     {"name":"Plan cantonal de Daule ENOS 2026–2027","role":"plan oficial y fuente verificable para revisión","driveFileId":"1azf3vR1zhlpXpcgX0ag64xGTZuhWevYy","receivedAt":"2026-08-10","status":"Oficial"},
     {"name":"Repositorio provincial y cantonal de planes ENOS CZ5","role":"fuente de enlaces a documentos originales","driveFolderId":"1RtTv30phfaiv3InKxLxihFawKKN-wBAA","cut":"2026-08-10","territoriesWithPdf":56,"verifiedOriginalLinks":7},
-    {"name":"Correo institucional ENOS CZ5","role":"remisiones, oficios y novedades","cut":"2026-07-31"},
+    {"name":"Correo institucional ENOS CZ5","role":"remisiones, oficios y novedades","cut":"2026-08-21"},
     {"name":"SmartRisk / Firestore","role":"persistencia compartida","document":"plataforma/datos"}
   ],
   "requiredFiles": [
