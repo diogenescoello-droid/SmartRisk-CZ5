@@ -25,6 +25,7 @@
     const raw = profileText(profile);
     if (raw.includes("admin")) return "admin";
     if (raw.includes("visor") || raw.includes("consulta")) return "decision";
+    if ((raw.includes("coordinador") || raw.includes("coordinacion")) && raw.includes("coe")) return "zonal";
     if (raw.includes("zonal")) return "zonal";
     if (raw.includes("provinc") || raw.includes("prefect")) return "provincial";
     if (raw.includes("mtt") || raw.includes("gt") || raw.includes("unidad") || raw.includes("coe")) return "unidad";
