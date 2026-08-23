@@ -72,6 +72,7 @@ service cloud.firestore {
         && request.resource.data.get('createdBy', '') == request.auth.token.email
         && request.resource.data.get('revision', 0) == 1
         && request.resource.data.get('payload', {}) is map
+        && request.resource.data.get('payload', {}).get('id', '') == request.resource.data.get('sourceId', '')
         && allowedOperationalType(request.resource.data.get('tipo', ''));
     }
 
@@ -86,6 +87,8 @@ service cloud.firestore {
         && request.resource.data.get('updatedBy', '') == request.auth.token.email
         && request.resource.data.get('revision', 0) == resource.data.get('revision', 0) + 1
         && request.resource.data.get('payload', {}) is map
+        && request.resource.data.get('payload', {}).get('id', '') == resource.data.get('payload', {}).get('id', '')
+        && request.resource.data.get('payload', {}).get('id', '') == resource.data.get('sourceId', '')
         && allowedOperationalType(request.resource.data.get('tipo', ''));
     }
 
@@ -97,6 +100,7 @@ service cloud.firestore {
         && request.resource.data.get('scopeKey', '') == scopeKey
         && request.resource.data.get('changedBy', '') == request.auth.token.email
         && request.resource.data.get('updatedBy', '') == request.auth.token.email
+        && request.resource.data.get('revision', 0) > 0
         && request.resource.data.get('operation', '') in ['create', 'update']
         && allowedOperationalType(request.resource.data.get('tipo', ''));
     }
