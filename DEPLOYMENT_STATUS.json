@@ -1,0 +1,11 @@
+{
+  "product": "SmartRisk CZ5",
+  "projectId": "smartrisk-cz5-produccion",
+  "channel": "live",
+  "url": "https://smartrisk-cz5-produccion.web.app/",
+  "sourceCommit": "1c8e516c579631f568d89646104be19e618ab9d8",
+  "checkedAt": "2026-08-23T18:49:31.568Z",
+  "validation": "failure",
+  "deployment": "skipped",
+  "status": "failed"
+}
