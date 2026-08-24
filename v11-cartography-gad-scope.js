@@ -1,159 +1,190 @@
 (() => {
   "use strict";
 
-  const VERSION = "1.0.0-gad-scope";
+  const VERSION = "1.2.0-hierarchical-scope";
   const $ = (selector, root = document) => root.querySelector(selector);
-  const norm = value => String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toLowerCase();
+  const norm = value => String(value || "")
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/_/g, " ")
+    .replace(/^\s*cant[oó]n\s+/i, "")
+    .replace(/\s+/g, " ").trim().toLowerCase();
+  const clean = value => String(value || "")
+    .replace(/_/g, " ")
+    .replace(/^\s*cant[oó]n\s+/i, "")
+    .replace(/\s+/g, " ").trim();
   const esc = value => String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]);
-  const runtime = { observer: null, applying: false, options: new Map(), lastPlanner: null };
+
+  const PROVINCES = Object.freeze({
+    bolivar: "Bolívar",
+    guayas: "Guayas",
+    "los rios": "Los Ríos",
+    "santa elena": "Santa Elena",
+    galapagos: "Galápagos"
+  });
+
+  const CANTON_FIXES = Object.freeze({
+    guaranda: "Bolívar"
+  });
+
+  const runtime = {
+    observer: null,
+    lastPlanner: null,
+    lastScopeKey: "",
+    normalisedSignature: ""
+  };
 
   function state() { return window.SmartRiskV11App?.state || {}; }
 
-  function addOption(list, province, canton, level = "canton", label = "") {
-    province = String(province || "").trim();
-    canton = String(canton || "").trim();
-    if (!province) return;
-    if (level === "canton" && !canton) return;
-    const key = level === "provincia" ? `provincia|${norm(province)}` : `canton|${norm(province)}|${norm(canton)}`;
-    if (runtime.options.has(key)) return;
-    const item = {
-      key, level, province, canton,
-      label: label || (level === "provincia" ? `GAD Provincial de ${province}` : `GAD Municipal de ${canton}`)
-    };
-    runtime.options.set(key, item);
-    list.push(item);
+  function canonicalProvince(value, item = null) {
+    const code = norm(item?.codigoCaso || item?.id || "");
+    for (const [key,label] of Object.entries(PROVINCES)) {
+      if (code.includes(`gad cantonal ${key}`) || code.includes(`gad provincial ${key}`)) return label;
+    }
+    const cantonProvince = CANTON_FIXES[norm(item?.canton)];
+    if (cantonProvince) return cantonProvince;
+    return PROVINCES[norm(value)] || clean(value);
   }
 
-  function gadCantons() {
-    runtime.options.clear();
-    const list = [];
-    const entities = state().data?.entities || {};
-    (entities.territories || []).forEach(item => addOption(list, item.provincia || item.province || item.payload?.provincia, item.canton || item.payload?.canton, "canton"));
-    (window.F03_CARTOGRAPHY || []).forEach(item => addOption(list, item.provincia, item.canton, "canton"));
-    const plans = window.SMART_RISK_PLAN_SOURCES?.plans || [];
-    plans.forEach(plan => {
-      const province = plan.province || plan.provincia || "";
-      const territory = String(plan.territory || plan.canton || "").trim();
-      if (/provincial|prefectura/i.test(territory)) addOption(list, province, "", "provincia", territory);
-      else addOption(list, province, territory, "canton");
-    });
-    return list.sort((a,b) => a.province.localeCompare(b.province,"es") || (a.level === b.level ? a.label.localeCompare(b.label,"es") : a.level === "provincia" ? -1 : 1));
-  }
-
-  function selectedFromGlobal() {
-    const level = $("#sr16Level")?.value || "zona";
-    const province = $("#sr16Province")?.value || state().filters?.provincia || "";
-    const canton = $("#sr16Canton")?.value || state().filters?.canton || "";
-    if (level === "canton" && province && canton) return `canton|${norm(province)}|${norm(canton)}`;
-    if (level === "provincia" && province) return `provincia|${norm(province)}`;
-    return "";
-  }
-
-  function setGate(enabled) {
-    const planner = $("#srCartoPlanner");
-    if (!planner) return;
-    const protectedBlocks = [...planner.querySelectorAll(":scope > .sr-carto-layout, :scope > .sr-carto-selection, :scope > .sr-carto-docs")];
-    protectedBlocks.forEach(node => node.hidden = !enabled);
-    let gate = $("#srCartoGadRequired", planner);
-    if (!enabled) {
-      if (!gate) {
-        gate = document.createElement("section");
-        gate.id = "srCartoGadRequired";
-        gate.className = "sr-carto-gad-required";
-        gate.innerHTML = `<b>Selecciona un GAD para mostrar su cartografía</b><p>El visor de planificación no mezcla información entre administraciones. Primero elige el GAD; después se mostrarán únicamente sus puntos, líneas, polígonos, KML/KMZ, sitios, riesgos y acciones georreferenciadas.</p>`;
-        const controls = $(".sr-carto-controls", planner);
-        controls?.insertAdjacentElement("afterend", gate);
+  function normalizeF03() {
+    const rows = Array.isArray(window.F03_CARTOGRAPHY) ? window.F03_CARTOGRAPHY : [];
+    if (!rows.length) return false;
+    const signature = `${rows.length}|${rows[0]?.id || ""}|${rows.at(-1)?.id || ""}`;
+    if (runtime.normalisedSignature === signature) return true;
+    rows.forEach(item => {
+      item.canton = clean(item.canton);
+      item.provincia = canonicalProvince(item.provincia, item);
+      if (item.poligono && String(item.poligono).includes(";")) {
+        item.poligono = String(item.poligono).split(";").map(part => {
+          const nums = part.match(/-?\d+(?:[.,]\d+)?/g)?.slice(0,2) || [];
+          return nums.length === 2 ? `${nums[0]} ${nums[1]}` : "";
+        }).filter(Boolean).join(";");
       }
-    } else gate?.remove();
+    });
+    runtime.normalisedSignature = signature;
+    return true;
   }
 
-  function updateContextLabel(item) {
+  function currentScope() {
+    const filters = state().filters || {};
+    const level = $("#sr16Level")?.value || (filters.canton ? "canton" : filters.provincia ? "provincia" : "zona");
+    const province = level === "zona" ? "" : clean($("#sr16Province")?.value || filters.provincia || "");
+    const canton = level === "canton" ? clean($("#sr16Canton")?.value || filters.canton || "") : "";
+    const resolvedLevel = level === "canton" && !canton ? (province ? "provincia" : "zona") : level === "provincia" && !province ? "zona" : level;
+    return {
+      level: resolvedLevel,
+      province: resolvedLevel === "zona" ? "" : province,
+      canton: resolvedLevel === "canton" ? canton : "",
+      key: `${resolvedLevel}|${norm(province)}|${norm(canton)}`
+    };
+  }
+
+  function matchesScope(item, scope = currentScope()) {
+    if (!item) return false;
+    if (scope.level === "zona") return true;
+    const province = canonicalProvince(item.provincia || item.province || item.payload?.provincia || item.payload?.province || "", item);
+    if (norm(province) !== norm(scope.province)) return false;
+    if (scope.level === "provincia") return true;
+    const canton = clean(item.canton || item.cantón || item.territory || item.payload?.canton || item.payload?.territorioNombre || "");
+    return norm(canton) === norm(scope.canton);
+  }
+
+  function scopeCopy(scope = currentScope()) {
+    if (scope.level === "zona") return {
+      eyebrow: "Alcance cartográfico",
+      title: "Zona 5 · Todos los GAD",
+      description: "Se muestran los elementos cartográficos disponibles de todos los GAD de la Zona 5."
+    };
+    if (scope.level === "provincia") return {
+      eyebrow: "Alcance cartográfico",
+      title: `Provincia de ${scope.province} · Todos los GAD`,
+      description: `Se muestran todos los elementos cartográficos disponibles de los GAD de ${scope.province}.`
+    };
+    return {
+      eyebrow: "Alcance cartográfico",
+      title: `Cantón ${scope.canton} · Solo el GAD seleccionado`,
+      description: `Se muestran únicamente los elementos cartográficos del GAD de ${scope.canton}, ${scope.province}.`
+    };
+  }
+
+  function renderScopeContext() {
+    normalizeF03();
     const planner = $("#srCartoPlanner");
     if (!planner) return;
+
+    $(".sr-carto-gad-filter", planner)?.remove();
+    $("#srCartoGadRequired", planner)?.remove();
+    [...planner.querySelectorAll(":scope > .sr-carto-layout, :scope > .sr-carto-selection, :scope > .sr-carto-docs")].forEach(node => node.hidden = false);
+
+    const scope = currentScope();
+    const copy = scopeCopy(scope);
+    let card = $("#srCartoScopeContext", planner);
+    if (!card) {
+      card = document.createElement("section");
+      card.id = "srCartoScopeContext";
+      card.className = "sr-carto-scope-context";
+      $(".sr-carto-controls", planner)?.insertAdjacentElement("afterend", card);
+    }
+    card.innerHTML = `<small>${esc(copy.eyebrow)}</small><b>${esc(copy.title)}</b><span>${esc(copy.description)}</span>`;
+
     const lead = $(".sr-carto-lead h2", planner);
     const paragraph = $(".sr-carto-lead p", planner);
-    if (lead) lead.textContent = item ? `Cartografía del ${item.label}` : "Cartografía para decidir qué priorizar y dónde actuar";
-    if (paragraph) paragraph.textContent = item
-      ? `Vista exclusiva de ${item.label}. Los elementos de otros GAD quedan fuera de esta planificación cartográfica.`
-      : "Elige un GAD para activar una vista cartográfica exclusiva y evitar mezclar información territorial.";
+    if (lead) lead.textContent = scope.level === "zona"
+      ? "Cartografía de la Zona 5 para planificación"
+      : scope.level === "provincia"
+        ? `Cartografía de ${scope.province} para planificación`
+        : `Cartografía del GAD de ${scope.canton} para planificación`;
+    if (paragraph) paragraph.textContent = copy.description + " Activa capas, selecciona geometrías y contrasta sus fuentes antes de incorporarlas a la planificación.";
+
+    document.dispatchEvent(new CustomEvent("smartrisk:cartography-scope-change", { detail: scope }));
   }
 
-  function populateSelector() {
-    const planner = $("#srCartoPlanner");
-    const controls = $(".sr-carto-controls", planner);
-    if (!planner || !controls) return;
-    let select = $("#srCartoGad", planner);
-    if (!select) {
-      const label = document.createElement("label");
-      label.className = "sr-carto-gad-filter";
-      label.innerHTML = `GAD para planificación cartográfica<select id="srCartoGad"><option value="">Selecciona un GAD</option></select><small>Solo se mostrarán elementos del GAD elegido.</small>`;
-      controls.prepend(label);
-      select = $("#srCartoGad", label);
-    }
-    const current = select.value || selectedFromGlobal();
-    const options = gadCantons();
-    select.innerHTML = `<option value="">Selecciona un GAD</option>${options.map(item => `<option value="${esc(item.key)}">${esc(item.label)} · ${esc(item.province)}</option>`).join("")}`;
-    if (current && runtime.options.has(current)) select.value = current;
-    const item = runtime.options.get(select.value) || null;
-    setGate(Boolean(item));
-    updateContextLabel(item);
+  function clearSelectionOnScopeChange() {
+    const scope = currentScope();
+    if (!runtime.lastScopeKey) { runtime.lastScopeKey = scope.key; return; }
+    if (runtime.lastScopeKey === scope.key) return;
+    runtime.lastScopeKey = scope.key;
+    $("[data-sr-carto-clear]")?.click();
   }
 
-  function clearCrossGadSelection() {
-    const clear = $("[data-sr-carto-clear]");
-    if (clear) clear.click();
-  }
-
-  function applyGad(key) {
-    const item = runtime.options.get(key);
-    if (!item) { setGate(false); updateContextLabel(null); return; }
-    runtime.applying = true;
-    clearCrossGadSelection();
-    const level = $("#sr16Level"), province = $("#sr16Province"), canton = $("#sr16Canton");
-    if (level) { level.value = item.level; level.dispatchEvent(new Event("change", { bubbles: true })); }
-    setTimeout(() => {
-      if (province) { province.value = item.province; province.dispatchEvent(new Event("change", { bubbles: true })); }
-      setTimeout(() => {
-        if (item.level === "canton" && canton) { canton.value = item.canton; canton.dispatchEvent(new Event("change", { bubbles: true })); }
-        setGate(true);
-        updateContextLabel(item);
-        window.SmartRiskCartographyPlanning?.paintPlannerMap?.();
-        runtime.applying = false;
-      }, 120);
-    }, 80);
-  }
-
-  function syncFromGlobal() {
-    if (runtime.applying) return;
-    const select = $("#srCartoGad");
-    if (!select) return;
-    const key = selectedFromGlobal();
-    select.value = key && runtime.options.has(key) ? key : "";
-    const item = runtime.options.get(select.value) || null;
-    setGate(Boolean(item));
-    updateContextLabel(item);
+  function refresh() {
+    normalizeF03();
+    clearSelectionOnScopeChange();
+    renderScopeContext();
+    window.SmartRiskCartographyPlanning?.paintPlannerMap?.();
   }
 
   function bind() {
     document.addEventListener("change", event => {
-      if (event.target.matches("#srCartoGad")) { applyGad(event.target.value); return; }
-      if (event.target.matches("#sr16Level,#sr16Province,#sr16Canton")) setTimeout(syncFromGlobal, 160);
+      if (event.target.matches("#sr16Level,#sr16Province,#sr16Canton")) setTimeout(refresh, 180);
     });
     runtime.observer = new MutationObserver(() => {
       const planner = $("#srCartoPlanner");
       if (planner && planner !== runtime.lastPlanner) {
         runtime.lastPlanner = planner;
-        setTimeout(populateSelector, 30);
-      } else if (planner && !$("#srCartoGad", planner)) setTimeout(populateSelector, 30);
+        setTimeout(refresh, 40);
+      } else if (planner && !$("#srCartoScopeContext", planner)) setTimeout(renderScopeContext, 40);
+      if (!runtime.normalisedSignature) normalizeF03();
     });
     runtime.observer.observe(document.body, { childList: true, subtree: true });
   }
 
   function start() {
+    normalizeF03();
     bind();
-    setTimeout(populateSelector, 700);
+    setTimeout(refresh, 700);
+    setTimeout(normalizeF03, 1400);
   }
 
   start();
-  window.SmartRiskCartographyGadScope = { VERSION, gadCantons, applyGad, populateSelector, currentGad: () => runtime.options.get($("#srCartoGad")?.value || "") || null };
+  window.SmartRiskCartographyScope = { VERSION, currentScope, matchesScope, normalizeF03, canonicalProvince, normalizeTerritory: norm, refresh };
+  window.SmartRiskCartographyGadScope = {
+    VERSION,
+    currentScope,
+    currentGad: () => {
+      const scope = currentScope();
+      return scope.level === "canton" ? { level: "canton", province: scope.province, canton: scope.canton, label: `GAD Municipal de ${scope.canton}` } : null;
+    },
+    normalizeTerritory: norm,
+    refresh
+  };
 })();
