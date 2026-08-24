@@ -170,6 +170,7 @@
     await loadStyles("v11-layout-rc15-1.css");
     await loadStyles("v11-approved-rc16.css");
     await loadStyles("enos-operational-v11.css");
+    await loadStyles("v11-cartography-planning.css");
     await loadScript("v11-router.js");
     await loadScript("v11-permissions.js");
     await loadScript("v11-data-adapter.js");
@@ -187,6 +188,7 @@
     await loadScript("enos-matrix-v11.js");
     await loadScript("enos-operational-v11.js");
     await loadScript("v11-zonal-synthesis.js");
+    await loadScript("v11-cartography-planning.js");
     await window.SmartRiskV11App.start({ user, profile, db, auth });
     window.SmartRiskV11UX?.afterAppStart?.();
     window.SmartRiskV11DashboardRC8?.afterAppStart?.();
@@ -199,6 +201,7 @@
     window.SmartRiskMatrixV11?.afterAppStart?.();
     window.SmartRiskOperationalV11?.afterAppStart?.();
     window.SmartRiskZonalSynthesis?.afterAppStart?.();
+    window.SmartRiskCartographyPlanning?.afterAppStart?.();
     installPlainLanguageLayer();
     return true;
   }
