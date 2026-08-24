@@ -1,13 +1,18 @@
 name: Sincronizar F07 Kobo
+
 on:
   schedule:
     - cron: "*/15 * * * *"
   workflow_dispatch:
+
 permissions:
   contents: write
+  checks: write
+
 concurrency:
   group: sync-f07-public
   cancel-in-progress: true
+
 jobs:
   sync:
     runs-on: ubuntu-latest
@@ -16,16 +21,62 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
+
       - name: Leer y normalizar respuestas públicas del F07
         run: node scripts/sync-f07-public.mjs
+
       - name: Verificar plataforma
         run: node scripts/test-release.mjs
-      - name: Registrar cambios verificables
+
+      - id: changes
+        name: Detectar nuevo corte F07
+        shell: bash
         run: |
           if git diff --quiet -- f07-current-data.js; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
             echo "F07 sin cambios"
-            exit 0
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "Nuevo corte F07 detectado"
           fi
+
+      - id: deploy
+        if: steps.changes.outputs.changed == 'true'
+        name: Publicar nuevo corte F07 en Firebase Hosting
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_SMARTRISK_CZ5_PRODUCCION }}"
+          channelId: live
+          projectId: smartrisk-cz5-produccion
+
+      - name: Verificar que el corte F07 esté visible en producción
+        if: steps.changes.outputs.changed == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f dist/f07-current-data.js
+          LIVE_FILE="$RUNNER_TEMP/f07-current-data-live.js"
+          verified=false
+          for attempt in 1 2 3 4 5; do
+            if curl -fsSL -H 'Cache-Control: no-cache' \
+              "https://smartrisk-cz5-produccion.web.app/f07-current-data.js?run=${GITHUB_RUN_ID}&attempt=${attempt}" \
+              -o "$LIVE_FILE" && cmp -s dist/f07-current-data.js "$LIVE_FILE"; then
+              verified=true
+              break
+            fi
+            sleep 3
+          done
+          if [ "$verified" != "true" ]; then
+            echo "::error::El corte F07 desplegado no coincide con el archivo visible en producción."
+            exit 1
+          fi
+          echo "F07_LIVE_OK"
+
+      - name: Registrar cambio verificable después de publicar
+        if: steps.changes.outputs.changed == 'true'
+        shell: bash
+        run: |
           git config user.name "SmartRisk F07 Bot"
           git config user.email "actions@users.noreply.github.com"
           git add f07-current-data.js
