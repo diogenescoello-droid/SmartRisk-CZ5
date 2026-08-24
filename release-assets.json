@@ -13,6 +13,8 @@
     "scope-repository.js",
     "scope-ui.js",
     "v11-rollout.js",
+    "v11-cartography-gad-scope.js",
+    "v11-cartography-gad-scope.css",
     "rc13-menu.js",
     "access-gate.js",
     "app.js",
