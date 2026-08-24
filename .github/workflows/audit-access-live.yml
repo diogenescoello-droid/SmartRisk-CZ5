@@ -1,0 +1,35 @@
+name: Audit SmartRisk access live
+
+on:
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "scripts/audit-access-live.mjs"
+      - ".github/workflows/audit-access-live.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit_access:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install Firebase Admin SDK
+        run: npm install --no-save firebase-admin@13.4.0
+      - name: Reconcile Authentication and Firestore profiles
+        env:
+          FIREBASE_SERVICE_ACCOUNT_JSON: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_SMARTRISK_CZ5_PRODUCCION }}"
+        run: node scripts/audit-access-live.mjs
+      - name: Upload sanitized audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: smartrisk-access-audit-live
+          path: ACCESS_AUDIT_LIVE.json
+          retention-days: 3
