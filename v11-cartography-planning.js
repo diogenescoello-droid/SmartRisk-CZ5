@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const VERSION = "1.0.0-cartography-planning";
+  const VERSION = "1.0.1-cartography-planning";
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
   const esc = value => String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]);
@@ -50,39 +50,52 @@
   function entities() { return state().data?.entities || {}; }
   function f03() { return Array.isArray(window.F03_CARTOGRAPHY) ? window.F03_CARTOGRAPHY : []; }
 
-  function parsePoint(value) {
-    if (!value) return null;
-    if (Array.isArray(value) && value.length >= 2) {
-      const a = finite(value[0]), b = finite(value[1]);
-      if (a !== null && b !== null) return Math.abs(a) <= 90 ? [a, b] : [b, a];
-    }
-    if (typeof value === "object") {
-      const lat = finite(value.lat ?? value.latitude ?? value.y), lng = finite(value.lng ?? value.lon ?? value.longitude ?? value.x);
-      if (lat !== null && lng !== null) return [lat, lng];
-    }
-    const nums = String(value).match(/-?\d+(?:[.,]\d+)?/g)?.map(v => Number(v.replace(",", "."))) || [];
-    if (nums.length < 2) return null;
-    const [a, b] = nums;
+  function orientPair(a, b, preferLonLat = false) {
+    if (!Number.isFinite(a) || !Number.isFinite(b)) return null;
+    const aLooksEcuadorLng = a >= -83 && a <= -74;
+    const bLooksEcuadorLng = b >= -83 && b <= -74;
+    const aLooksEcuadorLat = a >= -6 && a <= 3;
+    const bLooksEcuadorLat = b >= -6 && b <= 3;
+    if (aLooksEcuadorLng && bLooksEcuadorLat) return [b, a];
+    if (bLooksEcuadorLng && aLooksEcuadorLat) return [a, b];
+    if (preferLonLat && Math.abs(b) <= 90 && Math.abs(a) <= 180) return [b, a];
     if (Math.abs(a) <= 90 && Math.abs(b) <= 180) return [a, b];
     if (Math.abs(b) <= 90 && Math.abs(a) <= 180) return [b, a];
     return null;
   }
 
+  function parsePoint(value) {
+    if (!value) return null;
+    if (Array.isArray(value) && value.length >= 2) {
+      const a = finite(value[0]), b = finite(value[1]);
+      return a !== null && b !== null ? orientPair(a, b) : null;
+    }
+    if (typeof value === "object") {
+      const lat = finite(value.lat ?? value.latitude ?? value.y), lng = finite(value.lng ?? value.lon ?? value.longitude ?? value.x);
+      if (lat !== null && lng !== null) return [lat, lng];
+    }
+    const raw = String(value);
+    const nums = raw.match(/-?\d+(?:[.,]\d+)?/g)?.map(v => Number(v.replace(",", "."))) || [];
+    if (nums.length < 2) return null;
+    return orientPair(nums[0], nums[1], /\bPOINT|\bPOLYGON|\bLINESTRING/i.test(raw));
+  }
+
   function parsePolygon(value) {
     if (!value) return [];
+    const out = [];
     if (Array.isArray(value)) {
       const pairs = value.flat(Infinity).filter(v => typeof v === "number");
-      const out = [];
       for (let i = 0; i + 1 < pairs.length; i += 2) {
-        const p = parsePoint([pairs[i], pairs[i + 1]]);
+        const p = orientPair(pairs[i], pairs[i + 1]);
         if (p) out.push(p);
       }
       return out;
     }
-    const nums = String(value).match(/-?\d+(?:[.,]\d+)?/g)?.map(v => Number(v.replace(",", "."))) || [];
-    const out = [];
+    const raw = String(value);
+    const nums = raw.match(/-?\d+(?:[.,]\d+)?/g)?.map(v => Number(v.replace(",", "."))) || [];
+    const preferLonLat = /\bPOLYGON|\bLINESTRING/i.test(raw);
     for (let i = 0; i + 1 < nums.length; i += 2) {
-      const p = parsePoint([nums[i], nums[i + 1]]);
+      const p = orientPair(nums[i], nums[i + 1], preferLonLat);
       if (p) out.push(p);
     }
     return out;
@@ -102,7 +115,7 @@
     const text = threatText(item);
     if (threat === "inundacion") return /inund|desbord|aneg/.test(text);
     if (threat === "movimiento") return /desliz|movimiento|masa|ladera/.test(text);
-    if (threat === "sequia") return /sequia|déficit|deficit hídr|deficit hidri/.test(text);
+    if (threat === "sequia") return /sequia|deficit hidri/.test(text);
     if (threat === "incendio") return /incend/.test(text);
     if (threat === "sismo") return /sism|terrem/.test(text);
     return true;
@@ -138,6 +151,7 @@
     if (raw && typeof raw === "object" && raw.type && raw.coordinates) return raw;
     if (record?.payload?.features?.type === "FeatureCollection") return record.payload.features;
     if (record?.payload?.features?.features) return { type: "FeatureCollection", features: record.payload.features.features };
+    if (Array.isArray(record?.payload?.features)) return { type: "FeatureCollection", features: record.payload.features };
     const point = pointFromRecord(record);
     return point ? { type: "Point", coordinates: [point[1], point[0]] } : null;
   }
@@ -203,11 +217,6 @@
     layer.addTo(map);
   }
 
-  function clearOverlays() {
-    runtime.overlays.forEach(layer => { try { runtime.map?.removeLayer(layer); } catch (_) {} });
-    runtime.overlays.clear();
-  }
-
   function layerMarkerStyle(kind) {
     const styles = {
       f03: { radius: 8, color: "#fff", weight: 2, fillColor: "#0f766e", fillOpacity: .95 },
@@ -253,6 +262,9 @@
     f03().filter(item => sameScope(item, current) && threatMatches(item, threat)).forEach(item => {
       const geom = f03Geometry(item);
       if (!geom) return;
+      const geometry = geom.type === "Point"
+        ? { type: "Point", coordinates: [geom.latlng[1], geom.latlng[0]] }
+        : { type: "Polygon", coordinates: [[...geom.latlngs.map(([lat,lng]) => [lng,lat]), [geom.latlngs[0][1], geom.latlngs[0][0]]]] };
       const descriptor = registerItem("F03", item, {
         label: item.nombre || "Aporte cartográfico F03",
         type: "F03 · aporte cartográfico",
@@ -260,7 +272,7 @@
         status: f03Usability(item),
         sourceLabel: item.fuente || item.institucion || "F03",
         detail: item.limitaciones || item.descripcion || "",
-        geometry: geom.type === "Point" ? { type: "Point", coordinates: [geom.latlng[1], geom.latlng[0]] } : { type: "Polygon", coordinates: [[...geom.latlngs.map(([lat,lng]) => [lng,lat]), [geom.latlngs[0][1], geom.latlngs[0][0]]]] }
+        geometry
       });
       const layer = geom.type === "Point" ? L.circleMarker(geom.latlng, layerMarkerStyle("f03")) : L.polygon(geom.latlngs, { color: "#0f766e", weight: 2.5, fillColor: "#14b8a6", fillOpacity: .23 });
       bindFeatureLayer(layer, descriptor, f03Usability(item)).addTo(group);
@@ -280,7 +292,7 @@
         bindFeatureLayer(L.circleMarker(latlng, layerMarkerStyle(layerName)), descriptor).addTo(group);
       } else {
         try {
-          const geoLayer = L.geoJSON({ type: "Feature", properties: {}, geometry }, {
+          const geoLayer = L.geoJSON(geometry.type === "FeatureCollection" ? geometry : { type: "Feature", properties: {}, geometry }, {
             style: { color: layerMarkerStyle(layerName).fillColor, weight: 2.5, fillOpacity: .22 },
             pointToLayer: (_f, latlng) => L.circleMarker(latlng, layerMarkerStyle(layerName)),
             onEachFeature: (_f, l) => bindFeatureLayer(l, descriptor)
@@ -396,16 +408,18 @@
     const bases = baseMaps();
     bases[chosen.base].addTo(runtime.map);
     runtime.map._srBases = bases;
-    await paintBoundaries(runtime.map, current, chosen.layers);
-    paintF03(runtime.map, current, chosen.layers, chosen.threat);
-    paintEntityPoints(runtime.map, current, chosen.layers, chosen.threat, "criticalSites", "sites", "Sitio crítico");
-    paintEntityPoints(runtime.map, current, chosen.layers, chosen.threat, "risks", "risks", "Riesgo / amenaza");
-    paintEntityPoints(runtime.map, current, chosen.layers, chosen.threat, "actions", "actions", "Acción georreferenciada");
-    paintEntityPoints(runtime.map, current, chosen.layers, chosen.threat, "mapLayers", "operational", "Cartografía operativa");
-    paintEntityPoints(runtime.map, current, chosen.layers, chosen.threat, "reports", "reports", "Informe georreferenciado");
-    paintEntityPoints(runtime.map, current, chosen.layers, chosen.threat, "monitoringReports", "reports", "Monitoreo georreferenciado");
-    await paintStaticRisk(runtime.map, current, chosen.layers, chosen.threat, "bolivar");
-    await paintStaticRisk(runtime.map, current, chosen.layers, chosen.threat, "santaElena");
+    try {
+      await paintBoundaries(runtime.map, current, chosen.layers);
+      paintF03(runtime.map, current, chosen.layers, chosen.threat);
+      paintEntityPoints(runtime.map, current, chosen.layers, chosen.threat, "criticalSites", "sites", "Sitio crítico");
+      paintEntityPoints(runtime.map, current, chosen.layers, chosen.threat, "risks", "risks", "Riesgo / amenaza");
+      paintEntityPoints(runtime.map, current, chosen.layers, chosen.threat, "actions", "actions", "Acción georreferenciada");
+      paintEntityPoints(runtime.map, current, chosen.layers, chosen.threat, "mapLayers", "operational", "Cartografía operativa");
+      paintEntityPoints(runtime.map, current, chosen.layers, chosen.threat, "reports", "reports", "Informe georreferenciado");
+      paintEntityPoints(runtime.map, current, chosen.layers, chosen.threat, "monitoringReports", "reports", "Monitoreo georreferenciado");
+      await paintStaticRisk(runtime.map, current, chosen.layers, chosen.threat, "bolivar");
+      await paintStaticRisk(runtime.map, current, chosen.layers, chosen.threat, "santaElena");
+    } catch (error) { console.error("Cartografía SmartRisk", error); }
     fitPlannerMap();
     setTimeout(() => runtime.map?.invalidateSize(), 100);
     renderDocuments();
@@ -466,9 +480,7 @@
     }, 30);
   }
 
-  function openActions() {
-    $("[data-sr16-full=\"acciones\"]")?.click();
-  }
+  function openActions() { $("[data-sr16-full=\"acciones\"]")?.click(); }
 
   function renderFullPlanner() {
     const module = $("#sr16Module");
@@ -502,6 +514,7 @@
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 18 }).addTo(runtime.quickMap);
     const current = scope();
     loadGeo("geo/cantones-zonal5.geojson").then(geo => {
+      if (!runtime.quickMap) return;
       const layer = L.geoJSON({ ...geo, features: (geo.features || []).filter(feature => {
         const p = feature.properties || {};
         return sameScope({ provincia: p.DPA_DESPRO || p.PROVINCIA || p.provincia, canton: p.DPA_DESCAN || p.CANTON || p.canton }, current);
@@ -532,7 +545,14 @@
       const select = event.target.closest("[data-sr-carto-select]");
       if (select) { addOrRemoveSelection(select.dataset.srCartoSelect); return; }
       const inspect = event.target.closest("[data-sr-carto-inspect]");
-      if (inspect) { const key = inspect.dataset.srCartoInspect; const item = runtime.selected.get(key) || runtime.catalog.get(key); if (runtime.selected.has(key)) runtime.selected.delete(key); if (item) renderInspector(item); renderSelection(); return; }
+      if (inspect) {
+        const key = inspect.dataset.srCartoInspect;
+        const item = runtime.selected.get(key) || runtime.catalog.get(key);
+        if (runtime.selected.has(key)) runtime.selected.delete(key);
+        if (item) renderInspector(item);
+        renderSelection();
+        return;
+      }
       const canton = event.target.closest("[data-sr-carto-scope-canton]");
       if (canton) { setScopeToCanton(canton.dataset.srCartoScopeProvince, canton.dataset.srCartoScopeCanton); return; }
       if (event.target.closest("[data-sr-carto-fit]")) { fitPlannerMap(); return; }
@@ -550,13 +570,11 @@
       if (event.target.matches("#sr16Level,#sr16Province,#sr16Canton")) scheduleRefresh();
     });
     runtime.observer = new MutationObserver(() => {
-      const current = scope();
-      if (current.key !== runtime.lastScopeKey) scheduleRefresh();
-      if ($('[data-sr16-view="mapa"].active')) renderQuickMap();
+      if ($('[data-sr16-view="mapa"].active') && !$("#srCartoQuickHost")) renderQuickMap();
       const heading = $("#sr16Module .sr16-module-head h1")?.textContent;
       if (norm(heading) === "cartografia" && !$("#srCartoPlanner")) renderFullPlanner();
     });
-    runtime.observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
+    runtime.observer.observe(document.body, { childList: true, subtree: true });
   }
 
   function afterAppStart() {
@@ -564,5 +582,5 @@
     scheduleRefresh();
   }
 
-  window.SmartRiskCartographyPlanning = { VERSION, afterAppStart, renderFullPlanner, renderQuickMap, paintPlannerMap, scope, projectedCount };
+  window.SmartRiskCartographyPlanning = { VERSION, afterAppStart, renderFullPlanner, renderQuickMap, paintPlannerMap, scope, projectedCount, parsePoint, parsePolygon };
 })();
