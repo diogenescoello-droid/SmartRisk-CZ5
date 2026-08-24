@@ -1,4 +1,7 @@
 {
+  "functions": {
+    "source": "functions"
+  },
   "firestore": {
     "rules": "firestore.rules"
   },
@@ -14,6 +17,15 @@
     ],
     "cleanUrls": true,
     "trailingSlash": false,
+    "rewrites": [
+      {
+        "source": "/api/gpt",
+        "function": {
+          "functionId": "smartriskGpt",
+          "region": "us-central1"
+        }
+      }
+    ],
     "headers": [
       {
         "source": "**/*.html",
@@ -45,6 +57,10 @@
       },
       {
         "source": "/f07-current-data.js",
+        "headers": [{ "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }]
+      },
+      {
+        "source": "/smartrisk-gpt-client.js",
         "headers": [{ "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }]
       }
     ]
