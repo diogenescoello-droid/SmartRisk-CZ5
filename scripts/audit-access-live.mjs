@@ -15,11 +15,27 @@ const maskEmail = value => {
   if (!domain) return email ? `${email.slice(0,1)}***` : '';
   return `${local.slice(0,1)}***@${domain}`;
 };
+const countBy = (rows, getter) => rows.reduce((acc, row) => {
+  const key = String(getter(row) || 'Sin definir');
+  acc[key] = (acc[key] || 0) + 1;
+  return acc;
+}, {});
 const supportedRoles = new Set([
   'administrador','tecnico zonal','tecnico territorial','coordinador coe','lider mtt/gt',
   'tomador de decision/control','visor provincial ame','visor zonal ame','consulta provincial ame'
 ]);
 const legacyRoles = new Set(['visor provincial ame','visor zonal ame','consulta provincial ame']);
+const expectedLevel = role => {
+  if (role === 'tecnico zonal' || role === 'visor zonal ame') return 'zonal';
+  if (role === 'tecnico provincial' || role === 'visor provincial ame' || role === 'consulta provincial ame') return 'provincial';
+  if (role === 'tecnico territorial') return 'cantonal';
+  return '';
+};
+const expectedScopePrefix = role => {
+  if (role === 'tecnico provincial' || role === 'visor provincial ame' || role === 'consulta provincial ame') return 'PROV:';
+  if (role === 'tecnico territorial') return 'TER:';
+  return '';
+};
 
 const users = [];
 let pageToken;
@@ -65,6 +81,15 @@ for (const user of users) {
     add('high','LEGACY_SCOPE_WITHOUT_KEYS',user.uid,user.email,'El gate acepta provincia/cantón, pero las reglas Firestore autorizan alcances mediante scopeKeys.');
   }
   if (!Array.isArray(profile.scopeKeys) && profile.scopeKeys != null) add('high','SCOPEKEYS_NOT_ARRAY',user.uid,user.email,'scopeKeys existe pero no es una lista.');
+  const prefix = expectedScopePrefix(role);
+  if (prefix && scopes.length && !scopes.some(key => String(key).startsWith(prefix))) {
+    add('high','ROLE_SCOPE_PREFIX_MISMATCH',user.uid,user.email,`El rol requiere al menos un scopeKey ${prefix} y no lo tiene.`);
+  }
+  const level = normalize(profile.nivelAcceso);
+  const expected = expectedLevel(role);
+  if (expected && level && !level.includes(expected)) {
+    add('medium','ROLE_LEVEL_MISMATCH',user.uid,user.email,`nivelAcceso “${profile.nivelAcceso}” no coincide con el rol ${profile.rol || profile.codigoRol}.`);
+  }
   if (typeof profile.requiereCambioClave !== 'boolean') add('medium','PASSWORD_CHANGE_FLAG_MISSING',user.uid,user.email,'Falta indicador booleano requiereCambioClave.');
   if (duplicateEmails.has(profileEmail)) add('critical','DUPLICATE_PROFILE_EMAIL',user.uid,user.email,'El mismo correo aparece en más de un perfil Firestore.');
 }
@@ -75,6 +100,18 @@ for (const profile of profiles) {
 
 const bySeverity = findings.reduce((acc,row) => { acc[row.severity] = (acc[row.severity] || 0) + 1; return acc; }, {});
 const byCode = findings.reduce((acc,row) => { acc[row.code] = (acc[row.code] || 0) + 1; return acc; }, {});
+const passwordFlag = {
+  true: profiles.filter(p => p.requiereCambioClave === true).length,
+  false: profiles.filter(p => p.requiereCambioClave === false).length,
+  missing: profiles.filter(p => typeof p.requiereCambioClave !== 'boolean').length
+};
+const scopeStats = {
+  withScopeKeys: profiles.filter(p => Array.isArray(p.scopeKeys) && p.scopeKeys.filter(Boolean).length).length,
+  withoutScopeKeys: profiles.filter(p => !Array.isArray(p.scopeKeys) || !p.scopeKeys.filter(Boolean).length).length,
+  terKeys: profiles.filter(p => Array.isArray(p.scopeKeys) && p.scopeKeys.some(k => String(k).startsWith('TER:'))).length,
+  provKeys: profiles.filter(p => Array.isArray(p.scopeKeys) && p.scopeKeys.some(k => String(k).startsWith('PROV:'))).length,
+  zonaKeys: profiles.filter(p => Array.isArray(p.scopeKeys) && p.scopeKeys.some(k => String(k).startsWith('ZONA:'))).length
+};
 const result = {
   generatedAt: new Date().toISOString(),
   projectId: 'smartrisk-cz5-produccion',
@@ -84,7 +121,15 @@ const result = {
     findings: findings.length,
     bySeverity,
     byCode,
-    emailVerifiedFalse: users.filter(u => !u.emailVerified).length
+    emailVerifiedFalse: users.filter(u => !u.emailVerified).length,
+    neverSignedIn: users.filter(u => !u.metadata?.lastSignInTime).length,
+    disabledUsers: users.filter(u => u.disabled).length,
+    passwordProviderMissing: users.filter(u => !u.providerData.some(p => p.providerId === 'password')).length,
+    passwordFlag,
+    scopeStats,
+    roles: countBy(profiles, p => p.rol || p.codigoRol || 'Sin rol'),
+    nivelesAcceso: countBy(profiles, p => p.nivelAcceso || 'Sin nivel'),
+    estadosPerfil: countBy(profiles, p => p.estado || 'Sin estado')
   },
   findings
 };
