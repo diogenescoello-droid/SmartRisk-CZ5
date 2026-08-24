@@ -1,78 +1,35 @@
 (() => {
   "use strict";
 
-  const RELEASE = window.SMART_RISK_RELEASE || {
-    release: "V1.0.0 PILOTO ESTABLE",
-    build: "1.0.0-piloto-estable"
-  };
+  const RELEASE = window.SMART_RISK_RELEASE || { release: "V1.0.0 PILOTO ESTABLE", build: "1.0.0-piloto-estable" };
   const BUILD_VERSION = RELEASE.build;
+  const ACCESS_VERSION = "2026.08.24.2";
+  const catalog = window.SmartRiskAccessCatalog;
   const SUPPORT_SCRIPTS = [
-    "smartrisk-operational-core.js",
-    "data.js",
-    "enos-data.js",
-    "enos-reviews.js",
-    "enos-matrix-preliminary.js",
-    "enos-matrix-audit-20260822.js",
-    "enos-matrix-ui.js",
-    "enos-matrix-audit-ui-20260822.js",
-    "plan-sources.js",
-    "risk-locations.js",
-    "f03-data.js",
-    "cases-data.js",
-    "pilot-baseline-data.js",
-    "f07-current-data.js",
-    "pilot-baseline-bridge.js"
+    "smartrisk-operational-core.js", "data.js", "enos-data.js", "enos-reviews.js",
+    "enos-matrix-preliminary.js", "enos-matrix-audit-20260822.js", "enos-matrix-ui.js",
+    "enos-matrix-audit-ui-20260822.js", "plan-sources.js", "risk-locations.js", "f03-data.js",
+    "cases-data.js", "pilot-baseline-data.js", "f07-current-data.js", "pilot-baseline-bridge.js"
   ];
   const FEATURE_SCRIPTS = [
-    "access-core.js",
-    "access-ui.js",
-    "access-form.js",
-    "action-r023-core.js",
-    "action-r023-page.js",
-    "action-r023-form.js",
-    "latest-data-update.js",
-    "followup-completion-20260730.js",
-    "los-rios-plan-correction-20260730.js",
-    "scientific-quality-fix-20260731.js",
-    "plan-receipt-status-fix-20260731.js",
-    "review-performance-fix-20260731.js",
-    "risk-reports-5y-data.js",
-    "risk-reports-5y-ui.js",
-    "risk-reports-map-layer-20260803.js",
+    "access-core.js", "access-ui.js", "access-form.js", "action-r023-core.js", "action-r023-page.js",
+    "action-r023-form.js", "latest-data-update.js", "followup-completion-20260730.js",
+    "los-rios-plan-correction-20260730.js", "scientific-quality-fix-20260731.js",
+    "plan-receipt-status-fix-20260731.js", "review-performance-fix-20260731.js",
+    "risk-reports-5y-data.js", "risk-reports-5y-ui.js", "risk-reports-map-layer-20260803.js",
     "territorial-scope-guard-20260731.js"
   ];
-  const SUPPORTED_ROLES = new Set([
-    "Administrador",
-    "Técnico zonal",
-    "Técnico territorial",
-    "Coordinador COE",
-    "Líder MTT/GT",
-    "Tomador de decisión/control"
-  ]);
-  const ROLE_ALIASES = new Map([
-    ["usuario territorial", "Técnico territorial"],
-    ["tecnico zonal", "Técnico zonal"],
-    ["tecnico territorial", "Técnico territorial"],
-    ["coordinador coe", "Coordinador COE"],
-    ["lider mtt/gt", "Líder MTT/GT"],
-    ["tomador de decision/control", "Tomador de decisión/control"],
-    ["visor provincial ame", "Tomador de decisión/control"],
-    ["visor zonal ame", "Tomador de decisión/control"],
-    ["consulta provincial ame", "Tomador de decisión/control"],
-    ["administrador", "Administrador"]
-  ]);
 
   const $ = selector => document.querySelector(selector);
   const normalizeEmail = value => String(value || "").trim().toLowerCase();
-  const normalizeText = value => String(value || "")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .trim()
-    .toLowerCase();
-
+  const normalizeText = catalog?.normalize || (value => String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toLowerCase());
   let loaded = false;
   let loading = false;
   let pendingLoginPassword = "";
+
+  function safeStorageRemove(key) {
+    try { localStorage.removeItem(key); } catch (error) { console.warn(`No fue posible limpiar ${key}`, error); }
+  }
 
   function startInterfaceTransition() {
     document.body.classList.add("interface-loading");
@@ -100,6 +57,23 @@
     loginMessage(message);
   }
 
+  function showAuthenticatedStartupError(message, error) {
+    console.error("SmartRisk authenticated startup error", error);
+    finishInterfaceTransition();
+    $("#login")?.classList.add("hidden");
+    $("#app")?.classList.add("hidden");
+    document.querySelector("#authenticatedStartupError")?.remove();
+    const code = String(error?.code || error?.message || "STARTUP_ERROR").slice(0, 120);
+    document.body.insertAdjacentHTML("beforeend", `<section id="authenticatedStartupError" class="interface-loading-screen" role="alert">
+      <div><span class="interface-loading-mark">SR</span><h2>Su acceso fue validado</h2>
+      <p>${message}</p><p class="muted">No necesita cambiar nuevamente su contraseña.</p>
+      <div class="dialog-actions"><button id="retryAuthenticatedStartup" type="button">Reintentar carga</button><button id="logoutAuthenticatedStartup" type="button" class="secondary">Cerrar sesión</button></div>
+      <small>Código de diagnóstico: ${code.replace(/[<>&]/g, "")}</small></div>
+    </section>`);
+    $("#retryAuthenticatedStartup")?.addEventListener("click", () => location.reload());
+    $("#logoutAuthenticatedStartup")?.addEventListener("click", () => auth.signOut());
+  }
+
   function status(text, state = "local") {
     if (!$("#syncStatus")) return;
     $("#syncStatus").textContent = text;
@@ -117,39 +91,22 @@
     });
   }
 
-  function canonicalRole(profile) {
-    const original = profile?.rol || profile?.codigoRol || "";
-    return ROLE_ALIASES.get(normalizeText(original)) || original;
-  }
-
   function normalizeProfile(profile) {
     if (!profile || typeof profile !== "object") return null;
-    const originalRole = profile.rol || profile.codigoRol || "";
-    const role = canonicalRole(profile);
-    const readOnly = normalizeText(originalRole).includes("visor")
-      || normalizeText(originalRole).includes("consulta")
-      || profile.modoAcceso === "Consulta";
-    return {
-      ...profile,
-      rol: role,
-      rolInstitucional: originalRole,
-      modoAcceso: readOnly ? "Consulta" : (profile.modoAcceso || "Operación")
-    };
+    if (catalog?.normalizeProfile) return catalog.normalizeProfile(profile);
+    return { ...profile };
   }
 
   function profileProblem(user, profile) {
-    if (!profile) return "Tu cuenta existe en Authentication, pero no tiene un perfil vinculado en Firestore.";
-    if (profile.estado !== "Activo") return "Tu perfil está inactivo o suspendido.";
+    if (!profile) return "Tu cuenta existe en Authentication, pero no tiene un perfil vinculado en SmartRisk.";
+    if (normalizeText(profile.estado) !== "activo") return "Tu perfil está inactivo o suspendido.";
     const authEmail = normalizeEmail(user?.email);
     const profileEmail = normalizeEmail(profile.correo);
-    if (profileEmail && authEmail !== profileEmail) {
-      return "El correo de Authentication no coincide con el correo del perfil. El administrador debe corregir la vinculación por UID.";
-    }
-    if (!SUPPORTED_ROLES.has(profile.rol)) {
-      return `El rol “${profile.rol || "sin definir"}” no está habilitado en esta versión.`;
-    }
+    if (profileEmail && authEmail !== profileEmail) return "El correo de Authentication no coincide con el correo del perfil. El administrador debe corregir la vinculación por UID.";
+    if (catalog && !catalog.isSupported(profile.rol)) return `El rol “${profile.rol || "sin definir"}” no está habilitado en SmartRisk.`;
     const scopeKeys = Array.isArray(profile.scopeKeys) ? profile.scopeKeys.filter(Boolean) : [];
-    if (profile.rol !== "Administrador" && !scopeKeys.length && !profile.canton && !profile.provincia) {
+    const scopeType = catalog?.inferScopeType(profile) || profile._smartRiskScopeType || "cantonal";
+    if (profile.rol !== "Administrador" && scopeType !== "zonal" && !scopeKeys.length && !profile.canton && !profile.provincia) {
       return "El perfil no tiene un alcance territorial o institucional asignado.";
     }
     return "";
@@ -177,7 +134,7 @@
     if (code === "auth/network-request-failed") return "No fue posible conectarse con el servicio de autenticación.";
     if (code === "auth/operation-not-allowed") return "La recuperación por correo no está habilitada.";
     console.error("Error al solicitar recuperación de contraseña", error);
-    return "Firebase no pudo generar el correo de recuperación. Use la credencial temporal entregada por el administrador.";
+    return "Firebase no pudo generar el correo de recuperación. Informe la novedad al administrador.";
   }
 
   async function requestPasswordReset(email) {
@@ -199,23 +156,15 @@
   }
 
   async function requireFirstPasswordChange(user, profile) {
-    if (!profile.requiereCambioClave) return true;
+    const temporaryCredentialFlow = profile.requiereCambioClave === true && normalizeText(profile.metodoActivacion) === "credencial temporal";
+    if (!temporaryCredentialFlow) return true;
     if (!pendingLoginPassword) {
-      await auth.signOut();
-      showLogin("Por seguridad, vuelva a ingresar con la contraseña temporal para definir una contraseña personal.");
+      showAuthenticatedStartupError("Su cuenta está activa, pero requiere completar el cambio de una credencial temporal.", new Error("TEMPORARY_PASSWORD_REAUTH_REQUIRED"));
       return false;
     }
-
     return new Promise(resolve => {
       const dialog = document.createElement("dialog");
-      dialog.innerHTML = `<form class="dialog-body">
-        <h3>Definir contraseña personal</h3>
-        <p class="muted">Este cambio es obligatorio antes de abrir SmartRisk. La contraseña temporal dejará de funcionar.</p>
-        <label>Nueva contraseña</label><input name="newPassword" type="password" autocomplete="new-password" required>
-        <label>Confirmar contraseña</label><input name="confirmation" type="password" autocomplete="new-password" required>
-        <div class="form-error error" role="alert"></div>
-        <div class="dialog-actions"><button type="submit">Actualizar y continuar</button></div>
-      </form>`;
+      dialog.innerHTML = `<form class="dialog-body"><h3>Definir contraseña personal</h3><p class="muted">La credencial temporal dejará de funcionar.</p><label>Nueva contraseña</label><input name="newPassword" type="password" autocomplete="new-password" required><label>Confirmar contraseña</label><input name="confirmation" type="password" autocomplete="new-password" required><div class="form-error error" role="alert"></div><div class="dialog-actions"><button type="submit">Actualizar y continuar</button></div></form>`;
       document.body.append(dialog);
       dialog.showModal();
       const form = dialog.querySelector("form");
@@ -225,22 +174,13 @@
         const errorBox = dialog.querySelector(".form-error");
         const validation = passwordProblem(values.newPassword);
         if (validation) { errorBox.textContent = validation; return; }
-        if (values.newPassword !== values.confirmation) {
-          errorBox.textContent = "Las contraseñas no coinciden.";
-          return;
-        }
-        if (values.newPassword === pendingLoginPassword) {
-          errorBox.textContent = "La nueva contraseña debe ser diferente de la temporal.";
-          return;
-        }
+        if (values.newPassword !== values.confirmation) { errorBox.textContent = "Las contraseñas no coinciden."; return; }
+        if (values.newPassword === pendingLoginPassword) { errorBox.textContent = "La nueva contraseña debe ser diferente de la temporal."; return; }
         try {
           const credential = firebase.auth.EmailAuthProvider.credential(user.email, pendingLoginPassword);
           await user.reauthenticateWithCredential(credential);
           await user.updatePassword(values.newPassword);
-          await db.collection("perfiles").doc(user.uid).set({
-            requiereCambioClave: false,
-            claveActualizadaEn: firebase.firestore.FieldValue.serverTimestamp()
-          }, { merge: true });
+          await db.collection("perfiles").doc(user.uid).set({ requiereCambioClave: false, claveActualizadaEn: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
           pendingLoginPassword = "";
           dialog.close();
           dialog.remove();
@@ -262,7 +202,7 @@
       for (const src of SUPPORT_SCRIPTS) await loadScript(src);
       await window.SmartRiskScopeRepository.init({ user, profile, db, auth });
       if (window.SmartRiskV11Rollout?.decide) {
-        status("Aplicando interfaz territorial RC15...", "saving");
+        status("Aplicando interfaz territorial...", "saving");
         const v11Enabled = await window.SmartRiskV11Rollout.decide(user, profile);
         if (v11Enabled) {
           loaded = true;
@@ -282,21 +222,27 @@
 
   async function handle(user) {
     loginMessage("");
+    startInterfaceTransition();
+    let profile;
     try {
-      const profile = await readProfile(user);
-      const problem = profileProblem(user, profile);
-      if (problem) {
-        await auth.signOut();
-        showLogin(problem);
-        return;
-      }
+      profile = await readProfile(user);
+    } catch (error) {
+      showAuthenticatedStartupError("Su cuenta fue autenticada, pero SmartRisk no pudo leer el perfil autorizado. Reintente; si persiste, el administrador debe revisar las reglas de Firestore.", error);
+      return;
+    }
+
+    const problem = profileProblem(user, profile);
+    if (problem) {
+      await auth.signOut();
+      showLogin(problem);
+      return;
+    }
+
+    try {
       if (!await requireFirstPasswordChange(user, profile)) return;
-      startInterfaceTransition();
       await loadApplication(user, { ...profile, requiereCambioClave: false });
     } catch (error) {
-      console.error(error);
-      await auth.signOut();
-      showLogin("No fue posible leer o validar el perfil autorizado. Revise UID, correo, rol, estado y reglas de Firestore.");
+      showAuthenticatedStartupError("La cuenta y el perfil son válidos, pero una parte de la plataforma no terminó de cargar. Reintente sin restablecer la contraseña.", error);
     }
   }
 
@@ -317,14 +263,14 @@
   $("#showRecovery").onclick = async () => {
     const email = normalizeEmail($("#email").value);
     if (!email) {
-      loginMessage("Escriba primero el correo exacto registrado en Authentication.");
+      loginMessage("Escriba primero el correo exacto registrado en SmartRisk.");
       $("#email").focus();
       return;
     }
     loginMessage("Solicitando correo de recuperación...");
     try {
       await requestPasswordReset(email);
-      loginMessage("Solicitud aceptada por Firebase. Revise Recibidos, Spam y Promociones. Si no llega, use la credencial temporal entregada por el administrador.");
+      loginMessage("Solicitud aceptada. Revise Recibidos, Spam y Promociones. Use únicamente el enlace de recuperación más reciente.");
     } catch (error) {
       loginMessage(recoveryErrorMessage(error));
     }
@@ -336,7 +282,7 @@
     if (!email) return;
     try {
       await requestPasswordReset(email);
-      alert("Firebase aceptó la solicitud de recuperación. Revise también Spam y Promociones.");
+      alert("Firebase aceptó la solicitud. Revise también Spam y Promociones.");
     } catch (error) {
       alert(recoveryErrorMessage(error));
     }
@@ -349,7 +295,7 @@
     }
     pendingLoginPassword = "";
     if (loaded) {
-      localStorage.removeItem("smartrisk-cz5-data-v1");
+      safeStorageRemove("smartrisk-cz5-data-v1");
       location.reload();
       return;
     }
@@ -357,10 +303,11 @@
   });
 
   window.SMART_RISK_ACCESS_GATE = {
-    version: BUILD_VERSION,
+    version: ACCESS_VERSION,
+    build: BUILD_VERSION,
     release: RELEASE.release,
-    mode: "uid-profile-scope-canonical-artifact",
-    provisioning: "Firebase Console or Admin SDK only",
+    mode: "uid-profile-canonical-role-resilient-startup",
+    provisioning: "Firebase Authentication + perfiles/{UID}",
     support: "diogenes.coello@gestionderiesgos.gob.ec"
   };
 })();

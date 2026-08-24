@@ -51,7 +51,7 @@ includes(index,'access-gate.js?v=11.0.0-rc16.7','index');
 includes(index,'scope-repository.js?v=11.0.0-rc17-operativo-p0','index');
 includes(index,'v11-rollout.js?v=11.0.0-rc17-operativo-p0','index');
 includes(gate,'const BUILD_VERSION = RELEASE.build','compuerta');
-includes(gate,'uid-profile-scope-canonical-artifact','compuerta');
+includes(gate,'uid-profile-canonical-role-resilient-startup','compuerta');
 includes(gate,'risk-reports-5y-data.js','compuerta');
 includes(gate,'risk-reports-5y-ui.js','compuerta');
 
