@@ -1,0 +1,4 @@
+RULES_REST_OK
+release=projects/smartrisk-cz5-produccion/releases/cloud.firestore
+ruleset=projects/smartrisk-cz5-produccion/rulesets/77b28381-52e4-4a5a-9ad3-a50bfc622652
+checked_at=2026-08-24T20:37:38Z
