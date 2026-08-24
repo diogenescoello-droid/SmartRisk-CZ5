@@ -1,0 +1,99 @@
+name: Deploy Especialista GPT SmartRisk
+
+on:
+  push:
+    branches: ["main", "gpt-integration-20260824"]
+    paths:
+      - "functions/**"
+      - "smartrisk-gpt-client.js"
+      - "smartrisk-gpt.css"
+      - "firebase.json"
+      - "release-assets.json"
+      - "index.html"
+      - ".github/workflows/deploy-gpt-backend.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: smartrisk-gpt-backend-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Validar integración GPT
+        run: |
+          node --check functions/index.js
+          node --check smartrisk-gpt-client.js
+          node scripts/test-release.mjs
+
+      - id: secret
+        name: Verificar activación de OpenAI
+        env:
+          OPENAI_API_KEY: "${{ secrets.OPENAI_API_KEY }}"
+        shell: bash
+        run: |
+          if [ -n "$OPENAI_API_KEY" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+            echo "Credencial OpenAI disponible para despliegue seguro."
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::OPENAI_API_KEY aún no está configurada; código validado sin desplegar backend."
+          fi
+
+      - name: Preparar credencial Firebase
+        if: steps.secret.outputs.ready == 'true'
+        env:
+          FIREBASE_SERVICE_ACCOUNT_JSON: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_SMARTRISK_CZ5_PRODUCCION }}"
+        shell: bash
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          fs.writeFileSync(process.env.RUNNER_TEMP + '/smartrisk-firebase-service-account.json', process.env.FIREBASE_SERVICE_ACCOUNT_JSON, { mode: 0o600 });
+          NODE
+
+      - name: Instalar dependencias de Functions
+        if: steps.secret.outputs.ready == 'true'
+        run: npm install --prefix functions --no-audit --no-fund
+
+      - name: Configurar secreto OpenAI en Firebase Secret Manager
+        if: steps.secret.outputs.ready == 'true'
+        env:
+          OPENAI_API_KEY: "${{ secrets.OPENAI_API_KEY }}"
+          GOOGLE_APPLICATION_CREDENTIALS: "${{ runner.temp }}/smartrisk-firebase-service-account.json"
+        shell: bash
+        run: |
+          set -euo pipefail
+          KEY_FILE="$RUNNER_TEMP/openai-api-key.txt"
+          printf '%s' "$OPENAI_API_KEY" > "$KEY_FILE"
+          chmod 600 "$KEY_FILE"
+          trap 'rm -f "$KEY_FILE"' EXIT
+          npx firebase-tools@latest functions:secrets:set OPENAI_API_KEY --data-file "$KEY_FILE" --project smartrisk-cz5-produccion --non-interactive
+
+      - name: Desplegar función Especialista GPT
+        if: steps.secret.outputs.ready == 'true'
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: "${{ runner.temp }}/smartrisk-firebase-service-account.json"
+        run: npx firebase-tools@latest deploy --only functions:smartriskGpt --project smartrisk-cz5-produccion --non-interactive
+
+      - name: Publicar Hosting con ruta /api/gpt
+        if: steps.secret.outputs.ready == 'true' && github.ref == 'refs/heads/main'
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_SMARTRISK_CZ5_PRODUCCION }}"
+          channelId: live
+          projectId: smartrisk-cz5-produccion
+
+      - name: Limpiar credencial Firebase
+        if: always() && steps.secret.outputs.ready == 'true'
+        run: rm -f "$RUNNER_TEMP/smartrisk-firebase-service-account.json"
