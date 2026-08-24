@@ -6,19 +6,10 @@
     "dcoellom2@unemi.edu.ec",
     "diogenes.coello@gestionderiesgos.gob.ec"
   ]);
-  const SUPPORTED_ROLES = new Set([
-    "Administrador",
-    "Técnico territorial",
-    "Coordinador COE",
-    "Líder MTT/GT",
-    "Tomador de decisión/control",
-    "Visor provincial AME"
-  ]);
+  const catalog = window.SmartRiskAccessCatalog;
   const $ = selector => document.querySelector(selector);
   const normalizeEmail = value => String(value || "").trim().toLowerCase();
-  const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, char => ({
-    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
-  })[char]);
+  const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
   const validUid = value => /^[A-Za-z0-9_-]{16,128}$/.test(String(value || "").trim());
   let auditResult = null;
 
@@ -27,20 +18,38 @@
     target.className = `full message ${type}`.trim();
     target.classList.remove("hidden");
   }
-
-  function hideMessage(target) {
-    target.classList.add("hidden");
-  }
-
+  function hideMessage(target) { target.classList.add("hidden"); }
   function parseScopeKeys(value) {
-    return [...new Set(String(value || "")
-      .split(/[\n,;]+/)
-      .map(item => item.trim())
-      .filter(Boolean))];
+    return [...new Set(String(value || "").split(/[\n,;]+/).map(item => item.trim()).filter(Boolean))];
+  }
+  function canonicalRole(role) { return catalog?.canonicalRole(role) || role; }
+  function roleDefinition(role) { return catalog?.resolve(role) || null; }
+  function isReadOnlyRole(role) { return roleDefinition(role)?.mode === "Consulta"; }
+  function expectedScopeType(role, level = "") {
+    const definition = roleDefinition(role);
+    if (definition?.scopeType && definition.scopeType !== "assigned") return definition.scopeType;
+    const normalized = catalog?.normalize(level) || String(level).toLowerCase();
+    if (normalized.includes("zonal")) return "zonal";
+    if (normalized.includes("provinc")) return "provincial";
+    return "cantonal";
+  }
+  function requiredScopePrefix(scopeType) {
+    return scopeType === "zonal" ? "ZONA:" : scopeType === "provincial" ? "PROV:" : "TER:";
   }
 
-  function isReadOnlyRole(role) {
-    return role === "Visor provincial AME";
+  function hydrateRoleSelect() {
+    const select = $("#roleSelect");
+    if (!select) return;
+    const definitions = catalog?.definitions || [];
+    select.innerHTML = definitions.map(item => `<option value="${escapeHtml(item.role)}">${escapeHtml(item.role)}</option>`).join("");
+    select.value = "Técnico territorial";
+    syncRoleDefaults();
+  }
+
+  function syncRoleDefaults() {
+    const role = canonicalRole($("#roleSelect")?.value);
+    const definition = roleDefinition(role);
+    if (definition?.level && definition.level !== "Según alcance") $("#levelSelect").value = definition.level;
   }
 
   async function signIn(event) {
@@ -49,10 +58,7 @@
     const password = $("#adminPassword").value;
     const box = $("#loginMessage");
     hideMessage(box);
-    if (!ADMIN_EMAILS.has(email)) {
-      message(box, "Este correo no está autorizado para administrar accesos.", "bad");
-      return;
-    }
+    if (!ADMIN_EMAILS.has(email)) { message(box, "Este correo no está autorizado para administrar accesos.", "bad"); return; }
     try {
       await auth.signInWithEmailAndPassword(email, password);
       $("#adminPassword").value = "";
@@ -64,41 +70,45 @@
 
   async function saveProfile(event) {
     event.preventDefault();
-    const form = event.currentTarget;
-    const values = Object.fromEntries(new FormData(form));
+    const values = Object.fromEntries(new FormData(event.currentTarget));
     const uid = String(values.uid || "").trim();
     const email = normalizeEmail(values.correo);
-    const role = values.rol;
-    const scopeKeys = parseScopeKeys(values.scopeKeys);
+    const role = canonicalRole(values.rol);
+    let scopeKeys = parseScopeKeys(values.scopeKeys);
+    const scopeType = expectedScopeType(role, values.nivelAcceso);
     const box = $("#profileMessage");
     hideMessage(box);
 
-    if (!validUid(uid)) {
-      message(box, "El UID no tiene un formato válido. Cópielo completo desde Authentication.", "bad");
-      return;
-    }
-    if (!SUPPORTED_ROLES.has(role)) {
-      message(box, "El rol seleccionado no está permitido.", "bad");
-      return;
-    }
-    if (role !== "Administrador" && !scopeKeys.length && !values.canton && !values.provincia) {
-      message(box, "Asigne al menos un scope key, provincia o cantón.", "bad");
-      return;
-    }
+    if (!validUid(uid)) { message(box, "El UID no tiene un formato válido. Cópielo completo desde Authentication.", "bad"); return; }
+    if (!catalog?.isSupported(role)) { message(box, "El rol seleccionado no está permitido por el catálogo canónico.", "bad"); return; }
+    if (role === "Administrador") scopeKeys = [...new Set(["ZONA:CZ5", ...scopeKeys])];
+    if (scopeType === "zonal" && role !== "Administrador") scopeKeys = [...new Set(["ZONA:CZ5", ...scopeKeys])];
 
+    const prefix = requiredScopePrefix(scopeType);
+    if (role !== "Administrador" && !scopeKeys.some(key => String(key).startsWith(prefix))) {
+      const hint = scopeType === "provincial" ? "PROV:..." : scopeType === "cantonal" ? "TER:..." : "ZONA:CZ5";
+      message(box, `El perfil ${role} requiere un alcance ${scopeType}. Agregue un scope key ${hint}.`, "bad");
+      return;
+    }
+    if (scopeType === "provincial" && !String(values.provincia || "").trim()) { message(box, "Un perfil provincial debe indicar la provincia.", "bad"); return; }
+    if (scopeType === "cantonal" && !String(values.canton || "").trim()) { message(box, "Un perfil cantonal debe indicar el cantón.", "bad"); return; }
+
+    const requireTemporaryChange = Boolean(values.requiereCambioClave);
+    const definition = roleDefinition(role);
     const payload = {
       correo: email,
       nombre: String(values.nombre || "").trim(),
       rol: role,
-      codigoRol: role === "Visor provincial AME" ? "AME" : role,
+      codigoRol: role,
       provincia: String(values.provincia || "").trim(),
       canton: String(values.canton || "").trim(),
-      nivelAcceso: values.nivelAcceso,
+      nivelAcceso: definition?.level === "Según alcance" ? values.nivelAcceso : (definition?.level || values.nivelAcceso),
       scopeKeys,
       estado: values.estado,
       modoAcceso: isReadOnlyRole(role) ? "Consulta" : "Operación",
       invitacionEstado: "PilotoActivo",
-      requiereCambioClave: Boolean(values.requiereCambioClave),
+      requiereCambioClave: requireTemporaryChange,
+      metodoActivacion: requireTemporaryChange ? "Credencial temporal" : "Recuperación por correo",
       actualizadoEn: firebase.firestore.FieldValue.serverTimestamp(),
       actualizadoPor: normalizeEmail(auth.currentUser?.email)
     };
@@ -107,10 +117,8 @@
       await db.collection("perfiles").doc(uid).set(payload, { merge: true });
       const verification = await db.collection("perfiles").doc(uid).get();
       const saved = verification.data();
-      if (!verification.exists || normalizeEmail(saved?.correo) !== email || saved?.rol !== role) {
-        throw new Error("PROFILE_VERIFICATION_FAILED");
-      }
-      message(box, `Perfil verificado. UID ${uid} vinculado a ${email}.`, "ok");
+      if (!verification.exists || normalizeEmail(saved?.correo) !== email || saved?.rol !== role) throw new Error("PROFILE_VERIFICATION_FAILED");
+      message(box, `Perfil verificado: ${role} · ${scopeType} · ${scopeKeys.join(" · ")}.`, "ok");
     } catch (error) {
       console.error(error);
       message(box, `No fue posible guardar o verificar el perfil: ${error.code || error.message}.`, "bad");
@@ -120,20 +128,18 @@
   function profileFindings(id, profile, duplicateEmails) {
     const issues = [];
     const email = normalizeEmail(profile.correo);
-    if (!validUid(id)) issues.push("ID de documento no parece un UID");
+    const role = canonicalRole(profile.rol || profile.codigoRol);
+    const scopeType = expectedScopeType(role, profile.nivelAcceso);
+    const scopes = Array.isArray(profile.scopeKeys) ? profile.scopeKeys : [];
+    if (!validUid(id)) issues.push("ID no parece UID");
     if (!email || !email.includes("@")) issues.push("Correo faltante o inválido");
     if (profile.correo !== email) issues.push("Correo no normalizado");
     if (duplicateEmails.has(email)) issues.push("Correo duplicado");
     if (profile.estado !== "Activo") issues.push("Perfil no activo");
-    if (!SUPPORTED_ROLES.has(profile.rol)) issues.push(`Rol incompatible: ${profile.rol || "vacío"}`);
-    const scopes = Array.isArray(profile.scopeKeys) ? profile.scopeKeys : [];
-    if (profile.rol !== "Administrador" && !scopes.length && !profile.provincia && !profile.canton) {
-      issues.push("Sin alcance asignado");
-    }
-    if (isReadOnlyRole(profile.rol) && profile.modoAcceso !== "Consulta") {
-      issues.push("Visor sin modo Consulta");
-    }
-    if (typeof profile.requiereCambioClave !== "boolean") issues.push("Sin control de primer cambio de clave");
+    if (!catalog?.isSupported(role)) issues.push(`Rol incompatible: ${profile.rol || "vacío"}`);
+    if (role !== "Administrador" && !scopes.some(key => String(key).startsWith(requiredScopePrefix(scopeType)))) issues.push(`Sin scope ${scopeType}`);
+    if (isReadOnlyRole(role) && profile.modoAcceso !== "Consulta") issues.push("Rol de consulta sin modo Consulta");
+    if (typeof profile.requiereCambioClave !== "boolean") issues.push("Sin indicador de activación de clave");
     return issues;
   }
 
@@ -146,46 +152,18 @@
       const snapshot = await db.collection("perfiles").get();
       const rows = snapshot.docs.map(document => ({ id: document.id, ...document.data() }));
       const emailCounts = new Map();
-      rows.forEach(row => {
-        const email = normalizeEmail(row.correo);
-        if (email) emailCounts.set(email, (emailCounts.get(email) || 0) + 1);
-      });
+      rows.forEach(row => { const email = normalizeEmail(row.correo); if (email) emailCounts.set(email, (emailCounts.get(email) || 0) + 1); });
       const duplicates = new Set([...emailCounts.entries()].filter(([, count]) => count > 1).map(([email]) => email));
       const audited = rows.map(row => ({ ...row, issues: profileFindings(row.id, row, duplicates) }));
       const problems = audited.filter(row => row.issues.length);
       const active = audited.filter(row => row.estado === "Activo").length;
-      const forcedChange = audited.filter(row => row.requiereCambioClave === true).length;
       auditResult = {
-        generatedAt: new Date().toISOString(),
-        generatedBy: normalizeEmail(auth.currentUser?.email),
-        totals: { profiles: audited.length, active, withProblems: problems.length, forcedChange },
-        profiles: audited.map(row => ({
-          uid: row.id,
-          correo: row.correo || "",
-          nombre: row.nombre || "",
-          rol: row.rol || "",
-          estado: row.estado || "",
-          scopeKeys: row.scopeKeys || [],
-          requiereCambioClave: row.requiereCambioClave,
-          issues: row.issues
-        }))
+        generatedAt: new Date().toISOString(), generatedBy: normalizeEmail(auth.currentUser?.email),
+        totals: { profiles: audited.length, active, withProblems: problems.length },
+        profiles: audited.map(row => ({ uid: row.id, correo: row.correo || "", nombre: row.nombre || "", rol: row.rol || "", nivelAcceso: row.nivelAcceso || "", estado: row.estado || "", scopeKeys: row.scopeKeys || [], issues: row.issues }))
       };
-
-      summary.innerHTML = [
-        `<span class="badge">${audited.length} perfiles</span>`,
-        `<span class="badge ok">${active} activos</span>`,
-        `<span class="badge ${problems.length ? "bad" : "ok"}">${problems.length} con observaciones</span>`,
-        `<span class="badge warn">${forcedChange} pendientes de cambiar clave</span>`
-      ].join("");
-
-      table.innerHTML = audited.length ? `<table><thead><tr><th>UID / usuario</th><th>Rol y alcance</th><th>Estado</th><th>Control</th><th>Resultado</th></tr></thead><tbody>${audited.map(row => `
-        <tr>
-          <td><b>${escapeHtml(row.nombre || "Sin nombre")}</b><br>${escapeHtml(row.correo || "Sin correo")}<br><span class="small">${escapeHtml(row.id)}</span></td>
-          <td>${escapeHtml(row.rol || "Sin rol")}<br><span class="small">${escapeHtml((row.scopeKeys || []).join(" · ") || `${row.provincia || ""} ${row.canton || ""}` || "Sin alcance")}</span></td>
-          <td>${escapeHtml(row.estado || "Sin estado")}</td>
-          <td>${row.requiereCambioClave === true ? "Cambio de clave pendiente" : row.requiereCambioClave === false ? "Clave personal definida" : "Sin indicador"}</td>
-          <td>${row.issues.length ? `<span class="badge bad">${escapeHtml(row.issues.join("; "))}</span>` : '<span class="badge ok">Estructura válida</span>'}</td>
-        </tr>`).join("")}</tbody></table>` : "<p>No existen perfiles.</p>";
+      summary.innerHTML = `<span class="badge">${audited.length} perfiles</span><span class="badge ok">${active} activos</span><span class="badge ${problems.length ? "bad" : "ok"}">${problems.length} con observaciones</span>`;
+      table.innerHTML = audited.length ? `<table><thead><tr><th>Usuario</th><th>Rol y alcance</th><th>Estado</th><th>Resultado</th></tr></thead><tbody>${audited.map(row => `<tr><td><b>${escapeHtml(row.nombre || "Sin nombre")}</b><br>${escapeHtml(row.correo || "Sin correo")}<br><span class="small">${escapeHtml(row.id)}</span></td><td>${escapeHtml(row.rol || "Sin rol")}<br><span class="small">${escapeHtml((row.scopeKeys || []).join(" · ") || "Sin alcance")}</span></td><td>${escapeHtml(row.estado || "Sin estado")}</td><td>${row.issues.length ? `<span class="badge bad">${escapeHtml(row.issues.join("; "))}</span>` : '<span class="badge ok">Listo para ingreso</span>'}</td></tr>`).join("")}</tbody></table>` : "<p>No existen perfiles.</p>";
       $("#exportAudit").disabled = false;
     } catch (error) {
       console.error(error);
@@ -205,7 +183,8 @@
 
   function clearForm() {
     $("#profileForm").reset();
-    $("#profileForm").elements.requiereCambioClave.checked = true;
+    $("#roleSelect").value = "Técnico territorial";
+    $("#levelSelect").value = "Cantonal";
     hideMessage($("#profileMessage"));
   }
 
@@ -220,6 +199,8 @@
     }
   });
 
+  hydrateRoleSelect();
+  $("#roleSelect")?.addEventListener("change", syncRoleDefaults);
   $("#loginForm").addEventListener("submit", signIn);
   $("#profileForm").addEventListener("submit", saveProfile);
   $("#clearForm").addEventListener("click", clearForm);
