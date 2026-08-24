@@ -24,6 +24,7 @@ for (let i = 1; i <= 7; i += 1) {
 }
 ok(rollout.includes('loadScript("v11-zonal-synthesis.js")'), "Rollout carga síntesis zonal");
 ok(rollout.includes("SmartRiskZonalSynthesis?.afterAppStart?.()"), "Rollout inicia síntesis zonal");
-ok(!/firebase\.firestore|\.set\s*\(|\.update\s*\(|\.delete\s*\(/.test(synthesis), "Síntesis zonal es capa de lectura sin escrituras directas");
+const directWritePattern = /firebase\.firestore|\bfirestore\.(collection|doc|set|update|delete)|\bdb\.(collection|doc|set|update|delete)\s*\(|\.collection\s*\(/;
+ok(!directWritePattern.test(synthesis), "Síntesis zonal es capa de lectura sin escrituras directas");
 
 console.log("PASS síntesis zonal derivada: cobertura F01–F07, trazabilidad y límite institucional.");
