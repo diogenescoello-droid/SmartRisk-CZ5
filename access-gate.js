@@ -43,6 +43,7 @@
   ];
   const SUPPORTED_ROLES = new Set([
     "Administrador",
+    "Técnico zonal",
     "Técnico territorial",
     "Coordinador COE",
     "Líder MTT/GT",
@@ -50,6 +51,7 @@
   ]);
   const ROLE_ALIASES = new Map([
     ["usuario territorial", "Técnico territorial"],
+    ["tecnico zonal", "Técnico zonal"],
     ["tecnico territorial", "Técnico territorial"],
     ["coordinador coe", "Coordinador COE"],
     ["lider mtt/gt", "Líder MTT/GT"],
