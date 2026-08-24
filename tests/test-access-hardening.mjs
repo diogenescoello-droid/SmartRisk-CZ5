@@ -18,6 +18,8 @@ const storage = read("storage-safety.js");
 const assets = JSON.parse(rootRead("release-assets.json"));
 const firebase = JSON.parse(rootRead("firebase.json"));
 const workflow = rootRead(".github/workflows/deploy-firebase.yml");
+const f07Workflow = rootRead(".github/workflows/sync-f07.yml");
+const rulesRest = rootRead("scripts/deploy-firestore-rules-rest.mjs");
 
 for (const role of ["Administrador", "Técnico zonal", "Técnico provincial", "Técnico territorial", "Coordinador COE", "Líder MTT/GT", "Tomador de decisión/control", "Visor provincial AME", "Visor zonal AME", "Consulta provincial AME"]) {
   ok(catalog.includes(role), `Catálogo canónico incluye ${role}`);
@@ -38,7 +40,13 @@ ok(storage.includes("storage-errors-never-abort-authenticated-startup"), "Fallo 
 ok(assets.files.includes("access-role-catalog.js") && assets.files.includes("storage-safety.js"), "Activos de seguridad incluidos en publicación");
 ok(!assets.files.includes("auth-admin-fallback.js"), "Fallback antiguo de contraseñas queda fuera de producción");
 ok(firebase.hosting.headers.some(row => row.source === "/access-gate.js" && row.headers.some(h => h.value.includes("no-cache"))), "Compuerta de acceso no queda obsoleta por caché");
-ok(workflow.includes("firestore:rules"), "Despliegue productivo publica reglas Firestore junto con Hosting");
+ok(firebase.hosting.headers.some(row => row.source === "/f07-current-data.js" && row.headers.some(h => h.value.includes("no-cache"))), "Seguimiento F07 no queda obsoleto por caché");
+ok(workflow.includes("rules_changed") && workflow.includes("deploy-firestore-rules-rest.mjs"), "Reglas Firestore se publican solo cuando corresponde y mediante Firebase Rules REST");
+ok(!workflow.includes("firebase-tools@latest deploy --only firestore:rules"), "Se elimina el despliegue CLI de reglas que dependía de Service Usage");
+ok(rulesRest.includes("firebaserules.googleapis.com") && rulesRest.includes("cloud.firestore"), "Publicador REST apunta a Firebase Rules y a la release cloud.firestore");
+ok(f07Workflow.includes("FirebaseExtended/action-hosting-deploy@v0"), "Nuevo F07 publica Firebase Hosting en el mismo workflow de sincronización");
+ok(f07Workflow.includes("cmp -s dist/f07-current-data.js"), "Sincronización F07 verifica el archivo efectivamente visible en producción");
+ok(f07Workflow.indexOf("Publicar nuevo corte F07 en Firebase Hosting") < f07Workflow.indexOf("Registrar cambio verificable después de publicar"), "F07 se publica y verifica antes de registrar el commit de sincronización");
 ok(workflow.includes("actions/upload-artifact@v4"), "Validación se conserva como artifact independiente");
 ok(!workflow.includes("git add DEPLOYMENT_STATUS.json DEPLOYMENT_VALIDATION.log"), "Log ignorado ya no produce falso fallo de despliegue");
 console.log("PASS endurecimiento de acceso: roles, alcances, sesión, caché y despliegue listos para onboarding masivo.");
