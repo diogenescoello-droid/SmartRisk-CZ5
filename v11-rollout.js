@@ -9,9 +9,28 @@
     "geopro.ec5@gmail.com"
   ]);
 
-  const BUILD_VERSION = "11.0.0-rc17-operativo-p0";
+  const BUILD_VERSION = "11.0.0-rc17-operativo-p0-ux1";
   const loadedResources = new Set();
   const normalizeEmail = value => String(value || "").trim().toLowerCase();
+  const FORM_GUIDE = Object.freeze({
+    F01: {
+      name: "Personas, bienes y servicios expuestos",
+      question: "¿Qué podría verse afectado en este sitio?"
+    },
+    F02: {
+      name: "Infraestructura y servicios esenciales",
+      question: "¿Qué infraestructura importante está vinculada con este sitio?"
+    },
+    F03: {
+      name: "Mapas e información cartográfica",
+      question: "¿Qué mapas o capas respaldan este sitio?"
+    },
+    F07: {
+      name: "Acciones y seguimiento",
+      question: "¿Qué se ha hecho, qué falta y cuál es el avance?"
+    }
+  });
+  let plainLanguageObserver = null;
 
   function isPilotUser(user, profile) {
     const email = normalizeEmail(user?.email);
@@ -40,6 +59,81 @@
       link.onerror = () => reject(new Error(`No fue posible cargar ${href}`));
       document.head.appendChild(link);
     });
+  }
+
+  function annotateFormCodes(element) {
+    if (!element || element.dataset.formLanguageEnhanced === "1") return;
+    const original = String(element.textContent || "");
+    const matcher = /\b(F01|F02|F03|F07)\b/g;
+    if (!matcher.test(original)) return;
+    matcher.lastIndex = 0;
+    const fragment = document.createDocumentFragment();
+    let cursor = 0;
+    let match;
+    while ((match = matcher.exec(original))) {
+      fragment.appendChild(document.createTextNode(original.slice(cursor, match.index)));
+      const code = match[1];
+      const guide = FORM_GUIDE[code];
+      const span = document.createElement("span");
+      span.className = "sr-form-friendly-name";
+      span.textContent = `${code} · ${guide.name}`;
+      span.title = guide.question;
+      span.setAttribute("aria-label", `${code}. ${guide.name}. ${guide.question}`);
+      fragment.appendChild(span);
+      cursor = match.index + code.length;
+    }
+    fragment.appendChild(document.createTextNode(original.slice(cursor)));
+    element.replaceChildren(fragment);
+    element.dataset.formLanguageEnhanced = "1";
+  }
+
+  function makeEvidenceLink(element) {
+    if (!element || element.dataset.evidenceFriendly === "1") return;
+    const value = String(element.textContent || "").trim();
+    if (!/^https?:\/\/\S+$/i.test(value)) return;
+    const link = document.createElement("a");
+    link.href = value;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.textContent = "Abrir documento";
+    link.setAttribute("aria-label", "Abrir documento de respaldo en una nueva pestaña");
+    element.replaceChildren(link);
+    element.dataset.evidenceFriendly = "1";
+  }
+
+  function enhanceApprovedLanguage(root = document) {
+    root.querySelectorAll?.(".sr16-field").forEach(field => {
+      const label = field.querySelector(":scope > span");
+      const value = field.querySelector(":scope > strong");
+      if (!label || !value) return;
+      const currentLabel = String(label.textContent || "").trim();
+
+      if (currentLabel === "Próximo paso") label.textContent = "¿Qué debe hacer ahora?";
+      if (currentLabel === "Evidencia") {
+        label.textContent = "Documento de respaldo";
+        makeEvidenceLink(value);
+      }
+      if (currentLabel === "Detalle") label.textContent = "¿Qué encontramos?";
+      if (currentLabel === "Periodo F07") label.textContent = "Periodo · F07 · Acciones y seguimiento";
+      if (currentLabel === "Fecha de envío F07") label.textContent = "Fecha de envío · F07 · Acciones y seguimiento";
+
+      if (currentLabel !== "Evidencia") annotateFormCodes(value);
+    });
+  }
+
+  function installPlainLanguageLayer() {
+    enhanceApprovedLanguage(document);
+    if (plainLanguageObserver) return;
+    plainLanguageObserver = new MutationObserver(mutations => {
+      for (const mutation of mutations) {
+        for (const node of mutation.addedNodes) {
+          if (node.nodeType !== 1) continue;
+          if (node.matches?.(".sr16-field")) enhanceApprovedLanguage(node.parentElement || document);
+          else if (node.querySelector?.(".sr16-field")) enhanceApprovedLanguage(node);
+        }
+      }
+    });
+    plainLanguageObserver.observe(document.body, { childList: true, subtree: true });
   }
 
   async function decide(user, profile) {
@@ -91,8 +185,9 @@
     window.SmartRiskAuthoritativeMetrics?.afterAppStart?.();
     window.SmartRiskMatrixV11?.afterAppStart?.();
     window.SmartRiskOperationalV11?.afterAppStart?.();
+    installPlainLanguageLayer();
     return true;
   }
 
-  window.SmartRiskV11Rollout = { decide, isPilotUser, PILOT_EMAILS, BUILD_VERSION, enabled: false, mode: "pending" };
+  window.SmartRiskV11Rollout = { decide, isPilotUser, PILOT_EMAILS, BUILD_VERSION, FORM_GUIDE, enabled: false, mode: "pending" };
 })();
