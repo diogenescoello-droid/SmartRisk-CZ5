@@ -10,76 +10,36 @@
 </head>
 <body>
 <main>
-<section class="top">
-  <div><span class="badge">SmartRisk CZ5 · seguridad de accesos</span><h1>Administración y auditoría de perfiles</h1><p>Esta página no crea contraseñas ni usuarios de Authentication. Vincula de forma verificable el UID de Firebase con su perfil y alcance.</p></div>
-  <button id="logout" class="secondary hidden">Cerrar sesión</button>
-</section>
+<section class="top"><div><span class="badge">SmartRisk CZ5 · seguridad de accesos</span><h1>Administración y auditoría de perfiles</h1><p>Un solo catálogo controla login, rol, nivel, modo de acceso y alcance territorial.</p></div><button id="logout" class="secondary hidden">Cerrar sesión</button></section>
 
-<section id="loginPanel" class="panel login">
-  <h2>Ingreso de administrador</h2>
-  <p class="muted">Use una cuenta administrativa autorizada. La página rechazará cualquier otro correo.</p>
-  <form id="loginForm" class="grid">
-    <label class="full">Correo<input id="adminEmail" type="email" autocomplete="username" required></label>
-    <label class="full">Contraseña<input id="adminPassword" type="password" autocomplete="current-password" required></label>
-    <div class="full actions"><button type="submit">Ingresar</button></div>
-    <div id="loginMessage" class="full message hidden"></div>
-  </form>
-</section>
+<section id="loginPanel" class="panel login"><h2>Ingreso de administrador</h2><p class="muted">Use una cuenta administrativa autorizada.</p><form id="loginForm" class="grid"><label class="full">Correo<input id="adminEmail" type="email" autocomplete="username" required></label><label class="full">Contraseña<input id="adminPassword" type="password" autocomplete="current-password" required></label><div class="full actions"><button type="submit">Ingresar</button></div><div id="loginMessage" class="full message hidden"></div></form></section>
 
 <div id="adminArea" class="hidden">
-<section class="panel">
-  <h2>Ruta segura para entregar una credencial</h2>
-  <ol class="step-list">
-    <li>Cree o revise el usuario en <b>Firebase Authentication</b> y copie su UID completo.</li>
-    <li>Registre aquí el perfil usando exactamente ese UID y el mismo correo.</li>
-    <li>Marque <b>cambio obligatorio de clave</b> y entregue la contraseña temporal por un canal individual.</li>
-    <li>Pruebe en ventana privada: ingreso, cambio de clave, alcance visible y cierre de sesión.</li>
-  </ol>
-  <p class="risk-note"><b>No comparta contraseñas por correo grupal, WhatsApp grupal ni documentos.</b> SmartRisk ya no almacena ni copia contraseñas temporales.</p>
-</section>
+<section class="panel"><h2>Ruta recomendada para habilitar un usuario</h2><ol class="step-list"><li>Cree o revise el usuario en <b>Firebase Authentication</b> y copie su UID completo.</li><li>Registre aquí el perfil con exactamente el mismo UID y correo.</li><li>Asigne el rol y el alcance. SmartRisk bloqueará combinaciones incompatibles.</li><li>Para usuarios nuevos, use <b>¿Olvidaste tu contraseña?</b> para que cada persona defina su propia contraseña. No se recomienda contraseña temporal.</li><li>Antes de enviar una convocatoria masiva, ejecute la auditoría de perfiles.</li></ol><p class="risk-note"><b>No comparta contraseñas.</b> La recuperación por correo es el mecanismo normal de activación.</p></section>
 
-<section class="panel">
-  <h2>Vincular UID y perfil</h2>
-  <form id="profileForm" class="grid">
-    <label>UID de Authentication<input name="uid" maxlength="128" required placeholder="Copiar desde Firebase Authentication"></label>
-    <label>Correo exacto de Authentication<input name="correo" type="email" required></label>
-    <label>Nombre completo<input name="nombre" required></label>
-    <label>Rol<select name="rol" required>
-      <option>Técnico territorial</option>
-      <option>Coordinador COE</option>
-      <option>Líder MTT/GT</option>
-      <option>Tomador de decisión/control</option>
-      <option>Visor provincial AME</option>
-      <option>Administrador</option>
-    </select></label>
-    <label>Provincia<input name="provincia"></label>
-    <label>Cantón<input name="canton"></label>
-    <label>Nivel de acceso<select name="nivelAcceso"><option>Cantonal</option><option>Provincial</option><option>Zonal</option><option>Consulta zonal</option></select></label>
-    <label>Estado<select name="estado"><option>Activo</option><option>Inactivo</option></select></label>
-    <label class="full">Scope keys, una por línea<textarea name="scopeKeys" placeholder="TER:TER-GUAYAS-PEDRO-CARBO&#10;PROV:PROV-GUAYAS"></textarea></label>
-    <label class="full"><span><input name="requiereCambioClave" type="checkbox" checked style="width:auto"> Exigir cambio de contraseña en el primer ingreso</span></label>
-    <div class="full actions"><button type="submit">Guardar y verificar perfil</button><button type="button" id="clearForm" class="secondary">Limpiar</button></div>
-    <div id="profileMessage" class="full message hidden"></div>
-  </form>
-</section>
+<section class="panel"><h2>Vincular UID y perfil</h2><form id="profileForm" class="grid">
+<label>UID de Authentication<input name="uid" maxlength="128" required placeholder="Copiar desde Firebase Authentication"></label>
+<label>Correo exacto de Authentication<input name="correo" type="email" required></label>
+<label>Nombre completo<input name="nombre" required></label>
+<label>Rol<select name="rol" id="roleSelect" required></select></label>
+<label>Provincia<input name="provincia" placeholder="Ej. Guayas"></label>
+<label>Cantón<input name="canton" placeholder="Ej. Daule"></label>
+<label>Nivel de acceso<select name="nivelAcceso" id="levelSelect"><option>Cantonal</option><option>Provincial</option><option>Zonal</option><option>Consulta zonal</option><option>Administración zonal</option><option>Según alcance</option></select></label>
+<label>Estado<select name="estado"><option>Activo</option><option>Inactivo</option></select></label>
+<label class="full">Scope keys, una por línea<textarea name="scopeKeys" placeholder="TER:... para cantón&#10;PROV:... para provincia&#10;ZONA:CZ5 para Zona"></textarea></label>
+<label class="full"><span><input name="requiereCambioClave" type="checkbox" style="width:auto"> Solo marcar si se entregó una credencial temporal y se debe forzar un segundo cambio</span></label>
+<div class="full actions"><button type="submit">Guardar y verificar perfil</button><button type="button" id="clearForm" class="secondary">Limpiar</button></div><div id="profileMessage" class="full message hidden"></div>
+</form></section>
 
-<section class="panel">
-  <div class="top"><div><h2>Auditoría de perfiles Firestore</h2><p class="muted">Detecta duplicados, campos faltantes, roles incompatibles y alcances incompletos.</p></div><div class="actions"><button id="auditProfiles">Ejecutar auditoría</button><button id="exportAudit" class="secondary" disabled>Exportar JSON</button></div></div>
-  <div id="auditSummary" class="status-row"></div>
-  <div id="auditTable" class="table-wrap"></div>
-</section>
-
-<section class="panel">
-  <h2>Límite de esta auditoría</h2>
-  <p>El navegador puede auditar Firestore, pero no puede listar ni administrar de forma segura todos los usuarios de Firebase Authentication. La conciliación completa Auth ↔ Firestore debe ejecutarse con Firebase Admin SDK o revisarse en la consola.</p>
-</section>
+<section class="panel"><div class="top"><div><h2>Auditoría de perfiles Firestore</h2><p class="muted">Detecta campos faltantes, roles incompatibles y alcances que podrían impedir el ingreso.</p></div><div class="actions"><button id="auditProfiles">Ejecutar auditoría</button><button id="exportAudit" class="secondary" disabled>Exportar JSON</button></div></div><div id="auditSummary" class="status-row"></div><div id="auditTable" class="table-wrap"></div></section>
 </div>
 </main>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-<script src="release-config.js?v=1.0.0-piloto-estable"></script>
-<script src="firebase-config.js?v=1.0.0-piloto-estable"></script>
-<script src="access-admin.js?v=1.0.0-piloto-estable"></script>
+<script src="release-config.js?v=2026.08.24.2"></script>
+<script src="firebase-config.js?v=2026.08.24.2"></script>
+<script src="access-role-catalog.js?v=2026.08.24.2"></script>
+<script src="access-admin.js?v=2026.08.24.2"></script>
 </body>
 </html>
