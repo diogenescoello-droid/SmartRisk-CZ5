@@ -29,6 +29,12 @@ const ROLE_MAP = new Map([
   ['visor provincial ame','Visor provincial AME'], ['visor zonal ame','Visor zonal AME'], ['consulta provincial ame','Consulta provincial AME']
 ]);
 const canonicalRole = value => ROLE_MAP.get(normalize(value)) || String(value || '').trim();
+function canonicalRoleForProfile(profile = {}) {
+  let role = canonicalRole(profile.rol || profile.codigoRol);
+  const level = normalize(profile.nivelAcceso);
+  if ((role === 'Visor provincial AME' || role === 'Consulta provincial AME') && level.includes('zonal')) role = 'Visor zonal AME';
+  return role;
+}
 const readOnlyRoles = new Set(['Visor provincial AME','Visor zonal AME','Consulta provincial AME']);
 const zonalRoles = new Set(['Administrador','Técnico zonal','Coordinador COE','Visor zonal AME']);
 const provincialRoles = new Set(['Técnico provincial','Visor provincial AME','Consulta provincial AME']);
@@ -128,7 +134,7 @@ const proposals = [];
 const unresolved = [];
 for (const profile of profiles) {
   const authUser = authByUid.get(profile.uid);
-  const role = canonicalRole(profile.rol || profile.codigoRol);
+  const role = canonicalRoleForProfile(profile);
   const active = normalize(profile.estado) === 'activo';
   if (!knownRoles.has(role)) {
     if (active) unresolved.push({ ref: profile.uid.slice(0,8), email: maskEmail(profile.correo), code: 'UNKNOWN_ROLE', detail: profile.rol || profile.codigoRol || '' });
@@ -231,7 +237,7 @@ const verifyProfiles = verifySnap.docs.map(doc => ({ uid: doc.id, ...doc.data() 
 const verifyIssues = [];
 for (const profile of verifyProfiles) {
   if (normalize(profile.estado) !== 'activo') continue;
-  const role = canonicalRole(profile.rol || profile.codigoRol);
+  const role = canonicalRoleForProfile(profile);
   if (!knownRoles.has(role)) verifyIssues.push({ ref: profile.uid.slice(0,8), code: 'ROLE' });
   const type = scopeTypeFor(role, profile);
   const scopes = list(profile.scopeKeys);
