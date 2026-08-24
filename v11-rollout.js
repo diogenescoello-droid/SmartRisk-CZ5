@@ -14,19 +14,31 @@
   const normalizeEmail = value => String(value || "").trim().toLowerCase();
   const FORM_GUIDE = Object.freeze({
     F01: {
-      name: "Personas, bienes y servicios expuestos",
-      question: "¿Qué podría verse afectado en este sitio?"
+      name: "Sitios críticos y elementos expuestos",
+      question: "¿Dónde está el riesgo y qué podría verse afectado?"
     },
     F02: {
-      name: "Infraestructura y servicios esenciales",
-      question: "¿Qué infraestructura importante está vinculada con este sitio?"
+      name: "Infraestructura expuesta",
+      question: "¿Qué infraestructura importante podría verse afectada?"
     },
     F03: {
       name: "Mapas e información cartográfica",
       question: "¿Qué mapas o capas respaldan este sitio?"
     },
+    F04: {
+      name: "Acciones preventivas y de mitigación",
+      question: "¿Qué se hará para reducir o evitar impactos?"
+    },
+    F05: {
+      name: "Alojamientos, rutas y puntos seguros",
+      question: "¿Dónde puede evacuar o resguardarse la población?"
+    },
+    F06: {
+      name: "Capacidades y recursos",
+      question: "¿Con qué personal, equipos y recursos se cuenta?"
+    },
     F07: {
-      name: "Acciones y seguimiento",
+      name: "Seguimiento de acciones",
       question: "¿Qué se ha hecho, qué falta y cuál es el avance?"
     }
   });
@@ -64,7 +76,7 @@
   function annotateFormCodes(element) {
     if (!element || element.dataset.formLanguageEnhanced === "1") return;
     const original = String(element.textContent || "");
-    const matcher = /\b(F01|F02|F03|F07)\b/g;
+    const matcher = /\b(F0[1-7])\b/g;
     if (!matcher.test(original)) return;
     matcher.lastIndex = 0;
     const fragment = document.createDocumentFragment();
@@ -114,8 +126,8 @@
         makeEvidenceLink(value);
       }
       if (currentLabel === "Detalle") label.textContent = "¿Qué encontramos?";
-      if (currentLabel === "Periodo F07") label.textContent = "Periodo · F07 · Acciones y seguimiento";
-      if (currentLabel === "Fecha de envío F07") label.textContent = "Fecha de envío · F07 · Acciones y seguimiento";
+      if (currentLabel === "Periodo F07") label.textContent = "Periodo · F07 · Seguimiento de acciones";
+      if (currentLabel === "Fecha de envío F07") label.textContent = "Fecha de envío · F07 · Seguimiento de acciones";
 
       if (currentLabel !== "Evidencia") annotateFormCodes(value);
     });
