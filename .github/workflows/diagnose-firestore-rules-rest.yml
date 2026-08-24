@@ -8,7 +8,7 @@ on:
       - "firestore.rules"
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   rules_rest:
@@ -41,4 +41,11 @@ jobs:
             -d "$RELEASE_BODY" \
             "https://firebaserules.googleapis.com/v1/$RELEASE_NAME")"
           test "$(printf '%s' "$RELEASE_RESPONSE" | jq -r '.rulesetName // empty')" = "$RULESET_NAME"
-          echo "RULES_REST_OK"
+          printf 'RULES_REST_OK\nrelease=%s\nruleset=%s\nchecked_at=%s\n' "$RELEASE_NAME" "$RULESET_NAME" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > RULES_REST_DIAGNOSTIC.txt
+      - name: Registrar evidencia del diagnóstico
+        run: |
+          git config user.name "SmartRisk Rules Diagnostic"
+          git config user.email "actions@users.noreply.github.com"
+          git add RULES_REST_DIAGNOSTIC.txt
+          git commit -m "Registrar diagnóstico exitoso de Firebase Rules REST"
+          git push
