@@ -34,11 +34,18 @@ jobs:
           FIREBASE_SERVICE_ACCOUNT_JSON: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_SMARTRISK_CZ5_PRODUCCION }}"
         run: node scripts/normalize-access-profiles.mjs --apply
 
-      - name: Upload sanitized normalization report
+      - name: Independent readiness audit
+        env:
+          FIREBASE_SERVICE_ACCOUNT_JSON: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_SMARTRISK_CZ5_PRODUCCION }}"
+        run: node scripts/audit-access-readiness.mjs
+
+      - name: Upload sanitized access reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: smartrisk-access-normalization-live
-          path: ACCESS_NORMALIZATION_REPORT.json
+          name: smartrisk-access-readiness-live
+          path: |
+            ACCESS_NORMALIZATION_REPORT.json
+            ACCESS_READINESS_AUDIT.json
           retention-days: 3
           if-no-files-found: warn
