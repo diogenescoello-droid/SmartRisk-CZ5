@@ -1,16 +1,19 @@
 name: Deploy SmartRisk CZ5 to Firebase Hosting
 
-# Production merge trigger: ENOS audit + F07 current cut verified 2026-08-23
 on:
   push:
     branches: ["main"]
     paths:
       - "index.html"
-      - "access-gate.js"
+      - "access-*.js"
+      - "access-*.html"
+      - "scope-*.js"
+      - "storage-safety.js"
       - "release-config.js"
       - "RELEASE_MANIFEST.json"
       - "release-assets.json"
       - "firebase.json"
+      - "firestore.rules"
       - "enos-*.js"
       - "f07-current-data.js"
       - "data.js"
@@ -52,6 +55,15 @@ jobs:
           set -o pipefail
           node scripts/test-release.mjs 2>&1 | tee DEPLOYMENT_VALIDATION.log
 
+      - name: Conservar validación como evidencia
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smartrisk-deployment-validation-${{ github.run_id }}
+          path: DEPLOYMENT_VALIDATION.log
+          retention-days: 14
+          if-no-files-found: warn
+
       - id: deploy
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         name: Publicar canal live de Firebase Hosting
@@ -62,16 +74,35 @@ jobs:
           channelId: live
           projectId: smartrisk-cz5-produccion
 
+      - id: rules
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        name: Publicar reglas de Firestore
+        env:
+          FIREBASE_SERVICE_ACCOUNT_JSON: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_SMARTRISK_CZ5_PRODUCCION }}"
+        shell: bash
+        run: |
+          set -euo pipefail
+          CREDENTIAL_FILE="$RUNNER_TEMP/smartrisk-firebase-service-account.json"
+          node - <<'NODE'
+          const fs = require('fs');
+          fs.writeFileSync(process.env.RUNNER_TEMP + '/smartrisk-firebase-service-account.json', process.env.FIREBASE_SERVICE_ACCOUNT_JSON, { mode: 0o600 });
+          NODE
+          trap 'rm -f "$CREDENTIAL_FILE"' EXIT
+          GOOGLE_APPLICATION_CREDENTIALS="$CREDENTIAL_FILE" npx firebase-tools@latest deploy --only firestore:rules --project smartrisk-cz5-produccion --non-interactive
+
       - name: Registrar resultado verificable del despliegue
         if: always() && github.event_name == 'push'
         env:
           VALIDATE_OUTCOME: "${{ steps.validate.outcome }}"
           DEPLOY_OUTCOME: "${{ steps.deploy.outcome }}"
+          RULES_OUTCOME: "${{ steps.rules.outcome }}"
+        shell: bash
         run: |
           node - <<'NODE'
           const fs = require('fs');
           const validate = process.env.VALIDATE_OUTCOME || 'unknown';
           const deploy = process.env.DEPLOY_OUTCOME || 'unknown';
+          const rules = process.env.RULES_OUTCOME || 'unknown';
           fs.writeFileSync('DEPLOYMENT_STATUS.json', JSON.stringify({
             product: 'SmartRisk CZ5',
             projectId: 'smartrisk-cz5-produccion',
@@ -81,11 +112,13 @@ jobs:
             checkedAt: new Date().toISOString(),
             validation: validate,
             deployment: deploy,
-            status: validate === 'success' && deploy === 'success' ? 'deployed' : 'failed'
+            firestoreRules: rules,
+            status: validate === 'success' && deploy === 'success' && rules === 'success' ? 'deployed' : 'failed'
           }, null, 2) + '\n');
           NODE
           git config user.name "SmartRisk Deploy Bot"
           git config user.email "actions@users.noreply.github.com"
-          git add DEPLOYMENT_STATUS.json DEPLOYMENT_VALIDATION.log
-          git commit -m "Record Firebase deployment outcome" || exit 0
-          git push
+          git add DEPLOYMENT_STATUS.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Record Firebase deployment outcome" || true
+          git push || echo "::warning::No se pudo actualizar DEPLOYMENT_STATUS.json; Hosting y reglas ya fueron evaluados por pasos independientes."
