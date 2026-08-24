@@ -8,6 +8,8 @@
     "rc13-menu.css",
     "firebase-config.js",
     "release-config.js",
+    "access-role-catalog.js",
+    "storage-safety.js",
     "provisioning-guard.js",
     "scope-context.js",
     "zonal-role-scope-bridge.js",
@@ -72,7 +74,6 @@
     "access-admin.html",
     "access-admin.js",
     "profile-role-compat.js",
-    "auth-admin-fallback.js",
     "RELEASE_MANIFEST.json"
   ],
   "directories": [
