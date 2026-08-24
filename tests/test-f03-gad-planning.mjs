@@ -4,7 +4,7 @@ import path from "node:path";
 const dist = path.resolve(process.argv[2] || "dist");
 const source = fs.readFileSync(path.join(dist,"v11-f03-gad-planning.js"),"utf8");
 const scope = fs.readFileSync(path.join(dist,"v11-cartography-gad-scope.js"),"utf8");
-const assets = fs.readFileSync(path.join(dist,"release-assets.json"),"utf8");
+const assets = fs.readFileSync(path.resolve("release-assets.json"),"utf8");
 const index = fs.readFileSync(path.join(dist,"index.html"),"utf8");
 const ok=(c,m)=>{if(!c)throw new Error(`FALLO: ${m}`);console.log(`OK: ${m}`)};
 
