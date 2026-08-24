@@ -42,6 +42,8 @@ jobs:
     steps:
       - name: Descargar repositorio
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
       - name: Preparar Node
         uses: actions/setup-node@v4
@@ -64,8 +66,23 @@ jobs:
           retention-days: 14
           if-no-files-found: warn
 
+      - id: rules_changed
+        if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
+        name: Determinar si corresponde publicar reglas Firestore
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if git rev-parse HEAD^ >/dev/null 2>&1 && ! git diff --quiet HEAD^ HEAD -- firestore.rules; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - id: deploy
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
         name: Publicar canal live de Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
@@ -74,27 +91,30 @@ jobs:
           channelId: live
           projectId: smartrisk-cz5-produccion
 
+      - id: auth_rules
+        if: steps.rules_changed.outputs.changed == 'true'
+        name: Preparar credencial para Firebase Rules
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_SMARTRISK_CZ5_PRODUCCION }}"
+
       - id: rules
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        name: Publicar reglas de Firestore
+        if: steps.rules_changed.outputs.changed == 'true'
+        name: Publicar reglas Firestore por Firebase Rules REST
         env:
-          FIREBASE_SERVICE_ACCOUNT_JSON: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_SMARTRISK_CZ5_PRODUCCION }}"
+          FIREBASE_PROJECT_ID: smartrisk-cz5-produccion
         shell: bash
         run: |
           set -euo pipefail
-          CREDENTIAL_FILE="$RUNNER_TEMP/smartrisk-firebase-service-account.json"
-          node - <<'NODE'
-          const fs = require('fs');
-          fs.writeFileSync(process.env.RUNNER_TEMP + '/smartrisk-firebase-service-account.json', process.env.FIREBASE_SERVICE_ACCOUNT_JSON, { mode: 0o600 });
-          NODE
-          trap 'rm -f "$CREDENTIAL_FILE"' EXIT
-          GOOGLE_APPLICATION_CREDENTIALS="$CREDENTIAL_FILE" npx firebase-tools@latest deploy --only firestore:rules --project smartrisk-cz5-produccion --non-interactive
+          FIREBASE_RULES_ACCESS_TOKEN="$(gcloud auth application-default print-access-token)" \
+            node scripts/deploy-firestore-rules-rest.mjs
 
       - name: Registrar resultado verificable del despliegue
-        if: always() && github.event_name == 'push'
+        if: always() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
         env:
           VALIDATE_OUTCOME: "${{ steps.validate.outcome }}"
           DEPLOY_OUTCOME: "${{ steps.deploy.outcome }}"
+          RULES_REQUIRED: "${{ steps.rules_changed.outputs.changed }}"
           RULES_OUTCOME: "${{ steps.rules.outcome }}"
         shell: bash
         run: |
@@ -102,7 +122,9 @@ jobs:
           const fs = require('fs');
           const validate = process.env.VALIDATE_OUTCOME || 'unknown';
           const deploy = process.env.DEPLOY_OUTCOME || 'unknown';
-          const rules = process.env.RULES_OUTCOME || 'unknown';
+          const rulesRequired = process.env.RULES_REQUIRED === 'true';
+          const rules = rulesRequired ? (process.env.RULES_OUTCOME || 'unknown') : 'not-required';
+          const rulesOk = !rulesRequired || rules === 'success';
           fs.writeFileSync('DEPLOYMENT_STATUS.json', JSON.stringify({
             product: 'SmartRisk CZ5',
             projectId: 'smartrisk-cz5-produccion',
@@ -112,8 +134,9 @@ jobs:
             checkedAt: new Date().toISOString(),
             validation: validate,
             deployment: deploy,
+            firestoreRulesRequired: rulesRequired,
             firestoreRules: rules,
-            status: validate === 'success' && deploy === 'success' && rules === 'success' ? 'deployed' : 'failed'
+            status: validate === 'success' && deploy === 'success' && rulesOk ? 'deployed' : 'failed'
           }, null, 2) + '\n');
           NODE
           git config user.name "SmartRisk Deploy Bot"
