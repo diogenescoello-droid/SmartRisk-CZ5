@@ -12,7 +12,7 @@ ok(source.includes("currentGad"),"Filtro cartográfico toma el GAD elegido");
 ok(source.includes("Selecciona un GAD para mostrar su cartografía"),"Estado inicial evita mezclar GAD");
 ok(source.includes("clearCrossGadSelection"),"Cambio de GAD limpia selección de planificación cruzada");
 ok(source.includes("#srCartoGad"),"Cambio de GAD repinta el visor");
-ok(source.includes('item.level === "canton"') && source.includes('item.level === "provincia"'),"GAD cantonal y provincial diferenciados");
+ok(source.includes('level === "provincia"') && source.includes('item.level === "canton"'),"GAD cantonal y provincial diferenciados");
 ok(index.includes("v11-cartography-gad-scope.js"),"Filtro por GAD cargado en la aplicación");
 
 console.log("PASS cartografía aislada por GAD seleccionado.");
