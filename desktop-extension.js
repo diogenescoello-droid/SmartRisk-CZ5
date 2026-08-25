@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const VERSION = "2026.08.25.5";
+  const VERSION = "2026.08.25.6";
   const STATE_KEY = "smartrisk-desktop-more-collapsed";
   let scheduled = false;
 
@@ -164,7 +164,7 @@
   function openAnalyst() {
     const existing = $("#srAssistantDock [data-assistant='gpt']");
     if (existing) existing.click();
-    else location.href = "https://chatgpt.com";
+    else window.open("https://chatgpt.com", "_blank", "noopener");
   }
 
   function setLabel(button, label) {
@@ -181,6 +181,7 @@
   function ensureFlatNavigation() {
     const nav = $("#nav");
     if (!nav) return;
+    if (nav.dataset.desktopNavigation === VERSION && nav.querySelector(":scope > .v1-nav-shell")) return;
     const sourceButtons = [...nav.querySelectorAll("button[data-route]")];
     if (!sourceButtons.length) return;
     const byRoute = new Map(sourceButtons.map(button => [button.dataset.route, button]));
