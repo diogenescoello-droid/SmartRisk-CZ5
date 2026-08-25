@@ -20,6 +20,7 @@ on:
       - "app.js"
       - "v11-*.js"
       - "v11-*.css"
+      - "reference-v1/**"
       - "scripts/**"
       - "tests/**"
       - "preview-rc14.4.4/**"
