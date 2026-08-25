@@ -1,0 +1,217 @@
+/* SmartRisk CZ5 · Desktop extension
+   Extiende la arquitectura Smart sin duplicarla.
+   Solo aplica cuando device-mode declara escritorio. */
+
+html[data-smart-risk-device="desktop"] #app.v11-shell {
+  grid-template-columns: 252px minmax(0, 1fr) !important;
+}
+
+html[data-smart-risk-device="desktop"] #app.v11-shell.sidebar-collapsed {
+  grid-template-columns: 72px minmax(0, 1fr) !important;
+}
+
+html[data-smart-risk-device="desktop"] .sr-sidebar {
+  padding: 16px 10px 12px;
+}
+
+html[data-smart-risk-device="desktop"] .sr-brand {
+  gap: 9px;
+  padding: 0 7px 14px;
+}
+
+html[data-smart-risk-device="desktop"] .sr-brand b {
+  font-size: 17px;
+}
+
+html[data-smart-risk-device="desktop"] .sr-brand span {
+  color: #cfe0f7;
+  font-size: 10px;
+}
+
+html[data-smart-risk-device="desktop"] #nav {
+  padding: 12px 2px 10px 0;
+}
+
+html[data-smart-risk-device="desktop"] #nav > .rc13-nav-shell.sr-desktop-nav-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+html[data-smart-risk-device="desktop"] .sr-desktop-nav-primary,
+html[data-smart-risk-device="desktop"] .sr-desktop-nav-advanced-items {
+  display: grid;
+  gap: 3px;
+}
+
+html[data-smart-risk-device="desktop"] #nav .sr-desktop-nav-item {
+  min-height: 43px;
+  height: 43px;
+  padding: 0 11px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #eef5ff;
+  background: transparent;
+  font-size: 12.5px;
+  font-weight: 650;
+  line-height: 1;
+}
+
+html[data-smart-risk-device="desktop"] #nav .sr-desktop-nav-item::after {
+  display: none !important;
+  content: none !important;
+}
+
+html[data-smart-risk-device="desktop"] #nav .sr-desktop-nav-item:hover,
+html[data-smart-risk-device="desktop"] #nav .sr-desktop-nav-item:focus-visible {
+  border-color: rgba(255,255,255,.12);
+  background: rgba(255,255,255,.07);
+  outline: none;
+}
+
+html[data-smart-risk-device="desktop"] #nav .sr-desktop-nav-item.active,
+html[data-smart-risk-device="desktop"] #nav .sr-desktop-nav-item.nav-active {
+  border-color: rgba(74, 207, 162, .35);
+  border-left: 3px solid #35c996;
+  background: rgba(53, 201, 150, .13) !important;
+  color: #fff;
+}
+
+html[data-smart-risk-device="desktop"] .sr-desktop-nav-divider {
+  height: 1px;
+  margin: 4px 7px 0;
+  background: rgba(255,255,255,.10);
+}
+
+html[data-smart-risk-device="desktop"] .sr-desktop-nav-advanced {
+  border-top: 1px solid rgba(255,255,255,.08);
+  padding-top: 7px;
+}
+
+html[data-smart-risk-device="desktop"] #nav .sr-desktop-nav-more {
+  width: 100%;
+  height: 34px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: transparent;
+  color: #bcd0e8;
+  font-size: 10.5px;
+  font-weight: 750;
+  letter-spacing: .02em;
+  text-align: left;
+}
+
+html[data-smart-risk-device="desktop"] #nav .sr-desktop-nav-more:hover,
+html[data-smart-risk-device="desktop"] #nav .sr-desktop-nav-more:focus-visible {
+  background: rgba(255,255,255,.06);
+  color: #fff;
+  outline: none;
+}
+
+html[data-smart-risk-device="desktop"] .sr-desktop-nav-more .sr-desktop-chevron {
+  transition: transform .16s ease;
+}
+
+html[data-smart-risk-device="desktop"] .sr-desktop-nav-advanced.is-collapsed .sr-desktop-chevron {
+  transform: rotate(-90deg);
+}
+
+html[data-smart-risk-device="desktop"] .sr-desktop-nav-advanced.is-collapsed .sr-desktop-nav-advanced-items {
+  display: none;
+}
+
+html[data-smart-risk-device="desktop"] .sr-desktop-nav-advanced .sr-desktop-nav-item {
+  min-height: 39px !important;
+  height: 39px !important;
+  padding-left: 12px !important;
+  color: #cbd9ea !important;
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+}
+
+html[data-smart-risk-device="desktop"] .sr-main > header {
+  padding: 12px 16px 8px !important;
+}
+
+html[data-smart-risk-device="desktop"] .sr-page-heading {
+  min-height: 58px;
+  padding: 9px 13px;
+}
+
+html[data-smart-risk-device="desktop"] .sr-content {
+  padding: 0 16px 22px !important;
+  gap: 10px;
+}
+
+/* Inicio de escritorio: prioriza decisión y territorio. La arquitectura completa
+   sigue disponible en Fuentes/documentos y otros módulos transversales. */
+html[data-smart-risk-device="desktop"] body.sr-desktop-home .sr12-cycle {
+  display: none !important;
+}
+
+html[data-smart-risk-device="desktop"] body.sr-desktop-home .sr12-monitor-strip {
+  margin-bottom: 2px;
+}
+
+html[data-smart-risk-device="desktop"] body.sr-desktop-home .sr12-monitor-strip > dl {
+  gap: 0;
+}
+
+html[data-smart-risk-device="desktop"] body.sr-desktop-home .sr12-monitor-strip > dl > div:nth-child(n+5) {
+  display: none;
+}
+
+html[data-smart-risk-device="desktop"] body.sr-desktop-home .sr12-monitor-strip > dl > div {
+  min-width: 0;
+}
+
+html[data-smart-risk-device="desktop"] .sr-guide-question {
+  min-height: 47px;
+}
+
+html[data-smart-risk-device="desktop"] .sr-top-control {
+  padding: 9px 10px;
+}
+
+html[data-smart-risk-device="desktop"] .sr-summary-metrics {
+  gap: 7px;
+}
+
+html[data-smart-risk-device="desktop"] #app.v11-shell.sidebar-collapsed .sr-desktop-nav-more,
+html[data-smart-risk-device="desktop"] #app.v11-shell.sidebar-collapsed .sr-desktop-nav-divider {
+  display: none;
+}
+
+html[data-smart-risk-device="desktop"] #app.v11-shell.sidebar-collapsed .sr-desktop-nav-advanced {
+  border: 0;
+  padding: 0;
+}
+
+html[data-smart-risk-device="desktop"] #app.v11-shell.sidebar-collapsed .sr-desktop-nav-advanced-items {
+  display: grid !important;
+}
+
+html[data-smart-risk-device="desktop"] #app.v11-shell.sidebar-collapsed #nav .sr-desktop-nav-item {
+  width: 48px;
+  padding: 0;
+  justify-content: center;
+  overflow: hidden;
+}
+
+@media (min-width: 1450px) {
+  html[data-smart-risk-device="desktop"] #app.v11-shell {
+    grid-template-columns: 264px minmax(0, 1fr) !important;
+  }
+
+  html[data-smart-risk-device="desktop"] .sr-content {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+}
