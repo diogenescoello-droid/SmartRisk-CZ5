@@ -1,9 +1,12 @@
 (() => {
   "use strict";
 
-  const VERSION = "2026.08.25.2";
+  const VERSION = "2026.08.25.3";
   const STATE_KEY = "smartrisk-desktop-more-collapsed";
+  const BOOTSTRAP_MAX = 40;
   let scheduled = false;
+  let delayedTimer = null;
+  let bootstrapCount = 0;
 
   // Los cuatro primeros conceptos coinciden con la navegación Smart.
   // Escritorio los extiende con análisis y gestión, sin crear rutas paralelas.
@@ -28,7 +31,8 @@
   const $ = (selector, root = document) => root.querySelector(selector);
 
   function isDesktop() {
-    return window.SmartRiskDeviceMode?.isSmart?.() !== true;
+    if (window.SmartRiskDeviceMode?.isSmart) return window.SmartRiskDeviceMode.isSmart() !== true;
+    return document.documentElement.dataset.smartRiskDevice !== "smart";
   }
 
   function currentRoute() {
@@ -48,14 +52,15 @@
       else button.append(document.createTextNode(label));
     }
     button.classList.add("sr-desktop-nav-item");
+    button.classList.remove("rc13-nav-item");
     button.dataset.desktopLabel = label;
     button.removeAttribute("data-rc13-hint");
     button.setAttribute("aria-label", label);
   }
 
-  function takeButtons(shell) {
+  function takeButtons(root) {
     return new Map(
-      [...shell.querySelectorAll("button[data-route]")]
+      [...root.querySelectorAll("button[data-route]")]
         .map(button => [button.dataset.route, button])
     );
   }
@@ -126,8 +131,10 @@
     if (title) title.textContent = "SmartRisk CZ5";
     const subtitle = $(".sr-brand span");
     if (subtitle) subtitle.textContent = "Gestión de riesgos · Zona 5";
+    const legacyTitle = $(".brand b");
+    if (legacyTitle) legacyTitle.textContent = "SmartRisk CZ5";
     const legacySubtitle = $(".brand span");
-    if (legacySubtitle) legacySubtitle.textContent = "CZ5 · Gestión de riesgos";
+    if (legacySubtitle) legacySubtitle.textContent = "Gestión de riesgos · Zona 5";
   }
 
   function decoratePageHeading(route) {
@@ -187,29 +194,62 @@
     return route;
   }
 
+  // Acepta tanto navegación V11 directa como navegación ya envuelta por RC13.
+  // Así se evita la carrera observada al iniciar sesión o cambiar de ruta.
+  function ensureShell(nav) {
+    let shell = nav.querySelector(":scope > .rc13-nav-shell");
+    if (shell) return shell;
+
+    const buttons = [...nav.querySelectorAll("button[data-route]")];
+    if (!buttons.length) return null;
+
+    shell = document.createElement("div");
+    shell.className = "rc13-nav-shell";
+    buttons.forEach(button => shell.append(button));
+    nav.replaceChildren(shell);
+    return shell;
+  }
+
+  function desktopApplied(nav) {
+    const shell = nav?.querySelector(":scope > .rc13-nav-shell.sr-desktop-nav-shell");
+    return Boolean(shell && shell.dataset.desktopExtension === VERSION);
+  }
+
   function apply() {
     scheduled = false;
     const route = updateContext();
+
     if (!isDesktop()) {
       document.body.classList.remove("sr-desktop-extension", "sr-desktop-home", "sr-desktop-territory");
       $("#content")?.classList.remove("sr-desktop-executive-home", "sr-desktop-territory-workspace");
       return;
     }
 
-    const app = $("#app.v11-shell");
     const nav = $("#nav");
-    const shell = nav?.querySelector(":scope > .rc13-nav-shell");
-    if (!app || !nav || !shell) return;
+    const app = $("#app.v11-shell") || (document.body.classList.contains("v11-enabled") ? $("#app") : null);
+    if (!app || !nav) {
+      scheduleDelayed();
+      return;
+    }
+
+    const shell = ensureShell(nav);
+    if (!shell) {
+      scheduleDelayed();
+      return;
+    }
 
     document.body.classList.add("sr-desktop-extension");
     decorateBrand();
     decoratePageHeading(route);
     enhanceExecutiveHome(route);
 
-    if (shell.dataset.desktopExtension === VERSION) return;
+    if (shell.dataset.desktopExtension === VERSION && shell.classList.contains("sr-desktop-nav-shell")) return;
 
     const buttons = takeButtons(shell);
-    if (!buttons.size) return;
+    if (!buttons.size) {
+      scheduleDelayed();
+      return;
+    }
 
     const primary = buildPrimary(buttons);
     const divider = document.createElement("div");
@@ -219,6 +259,7 @@
     shell.replaceChildren(primary, divider, advanced);
     shell.classList.add("sr-desktop-nav-shell");
     shell.dataset.desktopExtension = VERSION;
+    nav.dataset.desktopNavigation = VERSION;
   }
 
   function schedule() {
@@ -227,32 +268,69 @@
     requestAnimationFrame(apply);
   }
 
+  function scheduleDelayed() {
+    if (delayedTimer || bootstrapCount >= BOOTSTRAP_MAX) return;
+    delayedTimer = setTimeout(() => {
+      delayedTimer = null;
+      bootstrapCount += 1;
+      schedule();
+    }, 125);
+  }
+
+  function bootstrap() {
+    schedule();
+    const nav = $("#nav");
+    if (!desktopApplied(nav) && bootstrapCount < BOOTSTRAP_MAX) scheduleDelayed();
+  }
+
   document.addEventListener("click", event => {
     const toggle = event.target.closest("[data-desktop-more]");
-    if (!toggle || !isDesktop()) return;
-    const section = toggle.closest(".sr-desktop-nav-advanced");
-    if (!section) return;
-    const collapsed = section.classList.toggle("is-collapsed");
-    toggle.setAttribute("aria-expanded", String(!collapsed));
-    writeCollapsed(collapsed);
-  });
+    if (toggle && isDesktop()) {
+      const section = toggle.closest(".sr-desktop-nav-advanced");
+      if (!section) return;
+      const collapsed = section.classList.toggle("is-collapsed");
+      toggle.setAttribute("aria-expanded", String(!collapsed));
+      writeCollapsed(collapsed);
+      return;
+    }
 
-  window.addEventListener("hashchange", schedule);
+    if (event.target.closest("#nav [data-route]")) {
+      setTimeout(schedule, 0);
+      setTimeout(schedule, 80);
+    }
+  }, true);
+
+  window.addEventListener("hashchange", () => {
+    bootstrapCount = 0;
+    schedule();
+    scheduleDelayed();
+  });
   window.addEventListener("resize", schedule);
+  window.addEventListener("load", bootstrap);
+  document.addEventListener("DOMContentLoaded", bootstrap);
+
   new MutationObserver(schedule).observe(document.body, {
     childList: true,
     subtree: true,
     attributes: true,
-    attributeFilter: ["class", "data-smart-risk-device"]
+    attributeFilter: ["class"]
   });
 
-  schedule();
+  new MutationObserver(() => {
+    bootstrapCount = 0;
+    schedule();
+  }).observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["data-smart-risk-device"]
+  });
+
+  bootstrap();
 
   window.SmartRiskDesktopExtension = {
     VERSION,
     primaryRoutes: PRIMARY.map(item => item.route),
     advancedRoutes: ADVANCED.map(item => item.route),
-    strategy: "executive-desktop-extends-smart",
+    strategy: "executive-desktop-reconciles-rc13-v11",
     preservesRoutes: true,
     preservesPermissions: true,
     preservesDataContracts: true
