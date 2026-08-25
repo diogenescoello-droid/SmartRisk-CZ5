@@ -1,22 +1,79 @@
 (() => {
   "use strict";
 
-  const VERSION = "2026.08.25.1";
-  const media = window.matchMedia("(max-width: 820px)");
+  const VERSION = "2026.08.25.2";
+  const compactMedia = window.matchMedia("(max-width: 900px)");
   let scheduled = false;
 
   const $ = (selector, root = document) => root.querySelector(selector);
+  const ua = String(navigator.userAgent || "");
+  const explicitMode = new URLSearchParams(location.search).get("ui");
+
+  function mobileBrowserSignal() {
+    if (navigator.userAgentData?.mobile === true) return true;
+    if (/Android|iPhone|iPod|IEMobile|Opera Mini|Mobile/i.test(ua)) return true;
+    if (/iPad/i.test(ua)) return true;
+    if (/Macintosh/i.test(ua) && navigator.maxTouchPoints > 1) return true;
+    return false;
+  }
+
+  function isActualSmartDevice() {
+    if (explicitMode === "desktop") return false;
+    if (explicitMode === "smart") return true;
+    return mobileBrowserSignal() && compactMedia.matches;
+  }
 
   function isV11() {
     return document.body.classList.contains("v11-enabled") || $("#app.v11-shell");
   }
 
   function mode() {
-    return media.matches ? "smart" : "desktop";
+    return isActualSmartDevice() ? "smart" : "desktop";
   }
 
+  function wrapSmartOnlyModule(name) {
+    const marker = Symbol.for(`SmartRisk.${name}.smartOnly`);
+
+    function wrap(value) {
+      if (!value || typeof value !== "object" || value[marker]) return value;
+      const original = value.afterAppStart;
+      if (typeof original === "function") {
+        value.afterAppStart = function (...args) {
+          if (!isActualSmartDevice()) return false;
+          return original.apply(this, args);
+        };
+      }
+      try { Object.defineProperty(value, marker, { value: true }); } catch (_) {}
+      return value;
+    }
+
+    let current = wrap(window[name]);
+    try {
+      Object.defineProperty(window, name, {
+        configurable: true,
+        enumerable: true,
+        get() { return current; },
+        set(value) { current = wrap(value); }
+      });
+    } catch (_) {
+      if (window[name]) wrap(window[name]);
+    }
+  }
+
+  function restoreDesktopV11() {
+    if (isActualSmartDevice()) return;
+    document.body.classList.remove("sr16-enabled", "sr16-full-module", "sr15-enabled", "sr15-menu-open");
+    $("#sr16Shell")?.remove();
+    document.querySelectorAll(".sr16-bottom,#sr15BottomNav").forEach(node => node.remove());
+    const app = $("#app.v11-shell");
+    if (app) app.classList.remove("hidden");
+  }
+
+  wrapSmartOnlyModule("SmartRiskV11MobileRC15");
+  wrapSmartOnlyModule("SmartRiskV11ApprovedRC16");
+
   function ensureBadge() {
-    const smart = media.matches;
+    const smart = isActualSmartDevice();
     let badge = $("#smartModeBadge");
     if (!smart) {
       badge?.remove();
@@ -49,7 +106,7 @@
   }
 
   function ensureLegacyNav() {
-    if (!media.matches || isV11()) {
+    if (!isActualSmartDevice() || isV11()) {
       $("#smartLegacyNav")?.remove();
       return;
     }
@@ -81,11 +138,14 @@
 
   function applyMode() {
     scheduled = false;
-    const smart = media.matches;
+    const smart = isActualSmartDevice();
     document.documentElement.dataset.smartRiskDevice = smart ? "smart" : "desktop";
     document.body.classList.toggle("smart-mobile", smart);
     document.body.classList.toggle("desktop-workspace", !smart);
-    if (!smart) closeLegacyMenu();
+    if (!smart) {
+      closeLegacyMenu();
+      restoreDesktopV11();
+    }
     ensureBadge();
     ensureLegacyNav();
   }
@@ -111,15 +171,21 @@
       }
       return;
     }
-    if (media.matches && !isV11() && $("#app")?.classList.contains("smart-menu-open")) {
+    if (isActualSmartDevice() && !isV11() && $("#app")?.classList.contains("smart-menu-open")) {
       if (!event.target.closest("#app > aside") && !event.target.closest("#smartLegacyNav")) closeLegacyMenu();
     }
   });
 
-  media.addEventListener?.("change", schedule);
+  compactMedia.addEventListener?.("change", schedule);
+  window.addEventListener("resize", schedule);
   window.addEventListener("hashchange", schedule);
   new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
   schedule();
 
-  window.SmartRiskDeviceMode = { VERSION, mode, isSmart: () => media.matches };
+  window.SmartRiskDeviceMode = {
+    VERSION,
+    mode,
+    isSmart: isActualSmartDevice,
+    mobileBrowserSignal
+  };
 })();
