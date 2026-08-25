@@ -1,0 +1,167 @@
+/* SmartRisk CZ5 · Identidad verde de escritorio 2026.08.25.1
+   Recupera la paleta estable previa a RC13 sin alterar datos, rutas o permisos.
+   Fuente histórica: accent #19a974, nav #102c3b, green-deep #176b62. */
+
+html[data-smart-risk-device="desktop"] body.v11-enabled {
+  --sr-navy: #102c3b;
+  --sr-navy-deep: #092f38;
+  --sr-green: #19a974;
+  --sr-blue: #168b73;
+  --sr-blue-soft: #edf8f5;
+  --sr-text: #17343c;
+  --sr-muted: #64748b;
+  --sr-line: #dbe7e4;
+  --sr-bg: #f4f7fa;
+  --sr-card: #ffffff;
+  background: var(--sr-bg) !important;
+  color: var(--sr-text) !important;
+}
+
+html[data-smart-risk-device="desktop"] #app.v11-shell {
+  background: #f4f7fa !important;
+}
+
+html[data-smart-risk-device="desktop"] .sr-sidebar {
+  background: linear-gradient(180deg, #102c3b 0%, #0b3f43 58%, #092f38 100%) !important;
+  box-shadow: 8px 0 30px rgba(12, 52, 55, .08);
+}
+
+html[data-smart-risk-device="desktop"] .sr-brand {
+  border-bottom-color: rgba(224, 249, 241, .13);
+}
+
+html[data-smart-risk-device="desktop"] .sr-brand span,
+html[data-smart-risk-device="desktop"] .sr-user-card small {
+  color: #bdd8d2 !important;
+}
+
+html[data-smart-risk-device="desktop"] #nav .sr-desktop-nav-item {
+  color: #e9f5f2;
+}
+
+html[data-smart-risk-device="desktop"] #nav .sr-desktop-nav-item:hover,
+html[data-smart-risk-device="desktop"] #nav .sr-desktop-nav-item:focus-visible {
+  border-color: rgba(255, 255, 255, .11);
+  background: rgba(255, 255, 255, .065);
+}
+
+html[data-smart-risk-device="desktop"] #nav .sr-desktop-nav-item.active,
+html[data-smart-risk-device="desktop"] #nav .sr-desktop-nav-item.nav-active {
+  border-color: rgba(25, 169, 116, .42);
+  border-left-color: #19a974;
+  background: rgba(25, 169, 116, .17) !important;
+  color: #ffffff;
+  box-shadow: inset 0 0 0 1px rgba(146, 235, 202, .03);
+}
+
+html[data-smart-risk-device="desktop"] #nav .sr-desktop-nav-more {
+  color: #b7d1cc;
+}
+
+html[data-smart-risk-device="desktop"] .sr-desktop-nav-divider,
+html[data-smart-risk-device="desktop"] .sr-desktop-nav-advanced {
+  border-color: rgba(220, 244, 237, .10);
+}
+
+html[data-smart-risk-device="desktop"] .sr-main {
+  background: #f4f7fa !important;
+}
+
+html[data-smart-risk-device="desktop"] .sr-main > header {
+  background: rgba(244, 247, 250, .96) !important;
+}
+
+html[data-smart-risk-device="desktop"] .sr-page-heading {
+  border-color: #dbe7e4;
+  background: #ffffff;
+}
+
+html[data-smart-risk-device="desktop"] .sr-page-heading h1 {
+  color: #17343c;
+}
+
+html[data-smart-risk-device="desktop"] .sr-page-heading p {
+  color: #62787d;
+}
+
+html[data-smart-risk-device="desktop"] .sr-icon-button {
+  border-color: #d7e5e1;
+  color: #08704c;
+}
+
+html[data-smart-risk-device="desktop"] .sr-icon-button:hover,
+html[data-smart-risk-device="desktop"] .sr-icon-button:focus-visible {
+  border-color: #9bd5c0;
+  background: #edf8f4;
+  outline: none;
+}
+
+html[data-smart-risk-device="desktop"] .sr-context-pill {
+  border-color: #d9e8e4;
+  background: #f5faf8;
+  color: #496b65;
+}
+
+html[data-smart-risk-device="desktop"] .sr-context-pill b {
+  color: #176b62;
+}
+
+html[data-smart-risk-device="desktop"] .sr-context-pill.sync {
+  border-color: #cfe8dc;
+  background: #e9f8f2;
+  color: #08704c;
+}
+
+html[data-smart-risk-device="desktop"] .sr-guide-question {
+  border-color: #cbe5dc;
+  background: linear-gradient(90deg, #edf8f4, #f8fbfa);
+  color: #205f54;
+}
+
+html[data-smart-risk-device="desktop"] .sr-guide-question > span {
+  background: #19a974;
+}
+
+html[data-smart-risk-device="desktop"] .sr-filter-bar select:focus {
+  border-color: #66bda0;
+  box-shadow: 0 0 0 3px rgba(25, 169, 116, .11);
+}
+
+html[data-smart-risk-device="desktop"] .sr-coe-toggle button.active {
+  background: #168b68;
+  color: #fff;
+}
+
+html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-intro,
+html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-desktop-executive-hero {
+  border-color: #d4e7e1;
+  border-left: 4px solid #19a974;
+  background: linear-gradient(90deg, #ffffff 0%, #fbfefd 100%);
+}
+
+html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-intro b {
+  color: #174b45;
+}
+
+html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-intro > div > span {
+  background: #e6f6ef !important;
+  color: #08704c !important;
+}
+
+html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-filter {
+  border-color: #dbe7e4;
+}
+
+html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-grid > .sr-card,
+html[data-smart-risk-device="desktop"] .sr-card {
+  border-color: #dce7e4;
+}
+
+html[data-smart-risk-device="desktop"] .sr-card a:focus-visible,
+html[data-smart-risk-device="desktop"] .sr-card button:focus-visible {
+  outline: 3px solid rgba(25, 169, 116, .18);
+  outline-offset: 2px;
+}
+
+/* Los colores rojo/naranja/azul/violeta de riesgo, alerta y flujo permanecen semánticos.
+   El verde funciona como identidad y acción positiva, no como sustitución indiscriminada. */
