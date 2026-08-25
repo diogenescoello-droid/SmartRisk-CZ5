@@ -1,346 +1,47 @@
-/* SmartRisk CZ5 · Escritorio ejecutivo 2026.08.25.2
-   Misma arquitectura conceptual que Modo Smart, con mayor profundidad de trabajo.
-   No modifica rutas, permisos, datos ni contratos funcionales. */
-
-html[data-smart-risk-device="desktop"] #app.v11-shell {
-  grid-template-columns: 232px minmax(0, 1fr) !important;
-}
-
-html[data-smart-risk-device="desktop"] #app.v11-shell.sidebar-collapsed {
-  grid-template-columns: 70px minmax(0, 1fr) !important;
-}
-
-html[data-smart-risk-device="desktop"] .sr-sidebar {
-  padding: 15px 9px 12px;
-}
-
-html[data-smart-risk-device="desktop"] .sr-brand {
-  gap: 9px;
-  padding: 1px 7px 14px;
-}
-
-html[data-smart-risk-device="desktop"] .sr-brand b {
-  font-size: 17px;
-  letter-spacing: -.25px;
-}
-
-html[data-smart-risk-device="desktop"] .sr-brand span {
-  color: #cfe0f7;
-  font-size: 9.5px;
-}
-
-html[data-smart-risk-device="desktop"] #nav {
-  padding: 10px 1px 8px 0;
-}
-
-html[data-smart-risk-device="desktop"] #nav > .rc13-nav-shell.sr-desktop-nav-shell {
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
-}
-
-html[data-smart-risk-device="desktop"] .sr-desktop-nav-primary,
-html[data-smart-risk-device="desktop"] .sr-desktop-nav-advanced-items {
-  display: grid;
-  gap: 2px;
-}
-
-html[data-smart-risk-device="desktop"] #nav .sr-desktop-nav-item {
-  min-height: 40px;
-  height: 40px;
-  padding: 0 10px;
-  border: 1px solid transparent;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: #edf5ff;
-  background: transparent;
-  font-size: 12px;
-  font-weight: 650;
-  line-height: 1;
-}
-
-html[data-smart-risk-device="desktop"] #nav .sr-desktop-nav-item::after {
-  display: none !important;
-  content: none !important;
-}
-
-html[data-smart-risk-device="desktop"] #nav .sr-desktop-nav-item:hover,
-html[data-smart-risk-device="desktop"] #nav .sr-desktop-nav-item:focus-visible {
-  border-color: rgba(255,255,255,.12);
-  background: rgba(255,255,255,.07);
-  outline: none;
-}
-
-html[data-smart-risk-device="desktop"] #nav .sr-desktop-nav-item.active,
-html[data-smart-risk-device="desktop"] #nav .sr-desktop-nav-item.nav-active {
-  border-color: rgba(59, 202, 151, .30);
-  border-left: 3px solid #35c996;
-  background: rgba(53, 201, 150, .14) !important;
-  color: #fff;
-}
-
-html[data-smart-risk-device="desktop"] .sr-desktop-nav-divider {
-  height: 1px;
-  margin: 3px 7px 0;
-  background: rgba(255,255,255,.10);
-}
-
-html[data-smart-risk-device="desktop"] .sr-desktop-nav-advanced {
-  border-top: 1px solid rgba(255,255,255,.07);
-  padding-top: 6px;
-}
-
-html[data-smart-risk-device="desktop"] #nav .sr-desktop-nav-more {
-  width: 100%;
-  height: 32px;
-  padding: 0 9px;
-  border: 0;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: transparent;
-  color: #bcd0e8;
-  font-size: 10px;
-  font-weight: 750;
-  letter-spacing: .02em;
-  text-align: left;
-}
-
-html[data-smart-risk-device="desktop"] #nav .sr-desktop-nav-more:hover,
-html[data-smart-risk-device="desktop"] #nav .sr-desktop-nav-more:focus-visible {
-  background: rgba(255,255,255,.06);
-  color: #fff;
-  outline: none;
-}
-
-html[data-smart-risk-device="desktop"] .sr-desktop-nav-more .sr-desktop-chevron {
-  transition: transform .16s ease;
-}
-
-html[data-smart-risk-device="desktop"] .sr-desktop-nav-advanced.is-collapsed .sr-desktop-chevron {
-  transform: rotate(-90deg);
-}
-
-html[data-smart-risk-device="desktop"] .sr-desktop-nav-advanced.is-collapsed .sr-desktop-nav-advanced-items {
-  display: none;
-}
-
-html[data-smart-risk-device="desktop"] .sr-desktop-nav-advanced .sr-desktop-nav-item {
-  min-height: 37px !important;
-  height: 37px !important;
-  padding-left: 11px !important;
-  color: #cbd9ea !important;
-  font-size: 11px !important;
-  font-weight: 600 !important;
-}
-
-/* Marco de trabajo: más aire útil y menos chrome. */
-html[data-smart-risk-device="desktop"] .sr-main > header {
-  padding: 10px 17px 7px !important;
-}
-
-html[data-smart-risk-device="desktop"] .sr-page-heading {
-  min-height: 55px;
-  padding: 8px 13px;
-  border-radius: 10px;
-  box-shadow: none;
-}
-
-html[data-smart-risk-device="desktop"] .sr-page-heading h1 {
-  font-size: 22px;
-}
-
-html[data-smart-risk-device="desktop"] .sr-page-heading p {
-  font-size: 11.5px;
-}
-
-html[data-smart-risk-device="desktop"] .sr-content {
-  padding: 0 17px 24px !important;
-  gap: 11px;
-}
-
-/* INICIO — recupera la lógica del Dashboard Ejecutivo: primero situación,
-   luego prioridades y accesos. RC12 no se elimina; solo deja de competir aquí. */
-html[data-smart-risk-device="desktop"] body.sr-desktop-home .sr12-cycle,
-html[data-smart-risk-device="desktop"] body.sr-desktop-home .sr12-monitor-strip,
-html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home [data-desktop-secondary="true"] {
-  display: none !important;
-}
-
-html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home {
-  gap: 12px;
-}
-
-html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-intro,
-html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-desktop-executive-hero {
-  min-height: 74px;
-  margin: 0;
-  padding: 13px 15px;
-  border: 1px solid #d7e2f0;
-  border-radius: 11px;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(36, 73, 124, .04);
-}
-
-html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-intro > div > span {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-}
-
-html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-intro b {
-  font-size: 17px;
-  color: #0d376c;
-}
-
-html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-intro p {
-  max-width: 760px;
-  margin-top: 3px;
-  font-size: 11.5px;
-  color: #61749a;
-}
-
-html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-intro > button {
-  min-height: 38px;
-  border-radius: 8px;
-  padding-inline: 13px;
-}
-
-html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-filter {
-  margin: 0;
-  border: 1px solid #dce5f1;
-  border-radius: 10px;
-  background: #fff;
-  padding: 9px 10px;
-}
-
-html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-kpis {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 9px;
-  margin: 0;
-}
-
-html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-kpis .sr-metric {
-  min-height: 80px;
-  padding: 11px;
-  border-radius: 10px;
-  align-items: flex-start;
-}
-
-html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-kpis .sr-metric-icon {
-  width: 31px;
-  height: 31px;
-  flex-basis: 31px;
-}
-
-html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-kpis .sr-metric strong {
-  font-size: 20px;
-}
-
-html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(360px, .85fr);
-  gap: 12px;
-  align-items: start;
-}
-
-html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-grid > .sr-card {
-  border-radius: 11px;
-  box-shadow: 0 2px 9px rgba(31, 68, 118, .045);
-}
-
-html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-grid > .sr-card > header {
-  padding: 13px 14px 10px;
-}
-
-html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-module-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
-}
-
-html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-module {
-  min-height: 112px;
-  padding: 11px;
-  border-radius: 9px;
-}
-
-html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-priority-columns {
-  gap: 9px;
-}
-
-/* TERRITORIO — misma noción que en móvil, pero con profundidad analítica. */
-html[data-smart-risk-device="desktop"] #content.sr-desktop-territory-workspace .sr8-scope-bar {
-  position: sticky;
-  top: 72px;
-  z-index: 18;
-  margin: 0 0 2px;
-  border-radius: 10px;
-  box-shadow: 0 3px 12px rgba(28, 68, 120, .06);
-}
-
-html[data-smart-risk-device="desktop"] #content.sr-desktop-territory-workspace .sr8-kpis {
-  gap: 9px;
-}
-
-html[data-smart-risk-device="desktop"] #content.sr-desktop-territory-workspace .sr8-kpi {
-  border-radius: 10px;
-}
-
-/* Controles y componentes transversales más compactos en PC sin alterar funcionalidad. */
-html[data-smart-risk-device="desktop"] .sr-guide-question {
-  min-height: 46px;
-}
-
-html[data-smart-risk-device="desktop"] .sr-top-control {
-  padding: 8px 9px;
-}
-
-html[data-smart-risk-device="desktop"] .sr-summary-metrics {
-  gap: 6px;
-}
-
-html[data-smart-risk-device="desktop"] #app.v11-shell.sidebar-collapsed .sr-desktop-nav-more,
-html[data-smart-risk-device="desktop"] #app.v11-shell.sidebar-collapsed .sr-desktop-nav-divider {
-  display: none;
-}
-
-html[data-smart-risk-device="desktop"] #app.v11-shell.sidebar-collapsed .sr-desktop-nav-advanced {
-  border: 0;
-  padding: 0;
-}
-
-html[data-smart-risk-device="desktop"] #app.v11-shell.sidebar-collapsed .sr-desktop-nav-advanced-items {
-  display: grid !important;
-}
-
-html[data-smart-risk-device="desktop"] #app.v11-shell.sidebar-collapsed #nav .sr-desktop-nav-item {
-  width: 46px;
-  padding: 0;
-  justify-content: center;
-  overflow: hidden;
-}
-
-@media (max-width: 1250px) and (min-width: 901px) {
-  html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-kpis {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (min-width: 1500px) {
-  html[data-smart-risk-device="desktop"] #app.v11-shell {
-    grid-template-columns: 242px minmax(0, 1fr) !important;
-  }
-
-  html[data-smart-risk-device="desktop"] .sr-content {
-    padding-left: 20px !important;
-    padding-right: 20px !important;
-  }
-}
+/* SmartRisk CZ5 · V1 escritorio operativo + contrato Smart móvil */
+html[data-smart-risk-device="desktop"] #app.v11-shell{grid-template-columns:250px minmax(0,1fr)!important;background:#f4f7fa!important}
+html[data-smart-risk-device="desktop"] .sr-sidebar{background:#102c3b!important;padding:20px 14px 14px!important;color:#fff!important}
+html[data-smart-risk-device="desktop"] .sr-brand{padding:2px 10px 20px!important;margin-bottom:8px!important;border-bottom:1px solid rgba(255,255,255,.10)!important}
+html[data-smart-risk-device="desktop"] .sr-brand b{font-size:21px!important;color:#fff!important}
+html[data-smart-risk-device="desktop"] .sr-brand span{font-size:11px!important;color:#b8ced8!important}
+html[data-smart-risk-device="desktop"] #nav{padding:6px 0!important}
+html[data-smart-risk-device="desktop"] .v1-nav-shell{display:flex;flex-direction:column;gap:10px}
+html[data-smart-risk-device="desktop"] .v1-nav-primary,html[data-smart-risk-device="desktop"] .v1-nav-advanced-items{display:grid;gap:3px}
+html[data-smart-risk-device="desktop"] #nav .v1-nav-item{width:100%;min-height:42px;padding:0 12px!important;border:0!important;border-radius:9px!important;display:flex!important;align-items:center!important;gap:10px!important;background:transparent!important;color:#d8e5eb!important;font-size:12px!important;font-weight:700!important;text-align:left!important}
+html[data-smart-risk-device="desktop"] #nav .v1-nav-item:hover{background:rgba(255,255,255,.07)!important;color:#fff!important}
+html[data-smart-risk-device="desktop"] #nav .v1-nav-item.active{background:rgba(25,169,116,.20)!important;color:#fff!important;box-shadow:inset 3px 0 0 #19a974!important}
+html[data-smart-risk-device="desktop"] #nav .v1-nav-more{width:100%;height:34px;padding:0 11px;border:0;border-top:1px solid rgba(255,255,255,.09);display:flex;align-items:center;justify-content:space-between;background:transparent;color:#aac2cd;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+html[data-smart-risk-device="desktop"] .v1-nav-advanced.collapsed .v1-nav-advanced-items{display:none}
+html[data-smart-risk-device="desktop"] .sr-main{background:#f4f7fa!important}
+html[data-smart-risk-device="desktop"] .sr-main>header{padding:20px 26px 12px!important;background:#f4f7fa!important}
+html[data-smart-risk-device="desktop"] .sr-page-heading{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important;min-height:auto!important}
+html[data-smart-risk-device="desktop"] .sr-page-heading h1{font-size:28px!important;color:#17212b!important}
+html[data-smart-risk-device="desktop"] .sr-page-heading p{font-size:13px!important;color:#64748b!important}
+html[data-smart-risk-device="desktop"] .sr-content{padding:0 26px 28px!important}
+html[data-smart-risk-device="desktop"] #srAssistantDock{display:none!important}
+html[data-smart-risk-device="desktop"] #v1AnalystLauncher{position:fixed;right:24px;bottom:22px;z-index:2400;display:flex;align-items:center;gap:10px;padding:12px 16px;border:0;border-radius:999px;background:linear-gradient(135deg,#0d3143,#176b62);color:#fff;box-shadow:0 14px 36px rgba(13,49,67,.25);font-weight:800;cursor:pointer}
+html[data-smart-risk-device="desktop"] #v1AnalystLauncher span{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.12)}
+html[data-smart-risk-device="desktop"] .v1-operational-home{display:grid;gap:16px}
+html[data-smart-risk-device="desktop"] .v1-lead{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:18px 20px;border:1px solid #cfe1e3;border-radius:15px;background:linear-gradient(135deg,#edf7f4,#f8fbfa)}
+html[data-smart-risk-device="desktop"] .v1-eyebrow{display:block;color:#08704c;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.045em}
+html[data-smart-risk-device="desktop"] .v1-lead h2{margin:3px 0 4px;font-size:20px;color:#17212b}
+html[data-smart-risk-device="desktop"] .v1-lead p{margin:0;color:#64748b;font-size:12px}
+html[data-smart-risk-device="desktop"] .v1-lead button,html[data-smart-risk-device="desktop"] .v1-panel header button,html[data-smart-risk-device="desktop"] .v1-analyst-inline{border:0;border-radius:9px;padding:10px 13px;background:#19a974;color:#fff;font-weight:800;cursor:pointer}
+html[data-smart-risk-device="desktop"] .v1-scope-panel{padding:16px 18px;border:1px solid #dde5ec;border-radius:14px;background:#fff}
+html[data-smart-risk-device="desktop"] .v1-scope-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:12px}
+html[data-smart-risk-device="desktop"] .v1-scope-heading b{display:block;font-size:15px}.v1-scope-heading small{display:block;margin-top:3px;color:#64748b}.v1-scope-heading>span{padding:6px 9px;border-radius:999px;background:#e9f8f2;color:#08704c;font-size:10px;font-weight:800}
+html[data-smart-risk-device="desktop"] .v1-scope-grid{display:grid;grid-template-columns:.8fr 1fr 1fr;gap:12px}
+html[data-smart-risk-device="desktop"] .v1-scope-grid label{font-size:11px;font-weight:800;color:#475569}.v1-scope-grid select{width:100%;margin-top:5px;padding:10px 11px;border:1px solid #d7e0e8;border-radius:9px;background:#fff;color:#17212b}
+html[data-smart-risk-device="desktop"] .v1-scope-summary{display:flex;justify-content:space-between;gap:14px;margin-top:12px;padding-top:10px;border-top:1px solid #edf1f4;font-size:11px;color:#64748b}.v1-scope-summary b{color:#08704c}
+html[data-smart-risk-device="desktop"] .v1-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+html[data-smart-risk-device="desktop"] .v1-kpis button{min-height:122px;padding:17px;border:1px solid #dde5ec;border-radius:14px;background:#fff;text-align:left;color:#17212b;cursor:pointer;transition:.15s ease}
+html[data-smart-risk-device="desktop"] .v1-kpis button:hover{transform:translateY(-1px);border-color:#b8d9cc;box-shadow:0 8px 24px rgba(16,44,59,.06)}
+html[data-smart-risk-device="desktop"] .v1-kpis span{display:block;color:#64748b;font-size:12px}.v1-kpis strong{display:block;margin:7px 0 5px;font-size:28px;color:#17212b}.v1-kpis small{color:#64748b;line-height:1.35}
+html[data-smart-risk-device="desktop"] .v1-workspace-grid{display:grid;grid-template-columns:1.35fr .65fr;gap:16px;align-items:start}
+html[data-smart-risk-device="desktop"] .v1-panel{overflow:hidden;border:1px solid #dde5ec;border-radius:14px;background:#fff}
+html[data-smart-risk-device="desktop"] .v1-panel>header{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:15px 17px;border-bottom:1px solid #edf1f4}.v1-panel h3{margin:3px 0 0;font-size:17px}
+html[data-smart-risk-device="desktop"] .v1-quick-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:14px}
+html[data-smart-risk-device="desktop"] .v1-quick-grid button{display:flex;align-items:center;gap:10px;min-height:72px;padding:11px;border:1px solid #e1e8ed;border-radius:11px;background:#fff;color:#17212b;text-align:left;cursor:pointer}.v1-quick-grid button:hover{background:#f7fbf9;border-color:#c9e7db}.v1-quick-grid b{display:grid;place-items:center;width:32px;height:32px;border-radius:9px;background:#e9f8f2;color:#08704c}.v1-quick-grid span{font-weight:800}.v1-quick-grid small{display:block;margin-top:3px;color:#64748b;font-weight:500}
+html[data-smart-risk-device="desktop"] .v1-decisions ul{margin:0;padding:16px 34px 10px;line-height:1.55;color:#334155}.v1-decisions li+li{margin-top:8px}.v1-analyst-inline{margin:4px 16px 16px;width:calc(100% - 32px);background:#176b62!important}
+html[data-smart-risk-device="desktop"] .sr-assistant-panel{z-index:2500!important}
+@media(max-width:1200px) and (min-width:901px){html[data-smart-risk-device="desktop"] .v1-kpis{grid-template-columns:repeat(2,1fr)}html[data-smart-risk-device="desktop"] .v1-workspace-grid{grid-template-columns:1fr}}
