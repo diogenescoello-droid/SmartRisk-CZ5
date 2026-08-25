@@ -81,6 +81,13 @@
     }
   ];
 
+  function isSmartMode() {
+    if (window.SmartRiskDeviceMode?.isSmart) {
+      return window.SmartRiskDeviceMode.isSmart() === true;
+    }
+    return document.documentElement.dataset.smartRiskDevice === "smart";
+  }
+
   function normalize(value) {
     return String(value || "")
       .normalize("NFD")
@@ -162,25 +169,20 @@
 
     legacyGroups.forEach(group => {
       const buttons = [];
-
       group.items.forEach(item => {
         let button = pageButtons.get(item.page);
-
         if (!button && item.synthetic && fullAdministrativeMenu) {
           button = document.createElement("button");
           button.dataset.page = item.page;
         }
-
         if (item.disabled && fullAdministrativeMenu) {
           button = document.createElement("button");
           button.disabled = true;
           button.className = "rc13-nav-item rc13-nav-placeholder";
         }
-
         if (!button) return;
         buttons.push(preparePageButton(button, item));
       });
-
       if (buttons.length) shell.append(makeSection(group, buttons));
     });
 
@@ -212,15 +214,8 @@
     directButtons.forEach(button => {
       const original = button.textContent.trim();
       const page = button.dataset.scopePage;
-      const category = page === "dashboard" || page === "all"
-        ? "transversal"
-        : scopedCategory(original);
-
-      const label = page === "dashboard"
-        ? "Panorama territorial"
-        : page === "all"
-          ? "Todos los registros"
-          : original;
+      const category = page === "dashboard" || page === "all" ? "transversal" : scopedCategory(original);
+      const label = page === "dashboard" ? "Panorama territorial" : page === "all" ? "Todos los registros" : original;
 
       preparePageButton(button, {
         label,
@@ -273,13 +268,21 @@
     const v11Subtitle = document.querySelector(".sr-brand span");
     if (v11Subtitle) v11Subtitle.textContent = "Arquitectura funcional RC13";
     nav.dataset.rc13Version = "13.1.0";
-    document.documentElement.dataset.smartRiskMenu = "rc13";
+    document.documentElement.dataset.smartRiskMenu = "rc13-smart";
   }
 
   function apply() {
     scheduled = false;
     const nav = document.querySelector("#nav");
     if (!nav) return;
+
+    // RC13 queda reservado a la experiencia Smart/compatibilidad.
+    // En escritorio V11 y desktop-extension son los únicos propietarios de navegación.
+    if (!isSmartMode()) {
+      document.documentElement.dataset.smartRiskMenu = "v11-desktop";
+      return;
+    }
+
     if (nav.querySelector(":scope > .rc13-nav-shell")) return;
     if (legacyNavigation(nav) || scopedNavigation(nav) || v11Navigation(nav)) decorateBrand(nav);
   }
@@ -292,7 +295,7 @@
 
   document.addEventListener("click", event => {
     const toggle = event.target.closest("[data-rc13-toggle]");
-    if (!toggle) return;
+    if (!toggle || !isSmartMode()) return;
 
     const section = toggle.closest(".rc13-nav-module");
     if (!section) return;
@@ -306,13 +309,15 @@
   });
 
   new MutationObserver(scheduleApply).observe(document.body, { childList: true, subtree: true });
+  window.addEventListener("resize", scheduleApply);
   scheduleApply();
 
   window.SMART_RISK_MENU_RC13 = {
-    version: "13.1.0",
-    strategy: "presentation-layer",
+    version: "13.1.1",
+    strategy: "smart-compatibility-layer",
     preservesRoutes: true,
     preservesPermissions: true,
+    desktopOwner: "v11+desktop-extension",
     supportedNavigationModes: ["legacy", "scoped", "v11"]
   };
 })();
