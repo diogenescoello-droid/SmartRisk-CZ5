@@ -85,7 +85,8 @@
   "directories": [
     "vendor",
     "geo",
-    "jea"
+    "jea",
+    "reference-v1"
   ],
   "mappedFiles": {
     "riesgo-bolivar-web.geojson": "geo/riesgo-bolivar-web.geojson",
