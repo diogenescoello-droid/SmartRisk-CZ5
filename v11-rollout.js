@@ -9,44 +9,27 @@
     "geopro.ec5@gmail.com"
   ]);
 
-  const BUILD_VERSION = "11.0.0-rc17-operativo-p0";
+  const BUILD_VERSION = "11.0.0-rc17-operativo-p0.1";
   const loadedResources = new Set();
   const normalizeEmail = value => String(value || "").trim().toLowerCase();
   const FORM_GUIDE = Object.freeze({
-    F01: {
-      name: "Sitios críticos y elementos expuestos",
-      question: "¿Dónde está el riesgo y qué podría verse afectado?"
-    },
-    F02: {
-      name: "Infraestructura expuesta",
-      question: "¿Qué infraestructura importante podría verse afectada?"
-    },
-    F03: {
-      name: "Mapas e información cartográfica",
-      question: "¿Qué mapas o capas respaldan este sitio?"
-    },
-    F04: {
-      name: "Acciones preventivas y de mitigación",
-      question: "¿Qué se hará para reducir o evitar impactos?"
-    },
-    F05: {
-      name: "Alojamientos, rutas y puntos seguros",
-      question: "¿Dónde puede evacuar o resguardarse la población?"
-    },
-    F06: {
-      name: "Capacidades y recursos",
-      question: "¿Con qué personal, equipos y recursos se cuenta?"
-    },
-    F07: {
-      name: "Seguimiento de acciones",
-      question: "¿Qué se ha hecho, qué falta y cuál es el avance?"
-    }
+    F01: { name: "Sitios críticos y elementos expuestos", question: "¿Dónde está el riesgo y qué podría verse afectado?" },
+    F02: { name: "Infraestructura expuesta", question: "¿Qué infraestructura importante podría verse afectada?" },
+    F03: { name: "Mapas e información cartográfica", question: "¿Qué mapas o capas respaldan este sitio?" },
+    F04: { name: "Acciones preventivas y de mitigación", question: "¿Qué se hará para reducir o evitar impactos?" },
+    F05: { name: "Alojamientos, rutas y puntos seguros", question: "¿Dónde puede evacuar o resguardarse la población?" },
+    F06: { name: "Capacidades y recursos", question: "¿Con qué personal, equipos y recursos se cuenta?" },
+    F07: { name: "Seguimiento de acciones", question: "¿Qué se ha hecho, qué falta y cuál es el avance?" }
   });
   let plainLanguageObserver = null;
 
   function isPilotUser(user, profile) {
     const email = normalizeEmail(user?.email);
     return PILOT_EMAILS.has(email) || profile?.v11Pilot === true || profile?.rolloutV11 === true;
+  }
+
+  function isSmartInterface() {
+    return window.SmartRiskDeviceMode?.isSmart?.() === true;
   }
 
   function loadScript(src) {
@@ -119,7 +102,6 @@
       const value = field.querySelector(":scope > strong");
       if (!label || !value) return;
       const currentLabel = String(label.textContent || "").trim();
-
       if (currentLabel === "Próximo paso") label.textContent = "¿Qué debe hacer ahora?";
       if (currentLabel === "Evidencia") {
         label.textContent = "Documento de respaldo";
@@ -128,7 +110,6 @@
       if (currentLabel === "Detalle") label.textContent = "¿Qué encontramos?";
       if (currentLabel === "Periodo F07") label.textContent = "Periodo · F07 · Seguimiento de acciones";
       if (currentLabel === "Fecha de envío F07") label.textContent = "Fecha de envío · F07 · Seguimiento de acciones";
-
       if (currentLabel !== "Evidencia") annotateFormCodes(value);
     });
   }
@@ -150,12 +131,16 @@
 
   async function decide(user, profile) {
     const enabled = isPilotUser(user, profile);
+    const smart = isSmartInterface();
+
     Object.assign(window.SmartRiskV11Rollout, {
       enabled,
-      mode: enabled ? "v11" : "legacy",
+      mode: enabled ? (smart ? "v11-smart" : "v11-desktop") : "legacy",
+      smartInterface: smart,
       userEmail: normalizeEmail(user?.email),
       decidedAt: new Date().toISOString()
     });
+
     document.body.classList.toggle("v11-enabled", enabled);
     if (!enabled) return false;
 
@@ -166,11 +151,16 @@
     await loadStyles("v11-admin-rc10.css");
     await loadStyles("v11-intelligence-rc11.css");
     await loadStyles("v11-governance-rc12.css");
-    await loadStyles("v11-mobile-rc15.css");
-    await loadStyles("v11-layout-rc15-1.css");
-    await loadStyles("v11-approved-rc16.css");
+
+    if (smart) {
+      await loadStyles("v11-mobile-rc15.css");
+      await loadStyles("v11-layout-rc15-1.css");
+      await loadStyles("v11-approved-rc16.css");
+    }
+
     await loadStyles("enos-operational-v11.css");
     await loadStyles("v11-cartography-planning.css");
+
     await loadScript("v11-router.js");
     await loadScript("v11-permissions.js");
     await loadScript("v11-data-adapter.js");
@@ -180,8 +170,12 @@
     await loadScript("v11-admin-rc10.js");
     await loadScript("v11-intelligence-rc11.js");
     await loadScript("v11-governance-rc12.js");
-    await loadScript("v11-mobile-rc15.js");
-    await loadScript("v11-approved-rc16.js");
+
+    if (smart) {
+      await loadScript("v11-mobile-rc15.js");
+      await loadScript("v11-approved-rc16.js");
+    }
+
     await loadScript("v11-authoritative-metrics.js");
     await loadScript("enos-matrix-audit-20260822.js");
     await loadScript("enos-matrix-audit-ui-20260822.js");
@@ -189,22 +183,36 @@
     await loadScript("enos-operational-v11.js");
     await loadScript("v11-zonal-synthesis.js");
     await loadScript("v11-cartography-planning.js");
+
     await window.SmartRiskV11App.start({ user, profile, db, auth });
     window.SmartRiskV11UX?.afterAppStart?.();
     window.SmartRiskV11DashboardRC8?.afterAppStart?.();
     window.SmartRiskV11AdminRC10?.afterAppStart?.();
     window.SmartRiskV11IntelligenceRC11?.afterAppStart?.();
     window.SmartRiskV11GovernanceRC12?.afterAppStart?.();
-    window.SmartRiskV11MobileRC15?.afterAppStart?.();
-    window.SmartRiskV11ApprovedRC16?.afterAppStart?.();
+
+    if (smart) {
+      window.SmartRiskV11MobileRC15?.afterAppStart?.();
+      window.SmartRiskV11ApprovedRC16?.afterAppStart?.();
+    }
+
     window.SmartRiskAuthoritativeMetrics?.afterAppStart?.();
     window.SmartRiskMatrixV11?.afterAppStart?.();
     window.SmartRiskOperationalV11?.afterAppStart?.();
     window.SmartRiskZonalSynthesis?.afterAppStart?.();
     window.SmartRiskCartographyPlanning?.afterAppStart?.();
-    installPlainLanguageLayer();
+    if (smart) installPlainLanguageLayer();
     return true;
   }
 
-  window.SmartRiskV11Rollout = { decide, isPilotUser, PILOT_EMAILS, BUILD_VERSION, FORM_GUIDE, enabled: false, mode: "pending" };
+  window.SmartRiskV11Rollout = {
+    decide,
+    isPilotUser,
+    isSmartInterface,
+    PILOT_EMAILS,
+    BUILD_VERSION,
+    FORM_GUIDE,
+    enabled: false,
+    mode: "pending"
+  };
 })();
