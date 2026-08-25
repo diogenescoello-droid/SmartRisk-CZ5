@@ -53,6 +53,8 @@
     "v11-data-adapter.js",
     "v11-ux-rc7.css",
     "v11-ux-rc7.js",
+    "smartrisk-gpt.css",
+    "smartrisk-gpt-client.js",
     "v11-dashboard-rc8.css",
     "v11-dashboard-rc8.js",
     "v11-normalizer-rc9.css",
