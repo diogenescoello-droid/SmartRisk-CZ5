@@ -1,9 +1,9 @@
 (() => {
   "use strict";
 
-  const VERSION = "2026.08.25.1";
-  const STYLE_VERSION = "2026.08.25.4";
-  const SCRIPT_VERSION = "2026.08.25.4";
+  const VERSION = "2026.08.25.5";
+  const STYLE_VERSION = "2026.08.25.5";
+  const SCRIPT_VERSION = "2026.08.25.5";
   let started = false;
   let attempts = 0;
   const MAX_ATTEMPTS = 160;
@@ -51,14 +51,14 @@
   async function start() {
     if (started || !ready()) return false;
     started = true;
-    document.documentElement.dataset.smartRiskDesktopReference = "v10.3.3-evolved";
+    document.documentElement.dataset.smartRiskDesktopReference = "v1-operational";
     try {
       await loadStyle("desktop-extension.css");
       await loadStyle("desktop-green-theme.css");
       await loadScript("desktop-extension.js");
-      document.body.classList.add("sr-v10-desktop-reference");
+      document.body.classList.add("sr-v1-desktop-operational");
       window.dispatchEvent(new CustomEvent("smartrisk:desktop-reference-ready", {
-        detail: { version: VERSION, reference: "V10.3.3" }
+        detail: { version: VERSION, reference: "V1 + Smart móvil" }
       }));
       return true;
     } catch (error) {
@@ -85,7 +85,7 @@
 
   window.SmartRiskDesktopBootstrap = {
     VERSION,
-    reference: "V10.3.3",
+    reference: "V1 + Smart móvil",
     start,
     isDesktop
   };
