@@ -1,61 +1,62 @@
-/* SmartRisk CZ5 · Desktop extension
-   Extiende la arquitectura Smart sin duplicarla.
-   Solo aplica cuando device-mode declara escritorio. */
+/* SmartRisk CZ5 · Escritorio ejecutivo 2026.08.25.2
+   Misma arquitectura conceptual que Modo Smart, con mayor profundidad de trabajo.
+   No modifica rutas, permisos, datos ni contratos funcionales. */
 
 html[data-smart-risk-device="desktop"] #app.v11-shell {
-  grid-template-columns: 252px minmax(0, 1fr) !important;
+  grid-template-columns: 232px minmax(0, 1fr) !important;
 }
 
 html[data-smart-risk-device="desktop"] #app.v11-shell.sidebar-collapsed {
-  grid-template-columns: 72px minmax(0, 1fr) !important;
+  grid-template-columns: 70px minmax(0, 1fr) !important;
 }
 
 html[data-smart-risk-device="desktop"] .sr-sidebar {
-  padding: 16px 10px 12px;
+  padding: 15px 9px 12px;
 }
 
 html[data-smart-risk-device="desktop"] .sr-brand {
   gap: 9px;
-  padding: 0 7px 14px;
+  padding: 1px 7px 14px;
 }
 
 html[data-smart-risk-device="desktop"] .sr-brand b {
   font-size: 17px;
+  letter-spacing: -.25px;
 }
 
 html[data-smart-risk-device="desktop"] .sr-brand span {
   color: #cfe0f7;
-  font-size: 10px;
+  font-size: 9.5px;
 }
 
 html[data-smart-risk-device="desktop"] #nav {
-  padding: 12px 2px 10px 0;
+  padding: 10px 1px 8px 0;
 }
 
 html[data-smart-risk-device="desktop"] #nav > .rc13-nav-shell.sr-desktop-nav-shell {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 9px;
 }
 
 html[data-smart-risk-device="desktop"] .sr-desktop-nav-primary,
 html[data-smart-risk-device="desktop"] .sr-desktop-nav-advanced-items {
   display: grid;
-  gap: 3px;
+  gap: 2px;
 }
 
 html[data-smart-risk-device="desktop"] #nav .sr-desktop-nav-item {
-  min-height: 43px;
-  height: 43px;
-  padding: 0 11px;
+  min-height: 40px;
+  height: 40px;
+  padding: 0 10px;
   border: 1px solid transparent;
-  border-radius: 9px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #eef5ff;
+  color: #edf5ff;
   background: transparent;
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 650;
   line-height: 1;
 }
@@ -74,27 +75,27 @@ html[data-smart-risk-device="desktop"] #nav .sr-desktop-nav-item:focus-visible {
 
 html[data-smart-risk-device="desktop"] #nav .sr-desktop-nav-item.active,
 html[data-smart-risk-device="desktop"] #nav .sr-desktop-nav-item.nav-active {
-  border-color: rgba(74, 207, 162, .35);
+  border-color: rgba(59, 202, 151, .30);
   border-left: 3px solid #35c996;
-  background: rgba(53, 201, 150, .13) !important;
+  background: rgba(53, 201, 150, .14) !important;
   color: #fff;
 }
 
 html[data-smart-risk-device="desktop"] .sr-desktop-nav-divider {
   height: 1px;
-  margin: 4px 7px 0;
+  margin: 3px 7px 0;
   background: rgba(255,255,255,.10);
 }
 
 html[data-smart-risk-device="desktop"] .sr-desktop-nav-advanced {
-  border-top: 1px solid rgba(255,255,255,.08);
-  padding-top: 7px;
+  border-top: 1px solid rgba(255,255,255,.07);
+  padding-top: 6px;
 }
 
 html[data-smart-risk-device="desktop"] #nav .sr-desktop-nav-more {
   width: 100%;
-  height: 34px;
-  padding: 0 10px;
+  height: 32px;
+  padding: 0 9px;
   border: 0;
   border-radius: 8px;
   display: flex;
@@ -102,7 +103,7 @@ html[data-smart-risk-device="desktop"] #nav .sr-desktop-nav-more {
   justify-content: space-between;
   background: transparent;
   color: #bcd0e8;
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 750;
   letter-spacing: .02em;
   text-align: left;
@@ -128,60 +129,178 @@ html[data-smart-risk-device="desktop"] .sr-desktop-nav-advanced.is-collapsed .sr
 }
 
 html[data-smart-risk-device="desktop"] .sr-desktop-nav-advanced .sr-desktop-nav-item {
-  min-height: 39px !important;
-  height: 39px !important;
-  padding-left: 12px !important;
+  min-height: 37px !important;
+  height: 37px !important;
+  padding-left: 11px !important;
   color: #cbd9ea !important;
-  font-size: 11.5px !important;
+  font-size: 11px !important;
   font-weight: 600 !important;
 }
 
+/* Marco de trabajo: más aire útil y menos chrome. */
 html[data-smart-risk-device="desktop"] .sr-main > header {
-  padding: 12px 16px 8px !important;
+  padding: 10px 17px 7px !important;
 }
 
 html[data-smart-risk-device="desktop"] .sr-page-heading {
-  min-height: 58px;
-  padding: 9px 13px;
+  min-height: 55px;
+  padding: 8px 13px;
+  border-radius: 10px;
+  box-shadow: none;
+}
+
+html[data-smart-risk-device="desktop"] .sr-page-heading h1 {
+  font-size: 22px;
+}
+
+html[data-smart-risk-device="desktop"] .sr-page-heading p {
+  font-size: 11.5px;
 }
 
 html[data-smart-risk-device="desktop"] .sr-content {
-  padding: 0 16px 22px !important;
-  gap: 10px;
+  padding: 0 17px 24px !important;
+  gap: 11px;
 }
 
-/* Inicio de escritorio: prioriza decisión y territorio. La arquitectura completa
-   sigue disponible en Fuentes/documentos y otros módulos transversales. */
-html[data-smart-risk-device="desktop"] body.sr-desktop-home .sr12-cycle {
+/* INICIO — recupera la lógica del Dashboard Ejecutivo: primero situación,
+   luego prioridades y accesos. RC12 no se elimina; solo deja de competir aquí. */
+html[data-smart-risk-device="desktop"] body.sr-desktop-home .sr12-cycle,
+html[data-smart-risk-device="desktop"] body.sr-desktop-home .sr12-monitor-strip,
+html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home [data-desktop-secondary="true"] {
   display: none !important;
 }
 
-html[data-smart-risk-device="desktop"] body.sr-desktop-home .sr12-monitor-strip {
-  margin-bottom: 2px;
+html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home {
+  gap: 12px;
 }
 
-html[data-smart-risk-device="desktop"] body.sr-desktop-home .sr12-monitor-strip > dl {
-  gap: 0;
+html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-intro,
+html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-desktop-executive-hero {
+  min-height: 74px;
+  margin: 0;
+  padding: 13px 15px;
+  border: 1px solid #d7e2f0;
+  border-radius: 11px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(36, 73, 124, .04);
 }
 
-html[data-smart-risk-device="desktop"] body.sr-desktop-home .sr12-monitor-strip > dl > div:nth-child(n+5) {
-  display: none;
+html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-intro > div > span {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
 }
 
-html[data-smart-risk-device="desktop"] body.sr-desktop-home .sr12-monitor-strip > dl > div {
-  min-width: 0;
+html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-intro b {
+  font-size: 17px;
+  color: #0d376c;
 }
 
-html[data-smart-risk-device="desktop"] .sr-guide-question {
-  min-height: 47px;
+html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-intro p {
+  max-width: 760px;
+  margin-top: 3px;
+  font-size: 11.5px;
+  color: #61749a;
 }
 
-html[data-smart-risk-device="desktop"] .sr-top-control {
+html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-intro > button {
+  min-height: 38px;
+  border-radius: 8px;
+  padding-inline: 13px;
+}
+
+html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-filter {
+  margin: 0;
+  border: 1px solid #dce5f1;
+  border-radius: 10px;
+  background: #fff;
   padding: 9px 10px;
 }
 
+html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-kpis {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 9px;
+  margin: 0;
+}
+
+html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-kpis .sr-metric {
+  min-height: 80px;
+  padding: 11px;
+  border-radius: 10px;
+  align-items: flex-start;
+}
+
+html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-kpis .sr-metric-icon {
+  width: 31px;
+  height: 31px;
+  flex-basis: 31px;
+}
+
+html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-kpis .sr-metric strong {
+  font-size: 20px;
+}
+
+html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(360px, .85fr);
+  gap: 12px;
+  align-items: start;
+}
+
+html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-grid > .sr-card {
+  border-radius: 11px;
+  box-shadow: 0 2px 9px rgba(31, 68, 118, .045);
+}
+
+html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-grid > .sr-card > header {
+  padding: 13px 14px 10px;
+}
+
+html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-module-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-module {
+  min-height: 112px;
+  padding: 11px;
+  border-radius: 9px;
+}
+
+html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-priority-columns {
+  gap: 9px;
+}
+
+/* TERRITORIO — misma noción que en móvil, pero con profundidad analítica. */
+html[data-smart-risk-device="desktop"] #content.sr-desktop-territory-workspace .sr8-scope-bar {
+  position: sticky;
+  top: 72px;
+  z-index: 18;
+  margin: 0 0 2px;
+  border-radius: 10px;
+  box-shadow: 0 3px 12px rgba(28, 68, 120, .06);
+}
+
+html[data-smart-risk-device="desktop"] #content.sr-desktop-territory-workspace .sr8-kpis {
+  gap: 9px;
+}
+
+html[data-smart-risk-device="desktop"] #content.sr-desktop-territory-workspace .sr8-kpi {
+  border-radius: 10px;
+}
+
+/* Controles y componentes transversales más compactos en PC sin alterar funcionalidad. */
+html[data-smart-risk-device="desktop"] .sr-guide-question {
+  min-height: 46px;
+}
+
+html[data-smart-risk-device="desktop"] .sr-top-control {
+  padding: 8px 9px;
+}
+
 html[data-smart-risk-device="desktop"] .sr-summary-metrics {
-  gap: 7px;
+  gap: 6px;
 }
 
 html[data-smart-risk-device="desktop"] #app.v11-shell.sidebar-collapsed .sr-desktop-nav-more,
@@ -199,15 +318,25 @@ html[data-smart-risk-device="desktop"] #app.v11-shell.sidebar-collapsed .sr-desk
 }
 
 html[data-smart-risk-device="desktop"] #app.v11-shell.sidebar-collapsed #nav .sr-desktop-nav-item {
-  width: 48px;
+  width: 46px;
   padding: 0;
   justify-content: center;
   overflow: hidden;
 }
 
-@media (min-width: 1450px) {
+@media (max-width: 1250px) and (min-width: 901px) {
+  html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-kpis {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  html[data-smart-risk-device="desktop"] #content.sr-desktop-executive-home .sr-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 1500px) {
   html[data-smart-risk-device="desktop"] #app.v11-shell {
-    grid-template-columns: 264px minmax(0, 1fr) !important;
+    grid-template-columns: 242px minmax(0, 1fr) !important;
   }
 
   html[data-smart-risk-device="desktop"] .sr-content {
