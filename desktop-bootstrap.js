@@ -1,9 +1,9 @@
 (() => {
   "use strict";
 
-  const VERSION = "2026.08.25.6";
+  const VERSION = "2026.08.25.7";
   const STYLE_VERSION = "2026.08.25.5";
-  const SCRIPT_VERSION = "2026.08.25.6";
+  const SCRIPT_VERSION = "2026.08.25.7";
   let started = false;
   let attempts = 0;
   const MAX_ATTEMPTS = 160;
@@ -56,6 +56,7 @@
       await loadStyle("desktop-extension.css");
       await loadStyle("desktop-green-theme.css");
       await loadScript("desktop-extension.js");
+      await loadScript("desktop-v1-home-reconcile.js");
       document.body.classList.add("sr-v1-desktop-operational");
       window.dispatchEvent(new CustomEvent("smartrisk:desktop-reference-ready", {
         detail: { version: VERSION, reference: "V1 + Smart móvil" }
