@@ -13,6 +13,8 @@
     "desktop-extension.js",
     "desktop-v1-home-reconcile.js",
     "desktop-green-theme.css",
+    "desktop-v1-baseline-lock.css",
+    "desktop-v1-baseline-lock.js",
     "firebase-config.js",
     "release-config.js",
     "access-role-catalog.js",
