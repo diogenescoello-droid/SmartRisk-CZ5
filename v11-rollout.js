@@ -9,7 +9,8 @@
     "geopro.ec5@gmail.com"
   ]);
 
-  const BUILD_VERSION = "11.0.0-rc17-operativo-p0.2";
+  const BUILD_VERSION = "11.0.0-rc17-operativo-p0";
+  const SMART_MOBILE_STYLE_VERSION = "11.0.0-rc16-compact-2026.08.25.1";
   const loadedResources = new Set();
   const normalizeEmail = value => String(value || "").trim().toLowerCase();
   const FORM_GUIDE = Object.freeze({
@@ -48,8 +49,9 @@
     if (loadedResources.has(href) || document.querySelector(`link[href^="${href}"]`)) return Promise.resolve();
     return new Promise((resolve, reject) => {
       const link = document.createElement("link");
+      const version = href === "v11-approved-rc16.css" ? SMART_MOBILE_STYLE_VERSION : BUILD_VERSION;
       link.rel = "stylesheet";
-      link.href = `${href}?v=${BUILD_VERSION}`;
+      link.href = `${href}?v=${version}`;
       link.onload = () => { loadedResources.add(href); resolve(); };
       link.onerror = () => reject(new Error(`No fue posible cargar ${href}`));
       document.head.appendChild(link);
