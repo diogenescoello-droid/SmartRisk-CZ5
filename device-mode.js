@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const VERSION = "2026.08.25.3";
+  const VERSION = "2026.08.25.4";
   const compactMedia = window.matchMedia("(max-width: 900px)");
   const coarsePointerMedia = window.matchMedia("(pointer: coarse)");
   let scheduled = false;
@@ -25,11 +25,28 @@
     return false;
   }
 
+  function physicalMobileTouchSignal() {
+    const touchPoints = Number(navigator.maxTouchPoints || 0);
+    if (touchPoints <= 0) return false;
+    const width = Number(window.screen?.width || 0);
+    const height = Number(window.screen?.height || 0);
+    if (!width || !height) return false;
+    const shortSide = Math.min(width, height);
+    const longSide = Math.max(width, height);
+    return shortSide <= 900 && longSide <= 1800;
+  }
+
+  function clearDesktopOverrideOnRealMobile() {
+    if (explicitMode !== "desktop") return false;
+    return mobileBrowserSignal() || physicalMobileTouchSignal();
+  }
+
   function isActualSmartDevice() {
-    if (explicitMode === "desktop") return false;
     if (explicitMode === "smart") return true;
-    if (!compactMedia.matches) return false;
-    return mobileBrowserSignal() || compactTouchSignal();
+    const realMobile = mobileBrowserSignal() || physicalMobileTouchSignal();
+    if (explicitMode === "desktop" && !realMobile) return false;
+    if (realMobile) return true;
+    return compactTouchSignal();
   }
 
   function isV11() {
@@ -199,6 +216,8 @@
     isSmart: isActualSmartDevice,
     mobileBrowserSignal,
     compactTouchSignal,
+    physicalMobileTouchSignal,
+    clearDesktopOverrideOnRealMobile,
     explicitMode
   };
 })();
