@@ -11,6 +11,7 @@
     "desktop-bootstrap.js",
     "desktop-extension.css",
     "desktop-extension.js",
+    "desktop-v1-home-reconcile.js",
     "desktop-green-theme.css",
     "firebase-config.js",
     "release-config.js",
