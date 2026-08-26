@@ -1,9 +1,9 @@
 (() => {
   "use strict";
 
-  const VERSION = "2026.08.26.1";
+  const VERSION = "2026.08.26.2";
   const STYLE_VERSION = "2026.08.26.1";
-  const SCRIPT_VERSION = "2026.08.26.1";
+  const SCRIPT_VERSION = "2026.08.26.2";
   let started = false;
   let attempts = 0;
   const MAX_ATTEMPTS = 160;
@@ -63,7 +63,7 @@
       window.dispatchEvent(new CustomEvent("smartrisk:desktop-reference-ready", {
         detail: {
           version: VERSION,
-          reference: "V1 + Smart móvil · baseline 754ef8ff · 17:46"
+          reference: "V1 + Smart móvil · baseline 754ef8ff · inicio auditado"
         }
       }));
       return true;
@@ -91,7 +91,7 @@
 
   window.SmartRiskDesktopBootstrap = {
     VERSION,
-    reference: "V1 + Smart móvil · baseline 754ef8ff · 17:46",
+    reference: "V1 + Smart móvil · baseline 754ef8ff · inicio auditado",
     start,
     isDesktop
   };
