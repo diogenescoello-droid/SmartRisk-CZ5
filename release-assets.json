@@ -86,7 +86,8 @@
     "vendor",
     "geo",
     "jea",
-    "reference-v1"
+    "reference-v1",
+    "reference-office-20260730"
   ],
   "mappedFiles": {
     "riesgo-bolivar-web.geojson": "geo/riesgo-bolivar-web.geojson",
