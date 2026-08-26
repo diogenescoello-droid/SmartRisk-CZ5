@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const VERSION = "2026.08.25.7";
+  const VERSION = "2026.08.25.8";
   let pending = false;
   let observer = null;
 
@@ -11,32 +11,43 @@
   }
 
   function currentRoute() {
+    const hash = String(location.hash || "").replace(/^#\/?/, "").split(/[?&]/)[0];
+    if (hash) return hash;
     const stateRoute = window.SmartRiskV11App?.state?.route;
-    if (stateRoute) return String(stateRoute);
-    return String(location.hash || "inicio").replace(/^#\/?/, "").split(/[?&]/)[0] || "inicio";
+    return stateRoute ? String(stateRoute) : "inicio";
   }
 
-  function v1HomeIsPresent(content) {
-    return Boolean(
-      content &&
-      content.classList.contains("v1-operational-home") &&
-      content.querySelector(".v1-lead") &&
-      content.querySelector(".v1-kpis") &&
-      content.querySelector(".v1-workspace-grid")
-    );
+  function v1ViewIsPresent(content, route = currentRoute()) {
+    if (!content) return false;
+    if (route === "inicio") {
+      return Boolean(
+        content.classList.contains("v1-operational-home") &&
+        content.querySelector(".v1-lead") &&
+        content.querySelector(".v1-kpis") &&
+        content.querySelector(".v1-workspace-grid")
+      );
+    }
+    if (route === "dashboard") {
+      return Boolean(
+        content.classList.contains("v1-operational-territory") &&
+        content.querySelector(".v1-territory-intro") &&
+        content.querySelector(".v1-territory-grid") &&
+        content.querySelector(".v1-territory-summary")
+      );
+    }
+    return true;
   }
 
   function requestV1Reapply() {
-    if (pending || !isDesktop() || currentRoute() !== "inicio") return;
+    const route = currentRoute();
+    if (pending || !isDesktop() || !["inicio", "dashboard"].includes(route)) return;
     const content = document.querySelector("#content");
-    if (!content || v1HomeIsPresent(content)) return;
+    if (!content || v1ViewIsPresent(content, route)) return;
 
     pending = true;
     delete content.dataset.v1Operational;
 
-    // desktop-extension.js escucha mutaciones childList. Este marcador provoca
-    // una nueva pasada después de que V11 haya terminado de redibujar Inicio.
-    const marker = document.createComment(`v1-home-reconcile-${VERSION}`);
+    const marker = document.createComment(`v1-view-reconcile-${route}-${VERSION}`);
     content.appendChild(marker);
     requestAnimationFrame(() => {
       marker.remove();
@@ -58,5 +69,5 @@
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start, { once: true });
   else start();
 
-  window.SmartRiskV1HomeReconcile = { VERSION, requestV1Reapply, v1HomeIsPresent };
+  window.SmartRiskV1HomeReconcile = { VERSION, requestV1Reapply, v1ViewIsPresent };
 })();
