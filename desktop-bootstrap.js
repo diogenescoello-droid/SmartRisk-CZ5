@@ -1,9 +1,9 @@
 (() => {
   "use strict";
 
-  const VERSION = "2026.08.26.3";
+  const VERSION = "2026.08.26.4";
   const STYLE_VERSION = "2026.08.26.2";
-  const SCRIPT_VERSION = "2026.08.26.3";
+  const SCRIPT_VERSION = "2026.08.26.4";
   let started = false;
   let attempts = 0;
   const MAX_ATTEMPTS = 160;
