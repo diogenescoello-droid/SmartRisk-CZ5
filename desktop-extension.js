@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const VERSION = "2026.08.25.6";
+  const VERSION = "2026.08.25.8";
   const STATE_KEY = "smartrisk-desktop-more-collapsed";
   let scheduled = false;
 
@@ -14,7 +14,7 @@
     { route: "reportes", label: "Planes y revisión" },
     { route: "coe", label: "COE y actores" },
     { route: "instituciones", label: "Mesas técnicas" },
-    { route: "monitoreo", label: "Monitoreo y fuentes" }
+    { route: "monitoreo", label: "Reportes y fuentes" }
   ];
 
   const ADVANCED = [
@@ -35,14 +35,15 @@
 
   function appState() { return window.SmartRiskV11App?.state || {}; }
   function currentRoute() {
-    return String(appState().route || location.hash || "inicio").replace(/^#\/?/, "").split(/[?&]/)[0] || "inicio";
+    const hash = String(location.hash || "").replace(/^#\/?/, "").split(/[?&]/)[0];
+    return hash || String(appState().route || "inicio");
   }
 
   function allRecords() { return appState().data?.records || []; }
   function entity(key) { return appState().data?.entities?.[key] || []; }
   function scoped(list) {
     const f = appState().filters || {};
-    return list.filter(item => (!f.provincia || norm(item.provincia) === norm(f.provincia)) && (!f.canton || norm(item.canton) === norm(f.canton)));
+    return (list || []).filter(item => (!f.provincia || norm(item.provincia) === norm(f.provincia)) && (!f.canton || norm(item.canton) === norm(f.canton)));
   }
 
   function amountOf(record) {
@@ -66,10 +67,16 @@
     const breaches = scoped(entity("breaches"));
     const plans = scoped(entity("plans"));
     const reports = scoped(entity("monitoringReports"));
+    const documents = scoped(entity("reports"));
     const budget = actions.reduce((sum, item) => sum + amountOf(item), 0);
     const solved = breaches.filter(item => /solv|cerr|resuelt|complet|valid/.test(norm(`${item.estado} ${item.detail}`))).length;
     const active = Math.max(0, breaches.length - solved);
-    return { sites, risks, actions, breaches, plans, reports, budget, solved, active };
+    const f07 = scoped(allRecords()).filter(item => /\bf07\b|seguimiento de acciones/.test(norm(`${item.tipo} ${item.title} ${item.detail}`))).length;
+    const evidence = scoped(allRecords()).filter(item => {
+      const payload = item?.payload || {};
+      return Boolean(payload.evidencia || payload.evidence || payload.adjunto || payload.archivo || payload.url || payload.enlace || payload.link);
+    }).length;
+    return { sites, risks, actions, breaches, plans, reports, documents, budget, solved, active, f07, evidence };
   }
 
   function territoryOptions() {
@@ -84,21 +91,19 @@
     return `<option value="">${esc(placeholder)}</option>${items.map(item => `<option value="${esc(item)}" ${norm(item)===norm(selected)?"selected":""}>${esc(item)}</option>`).join("")}`;
   }
 
-  function buildHome() {
+  function scopeContext() {
     const state = appState();
-    const m = metrics();
-    const { provinces, cantons } = territoryOptions();
     const f = state.filters || {};
+    const { provinces, cantons } = territoryOptions();
     const scopeLabel = f.canton ? `${f.canton} · ${f.provincia || "Zona 5"}` : f.provincia || "Coordinación Zonal 5";
     const role = state.profileContext?.roleLabel || "Usuario autorizado";
     const loadedAt = state.data?.meta?.loadedAt ? new Date(state.data.meta.loadedAt).toLocaleString("es-EC") : "corte vigente";
+    return { state, f, provinces, cantons, scopeLabel, role, loadedAt };
+  }
 
-    return `<section class="v1-lead">
-      <div><span class="v1-eyebrow">Centro de lectura ejecutiva</span><h2>Situación territorial para decisión</h2><p>La misma lógica de Smart móvil, extendida para trabajo de escritorio.</p></div>
-      <button type="button" data-v1-route="dashboard">Abrir territorio →</button>
-    </section>
-
-    <section class="v1-scope-panel">
+  function buildScopePanel() {
+    const { f, provinces, cantons, scopeLabel, role, loadedAt } = scopeContext();
+    return `<section class="v1-scope-panel">
       <div class="v1-scope-heading"><div><b>Alcance de los indicadores</b><small>Los datos respetan el perfil y alcance autorizado.</small></div><span>${esc(role)}</span></div>
       <div class="v1-scope-grid">
         <label>Nivel territorial<select id="v1Level"><option value="zona" ${!f.provincia?"selected":""}>Zona</option><option value="provincia" ${f.provincia&&!f.canton?"selected":""}>Provincia</option><option value="canton" ${f.canton?"selected":""}>Cantón</option></select></label>
@@ -106,7 +111,18 @@
         <label>Cantón<select id="v1Canton">${selectOptions(cantons, f.canton, "Todos")}</select></label>
       </div>
       <div class="v1-scope-summary"><b>${esc(scopeLabel)}</b><span>Actualizado: ${esc(loadedAt)}</span></div>
+    </section>`;
+  }
+
+  function buildHome() {
+    const m = metrics();
+    const { scopeLabel } = scopeContext();
+    return `<section class="v1-lead">
+      <div><span class="v1-eyebrow">Centro de lectura ejecutiva</span><h2>Situación territorial para decisión</h2><p>La misma lógica de Smart móvil, extendida para trabajo de escritorio.</p></div>
+      <button type="button" data-v1-route="dashboard">Abrir territorio →</button>
     </section>
+
+    ${buildScopePanel()}
 
     <section class="v1-kpis">
       <button data-v1-route="riesgos"><span>Sitios reportados</span><strong>${m.sites.length}</strong><small>${m.risks.length} registros de riesgo asociados</small></button>
@@ -124,7 +140,7 @@
           <button data-v1-route="acciones"><b>✓</b><span>Acciones<small>${m.actions.length} vinculadas</small></span></button>
           <button data-v1-route="riesgos"><b>⌖</b><span>Sitios críticos<small>${m.sites.length} reportados</small></span></button>
           <button data-v1-route="mapas"><b>⌁</b><span>Mapa<small>Capas y trabajo territorial</small></span></button>
-          <button data-v1-route="monitoreo"><b>↻</b><span>Monitoreo<small>${m.reports.length} reportes visibles</small></span></button>
+          <button data-v1-route="monitoreo"><b>▣</b><span>Reportes y fuentes<small>${m.reports.length + m.documents.length} registros visibles</small></span></button>
         </div>
       </article>
       <article class="v1-panel v1-decisions">
@@ -135,12 +151,53 @@
     </section>`;
   }
 
-  function bindHome() {
+  function buildTerritory() {
+    const m = metrics();
+    const { scopeLabel } = scopeContext();
+    const planState = m.plans.length ? `${m.plans.length} registro${m.plans.length === 1 ? "" : "s"} visible${m.plans.length === 1 ? "" : "s"}` : "Sin registro visible";
+    const f07State = m.f07 ? `${m.f07} registro${m.f07 === 1 ? "" : "s"}` : "Sin registro identificado";
+
+    return `${buildScopePanel()}
+      <section class="v1-territory-intro">
+        <div><span class="v1-eyebrow">Ficha territorial integrada</span><h2>${esc(scopeLabel)}</h2><p>Plan, revisión, seguimiento, sitios, acciones, presupuesto y evidencias en un único expediente operativo.</p></div>
+        <span class="v1-territory-badge">Plan ENOS 2026–2027</span>
+      </section>
+
+      <article class="v1-panel v1-territory-panel">
+        <header><div><span class="v1-eyebrow">Plan y revisión técnica</span><h3>Estado documental y seguimiento</h3></div><span class="v1-panel-status">${esc(planState)}</span></header>
+        <div class="v1-territory-grid">
+          <button data-v1-route="reportes"><b>↗</b><span>PDF<small>${m.plans.length ? "Plan oficial disponible en el expediente" : "Verificar documento del plan"}</small></span></button>
+          <button data-v1-route="reportes"><b>✓</b><span>Criterios<small>${m.plans.length ? "Revisión técnica disponible" : "Pendiente de asociar al plan"}</small></span></button>
+          <button data-v1-route="reportes"><b>!</b><span>Brechas<small>${m.active} activas · ${m.solved} solventadas</small></span></button>
+          <button data-v1-route="acciones"><b>↻</b><span>Seguimiento<small>F07 · ${esc(f07State)}</small></span></button>
+        </div>
+      </article>
+
+      <article class="v1-panel v1-territory-panel">
+        <header><div><span class="v1-eyebrow">Gestión del territorio</span><h3>Operación y evidencia</h3></div><span class="v1-panel-status">Mismo contrato Smart móvil</span></header>
+        <div class="v1-territory-grid management">
+          <button data-v1-route="riesgos"><b>⌖</b><span>Sitios críticos<small>${m.sites.length} sitios · ${m.risks.length} riesgos</small></span></button>
+          <button data-v1-route="acciones"><b>✓</b><span>Acciones<small>${m.actions.length} vinculadas</small></span></button>
+          <button data-v1-route="acciones"><b>$</b><span>Presupuesto<small>${m.budget ? currency(m.budget) : "Sin valor estructurado"}</small></span></button>
+          <button data-v1-route="monitoreo"><b>▣</b><span>Evidencias<small>${m.evidence || (m.reports.length + m.documents.length)} referencias visibles</small></span></button>
+          <button data-v1-route="mapas"><b>✎</b><span>Trabajo de campo<small>Mapa, F03 y flujos Kobo</small></span></button>
+        </div>
+      </article>
+
+      <section class="v1-territory-summary">
+        <div><span>Plan / revisión</span><strong>${m.plans.length}</strong></div>
+        <div><span>Brechas activas</span><strong>${m.active}</strong></div>
+        <div><span>Acciones</span><strong>${m.actions.length}</strong></div>
+        <div><span>Reportes / fuentes</span><strong>${m.reports.length + m.documents.length}</strong></div>
+      </section>`;
+  }
+
+  function bindScope(route) {
     const state = appState();
     const level = $("#v1Level");
     const province = $("#v1Province");
     const canton = $("#v1Canton");
-    const rerender = () => window.SmartRiskV11App?.render?.("inicio");
+    const rerender = () => window.SmartRiskV11App?.render?.(route);
     level?.addEventListener("change", () => {
       if (level.value === "zona") { state.filters.provincia = ""; state.filters.canton = ""; }
       if (level.value === "provincia") state.filters.canton = "";
@@ -204,12 +261,13 @@
     const toggle = document.createElement("button");
     toggle.type = "button";
     toggle.className = "v1-nav-more";
-    const collapsed = localStorage.getItem(STATE_KEY) !== "false";
+    let collapsed = true;
+    try { collapsed = localStorage.getItem(STATE_KEY) !== "false"; } catch (_) {}
     advanced.classList.toggle("collapsed", collapsed);
     toggle.innerHTML = `<span>Más funciones</span><span>⌄</span>`;
     toggle.onclick = () => {
       const now = advanced.classList.toggle("collapsed");
-      localStorage.setItem(STATE_KEY, String(now));
+      try { localStorage.setItem(STATE_KEY, String(now)); } catch (_) {}
     };
     const items = document.createElement("div");
     items.className = "v1-nav-advanced-items";
@@ -233,16 +291,35 @@
   }
 
   function enhanceHome() {
-    if (currentRoute() !== "inicio") return;
+    if (currentRoute() !== "inicio") return false;
     const content = $("#content");
-    if (!content) return;
-    if (content.dataset.v1Operational === VERSION) return;
+    if (!content) return false;
+    if (content.dataset.v1Operational === VERSION && content.querySelector(".v1-lead") && content.querySelector(".v1-kpis")) return true;
     content.className = "sr-content v1-operational-home";
     content.innerHTML = buildHome();
     content.dataset.v1Operational = VERSION;
     const heading = $(".sr-page-heading h1"); if (heading) heading.textContent = "Inicio";
-    const subtitle = $(".sr-page-heading p"); if (subtitle) subtitle.textContent = "Resumen ejecutivo y operación territorial";
-    bindHome();
+    const subtitle = $(".sr-page-heading p"); if (subtitle) subtitle.textContent = "Supervisión y resumen para decisión";
+    bindScope("inicio");
+    return true;
+  }
+
+  function enhanceTerritory() {
+    if (currentRoute() !== "dashboard") return false;
+    const content = $("#content");
+    if (!content) return false;
+    if (content.dataset.v1Operational === VERSION && content.querySelector(".v1-territory-intro") && content.querySelector(".v1-territory-grid")) return true;
+    content.className = "sr-content v1-operational-territory";
+    content.innerHTML = buildTerritory();
+    content.dataset.v1Operational = VERSION;
+    const heading = $(".sr-page-heading h1"); if (heading) heading.textContent = "Territorio";
+    const subtitle = $(".sr-page-heading p"); if (subtitle) subtitle.textContent = "Ficha territorial integrada y expediente técnico";
+    bindScope("dashboard");
+    return true;
+  }
+
+  function enhanceCurrentView() {
+    return enhanceHome() || enhanceTerritory();
   }
 
   function apply() {
@@ -253,7 +330,7 @@
     decorateBrand();
     ensureFlatNavigation();
     buildAnalystLauncher();
-    enhanceHome();
+    enhanceCurrentView();
   }
 
   function schedule() {
@@ -280,7 +357,8 @@
 
   window.SmartRiskDesktopExtension = {
     VERSION,
-    reference: "V1.0.0-piloto-estable + RC16.3-mobile-contract",
+    reference: "V1-fusion-approved-20260825 + RC16.3-mobile-contract",
+    approvedBaseline: "754ef8ffea70812ea493c9f75dc48608e2953af9",
     preservesRoutes: true,
     preservesPermissions: true,
     preservesDataContracts: true
