@@ -1,8 +1,9 @@
 (() => {
   "use strict";
 
-  const VERSION = "2026.08.25.2";
+  const VERSION = "2026.08.25.3";
   const compactMedia = window.matchMedia("(max-width: 900px)");
+  const coarsePointerMedia = window.matchMedia("(pointer: coarse)");
   let scheduled = false;
 
   const $ = (selector, root = document) => root.querySelector(selector);
@@ -17,10 +18,18 @@
     return false;
   }
 
+  function compactTouchSignal() {
+    if (!compactMedia.matches) return false;
+    if (coarsePointerMedia.matches) return true;
+    if (Number(navigator.maxTouchPoints || 0) > 0) return true;
+    return false;
+  }
+
   function isActualSmartDevice() {
     if (explicitMode === "desktop") return false;
     if (explicitMode === "smart") return true;
-    return mobileBrowserSignal() && compactMedia.matches;
+    if (!compactMedia.matches) return false;
+    return mobileBrowserSignal() || compactTouchSignal();
   }
 
   function isV11() {
@@ -177,7 +186,9 @@
   });
 
   compactMedia.addEventListener?.("change", schedule);
+  coarsePointerMedia.addEventListener?.("change", schedule);
   window.addEventListener("resize", schedule);
+  window.addEventListener("orientationchange", schedule);
   window.addEventListener("hashchange", schedule);
   new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
   schedule();
@@ -186,6 +197,8 @@
     VERSION,
     mode,
     isSmart: isActualSmartDevice,
-    mobileBrowserSignal
+    mobileBrowserSignal,
+    compactTouchSignal,
+    explicitMode
   };
 })();
