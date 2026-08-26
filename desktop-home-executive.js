@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const VERSION = "2026.08.26.1";
+  const VERSION = "2026.08.26.2";
   const SITE_PATH = /sitio\s*critico|punto\s*critico|sector\s*critico/i;
   const SITE_LANGUAGE = /\b(punto\s+critico|sitio\s+critico|sector|recinto|rcto\.?|barrio|ciudadela|cdla\.?|parroquia|rio|estero|quebrada|canal|alcantarill|puente|mercado|cauce|talud|deslizamiento|socav|desbord|inundacion)\b/i;
   const NON_SITE_REFERENCE = /^(no[_\s-]*encontrad[oa]|sin[_\s-]*sitio|ningun[oa]?|ninguno|n\/a|na|null|undefined)$/i;
@@ -193,17 +193,16 @@
     const eyebrow = lead.querySelector(".v1-eyebrow");
     const title = lead.querySelector("h3");
     const detail = lead.querySelector("p");
-    if (eyebrow) eyebrow.textContent = "Pregunta ejecutiva";
-    if (title) title.textContent = "De los sitios reportados, ¿cuáles tienen una acción verificable y cuáles siguen pendientes?";
-    if (detail) detail.textContent = "Sitio → acción → seguimiento → evidencia.";
+    if (eyebrow && eyebrow.textContent !== "Pregunta ejecutiva") eyebrow.textContent = "Pregunta ejecutiva";
+    const question = "De los sitios reportados, ¿cuáles tienen una acción verificable y cuáles siguen pendientes?";
+    if (title && title.textContent !== question) title.textContent = question;
+    if (detail && detail.textContent !== "Sitio → acción → seguimiento → evidencia.") detail.textContent = "Sitio → acción → seguimiento → evidencia.";
     lead.querySelector("button")?.remove();
   }
 
-  function updateCards(content) {
+  function updateCards(content, sites, f07) {
     const cards = content.querySelector(".v1-ref-cards");
     if (!cards) return;
-    const sites = consolidatedSiteMetrics();
-    const f07 = f07Metrics();
     cards.innerHTML = `
       <article class="v1-ref-card v1-exec-card" data-exec-kpi="sites"><span>Sitios consolidados</span><strong>${sites.consolidated}</strong><small>+${sites.pendingReferences} referencias F07 por homologar</small><button data-v1-route="riesgos">Ver sitios →</button></article>
       <article class="v1-ref-card v1-exec-card" data-exec-kpi="linked"><span>Sitios con acción vinculada</span><strong>${f07.linkedSites}</strong><small>${f07.linkedActions} acciones vinculadas estructuradamente</small><button data-v1-route="acciones">Ver acciones →</button></article>
@@ -219,10 +218,17 @@
     if (!isDesktop() || currentRoute() !== "inicio") return;
     const content = document.querySelector("#content.v1-baseline-contract.v1-operational-home");
     if (!content || !content.querySelector(".v1-ref-cards")) return;
+    const sites = consolidatedSiteMetrics();
+    const f07 = f07Metrics();
+    const filters = appState().filters || {};
+    const signature = [VERSION, norm(filters.provincia), norm(filters.canton), sites.consolidated, sites.pendingReferences, f07.followups, f07.linkedActions, f07.linkedSites, f07.evidenceAttached].join("|");
+    if (content.dataset.executiveHomeSignature === signature) return;
+
     correctScopeSelectors(content);
     updateQuestion(content);
-    updateCards(content);
+    updateCards(content, sites, f07);
     content.dataset.executiveHome = VERSION;
+    content.dataset.executiveHomeSignature = signature;
   }
 
   function schedule() {
