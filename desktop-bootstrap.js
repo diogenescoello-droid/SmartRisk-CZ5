@@ -1,16 +1,15 @@
 (() => {
   "use strict";
 
-  const VERSION = "2026.08.27.5";
-  const STYLE_VERSION = "2026.08.27.5";
-  const SCRIPT_VERSION = "2026.08.27.5";
+  const VERSION = "2026.08.27.6";
+  const STYLE_VERSION = "2026.08.27.6";
+  const SCRIPT_VERSION = "2026.08.27.6";
   let started = false;
   let attempts = 0;
   const MAX_ATTEMPTS = 160;
 
   function isDesktop() {
-    if (window.SmartRiskDeviceMode?.isSmart) return window.SmartRiskDeviceMode.isSmart() !== true;
-    return document.documentElement.dataset.smartRiskDevice !== "smart";
+    return window.SmartRiskDeviceMode?.isSmart ? window.SmartRiskDeviceMode.isSmart() !== true : document.documentElement.dataset.smartRiskDevice !== "smart";
   }
 
   function ready() {
@@ -55,6 +54,7 @@
       await loadStyle("desktop-home-plan-context.css");
       await loadStyle("desktop-home-audit-context.css");
       await loadStyle("desktop-documentary-actions.css");
+      await loadStyle("desktop-home-decision-kpis.css");
       await loadScript("enos-gad-review-context.js");
       await loadScript("desktop-extension.js");
       await loadScript("desktop-v1-home-reconcile.js");
@@ -63,6 +63,7 @@
       await loadScript("desktop-home-plan-context.js");
       await loadScript("desktop-home-audit-context.js");
       await loadScript("desktop-documentary-actions.js");
+      await loadScript("desktop-home-decision-kpis.js");
       document.body.classList.add("sr-v1-desktop-operational");
       window.dispatchEvent(new CustomEvent("smartrisk:desktop-reference-ready", {
         detail: { version: VERSION, reference: "SmartRisk CZ5 · escritorio operativo con contexto documental territorial" }
