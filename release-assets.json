@@ -28,6 +28,8 @@
     "desktop-documentary-actions.js",
     "user-facing-cleanup.js",
     "enos-gad-review-context.js",
+    "enos-georef-data.js",
+    "enos-georef-layer.js",
     "firebase-config.js",
     "release-config.js",
     "access-role-catalog.js",
