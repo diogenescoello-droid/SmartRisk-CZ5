@@ -1,9 +1,9 @@
 (() => {
   "use strict";
 
-  const VERSION = "2026.08.26.4";
-  const STYLE_VERSION = "2026.08.26.2";
-  const SCRIPT_VERSION = "2026.08.26.4";
+  const VERSION = "2026.08.27.1";
+  const STYLE_VERSION = "2026.08.27.1";
+  const SCRIPT_VERSION = "2026.08.27.1";
   let started = false;
   let attempts = 0;
   const MAX_ATTEMPTS = 160;
@@ -57,15 +57,17 @@
       await loadStyle("desktop-green-theme.css");
       await loadStyle("desktop-v1-baseline-lock.css");
       await loadStyle("desktop-home-executive.css");
+      await loadStyle("desktop-home-plan-context.css");
       await loadScript("desktop-extension.js");
       await loadScript("desktop-v1-home-reconcile.js");
       await loadScript("desktop-v1-baseline-lock.js");
       await loadScript("desktop-home-executive.js");
+      await loadScript("desktop-home-plan-context.js");
       document.body.classList.add("sr-v1-desktop-operational");
       window.dispatchEvent(new CustomEvent("smartrisk:desktop-reference-ready", {
         detail: {
           version: VERSION,
-          reference: "V1 + Smart móvil · baseline 754ef8ff · inicio ejecutivo compacto"
+          reference: "V1 + Smart móvil · baseline 754ef8ff · inicio ejecutivo con contexto documental"
         }
       }));
       return true;
@@ -93,7 +95,7 @@
 
   window.SmartRiskDesktopBootstrap = {
     VERSION,
-    reference: "V1 + Smart móvil · baseline 754ef8ff · inicio ejecutivo compacto",
+    reference: "V1 + Smart móvil · baseline 754ef8ff · inicio ejecutivo con contexto documental",
     start,
     isDesktop
   };
