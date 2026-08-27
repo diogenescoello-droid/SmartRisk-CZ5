@@ -1,9 +1,9 @@
 (() => {
   "use strict";
 
-  const VERSION = "2026.08.27.3";
-  const STYLE_VERSION = "2026.08.27.3";
-  const SCRIPT_VERSION = "2026.08.27.3";
+  const VERSION = "2026.08.27.4";
+  const STYLE_VERSION = "2026.08.27.4";
+  const SCRIPT_VERSION = "2026.08.27.4";
   let started = false;
   let attempts = 0;
   const MAX_ATTEMPTS = 160;
@@ -71,7 +71,7 @@
       window.dispatchEvent(new CustomEvent("smartrisk:desktop-reference-ready", {
         detail: {
           version: VERSION,
-          reference: "V1 + Smart móvil · baseline 754ef8ff · inicio ejecutivo con contexto documental, auditoría contextual y acciones documentales trazables"
+          reference: "SmartRisk CZ5 · escritorio operativo con contexto documental territorial"
         }
       }));
       return true;
@@ -99,7 +99,7 @@
 
   window.SmartRiskDesktopBootstrap = {
     VERSION,
-    reference: "V1 + Smart móvil · baseline 754ef8ff · inicio ejecutivo con contexto documental, auditoría contextual y acciones documentales trazables",
+    reference: "SmartRisk CZ5 · escritorio operativo con contexto documental territorial",
     start,
     isDesktop
   };
