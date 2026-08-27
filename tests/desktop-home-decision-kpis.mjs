@@ -8,7 +8,7 @@ const expect = (condition, message) => { if (!condition) throw new Error(`Decisi
 const js = read("desktop-home-decision-kpis.js");
 const css = read("desktop-home-decision-kpis.css");
 const bootstrap = read("desktop-bootstrap.js");
-const assets = JSON.parse(read("release-assets.json"));
+const assets = JSON.parse(fs.readFileSync(path.resolve("release-assets.json"), "utf8"));
 
 for (const phrase of [
   "Sitios / territorios identificados",
