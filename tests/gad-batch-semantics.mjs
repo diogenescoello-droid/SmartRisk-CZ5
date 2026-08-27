@@ -113,4 +113,14 @@ const totals = audited.reduce((acc,item) => {
   return acc;
 }, {f07:0,linkedActions:0,linkedSites:0,evidence:0,issues:{}});
 console.log(`\nTOTAL AUDITADO: ${JSON.stringify(totals)}`);
+
+const unmatched = followups.filter(item => !rows.some(row => matchesRow(item, row)));
+console.log(`F07 SIN EXPEDIENTE HOMOLOGADO: ${unmatched.length}`);
+unmatched.forEach(item => console.log(JSON.stringify({
+  id:item.id, sourceId:item.sourceId, level:item.level, province:item.province, canton:item.canton,
+  actionLinkState:item.actionLinkState, actionReference:item.actionReference,
+  siteLinkState:item.siteLinkState, siteReference:item.siteReference,
+  evidence:Boolean(item.evidenceUrl), reportedAt:item.reportedAt
+})));
+
 console.log("PASS auditoría semántica por bloques: 56 expedientes procesados");
