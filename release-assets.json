@@ -24,6 +24,7 @@
     "desktop-documentary-actions.css",
     "desktop-documentary-actions.js",
     "user-facing-cleanup.js",
+    "enos-gad-review-context.js",
     "firebase-config.js",
     "release-config.js",
     "access-role-catalog.js",
