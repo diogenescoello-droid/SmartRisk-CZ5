@@ -1,0 +1,35 @@
+import fs from "node:fs";
+import path from "node:path";
+import vm from "node:vm";
+
+const dist = path.resolve(process.argv[2] || "dist");
+const file = path.join(dist, "enos-gad-review-context.js");
+const expect = (condition, message) => { if (!condition) throw new Error(`GAD master context: ${message}`); };
+const sandbox = { window: {}, Object };
+vm.runInNewContext(fs.readFileSync(file, "utf8"), sandbox, { filename:file });
+const ctx = sandbox.window.SMART_RISK_GAD_REVIEW_CONTEXT;
+expect(Boolean(ctx), "no se publicó SMART_RISK_GAD_REVIEW_CONTEXT");
+expect(ctx.rows.length === 56, `se esperaban 56 contextos y se encontraron ${ctx.rows.length}`);
+expect(JSON.stringify(Array.from(ctx.batches, batch => batch.length)) === JSON.stringify([10,10,10,10,10,6]), "bloques distintos de 10+10+10+10+10+6");
+const nums = ctx.rows.map(row=>Number(row.n)).sort((a,b)=>a-b);
+expect(nums.every((value,index)=>value===index+1), "numeración 1–56 incompleta o duplicada");
+const norm = value => String(value||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-zA-Z0-9]+/g," ").trim().toLowerCase();
+const keys = new Set();
+ctx.rows.forEach(row => {
+  expect(Boolean(row.gad && row.province && row.source && row.universe && row.outcome && row.priority && row.next), `contexto incompleto en GAD ${row.n}`);
+  if (row.score !== null) expect(Number.isFinite(Number(row.score)) && Number(row.score)>=0 && Number(row.score)<=100, `score fuera de rango en GAD ${row.n}`);
+  const key = `${norm(row.province)}|${norm(row.canton)}|${norm(row.gad)}`;
+  expect(!keys.has(key), `contexto duplicado ${key}`);
+  keys.add(key);
+});
+const caluma = ctx.find("Bolívar","Caluma");
+expect(Boolean(caluma), "Caluma no resuelve por provincia/cantón");
+expect(Number(caluma.score) === 48.21, `Caluma debe usar 48.21% normalizado y usa ${caluma.score}`);
+expect(Number(caluma.historicalScore) === 88, "Caluma debe conservar 88/100 solo como antecedente");
+expect(caluma.format === "Modelo CZ5 adaptado", "Caluma perdió clasificación documental verificada");
+expect(ctx.scope("Guayas","").length === 26, `Guayas debe incluir Prefectura + 25 cantones y devuelve ${ctx.scope("Guayas","").length}`);
+expect(ctx.scope("Bolívar","").length === 10, `Bolívar debe incluir Prefectura + 9 cantones y devuelve ${ctx.scope("Bolívar","").length}`);
+expect(ctx.scope("Santa Elena","").length === 4, `Santa Elena debe incluir Prefectura + 3 cantones y devuelve ${ctx.scope("Santa Elena","").length}`);
+expect(ctx.scope("Los Ríos","").length === 14, `Los Ríos debe incluir Prefectura + 13 cantones y devuelve ${ctx.scope("Los Ríos","").length}`);
+expect(ctx.scope("Galápagos","").length === 4, `Galápagos debe incluir CGREG + 3 cantones y devuelve ${ctx.scope("Galápagos","").length}`);
+console.log("PASS master review context: 56 expedientes · 5 provincias/regímenes · bloques 10+10+10+10+10+6");
