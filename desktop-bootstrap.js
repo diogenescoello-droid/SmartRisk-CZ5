@@ -1,9 +1,9 @@
 (() => {
   "use strict";
 
-  const VERSION = "2026.08.27.4";
-  const STYLE_VERSION = "2026.08.27.4";
-  const SCRIPT_VERSION = "2026.08.27.4";
+  const VERSION = "2026.08.27.5";
+  const STYLE_VERSION = "2026.08.27.5";
+  const SCRIPT_VERSION = "2026.08.27.5";
   let started = false;
   let attempts = 0;
   const MAX_ATTEMPTS = 160;
@@ -14,17 +14,12 @@
   }
 
   function ready() {
-    return Boolean(
-      isDesktop() &&
-      document.body.classList.contains("v11-enabled") &&
-      document.querySelector("#app.v11-shell #nav")
-    );
+    return Boolean(isDesktop() && document.body.classList.contains("v11-enabled") && document.querySelector("#app.v11-shell #nav"));
   }
 
   function loadStyle(href) {
     return new Promise((resolve, reject) => {
-      const old = document.querySelector(`link[data-desktop-late-style='${href}']`);
-      if (old) old.remove();
+      document.querySelector(`link[data-desktop-late-style='${href}']`)?.remove();
       const link = document.createElement("link");
       link.rel = "stylesheet";
       link.href = `${href}?v=${STYLE_VERSION}`;
@@ -60,6 +55,7 @@
       await loadStyle("desktop-home-plan-context.css");
       await loadStyle("desktop-home-audit-context.css");
       await loadStyle("desktop-documentary-actions.css");
+      await loadScript("enos-gad-review-context.js");
       await loadScript("desktop-extension.js");
       await loadScript("desktop-v1-home-reconcile.js");
       await loadScript("desktop-v1-baseline-lock.js");
@@ -69,10 +65,7 @@
       await loadScript("desktop-documentary-actions.js");
       document.body.classList.add("sr-v1-desktop-operational");
       window.dispatchEvent(new CustomEvent("smartrisk:desktop-reference-ready", {
-        detail: {
-          version: VERSION,
-          reference: "SmartRisk CZ5 · escritorio operativo con contexto documental territorial"
-        }
+        detail: { version: VERSION, reference: "SmartRisk CZ5 · escritorio operativo con contexto documental territorial" }
       }));
       return true;
     } catch (error) {
@@ -84,10 +77,7 @@
 
   function probe() {
     if (started || !isDesktop()) return;
-    if (ready()) {
-      start();
-      return;
-    }
+    if (ready()) { start(); return; }
     if (attempts++ >= MAX_ATTEMPTS) return;
     setTimeout(probe, 125);
   }
@@ -97,10 +87,5 @@
   new MutationObserver(probe).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
   probe();
 
-  window.SmartRiskDesktopBootstrap = {
-    VERSION,
-    reference: "SmartRisk CZ5 · escritorio operativo con contexto documental territorial",
-    start,
-    isDesktop
-  };
+  window.SmartRiskDesktopBootstrap = { VERSION, reference: "SmartRisk CZ5 · escritorio operativo con contexto documental territorial", start, isDesktop };
 })();
