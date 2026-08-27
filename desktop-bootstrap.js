@@ -1,9 +1,9 @@
 (() => {
   "use strict";
 
-  const VERSION = "2026.08.27.7";
-  const STYLE_VERSION = "2026.08.27.7";
-  const SCRIPT_VERSION = "2026.08.27.7";
+  const VERSION = "2026.08.27.8";
+  const STYLE_VERSION = "2026.08.27.8";
+  const SCRIPT_VERSION = "2026.08.27.8";
   let started = false;
   let attempts = 0;
   const MAX_ATTEMPTS = 160;
@@ -55,6 +55,7 @@
       await loadStyle("desktop-home-audit-context.css");
       await loadStyle("desktop-documentary-actions.css");
       await loadStyle("desktop-home-decision-kpis.css");
+      await loadStyle("desktop-home-documentary-footprint-56.css");
       await loadScript("enos-gad-review-context.js");
       await loadScript("desktop-extension.js");
       await loadScript("desktop-v1-home-reconcile.js");
@@ -65,9 +66,10 @@
       await loadScript("desktop-documentary-actions.js");
       await loadScript("desktop-home-decision-kpis.js");
       await loadScript("desktop-home-budget-context-56.js");
+      await loadScript("desktop-home-documentary-footprint-56.js");
       document.body.classList.add("sr-v1-desktop-operational");
       window.dispatchEvent(new CustomEvent("smartrisk:desktop-reference-ready", {
-        detail: { version: VERSION, reference: "SmartRisk CZ5 · escritorio operativo con contexto documental territorial" }
+        detail: { version: VERSION, reference: "SmartRisk CZ5 · escritorio operativo con huella documental y calidad de trazabilidad" }
       }));
       return true;
     } catch (error) {
@@ -89,5 +91,5 @@
   new MutationObserver(probe).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
   probe();
 
-  window.SmartRiskDesktopBootstrap = { VERSION, reference: "SmartRisk CZ5 · escritorio operativo con contexto documental territorial", start, isDesktop };
+  window.SmartRiskDesktopBootstrap = { VERSION, reference: "SmartRisk CZ5 · escritorio operativo con huella documental y calidad de trazabilidad", start, isDesktop };
 })();
