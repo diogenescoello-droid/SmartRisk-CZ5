@@ -3,11 +3,11 @@
   "projectId": "smartrisk-cz5-produccion",
   "channel": "live",
   "url": "https://smartrisk-cz5-produccion.web.app/",
-  "sourceCommit": "47628251ef03822014b1a81387ae545c19d582fe",
-  "checkedAt": "2026-08-27T18:59:18.791Z",
-  "validation": "success",
-  "deployment": "success",
+  "sourceCommit": "9e80945c433c3272f7ce8a5b489c74eb0bbb1cd8",
+  "checkedAt": "2026-08-27T20:13:57.898Z",
+  "validation": "failure",
+  "deployment": "skipped",
   "firestoreRulesRequired": false,
   "firestoreRules": "not-required",
-  "status": "deployed"
+  "status": "failed"
 }
