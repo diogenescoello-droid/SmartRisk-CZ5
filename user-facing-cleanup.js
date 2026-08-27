@@ -1,19 +1,32 @@
 (() => {
   "use strict";
 
-  const VERSION = "2026.08.27.1";
+  const VERSION = "2026.08.27.2";
+  const CANTON_ALIASES = Object.freeze({
+    "jujan":"alfredo baquerizo moreno",
+    "alfredo baquerizo moreno jujan":"alfredo baquerizo moreno",
+    "general antonio elizalde":"general antonio elizalde bucay",
+    "general antonio elizalde bucay":"general antonio elizalde bucay",
+    "bucay":"general antonio elizalde bucay",
+    "coronel marcelino mariduena":"marcelino mariduena",
+    "marcelino mariduena":"marcelino mariduena",
+    "san jacinto de yaguachi":"yaguachi",
+    "yaguachi":"yaguachi",
+    "san miguel":"san miguel de bolivar",
+    "san miguel de bolivar":"san miguel de bolivar"
+  });
   let scheduled = false;
   let observer = null;
 
   const norm = value => String(value || "")
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-zA-Z0-9]+/g, " ")
     .trim()
     .toLowerCase();
+  const cantonKey = value => CANTON_ALIASES[norm(value)] || norm(value);
 
-  function appState() {
-    return window.SmartRiskV11App?.state || {};
-  }
+  function appState() { return window.SmartRiskV11App?.state || {}; }
 
   function currentScopeLabel() {
     const state = appState();
@@ -27,8 +40,12 @@
     const state = appState();
     const filters = state.filters || {};
     return (state.data?.records || []).filter(record => {
-      if (filters.provincia && norm(record?.provincia) !== norm(filters.provincia)) return false;
-      if (filters.canton && norm(record?.canton) !== norm(filters.canton)) return false;
+      const level = norm(record?.level ?? record?.nivel ?? record?.payload?.level ?? record?.payload?.nivel ?? "");
+      if (/zonal|nacional|institucional/.test(level)) return false;
+      const province = record?.provincia ?? record?.province ?? record?.payload?.provincia ?? record?.payload?.province ?? "";
+      const canton = record?.canton ?? record?.territory ?? record?.payload?.canton ?? record?.payload?.territory ?? "";
+      if (filters.provincia && norm(province) !== norm(filters.provincia)) return false;
+      if (filters.canton && cantonKey(canton) !== cantonKey(filters.canton)) return false;
       if (filters.evento) {
         const eventText = norm(`${record?.evento || ""} ${record?.payload?.tema || ""} ${record?.payload?.problema || ""}`);
         if (eventText && !eventText.includes(norm(filters.evento))) return false;
@@ -54,7 +71,6 @@
   function contextualizeAuditDrawer() {
     const drawer = document.querySelector("#sr10AuditDrawer");
     if (!drawer) return;
-
     const state = appState();
     const records = scopedRecords();
     const structured = records.filter(record => !record?.virtual && !record?.normalizedFromPlan);
@@ -100,7 +116,6 @@
         score.title = "Completitud de campos mínimos en los registros disponibles";
       }
     });
-
     drawer.dataset.userFacingCleanup = VERSION;
   }
 
@@ -121,12 +136,8 @@
   function scrubConstructionLabels(root = document.body) {
     if (!root) return;
     document.title = "SmartRisk CZ5 · Gestión territorial";
-
     const brandSubtitle = document.querySelector("#app aside .brand span");
-    if (brandSubtitle && brandSubtitle.textContent !== "Gestión territorial de riesgos · Zona 5") {
-      brandSubtitle.textContent = "Gestión territorial de riesgos · Zona 5";
-    }
-
+    if (brandSubtitle && brandSubtitle.textContent !== "Gestión territorial de riesgos · Zona 5") brandSubtitle.textContent = "Gestión territorial de riesgos · Zona 5";
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
     const nodes = [];
     while (walker.nextNode()) nodes.push(walker.currentNode);
@@ -138,31 +149,16 @@
     });
   }
 
-  function apply() {
-    scheduled = false;
-    scrubConstructionLabels();
-    contextualizeAuditDrawer();
-  }
-
-  function schedule() {
-    if (scheduled) return;
-    scheduled = true;
-    requestAnimationFrame(apply);
-  }
-
+  function apply() { scheduled = false; scrubConstructionLabels(); contextualizeAuditDrawer(); }
+  function schedule() { if (scheduled) return; scheduled = true; requestAnimationFrame(apply); }
   function start() {
     if (observer) return;
     observer = new MutationObserver(schedule);
     observer.observe(document.body, { childList: true, subtree: true, characterData: true });
     window.addEventListener("hashchange", () => setTimeout(schedule, 30));
     window.addEventListener("smartrisk:desktop-reference-ready", schedule);
-    setTimeout(schedule, 0);
-    setTimeout(schedule, 150);
-    setTimeout(schedule, 500);
+    setTimeout(schedule, 0); setTimeout(schedule, 150); setTimeout(schedule, 500);
   }
-
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start, { once: true });
-  else start();
-
-  window.SmartRiskUserFacingCleanup = { VERSION, apply, contextualizeAuditDrawer };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start, { once: true }); else start();
+  window.SmartRiskUserFacingCleanup = { VERSION, apply, contextualizeAuditDrawer, cantonKey };
 })();
