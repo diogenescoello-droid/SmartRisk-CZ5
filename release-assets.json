@@ -23,6 +23,7 @@
     "desktop-home-audit-context.js",
     "desktop-documentary-actions.css",
     "desktop-documentary-actions.js",
+    "user-facing-cleanup.js",
     "firebase-config.js",
     "release-config.js",
     "access-role-catalog.js",
