@@ -17,6 +17,8 @@
     "desktop-v1-baseline-lock.js",
     "desktop-home-executive.css",
     "desktop-home-executive.js",
+    "desktop-home-plan-context.css",
+    "desktop-home-plan-context.js",
     "firebase-config.js",
     "release-config.js",
     "access-role-catalog.js",
