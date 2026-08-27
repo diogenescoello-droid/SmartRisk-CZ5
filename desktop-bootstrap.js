@@ -1,9 +1,9 @@
 (() => {
   "use strict";
 
-  const VERSION = "2026.08.27.6";
-  const STYLE_VERSION = "2026.08.27.6";
-  const SCRIPT_VERSION = "2026.08.27.6";
+  const VERSION = "2026.08.27.7";
+  const STYLE_VERSION = "2026.08.27.7";
+  const SCRIPT_VERSION = "2026.08.27.7";
   let started = false;
   let attempts = 0;
   const MAX_ATTEMPTS = 160;
@@ -64,6 +64,7 @@
       await loadScript("desktop-home-audit-context.js");
       await loadScript("desktop-documentary-actions.js");
       await loadScript("desktop-home-decision-kpis.js");
+      await loadScript("desktop-home-budget-context-56.js");
       document.body.classList.add("sr-v1-desktop-operational");
       window.dispatchEvent(new CustomEvent("smartrisk:desktop-reference-ready", {
         detail: { version: VERSION, reference: "SmartRisk CZ5 · escritorio operativo con contexto documental territorial" }
