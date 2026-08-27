@@ -1,10 +1,23 @@
 (() => {
   "use strict";
 
-  const VERSION = "2026.08.26.2";
+  const VERSION = "2026.08.27.3";
   const SITE_PATH = /sitio\s*critico|punto\s*critico|sector\s*critico/i;
   const SITE_LANGUAGE = /\b(punto\s+critico|sitio\s+critico|sector|recinto|rcto\.?|barrio|ciudadela|cdla\.?|parroquia|rio|estero|quebrada|canal|alcantarill|puente|mercado|cauce|talud|deslizamiento|socav|desbord|inundacion)\b/i;
   const NON_SITE_REFERENCE = /^(no[_\s-]*encontrad[oa]|sin[_\s-]*sitio|ningun[oa]?|ninguno|n\/a|na|null|undefined)$/i;
+  const CANTON_ALIASES = Object.freeze({
+    "jujan":"alfredo baquerizo moreno",
+    "alfredo baquerizo moreno jujan":"alfredo baquerizo moreno",
+    "general antonio elizalde":"general antonio elizalde bucay",
+    "general antonio elizalde bucay":"general antonio elizalde bucay",
+    "bucay":"general antonio elizalde bucay",
+    "coronel marcelino mariduena":"marcelino mariduena",
+    "marcelino mariduena":"marcelino mariduena",
+    "san jacinto de yaguachi":"yaguachi",
+    "yaguachi":"yaguachi",
+    "san miguel":"san miguel de bolivar",
+    "san miguel de bolivar":"san miguel de bolivar"
+  });
   let scheduled = false;
   let observer = null;
 
@@ -14,6 +27,7 @@
     .replace(/[^a-zA-Z0-9]+/g, " ")
     .trim()
     .toLowerCase();
+  const cantonKey = value => CANTON_ALIASES[norm(value)] || norm(value);
 
   function isDesktop() {
     if (window.SmartRiskDeviceMode?.isSmart) return window.SmartRiskDeviceMode.isSmart() !== true;
@@ -31,7 +45,7 @@
   function scopeOf(item) {
     return {
       province: item?.provincia ?? item?.province ?? item?.payload?.provincia ?? item?.payload?.province ?? "",
-      canton: item?.canton ?? item?.payload?.canton ?? "",
+      canton: item?.canton ?? item?.territory ?? item?.payload?.canton ?? item?.payload?.territory ?? "",
       level: item?.level ?? item?.nivel ?? item?.payload?.level ?? item?.payload?.nivel ?? ""
     };
   }
@@ -39,7 +53,7 @@
   function isProvincialOrCantonal(item) {
     const scope = scopeOf(item);
     const level = norm(scope.level);
-    if (level && /zonal|nacional|institucional|regimen especial/.test(level)) return false;
+    if (level && /zonal|nacional|institucional/.test(level)) return false;
     return Boolean(scope.province);
   }
 
@@ -48,7 +62,7 @@
     const filters = appState().filters || {};
     const scope = scopeOf(item);
     if (filters.provincia && norm(scope.province) !== norm(filters.provincia)) return false;
-    if (filters.canton && norm(scope.canton) !== norm(filters.canton)) return false;
+    if (filters.canton && cantonKey(scope.canton) !== cantonKey(filters.canton)) return false;
     return true;
   }
 
@@ -88,7 +102,7 @@
   }
 
   function candidateIdentity(candidate) {
-    return { location: `${norm(candidate.province)}|${norm(candidate.canton)}`, label: norm(candidate.label) };
+    return { location: `${norm(candidate.province)}|${cantonKey(candidate.canton)}`, label: norm(candidate.label) };
   }
 
   function labelsOverlap(left, right) {
@@ -160,8 +174,8 @@
     const followups = Array.isArray(window.SMART_RISK_F07_CURRENT?.followups) ? window.SMART_RISK_F07_CURRENT.followups.filter(matchesCurrentScope) : [];
     return {
       followups: followups.length,
-      linkedActions: followups.filter(item => item.actionLinkState === "Vinculada").length,
-      linkedSites: followups.filter(item => item.siteLinkState === "Vinculado").length,
+      linkedActions: followups.filter(item => norm(item.actionLinkState) === "vinculada").length,
+      linkedSites: followups.filter(item => norm(item.siteLinkState) === "vinculado").length,
       evidenceAttached: followups.filter(item => Boolean(item.evidenceUrl)).length
     };
   }
@@ -171,7 +185,6 @@
     const province = content.querySelector("#v1Province");
     const canton = content.querySelector("#v1Canton");
     if (!level || !province || !canton) return;
-
     if (level.value === "zona") {
       if (province.options.length !== 1 || province.options[0]?.value !== "") province.innerHTML = '<option value="">Todas las provincias</option>';
       if (canton.options.length !== 1 || canton.options[0]?.value !== "") canton.innerHTML = '<option value="">Todos los cantones</option>';
@@ -208,7 +221,6 @@
       <article class="v1-ref-card v1-exec-card" data-exec-kpi="linked"><span>Sitios con acción vinculada</span><strong>${f07.linkedSites}</strong><small>${f07.linkedActions} acciones vinculadas estructuradamente</small><button data-v1-route="acciones">Ver acciones →</button></article>
       <article class="v1-ref-card v1-exec-card" data-exec-kpi="followups"><span>Seguimientos reportados</span><strong>${f07.followups}</strong><small>Registros F07 dentro del alcance seleccionado</small><button data-v1-route="acciones">Ver seguimiento →</button></article>
       <article class="v1-ref-card v1-exec-card" data-exec-kpi="evidence"><span>Evidencia disponible</span><strong>${f07.evidenceAttached}</strong><small>Adjuntos accesibles y verificables en F07</small><button data-v1-route="monitoreo">Ver evidencia →</button></article>`;
-
     const source = content.querySelector(".v1-ref-source-note");
     if (source) source.innerHTML = `<b>Lectura ejecutiva:</b> ${sites.consolidated} sitios consolidados · ${f07.linkedSites} con vinculación a sitio · ${f07.linkedActions} acciones vinculadas · ${f07.evidenceAttached} evidencias · ${f07.followups} seguimientos. Las ${sites.pendingReferences} referencias F07 por homologar no se suman a los sitios consolidados.`;
   }
@@ -221,9 +233,8 @@
     const sites = consolidatedSiteMetrics();
     const f07 = f07Metrics();
     const filters = appState().filters || {};
-    const signature = [VERSION, norm(filters.provincia), norm(filters.canton), sites.consolidated, sites.pendingReferences, f07.followups, f07.linkedActions, f07.linkedSites, f07.evidenceAttached].join("|");
+    const signature = [VERSION, norm(filters.provincia), cantonKey(filters.canton), sites.consolidated, sites.pendingReferences, f07.followups, f07.linkedActions, f07.linkedSites, f07.evidenceAttached].join("|");
     if (content.dataset.executiveHomeSignature === signature) return;
-
     correctScopeSelectors(content);
     updateQuestion(content);
     updateCards(content, sites, f07);
@@ -231,25 +242,15 @@
     content.dataset.executiveHomeSignature = signature;
   }
 
-  function schedule() {
-    if (scheduled) return;
-    scheduled = true;
-    requestAnimationFrame(apply);
-  }
-
+  function schedule() { if (scheduled) return; scheduled = true; requestAnimationFrame(apply); }
   function start() {
     if (observer) return;
     observer = new MutationObserver(schedule);
     observer.observe(document.body, { childList: true, subtree: true });
     window.addEventListener("hashchange", () => setTimeout(schedule, 30));
     window.addEventListener("smartrisk:desktop-reference-ready", schedule);
-    setTimeout(schedule, 0);
-    setTimeout(schedule, 120);
-    setTimeout(schedule, 400);
+    setTimeout(schedule, 0); setTimeout(schedule, 120); setTimeout(schedule, 400);
   }
-
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start, { once: true });
-  else start();
-
-  window.SmartRiskDesktopExecutiveHome = { VERSION, apply, consolidatedSiteMetrics, f07Metrics };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start, { once: true }); else start();
+  window.SmartRiskDesktopExecutiveHome = { VERSION, apply, consolidatedSiteMetrics, f07Metrics, cantonKey };
 })();
