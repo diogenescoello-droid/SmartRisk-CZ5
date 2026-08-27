@@ -21,6 +21,8 @@
     "desktop-home-plan-context.js",
     "desktop-home-audit-context.css",
     "desktop-home-audit-context.js",
+    "desktop-documentary-actions.css",
+    "desktop-documentary-actions.js",
     "firebase-config.js",
     "release-config.js",
     "access-role-catalog.js",
