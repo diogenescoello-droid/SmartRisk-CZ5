@@ -28,7 +28,7 @@ expect(Number(caluma.score) === 48.21, `Caluma debe usar 48.21% normalizado y us
 expect(Number(caluma.historicalScore) === 88, "Caluma debe conservar 88/100 solo como antecedente");
 expect(caluma.format === "Modelo CZ5 adaptado", "Caluma perdió clasificación documental verificada");
 expect(ctx.scope("Guayas","").length === 26, `Guayas debe incluir Prefectura + 25 cantones y devuelve ${ctx.scope("Guayas","").length}`);
-expect(ctx.scope("Bolívar","").length === 10, `Bolívar debe incluir Prefectura + 9 cantones y devuelve ${ctx.scope("Bolívar","").length}`);
+expect(ctx.scope("Bolívar","").length === 8, `Bolívar debe incluir Prefectura + 7 cantones y devuelve ${ctx.scope("Bolívar","").length}`);
 expect(ctx.scope("Santa Elena","").length === 4, `Santa Elena debe incluir Prefectura + 3 cantones y devuelve ${ctx.scope("Santa Elena","").length}`);
 expect(ctx.scope("Los Ríos","").length === 14, `Los Ríos debe incluir Prefectura + 13 cantones y devuelve ${ctx.scope("Los Ríos","").length}`);
 expect(ctx.scope("Galápagos","").length === 4, `Galápagos debe incluir CGREG + 3 cantones y devuelve ${ctx.scope("Galápagos","").length}`);
