@@ -1,0 +1,96 @@
+/* SmartRisk CZ5 · contexto documental de Inicio · 2026.08.27.1 */
+html[data-smart-risk-device="desktop"] body.v1-baseline-locked #content.v1-operational-home .v1-plan-context{
+  margin:0 0 10px;
+  padding:11px 14px 12px;
+  border:1px solid #d8e6e2;
+  border-radius:13px;
+  background:#fff;
+}
+html[data-smart-risk-device="desktop"] body.v1-baseline-locked #content.v1-operational-home .v1-plan-context-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:9px;
+}
+html[data-smart-risk-device="desktop"] body.v1-baseline-locked #content.v1-operational-home .v1-plan-context-head span{
+  display:block;
+  color:#247a5d;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.055em;
+  text-transform:uppercase;
+}
+html[data-smart-risk-device="desktop"] body.v1-baseline-locked #content.v1-operational-home .v1-plan-context-head h3{
+  margin:2px 0 0;
+  color:#172b32;
+  font-size:16px;
+  line-height:1.15;
+}
+html[data-smart-risk-device="desktop"] body.v1-baseline-locked #content.v1-operational-home .v1-plan-context-head em{
+  padding:4px 8px;
+  border-radius:999px;
+  background:#eef8f4;
+  color:#39705f;
+  font-size:10px;
+  font-style:normal;
+  font-weight:700;
+}
+html[data-smart-risk-device="desktop"] body.v1-baseline-locked #content.v1-operational-home .v1-plan-facts{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:8px;
+}
+html[data-smart-risk-device="desktop"] body.v1-baseline-locked #content.v1-operational-home .v1-plan-facts.aggregate{
+  grid-template-columns:repeat(3,minmax(0,1fr));
+}
+html[data-smart-risk-device="desktop"] body.v1-baseline-locked #content.v1-operational-home .v1-plan-fact{
+  min-width:0;
+  padding:9px 10px;
+  border:1px solid #e3ebe8;
+  border-radius:10px;
+  background:#f9fbfb;
+}
+html[data-smart-risk-device="desktop"] body.v1-baseline-locked #content.v1-operational-home .v1-plan-fact.ok{
+  border-color:#d4eadf;
+  background:#f5fbf8;
+}
+html[data-smart-risk-device="desktop"] body.v1-baseline-locked #content.v1-operational-home .v1-plan-fact.warn{
+  border-color:#eadfc9;
+  background:#fffaf1;
+}
+html[data-smart-risk-device="desktop"] body.v1-baseline-locked #content.v1-operational-home .v1-plan-fact>span{
+  display:block;
+  color:#6a7f87;
+  font-size:10px;
+  font-weight:700;
+}
+html[data-smart-risk-device="desktop"] body.v1-baseline-locked #content.v1-operational-home .v1-plan-fact>b{
+  display:block;
+  margin-top:2px;
+  color:#17343c;
+  font-size:14px;
+  line-height:1.15;
+}
+html[data-smart-risk-device="desktop"] body.v1-baseline-locked #content.v1-operational-home .v1-plan-fact>small{
+  display:block;
+  margin-top:3px;
+  color:#62757d;
+  font-size:9.5px;
+  line-height:1.3;
+}
+html[data-smart-risk-device="desktop"] body.v1-baseline-locked #content.v1-operational-home .v1-ref-card[data-data-state="missing"]>strong,
+html[data-smart-risk-device="desktop"] body.v1-baseline-locked #content.v1-operational-home .v1-ref-card[data-data-state="pending"]>strong{
+  font-size:20px!important;
+  line-height:1.1!important;
+}
+html[data-smart-risk-device="desktop"] body.v1-baseline-locked #content.v1-operational-home .v1-ref-card[data-data-state="missing"]{
+  background:#fbfcfc!important;
+}
+html[data-smart-risk-device="desktop"] body.v1-baseline-locked #content.v1-operational-home .v1-ref-card[data-data-state="pending"]{
+  background:#fffdf8!important;
+  border-color:#eadfc9!important;
+}
+@media(max-width:1180px) and (min-width:901px){
+  html[data-smart-risk-device="desktop"] body.v1-baseline-locked #content.v1-operational-home .v1-plan-facts{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
