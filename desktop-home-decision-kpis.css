@@ -1,0 +1,23 @@
+/* SmartRisk CZ5 · KPI de decisión: territorio → prioridad → acción → presupuesto · 2026.08.27.1 */
+html[data-smart-risk-device="desktop"] body.v1-baseline-locked #content.v1-baseline-contract .v1-ref-card.v1-decision-card{
+  min-height:148px!important;
+}
+html[data-smart-risk-device="desktop"] body.v1-baseline-locked #content.v1-baseline-contract .v1-ref-card.v1-decision-card>strong{
+  max-width:100%;
+  overflow-wrap:anywhere;
+}
+html[data-smart-risk-device="desktop"] body.v1-baseline-locked #content.v1-baseline-contract .v1-ref-card.v1-decision-card.is-textual>strong{
+  font-size:21px!important;
+  line-height:1.08!important;
+  letter-spacing:-.02em;
+}
+html[data-smart-risk-device="desktop"] body.v1-baseline-locked #content.v1-baseline-contract .v1-ref-card.v1-decision-card>small{
+  min-height:47px!important;
+}
+html[data-smart-risk-device="desktop"] body.v1-baseline-locked #content.v1-baseline-contract .v1-ref-card.v1-decision-card[data-decision-kpi="budget"]>strong{
+  font-variant-numeric:tabular-nums;
+}
+html[data-smart-risk-device="desktop"] body.v1-baseline-locked #content.v1-baseline-contract .v1-ref-source-note{
+  padding-top:5px!important;
+  border-top:1px solid rgba(16,44,59,.10);
+}
