@@ -145,21 +145,31 @@ expect(releaseConfig.includes(syncedAt) && releaseConfig.includes(latestSubmissi
 expect(Number(manifest.auditMilestone?.canonicalUniverse) === 56, "el manifiesto no registra el universo canónico del hito");
 expect(manifest.auditMilestone?.id === "HITO-2026-08-27-AUDITORIA-INTEGRAL", "el manifiesto no registra el hito vigente");
 
-// 10) Seguridad, bitácora y caché forman parte del cierre, no solo la presentación.
+// 10) La sincronización programada debe mantener datos y metadatos como una sola unidad.
+const syncScript = rootRead("scripts/sync-f07-public.mjs");
+const syncWorkflow = rootRead(".github/workflows/sync-f07.yml");
+expect(syncScript.includes("RELEASE_MANIFEST.json") && syncScript.includes("release-config.js"), "la sincronización F07 dejó de actualizar sus metadatos de release");
+expect(syncScript.includes("canonicalSnapshot") && syncScript.includes("sourceChanged"), "la sincronización F07 perdió el control de cambios sustantivos y podría desplegar cada sondeo sin cambios");
+expect(syncScript.includes("followupsMinimum") && syncScript.includes("latestF07SubmissionAt"), "la sincronización no actualiza conteo/corte F07 en el manifiesto");
+expect(syncWorkflow.includes("f07-current-data.js RELEASE_MANIFEST.json release-config.js"), "el workflow no detecta o registra conjuntamente datos y metadatos F07");
+expect(syncWorkflow.includes("for asset in f07-current-data.js release-config.js RELEASE_MANIFEST.json"), "el workflow no verifica los tres activos publicados en Firebase");
+expect(syncWorkflow.includes("git add f07-current-data.js RELEASE_MANIFEST.json release-config.js"), "el workflow no versiona como unidad datos y metadatos después de verificar producción");
+
+// 11) Seguridad, bitácora y caché forman parte del cierre, no solo la presentación.
 const rules = rootRead("firestore.rules");
 expect(rules.includes("match /cambios/{changeId}") && rules.includes("allow update, delete: if false;"), "la bitácora segmentada dejó de ser append-only");
 expect(/match \/plataforma\/datos[\s\S]*?allow create, update: if admin\(\);/.test(rules), "la escritura del documento global dejó de estar restringida a administrador");
 const firebase = JSON.parse(rootRead("firebase.json"));
 const noCacheSources = new Set(firebase.hosting.headers.filter(row => row.headers?.some(header => /no-cache/.test(header.value || ""))).map(row => row.source));
-for (const source of ["/release-config.js", "/desktop-bootstrap.js", "/desktop-home-audit-context.js", "/enos-gad-review-context.js", "/f07-current-data.js"]) {
+for (const source of ["/RELEASE_MANIFEST.json", "/release-config.js", "/desktop-bootstrap.js", "/desktop-home-audit-context.js", "/enos-gad-review-context.js", "/f07-current-data.js"]) {
   expect(noCacheSources.has(source), `falta no-cache en activo crítico ${source}`);
 }
 
-// 11) El hito debe dejar documentación reproducible y preservar la línea base histórica.
+// 12) El hito debe dejar documentación reproducible y preservar la línea base histórica.
 for (const file of [
   ".github/docs/BASE_METODOLOGICA_HITOS.md",
   ".github/docs/HITO_2026-08-27_AUDITORIA_INTEGRAL.md",
   "AUDITORIA_50_CORRIDAS.md"
 ]) expect(fs.existsSync(path.resolve(file)), `falta evidencia documental ${file}`);
 
-console.log("PASS HITO-2026-08-27: universo 56 protegido, 58 registros permanecen 56 GAD, atribución/semántica/corte/seguridad/caché verificados");
+console.log("PASS HITO-2026-08-27: universo 56 protegido, 58 registros permanecen 56 GAD, atribución/semántica/corte/sincronización/seguridad/caché verificados");
