@@ -45,8 +45,15 @@ ok(workflow.includes("rules_changed") && workflow.includes("deploy-firestore-rul
 ok(!workflow.includes("firebase-tools@latest deploy --only firestore:rules"), "Se elimina el despliegue CLI de reglas que dependía de Service Usage");
 ok(rulesRest.includes("firebaserules.googleapis.com") && rulesRest.includes("cloud.firestore"), "Publicador REST apunta a Firebase Rules y a la release cloud.firestore");
 ok(f07Workflow.includes("FirebaseExtended/action-hosting-deploy@v0"), "Nuevo F07 publica Firebase Hosting en el mismo workflow de sincronización");
-ok(f07Workflow.includes("cmp -s dist/f07-current-data.js"), "Sincronización F07 verifica el archivo efectivamente visible en producción");
-ok(f07Workflow.indexOf("Publicar nuevo corte F07 en Firebase Hosting") < f07Workflow.indexOf("Registrar cambio verificable después de publicar"), "F07 se publica y verifica antes de registrar el commit de sincronización");
+ok(
+  f07Workflow.includes("for asset in f07-current-data.js release-config.js RELEASE_MANIFEST.json") &&
+  f07Workflow.includes('cmp -s "dist/$asset" "$LIVE_FILE"'),
+  "Sincronización F07 verifica datos, configuración y manifiesto efectivamente visibles en producción"
+);
+ok(
+  f07Workflow.indexOf("Publicar corte F07 coherente en Firebase Hosting") < f07Workflow.indexOf("Registrar cambio verificable después de publicar"),
+  "F07 se publica y verifica antes de registrar el commit de sincronización"
+);
 ok(workflow.includes("actions/upload-artifact@v4"), "Validación se conserva como artifact independiente");
 ok(!workflow.includes("git add DEPLOYMENT_STATUS.json DEPLOYMENT_VALIDATION.log"), "Log ignorado ya no produce falso fallo de despliegue");
 console.log("PASS endurecimiento de acceso: roles, alcances, sesión, caché y despliegue listos para onboarding masivo.");
