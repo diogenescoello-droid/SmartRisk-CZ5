@@ -14,21 +14,30 @@
   "riskReportsWindowYears": 5,
   "status": "stable",
   "deploymentTrace": {
-    "id": "enos-audit-2026-08-23-f07-current",
-    "requestedAt": "2026-08-23T18:25:00Z",
-    "reason": "Publicar matriz ENOS auditada, estados finales y trazabilidad del corte F07"
+    "id": "hito-integridad-2026-08-27",
+    "requestedAt": "2026-08-28T02:46:00Z",
+    "reason": "Cerrar auditoría integral, asegurar universo canónico de 56 GAD y sincronizar metadatos con el F07 vigente"
+  },
+  "auditMilestone": {
+    "id": "HITO-2026-08-27-AUDITORIA-INTEGRAL",
+    "localCut": "2026-08-27T21:46:00-05:00",
+    "method": ".github/docs/BASE_METODOLOGICA_HITOS.md",
+    "report": ".github/docs/HITO_2026-08-27_AUDITORIA_INTEGRAL.md",
+    "canonicalUniverse": 56,
+    "regressionTest": "tests/hito-integrity-20260827.mjs",
+    "previousBaseline": "AUDITORIA_50_CORRIDAS.md"
   },
   "publicPath": "./",
-  "dataCut": "2026-08-23",
-  "f07SyncedAt": "2026-08-23T17:57:45.664Z",
-  "latestF07SubmissionAt": "2026-08-21T17:39:13",
+  "dataCut": "2026-08-27",
+  "f07SyncedAt": "2026-08-28T00:01:36.732Z",
+  "latestF07SubmissionAt": "2026-08-27T21:48:10",
   "counts": {
     "territories": 56,
     "plansAvailable": 56,
     "formalPlanDeliveries": 53,
     "validatedPlans": 52,
     "returnedPlans": 4,
-    "followupsMinimum": 116,
+    "followupsMinimum": 164,
     "riskReportsIndexed": 6,
     "cantonsWithRiskReports": 4
   },
@@ -37,8 +46,8 @@
     "completionRawSha256": "15f8465d1c41c37aba924a5c6c46447e117179958645f50891b9126bccb54ebc"
   },
   "sources": [
-    {"name":"Kobo F07 ENOS CZ5","role":"seguimiento operativo","cut":"2026-08-21","syncedAt":"2026-08-23T17:57:45.664Z","latestSubmissionAt":"2026-08-21T17:39:13","followups":116},
-    {"name":"Matriz colaborativa ENOS CZ5 · 56 GAD · Lecturas ejecutivas V4","role":"estado documental, control F01-F07 y autoauditoría","driveFileId":"1tKY10jIL9ztFB_s--VNk7-OvdHQSOcvdA_ZCzdxgaTo","cut":"2026-08-23","auditScope":"GAD 25-56 auditados y corregidos"},
+    {"name":"Kobo F07 ENOS CZ5","role":"seguimiento operativo","cut":"2026-08-27","syncedAt":"2026-08-28T00:01:36.732Z","latestSubmissionAt":"2026-08-27T21:48:10","followups":164},
+    {"name":"Matriz colaborativa ENOS CZ5 · 56 GAD · Lecturas ejecutivas V4","role":"estado documental, control F01-F07 y autoauditoría","driveFileId":"1tKY10jIL9ztFB_s--VNk7-OvdHQSOcvdA_ZCzdxgaTo","cut":"2026-08-22","auditScope":"56 GAD integrados en la matriz maestra; corte técnico independiente del corte F07"},
     {"name":"Base_RIESGO_CANTONAL_ENOS_CZ5","role":"estructura territorial para amenaza, vulnerabilidad, capacidad, brechas, acciones y enlaces de informes","driveFileId":"1Lz99D_XLzuwgbdntRAyi75EYk5mOWysGRU4oIQ2YUJo","cut":"2026-07-31"},
     {"name":"Repositorio de informes de riesgo CZ5","role":"documentos fuente y enlaces de expedientes técnicos de los últimos cinco años","cut":"2026-07-31","indexedReports":6},
     {"name":"Plan provincial de Galápagos ENOS 2026–2027","role":"plan recibido, firmado y revisión técnica progresiva","driveFileId":"1M79_NXC7Q3oZsXTS8ZJnd5XTUaRfjtIp","reviewReportDriveFileId":"1VtlXrd5qoL2jW-2UUw-6GD8dduyQedzn","receivedAt":"2026-06-24","reviewScore":84,"classification":"Plan defendible"},
@@ -101,6 +110,10 @@
     "riskReportsFilteredByTerritory": true,
     "riskReportSourceLinks": true,
     "riskReportConsultationAudited": true,
+    "canonicalGadCoverageGuard": true,
+    "unassignedDoesNotIncreaseCoverage": true,
+    "releaseMetadataSyncedWithF07": true,
+    "milestoneMethodDocumented": true,
     "backendGlobalReadRestrictionPendingDeployment": false,
     "backupBranch": "backup/rc14.4.4-rc5-estable-20260730",
     "rollbackCommit": "0067de1c9b2e035f151ee5f7342d6ea1ab0a4678"
