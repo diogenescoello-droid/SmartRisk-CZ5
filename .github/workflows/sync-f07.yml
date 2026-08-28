@@ -22,27 +22,27 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Leer y normalizar respuestas públicas del F07
+      - name: Leer, normalizar y sincronizar corte F07 con metadatos
         run: node scripts/sync-f07-public.mjs
 
       - name: Verificar plataforma
         run: node scripts/test-release.mjs
 
       - id: changes
-        name: Detectar nuevo corte F07
+        name: Detectar nuevo corte F07 o ajuste de metadatos
         shell: bash
         run: |
-          if git diff --quiet -- f07-current-data.js; then
+          if git diff --quiet -- f07-current-data.js RELEASE_MANIFEST.json release-config.js; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
-            echo "F07 sin cambios"
+            echo "F07 y metadatos sin cambios"
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
-            echo "Nuevo corte F07 detectado"
+            echo "Nuevo corte F07 o ajuste de metadatos detectado"
           fi
 
       - id: deploy
         if: steps.changes.outputs.changed == 'true'
-        name: Publicar nuevo corte F07 en Firebase Hosting
+        name: Publicar corte F07 coherente en Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
@@ -50,28 +50,30 @@ jobs:
           channelId: live
           projectId: smartrisk-cz5-produccion
 
-      - name: Verificar que el corte F07 esté visible en producción
+      - name: Verificar datos y metadatos visibles en producción
         if: steps.changes.outputs.changed == 'true'
         shell: bash
         run: |
           set -euo pipefail
-          test -f dist/f07-current-data.js
-          LIVE_FILE="$RUNNER_TEMP/f07-current-data-live.js"
-          verified=false
-          for attempt in 1 2 3 4 5; do
-            if curl -fsSL -H 'Cache-Control: no-cache' \
-              "https://smartrisk-cz5-produccion.web.app/f07-current-data.js?run=${GITHUB_RUN_ID}&attempt=${attempt}" \
-              -o "$LIVE_FILE" && cmp -s dist/f07-current-data.js "$LIVE_FILE"; then
-              verified=true
-              break
+          for asset in f07-current-data.js release-config.js RELEASE_MANIFEST.json; do
+            test -f "dist/$asset"
+            LIVE_FILE="$RUNNER_TEMP/${asset//\//_}.live"
+            verified=false
+            for attempt in 1 2 3 4 5; do
+              if curl -fsSL -H 'Cache-Control: no-cache' \
+                "https://smartrisk-cz5-produccion.web.app/${asset}?run=${GITHUB_RUN_ID}&attempt=${attempt}" \
+                -o "$LIVE_FILE" && cmp -s "dist/$asset" "$LIVE_FILE"; then
+                verified=true
+                break
+              fi
+              sleep 3
+            done
+            if [ "$verified" != "true" ]; then
+              echo "::error::$asset desplegado no coincide con el artefacto canónico visible en producción."
+              exit 1
             fi
-            sleep 3
+            echo "LIVE_OK $asset"
           done
-          if [ "$verified" != "true" ]; then
-            echo "::error::El corte F07 desplegado no coincide con el archivo visible en producción."
-            exit 1
-          fi
-          echo "F07_LIVE_OK"
 
       - name: Registrar cambio verificable después de publicar
         if: steps.changes.outputs.changed == 'true'
@@ -79,6 +81,6 @@ jobs:
         run: |
           git config user.name "SmartRisk F07 Bot"
           git config user.email "actions@users.noreply.github.com"
-          git add f07-current-data.js
-          git commit -m "Actualizar seguimiento F07 desde Kobo"
+          git add f07-current-data.js RELEASE_MANIFEST.json release-config.js
+          git commit -m "Actualizar seguimiento F07 y metadatos de corte desde Kobo"
           git push
