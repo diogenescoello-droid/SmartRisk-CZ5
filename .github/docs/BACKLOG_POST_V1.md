@@ -2,6 +2,23 @@
 
 Este documento registra mejoras detectadas durante el desarrollo que no deben interrumpir la finalización de la versión funcional.
 
+## Estado al HITO-2026-08-27-AUDITORIA-INTEGRAL
+
+La auditoría integral del 27 de agosto de 2026 convierte este backlog en un registro de deuda controlada. Una tarea marcada como parcial o pendiente no invalida el hito vigente, pero tampoco debe presentarse como resuelta hasta que cumpla la condición de cierre correspondiente.
+
+| Estado | Control | Situación al hito |
+|---|---|---|
+| Hecho | Suite automática de release | `scripts/test-release.mjs` construye, valida, ejecuta pruebas y chequea sintaxis antes del despliegue. |
+| Hecho | Escritura territorial por alcance | Firestore usa `scopeKey`, perfil activo, modo de acceso y validación de revisión/autor. |
+| Hecho | Bitácora nueva append-only | `alcances/{scopeKey}/cambios` admite creación autorizada y niega actualización/eliminación. |
+| Hecho | Base metodológica de hitos | Se formalizan universo rector, evidencia, severidad, triangulación, regresiones y cierre verificable. |
+| Hecho | Integridad de cobertura 56 GAD | La cobertura usa identificadores canónicos; registros ambiguos no incrementan el numerador. |
+| Parcial | Retiro del almacenamiento global heredado | `/plataforma/datos` conserva lectura para perfiles activos durante la migración; retirar cuando los módulos dependientes operen únicamente con repositorios segmentados. |
+| Parcial | Normalizador territorial único | Persisten tablas de alias y lógica territorial duplicadas en varios módulos de escritorio. Centralizar sin romper compatibilidad. |
+| Parcial | Clasificación documental estructurada | Coordinación, escalamiento y cierre usan reglas semánticas conservadoras; migrar a campos/tipos normalizados y validación competente. |
+| Pendiente | Pruebas E2E autenticadas | Complementar la suite determinística con pruebas reales de navegador, perfiles, red y persistencia. |
+| Pendiente | Cierre completo del ciclo COE | Mantener como trabajo posterior: periodo operacional, SITREP, relevo, recursos, alojamientos, servicios esenciales, información pública y cierre. |
+
 ## V1.1 — Estabilización y rendimiento
 
 | Prioridad | Tarea | Resultado esperado |
