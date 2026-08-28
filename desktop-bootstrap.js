@@ -1,9 +1,9 @@
 (() => {
   "use strict";
 
-  const VERSION = "2026.08.27.9";
-  const STYLE_VERSION = "2026.08.27.9";
-  const SCRIPT_VERSION = "2026.08.27.9";
+  const VERSION = "2026.08.27.10";
+  const STYLE_VERSION = "2026.08.27.10";
+  const SCRIPT_VERSION = "2026.08.27.10";
   let started = false;
   let attempts = 0;
   const MAX_ATTEMPTS = 160;
@@ -70,7 +70,7 @@
       await loadScript("desktop-home-budget-status-56.js");
       document.body.classList.add("sr-v1-desktop-operational");
       window.dispatchEvent(new CustomEvent("smartrisk:desktop-reference-ready", {
-        detail: { version: VERSION, reference: "SmartRisk CZ5 · escritorio operativo con huella documental, presupuesto y calidad de trazabilidad" }
+        detail: { version: VERSION, reference: "SmartRisk CZ5 · escritorio operativo con huella documental, presupuesto y estado documental territorial" }
       }));
       return true;
     } catch (error) {
@@ -89,8 +89,8 @@
 
   window.addEventListener("load", probe);
   window.addEventListener("hashchange", probe);
-  new MutationObserver(probe).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
+  new MutationObserver(probe).observe(document.body, { childList:true, subtree:true, attributes:true, attributeFilter:["class"] });
   probe();
 
-  window.SmartRiskDesktopBootstrap = { VERSION, reference: "SmartRisk CZ5 · escritorio operativo con huella documental, presupuesto y calidad de trazabilidad", start, isDesktop };
+  window.SmartRiskDesktopBootstrap = { VERSION, reference: "SmartRisk CZ5 · escritorio operativo con huella documental, presupuesto y estado documental territorial", start, isDesktop };
 })();
