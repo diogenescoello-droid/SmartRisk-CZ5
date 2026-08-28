@@ -20,6 +20,10 @@
         "headers": [{ "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }]
       },
       {
+        "source": "/RELEASE_MANIFEST.json",
+        "headers": [{ "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }]
+      },
+      {
         "source": "/release-config.js",
         "headers": [{ "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }]
       },
