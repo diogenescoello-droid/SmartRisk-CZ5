@@ -1,0 +1,169 @@
+name: Audit SmartRisk post import
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - ".github/workflows/audit-access-post-import.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  audit_post_import:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Firebase production
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_SMARTRISK_CZ5_PRODUCCION }}"
+
+      - name: Prepare Firebase Admin runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/smartrisk-post-import
+          cd /tmp/smartrisk-post-import
+          npm init -y >/dev/null 2>&1
+          npm install --silent firebase-admin@13
+
+      - name: Audit Authentication and perfiles
+        env:
+          FIREBASE_PROJECT_ID: smartrisk-cz5-produccion
+        shell: bash
+        run: |
+          set -euo pipefail
+          export NODE_PATH=/tmp/smartrisk-post-import/node_modules
+          node <<'NODE'
+          const admin = require('firebase-admin');
+          const fs = require('fs');
+          const crypto = require('crypto');
+
+          admin.initializeApp({
+            credential: admin.credential.applicationDefault(),
+            projectId: process.env.FIREBASE_PROJECT_ID
+          });
+          const auth = admin.auth();
+          const db = admin.firestore();
+          const norm = v => String(v || '').trim().toLowerCase();
+          const arr = v => Array.isArray(v) ? v.map(String) : [];
+          const hash = v => crypto.createHash('sha256').update(norm(v)).digest('hex').slice(0,16);
+
+          async function listUsers() {
+            const out = [];
+            let token;
+            do {
+              const page = await auth.listUsers(1000, token);
+              out.push(...page.users);
+              token = page.pageToken;
+            } while (token);
+            return out;
+          }
+
+          (async () => {
+            const [users, snap] = await Promise.all([listUsers(), db.collection('perfiles').get()]);
+            const profiles = snap.docs.map(d => ({ id:d.id, ...d.data() }));
+            const authByEmail = new Map(users.filter(u=>u.email).map(u=>[norm(u.email),u]));
+            const profilesByEmail = new Map();
+            for (const p of profiles) {
+              const email = norm(p.correo || p.email);
+              if (!email) continue;
+              const list = profilesByEmail.get(email) || [];
+              list.push(p);
+              profilesByEmail.set(email,list);
+            }
+
+            const authWithoutProfile=[];
+            const profilesWithoutAuth=[];
+            const uidMismatch=[];
+            const duplicateProfileEmails=[];
+            const disabledAuth=[];
+            const scopeIssues=[];
+            const firstChangeIssues=[];
+
+            for (const [email,u] of authByEmail) {
+              const ps=profilesByEmail.get(email) || [];
+              if (!ps.length) authWithoutProfile.push({emailHash:hash(email),uidHash:hash(u.uid)});
+              if (u.disabled) disabledAuth.push({emailHash:hash(email)});
+              for (const p of ps) if (p.id !== u.uid) uidMismatch.push({emailHash:hash(email)});
+            }
+            for (const [email,ps] of profilesByEmail) {
+              if (ps.length>1) duplicateProfileEmails.push({emailHash:hash(email),count:ps.length});
+              if (!authByEmail.has(email)) for (const p of ps) profilesWithoutAuth.push({emailHash:hash(email),profileIdHash:hash(p.id)});
+              for (const p of ps) {
+                const level=norm(p.nivelAcceso || p.nivel);
+                const keys=arr(p.scopeKeys);
+                let ok=true, reason='';
+                if (level.includes('zonal')) { ok=keys.length===1 && keys[0]==='ZONA:CZ5'; reason='zonal_scope'; }
+                else if (level.includes('prov')) { ok=keys.length>0 && keys.every(k=>k.startsWith('PROV:')); reason='provincial_scope'; }
+                else if (level.includes('cant') || level.includes('territ')) { ok=keys.length>0 && keys.every(k=>k.startsWith('TER:')); reason='territorial_scope'; }
+                if (!ok) scopeIssues.push({emailHash:hash(email),reason,scopeCount:keys.length});
+                if (p.requiereCambioClave !== true) firstChangeIssues.push({emailHash:hash(email),requiereCambioClave:p.requiereCambioClave ?? null});
+              }
+            }
+
+            const summary={
+              projectId:process.env.FIREBASE_PROJECT_ID,
+              checkedAt:new Date().toISOString(),
+              totals:{
+                authUsers:users.length,
+                profiles:profiles.length,
+                uniqueProfileEmails:profilesByEmail.size,
+                disabledAuth:disabledAuth.length,
+                authWithoutProfile:authWithoutProfile.length,
+                profilesWithoutAuth:profilesWithoutAuth.length,
+                uidMismatch:uidMismatch.length,
+                duplicateProfileEmails:duplicateProfileEmails.length,
+                scopeIssues:scopeIssues.length,
+                firstChangeIssues:firstChangeIssues.length
+              },
+              incidents:{disabledAuth,authWithoutProfile,profilesWithoutAuth,uidMismatch,duplicateProfileEmails,scopeIssues,firstChangeIssues},
+              privacy:'Public evidence contains only counts and truncated hashes; no passwords.'
+            };
+
+            const details=[...new Set([...authByEmail.keys(),...profilesByEmail.keys()])].sort().map(email=>{
+              const u=authByEmail.get(email)||null;
+              const ps=profilesByEmail.get(email)||[];
+              return {
+                email,
+                auth:u?{uid:u.uid,disabled:!!u.disabled,providerIds:(u.providerData||[]).map(x=>x.providerId)}:null,
+                profiles:ps.map(p=>({
+                  id:p.id,
+                  correo:p.correo||p.email||null,
+                  nombre:p.nombre||null,
+                  rol:p.rol||null,
+                  provincia:p.provincia||null,
+                  canton:p.canton||p['cantón']||null,
+                  nivelAcceso:p.nivelAcceso||p.nivel||null,
+                  scopeKeys:arr(p.scopeKeys),
+                  estado:p.estado||null,
+                  requiereCambioClave:p.requiereCambioClave,
+                  metodoActivacion:p.metodoActivacion||null
+                }))
+              };
+            });
+
+            fs.writeFileSync('POST_IMPORT_AUDIT.json',JSON.stringify(summary,null,2)+'\n');
+            fs.writeFileSync('POST_IMPORT_AUDIT_PRIVATE.json',JSON.stringify({projectId:process.env.FIREBASE_PROJECT_ID,checkedAt:summary.checkedAt,note:'No passwords.',users:details},null,2)+'\n');
+            console.log(JSON.stringify(summary.totals));
+          })().catch(err=>{console.error('POST_IMPORT_AUDIT_FAILED',err.code||err.message);process.exit(1);});
+          NODE
+
+      - name: Upload public audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: smartrisk-post-import-audit-${{ github.run_id }}
+          path: POST_IMPORT_AUDIT.json
+          retention-days: 2
+
+      - name: Upload private account detail
+        uses: actions/upload-artifact@v4
+        with:
+          name: smartrisk-post-import-audit-private-${{ github.run_id }}
+          path: POST_IMPORT_AUDIT_PRIVATE.json
+          retention-days: 1
