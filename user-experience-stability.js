@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const VERSION = "2026.08.31.1-navigation-map-stability";
+  const VERSION = "2026.08.31.2-navigation-session-stability";
   const SCENARIO_ROUTE = "escenario-cuenca-media";
   const SCENARIO_IDLE_HASH = "#escenario-zonal-activo";
   const LEGACY_ROUTE_MAP = Object.freeze({
@@ -32,6 +32,10 @@
     return Boolean(content?.classList.contains("sr-scenario-shell") || $("#content .sr-scenario-hero"));
   }
 
+  function scenarioIdle() {
+    return location.hash === SCENARIO_IDLE_HASH || routeFromHash() === SCENARIO_IDLE_HASH.replace(/^#/, "");
+  }
+
   function replaceHashWithoutEvent(hash = "") {
     const next = `${location.pathname}${location.search}${hash}`;
     try {
@@ -42,26 +46,53 @@
   }
 
   function markScenarioNavigation(active) {
+    if (active) {
+      $$("#nav [data-page], #nav [data-scope-page]").forEach(button => {
+        button.classList.remove("nav-active", "active");
+        button.removeAttribute("aria-current");
+      });
+    }
     $$("#nav [data-scenario-nav], #nav [data-route='escenario-cuenca-media']").forEach(button => {
       button.classList.toggle("active", Boolean(active));
-      button.setAttribute("aria-current", active ? "page" : "false");
+      button.classList.toggle("nav-active", Boolean(active));
+      if (active) button.setAttribute("aria-current", "page");
+      else button.removeAttribute("aria-current");
     });
   }
 
   function stabilizeScenarioRender() {
     if (routeFromHash() !== SCENARIO_ROUTE || !scenarioContentVisible()) return false;
 
-    // scenario-operational-cuenca.js necesita observar la creación del menú, pero su
-    // observador también detecta el propio render. Neutralizar el hash sin disparar
-    // hashchange corta el ciclo render -> mutation -> render sin tocar el contenido.
+    // El escenario utiliza el hash para entrar, pero el menú territorial legado sigue
+    // conservando su propia variable `current`. Neutralizar el hash evita el bucle del
+    // observador; la capa de estabilidad conserva explícitamente el escenario activo.
     replaceHashWithoutEvent(SCENARIO_IDLE_HASH);
     markScenarioNavigation(true);
     document.documentElement.dataset.smartRiskScenarioStable = VERSION;
     return true;
   }
 
+  function restoreScenarioIfOverwritten() {
+    if (!scenarioIdle() || scenarioContentVisible()) return false;
+    const scenario = window.SmartRiskScenarioCuencaMedia;
+    if (!scenario?.render) return false;
+
+    // Un refresco de Firestore o render() del módulo legado puede volver a pintar la
+    // última página (por ejemplo Herramientas). Mientras el usuario siga en Escenario
+    // zonal, restaurar inmediatamente el contenido sin cambiar su selección.
+    replaceHashWithoutEvent(`#/${SCENARIO_ROUTE}`);
+    const rendered = scenario.render();
+    replaceHashWithoutEvent(SCENARIO_IDLE_HASH);
+    if (rendered) {
+      markScenarioNavigation(true);
+      document.documentElement.dataset.smartRiskScenarioStable = VERSION;
+      return true;
+    }
+    return false;
+  }
+
   function leaveScenarioBeforeLegacyRender() {
-    if (!scenarioContentVisible() && routeFromHash() !== SCENARIO_ROUTE && location.hash !== SCENARIO_IDLE_HASH) return;
+    if (!scenarioContentVisible() && routeFromHash() !== SCENARIO_ROUTE && !scenarioIdle()) return;
     replaceHashWithoutEvent("");
     markScenarioNavigation(false);
     const content = $("#content");
@@ -137,13 +168,19 @@
       .sr-map-context-guidance strong{display:block;color:#0f3b5d;margin-bottom:.25rem}
       .sr-map-context-guidance p{margin:.25rem 0;font-size:.82rem}
       .sr-map-context-guidance button{margin-top:.45rem;width:100%;padding:.45rem .6rem;border-radius:.45rem;border:1px solid #0f766e;background:#0f766e;color:#fff;font-weight:700;cursor:pointer}
+      @media (min-width:901px){
+        .app>aside{position:sticky;top:0;height:100vh;min-height:100vh;overflow:hidden}
+        .app>aside>#nav{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding-bottom:.35rem}
+        .app>aside>#logout{display:block!important;visibility:visible!important;flex:0 0 auto;margin-top:.75rem;position:relative;z-index:5}
+      }
     `;
     document.head.appendChild(style);
   }
 
   function apply() {
     scheduled = false;
-    stabilizeScenarioRender();
+    if (!stabilizeScenarioRender()) restoreScenarioIfOverwritten();
+    if (scenarioIdle()) markScenarioNavigation(true);
     decorateMapPopups();
   }
 
@@ -155,9 +192,9 @@
 
   document.addEventListener("click", event => {
     const legacyNav = event.target.closest("#nav [data-page], #nav [data-scope-page]");
-    if (legacyNav && scenarioContentVisible()) {
-      // Captura antes de que app.js ejecute render(): evita que el observador del
-      // escenario vuelva a pintar encima de la pantalla territorial elegida.
+    if (legacyNav && (scenarioContentVisible() || scenarioIdle())) {
+      // Captura antes de que app.js ejecute render(): salir del escenario de forma
+      // deliberada y permitir que la nueva página territorial quede activa.
       leaveScenarioBeforeLegacyRender();
       return;
     }
@@ -189,6 +226,7 @@
     scenarioRoute: SCENARIO_ROUTE,
     scenarioIdleHash: SCENARIO_IDLE_HASH,
     stabilizeScenarioRender,
+    restoreScenarioIfOverwritten,
     decorateMapPopups,
     openSites
   };
