@@ -102,6 +102,7 @@
     "v11-authoritative-metrics.js",
     "access-admin.html",
     "access-admin.js",
+    "access-batch-provision.js",
     "profile-role-compat.js",
     "RELEASE_MANIFEST.json"
   ],
