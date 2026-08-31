@@ -29,6 +29,8 @@
     "desktop-home-audit-context.js",
     "desktop-documentary-actions.css",
     "desktop-documentary-actions.js",
+    "scenario-operational-cuenca.css",
+    "scenario-operational-cuenca.js",
     "user-facing-cleanup.js",
     "enos-gad-review-context.js",
     "enos-georef-data.js",
