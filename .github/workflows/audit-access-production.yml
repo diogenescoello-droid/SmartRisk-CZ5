@@ -166,9 +166,43 @@ jobs:
                 profileFlagIssues,
                 scopeIssues
               },
-              privacy: 'Only truncated SHA-256 identifiers are emitted; no email addresses or passwords are written.'
+              privacy: 'Public logs contain only totals and truncated SHA-256 identifiers.'
             };
+
+            const detailEmails = new Set([...authByEmail.keys(), ...profilesByEmail.keys()]);
+            const details = [...detailEmails].sort().map(email => {
+              const u = authByEmail.get(email) || null;
+              const ps = profilesByEmail.get(email) || [];
+              return {
+                email,
+                auth: u ? {
+                  uid: u.uid,
+                  disabled: !!u.disabled,
+                  emailVerified: !!u.emailVerified,
+                  providerIds: (u.providerData || []).map(p => p.providerId)
+                } : null,
+                profiles: ps.map(p => ({
+                  id: p.id,
+                  correo: p.correo || p.email || null,
+                  rol: p.rol || null,
+                  provincia: p.provincia || null,
+                  canton: p.canton || p.cantón || null,
+                  nivelAcceso: p.nivelAcceso || p.nivel || null,
+                  scopeKeys: arr(p.scopeKeys),
+                  estado: p.estado || null,
+                  requiereCambioClave: p.requiereCambioClave,
+                  metodoActivacion: p.metodoActivacion || null
+                }))
+              };
+            });
+
             fs.writeFileSync('ACCESS_AUDIT.json', JSON.stringify(report, null, 2) + '\n');
+            fs.writeFileSync('ACCESS_AUDIT_PRIVATE.json', JSON.stringify({
+              projectId: process.env.FIREBASE_PROJECT_ID,
+              checkedAt: report.checkedAt,
+              note: 'Authenticated short-lived Actions artifact. Contains account identifiers and profile metadata; contains no passwords.',
+              users: details
+            }, null, 2) + '\n');
             console.log(JSON.stringify(report.totals));
           })().catch(err => {
             console.error('ACCESS_AUDIT_FAILED', err && err.code ? err.code : err.message);
@@ -205,11 +239,20 @@ jobs:
           console.log(JSON.stringify({ emailPasswordProvider: report.emailPasswordProvider }));
           NODE
 
-      - name: Upload sanitized audit evidence
+      - name: Upload sanitized public audit evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: smartrisk-access-audit-${{ github.run_id }}
           path: ACCESS_AUDIT.json
           retention-days: 2
+          if-no-files-found: warn
+
+      - name: Upload private account detail
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smartrisk-access-audit-private-${{ github.run_id }}
+          path: ACCESS_AUDIT_PRIVATE.json
+          retention-days: 1
           if-no-files-found: warn
