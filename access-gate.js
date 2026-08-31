@@ -3,7 +3,7 @@
 
   const RELEASE = window.SMART_RISK_RELEASE || { release: "V1.0.0 PILOTO ESTABLE", build: "1.0.0-piloto-estable" };
   const BUILD_VERSION = RELEASE.build;
-  const ACCESS_VERSION = "2026.08.24.2";
+  const ACCESS_VERSION = "2026.08.31.3";
   const catalog = window.SmartRiskAccessCatalog;
   const SUPPORT_SCRIPTS = [
     "smartrisk-operational-core.js", "data.js", "enos-data.js", "enos-reviews.js",
@@ -156,7 +156,8 @@
   }
 
   async function requireFirstPasswordChange(user, profile) {
-    const temporaryCredentialFlow = profile.requiereCambioClave === true && normalizeText(profile.metodoActivacion) === "credencial temporal";
+    const activationMethod = normalizeText(profile.metodoActivacion);
+    const temporaryCredentialFlow = profile.requiereCambioClave === true && ["credencial temporal", "credencial inicial administrada"].includes(activationMethod);
     if (!temporaryCredentialFlow) return true;
     if (!pendingLoginPassword) {
       showAuthenticatedStartupError("Su cuenta está activa, pero requiere completar el cambio de una credencial temporal.", new Error("TEMPORARY_PASSWORD_REAUTH_REQUIRED"));
