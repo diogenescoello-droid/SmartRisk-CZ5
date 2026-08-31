@@ -15,7 +15,7 @@
 <section id="loginPanel" class="panel login"><h2>Ingreso de administrador</h2><p class="muted">Use una cuenta administrativa autorizada.</p><form id="loginForm" class="grid"><label class="full">Correo<input id="adminEmail" type="email" autocomplete="username" required></label><label class="full">Contraseña<input id="adminPassword" type="password" autocomplete="current-password" required></label><div class="full actions"><button type="submit">Ingresar</button></div><div id="loginMessage" class="full message hidden"></div></form></section>
 
 <div id="adminArea" class="hidden">
-<section class="panel"><h2>Ruta recomendada para habilitar un usuario</h2><ol class="step-list"><li>Cree o revise el usuario en <b>Firebase Authentication</b> y copie su UID completo.</li><li>Registre aquí el perfil con exactamente el mismo UID y correo.</li><li>Asigne el rol y el alcance. SmartRisk bloqueará combinaciones incompatibles.</li><li>Para usuarios nuevos, use <b>¿Olvidaste tu contraseña?</b> para que cada persona defina su propia contraseña. No se recomienda contraseña temporal.</li><li>Antes de enviar una convocatoria masiva, ejecute la auditoría de perfiles.</li></ol><p class="risk-note"><b>No comparta contraseñas.</b> La recuperación por correo es el mecanismo normal de activación.</p></section>
+<section class="panel"><h2>Ruta recomendada para habilitar usuarios</h2><ol class="step-list"><li>Depure primero correo, rol y alcance territorial.</li><li>Para varios usuarios, cargue el JSON en <b>Provisionamiento por lote</b>. Cada cuenta nueva se crea con la clave inicial indicada en el archivo.</li><li>SmartRisk registra Authentication y el perfil con el mismo UID, rol y alcance.</li><li>Las cuentas nuevas quedan listas para ingresar inmediatamente: no se envía correo de activación y no se exige cambio de clave al primer ingreso.</li><li>Si Authentication ya contiene el correo, SmartRisk no puede sustituir su contraseña desde el navegador; esa cuenta se marca para tratamiento aparte.</li><li>Antes de distribuir credenciales, ejecute la auditoría de perfiles.</li></ol><p class="risk-note"><b>Custodia:</b> entregue cada clave solamente a su titular. No publique ni almacene archivos de credenciales en GitHub o repositorios compartidos.</p></section>
 
 <section class="panel"><h2>Vincular UID y perfil</h2><form id="profileForm" class="grid">
 <label>UID de Authentication<input name="uid" maxlength="128" required placeholder="Copiar desde Firebase Authentication"></label>
@@ -27,7 +27,7 @@
 <label>Nivel de acceso<select name="nivelAcceso" id="levelSelect"><option>Cantonal</option><option>Provincial</option><option>Zonal</option><option>Consulta zonal</option><option>Administración zonal</option><option>Según alcance</option></select></label>
 <label>Estado<select name="estado"><option>Activo</option><option>Inactivo</option></select></label>
 <label class="full">Scope keys, una por línea<textarea name="scopeKeys" placeholder="TER:... para cantón&#10;PROV:... para provincia&#10;ZONA:CZ5 para Zona"></textarea></label>
-<label class="full"><span><input name="requiereCambioClave" type="checkbox" style="width:auto"> Solo marcar si se entregó una credencial temporal y se debe forzar un segundo cambio</span></label>
+<label class="full"><span><input name="requiereCambioClave" type="checkbox" style="width:auto"> Marcar únicamente cuando deba forzarse un cambio posterior de clave</span></label>
 <div class="full actions"><button type="submit">Guardar y verificar perfil</button><button type="button" id="clearForm" class="secondary">Limpiar</button></div><div id="profileMessage" class="full message hidden"></div>
 </form></section>
 
@@ -41,6 +41,6 @@
 <script src="firebase-config.js?v=2026.08.24.2"></script>
 <script src="access-role-catalog.js?v=2026.08.24.2"></script>
 <script src="access-admin.js?v=2026.08.24.2"></script>
-<script src="access-batch-provision.js?v=2026.08.25.1"></script>
+<script src="access-batch-provision.js?v=2026.08.31.1"></script>
 </body>
 </html>
