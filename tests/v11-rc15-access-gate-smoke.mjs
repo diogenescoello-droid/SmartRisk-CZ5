@@ -8,7 +8,7 @@ const checks = [
   ["Compuerta invoca el rollout V11", gate.includes("SmartRiskV11Rollout.decide(user, profile)")],
   ["RC15 detiene la carga de la aplicación heredada", gate.includes("if (v11Enabled)") && gate.includes("loaded = true")],
   ["Modo heredado permanece como alternativa", gate.includes('await loadScript("app.js")')],
-  ["Compuerta usa caché vigente", index.includes("access-gate.js?v=11.0.0-rc16.7")],
+  ["Compuerta usa caché vigente", index.includes("access-gate.js?v=2026.08.31.4")],
   ["Núcleo operativo usa rollout P0", index.includes("v11-rollout.js?v=11.0.0-rc17-operativo-p0")]
 ];
 
