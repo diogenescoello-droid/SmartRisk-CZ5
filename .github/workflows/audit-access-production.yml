@@ -1,0 +1,221 @@
+name: Audit SmartRisk production access
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - ".github/workflows/audit-access-production.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  audit_access:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Firebase project
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_SMARTRISK_CZ5_PRODUCCION }}"
+
+      - name: Prepare isolated Firebase Admin runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/smartrisk-access-audit
+          cd /tmp/smartrisk-access-audit
+          npm init -y >/dev/null 2>&1
+          npm install --silent firebase-admin@13
+
+      - name: Audit Authentication and Firestore linkage
+        env:
+          FIREBASE_PROJECT_ID: smartrisk-cz5-produccion
+        shell: bash
+        run: |
+          set -euo pipefail
+          export NODE_PATH=/tmp/smartrisk-access-audit/node_modules
+          node <<'NODE'
+          const crypto = require('crypto');
+          const admin = require('firebase-admin');
+
+          admin.initializeApp({
+            credential: admin.credential.applicationDefault(),
+            projectId: process.env.FIREBASE_PROJECT_ID
+          });
+
+          const auth = admin.auth();
+          const db = admin.firestore();
+          const norm = v => String(v || '').trim().toLowerCase();
+          const hash = v => crypto.createHash('sha256').update(norm(v)).digest('hex').slice(0, 16);
+          const arr = v => Array.isArray(v) ? v.map(String) : [];
+
+          async function allAuthUsers() {
+            const users = [];
+            let token;
+            do {
+              const page = await auth.listUsers(1000, token);
+              users.push(...page.users);
+              token = page.pageToken;
+            } while (token);
+            return users;
+          }
+
+          (async () => {
+            const [users, profilesSnap] = await Promise.all([
+              allAuthUsers(),
+              db.collection('perfiles').get()
+            ]);
+
+            const authByEmail = new Map();
+            for (const u of users) {
+              if (u.email) authByEmail.set(norm(u.email), u);
+            }
+
+            const profiles = profilesSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+            const profilesByEmail = new Map();
+            for (const p of profiles) {
+              const email = norm(p.correo || p.email);
+              if (!email) continue;
+              const list = profilesByEmail.get(email) || [];
+              list.push(p);
+              profilesByEmail.set(email, list);
+            }
+
+            const duplicateProfileEmails = [];
+            for (const [email, ps] of profilesByEmail) {
+              if (ps.length > 1) duplicateProfileEmails.push({ emailHash: hash(email), count: ps.length });
+            }
+
+            const authWithoutProfile = [];
+            for (const [email, u] of authByEmail) {
+              if (!profilesByEmail.has(email)) authWithoutProfile.push({ emailHash: hash(email), uidHash: hash(u.uid) });
+            }
+
+            const profilesWithoutAuth = [];
+            const uidMismatch = [];
+            const inactiveProfiles = [];
+            const profileFlagIssues = [];
+            const scopeIssues = [];
+
+            for (const [email, ps] of profilesByEmail) {
+              const u = authByEmail.get(email);
+              if (!u) {
+                for (const p of ps) profilesWithoutAuth.push({ emailHash: hash(email), profileIdHash: hash(p.id) });
+              } else {
+                for (const p of ps) {
+                  if (p.id !== u.uid) uidMismatch.push({ emailHash: hash(email), authUidHash: hash(u.uid), profileIdHash: hash(p.id) });
+                }
+              }
+
+              for (const p of ps) {
+                if (String(p.estado || '').toLowerCase() !== 'activo') inactiveProfiles.push({ emailHash: hash(email) });
+                if (p.requiereCambioClave !== false || p.metodoActivacion !== 'Credencial inicial administrada') {
+                  profileFlagIssues.push({
+                    emailHash: hash(email),
+                    requiereCambioClave: p.requiereCambioClave,
+                    metodoActivacionOk: p.metodoActivacion === 'Credencial inicial administrada'
+                  });
+                }
+
+                const level = norm(p.nivelAcceso || p.nivel || '');
+                const keys = arr(p.scopeKeys);
+                let ok = true;
+                let reason = '';
+                if (level.includes('zonal')) {
+                  ok = keys.length === 1 && keys[0] === 'ZONA:CZ5';
+                  if (!ok) reason = 'zonal_scope_not_exact';
+                } else if (level.includes('prov')) {
+                  ok = keys.length > 0 && keys.every(k => k.startsWith('PROV:'));
+                  if (!ok) reason = 'provincial_scope_format';
+                } else if (level.includes('cant') || level.includes('territ')) {
+                  ok = keys.length > 0 && keys.every(k => k.startsWith('TER:'));
+                  if (!ok) reason = 'territorial_scope_format';
+                }
+                if (!ok) scopeIssues.push({ emailHash: hash(email), reason, scopeCount: keys.length });
+              }
+            }
+
+            const disabledAuth = users.filter(u => u.disabled).map(u => ({ emailHash: hash(u.email || u.uid) }));
+
+            const report = {
+              projectId: process.env.FIREBASE_PROJECT_ID,
+              checkedAt: new Date().toISOString(),
+              totals: {
+                authUsers: users.length,
+                profiles: profiles.length,
+                uniqueProfileEmails: profilesByEmail.size,
+                disabledAuth: disabledAuth.length,
+                authWithoutProfile: authWithoutProfile.length,
+                profilesWithoutAuth: profilesWithoutAuth.length,
+                uidMismatch: uidMismatch.length,
+                duplicateProfileEmails: duplicateProfileEmails.length,
+                inactiveProfiles: inactiveProfiles.length,
+                profileFlagIssues: profileFlagIssues.length,
+                scopeIssues: scopeIssues.length
+              },
+              incidents: {
+                disabledAuth,
+                authWithoutProfile,
+                profilesWithoutAuth,
+                uidMismatch,
+                duplicateProfileEmails,
+                inactiveProfiles,
+                profileFlagIssues,
+                scopeIssues
+              },
+              privacy: 'Only truncated SHA-256 identifiers are emitted; no email addresses or passwords are written.'
+            };
+
+            require('fs').writeFileSync('ACCESS_AUDIT.json', JSON.stringify(report, null, 2) + '\n');
+            console.log(JSON.stringify(report.totals));
+          })().catch(err => {
+            console.error('ACCESS_AUDIT_FAILED', err && err.code ? err.code : err.message);
+            process.exit(1);
+          });
+          NODE
+
+      - name: Verify Email/Password provider configuration
+        env:
+          FIREBASE_PROJECT_ID: smartrisk-cz5-produccion
+        shell: bash
+        run: |
+          set -euo pipefail
+          token="$(gcloud auth application-default print-access-token)"
+          code="$(curl -sS -o /tmp/idp-config.json -w '%{http_code}' \
+            -H "Authorization: Bearer ${token}" \
+            "https://identitytoolkit.googleapis.com/admin/v2/projects/${FIREBASE_PROJECT_ID}/config")"
+          node <<'NODE'
+          const fs = require('fs');
+          const report = JSON.parse(fs.readFileSync('ACCESS_AUDIT.json','utf8'));
+          const httpCode = process.env.HTTP_CODE || '';
+          let cfg = {};
+          try { cfg = JSON.parse(fs.readFileSync('/tmp/idp-config.json','utf8')); } catch {}
+          const email = cfg.signIn && cfg.signIn.email ? cfg.signIn.email : null;
+          report.emailPasswordProvider = email ? {
+            verified: true,
+            enabled: email.enabled === true,
+            passwordRequired: email.passwordRequired !== false
+          } : {
+            verified: false,
+            httpCode: httpCode || 'unavailable'
+          };
+          fs.writeFileSync('ACCESS_AUDIT.json', JSON.stringify(report, null, 2) + '\n');
+          console.log(JSON.stringify({ emailPasswordProvider: report.emailPasswordProvider }));
+          NODE
+        env:
+          FIREBASE_PROJECT_ID: smartrisk-cz5-produccion
+          HTTP_CODE: "${{ env.HTTP_CODE }}"
+
+      - name: Upload sanitized audit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smartrisk-access-audit-${{ github.run_id }}
+          path: ACCESS_AUDIT.json
+          retention-days: 2
+          if-no-files-found: warn
