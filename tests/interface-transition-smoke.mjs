@@ -7,5 +7,5 @@ assert.match(gate,/finishInterfaceTransition\(\)/);
 assert.match(gate,/Preparando SmartRisk/);
 assert.match(css,/body\.interface-loading #app/);
 assert.match(css,/\.interface-loading-screen/);
-assert.match(index,/access-gate\.js\?v=11\.0\.0-rc16\.7/);
+assert.match(index,/access-gate\.js\?v=2026\.08\.31\.4/);
 console.log("PASS transición sin exposición de la interfaz anterior");
