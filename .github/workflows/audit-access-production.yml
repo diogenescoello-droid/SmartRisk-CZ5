@@ -42,6 +42,7 @@ jobs:
           node <<'NODE'
           const crypto = require('crypto');
           const admin = require('firebase-admin');
+          const fs = require('fs');
 
           admin.initializeApp({
             credential: admin.credential.applicationDefault(),
@@ -72,9 +73,7 @@ jobs:
             ]);
 
             const authByEmail = new Map();
-            for (const u of users) {
-              if (u.email) authByEmail.set(norm(u.email), u);
-            }
+            for (const u of users) if (u.email) authByEmail.set(norm(u.email), u);
 
             const profiles = profilesSnap.docs.map(d => ({ id: d.id, ...d.data() }));
             const profilesByEmail = new Map();
@@ -141,7 +140,6 @@ jobs:
             }
 
             const disabledAuth = users.filter(u => u.disabled).map(u => ({ emailHash: hash(u.email || u.uid) }));
-
             const report = {
               projectId: process.env.FIREBASE_PROJECT_ID,
               checkedAt: new Date().toISOString(),
@@ -170,8 +168,7 @@ jobs:
               },
               privacy: 'Only truncated SHA-256 identifiers are emitted; no email addresses or passwords are written.'
             };
-
-            require('fs').writeFileSync('ACCESS_AUDIT.json', JSON.stringify(report, null, 2) + '\n');
+            fs.writeFileSync('ACCESS_AUDIT.json', JSON.stringify(report, null, 2) + '\n');
             console.log(JSON.stringify(report.totals));
           })().catch(err => {
             console.error('ACCESS_AUDIT_FAILED', err && err.code ? err.code : err.message);
@@ -189,10 +186,10 @@ jobs:
           code="$(curl -sS -o /tmp/idp-config.json -w '%{http_code}' \
             -H "Authorization: Bearer ${token}" \
             "https://identitytoolkit.googleapis.com/admin/v2/projects/${FIREBASE_PROJECT_ID}/config")"
+          export HTTP_CODE="$code"
           node <<'NODE'
           const fs = require('fs');
           const report = JSON.parse(fs.readFileSync('ACCESS_AUDIT.json','utf8'));
-          const httpCode = process.env.HTTP_CODE || '';
           let cfg = {};
           try { cfg = JSON.parse(fs.readFileSync('/tmp/idp-config.json','utf8')); } catch {}
           const email = cfg.signIn && cfg.signIn.email ? cfg.signIn.email : null;
@@ -202,14 +199,11 @@ jobs:
             passwordRequired: email.passwordRequired !== false
           } : {
             verified: false,
-            httpCode: httpCode || 'unavailable'
+            httpCode: process.env.HTTP_CODE || 'unavailable'
           };
           fs.writeFileSync('ACCESS_AUDIT.json', JSON.stringify(report, null, 2) + '\n');
           console.log(JSON.stringify({ emailPasswordProvider: report.emailPasswordProvider }));
           NODE
-        env:
-          FIREBASE_PROJECT_ID: smartrisk-cz5-produccion
-          HTTP_CODE: "${{ env.HTTP_CODE }}"
 
       - name: Upload sanitized audit evidence
         if: always()
