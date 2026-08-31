@@ -31,6 +31,7 @@
     "desktop-documentary-actions.js",
     "scenario-operational-cuenca.css",
     "scenario-operational-cuenca.js",
+    "user-experience-stability.js",
     "user-facing-cleanup.js",
     "enos-gad-review-context.js",
     "enos-georef-data.js",
