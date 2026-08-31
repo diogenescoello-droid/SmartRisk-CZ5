@@ -6,6 +6,9 @@
 <!-- release-contract: V1.0.0 PILOTO ESTABLE -->
 <script>if(location.hostname==="diogenescoello-droid.github.io"){location.replace(`https://smartrisk-cz5-produccion.web.app/${location.search}${location.hash}`);}</script>
 <link rel="stylesheet" href="vendor/leaflet.css"><link rel="stylesheet" href="styles.css?v=11.0.0-rc16.7"><link rel="stylesheet" href="rc13-menu.css?v=1.0.0-piloto-estable"><link rel="stylesheet" href="enos-matrix.css?v=2026.08.22.4"><link rel="stylesheet" href="jea-live.css?v=2026.08.17"><link rel="stylesheet" href="v11-cartography-gad-scope.css?v=1.2.0-hierarchical-scope"><link rel="stylesheet" href="v11-f03-gad-planning.css?v=1.0.0-f03-geometry-planning"><link rel="stylesheet" href="device-mode.css?v=2026.08.25.2"><link rel="stylesheet" href="scenario-operational-cuenca.css?v=2026.08.31.1">
+<style>
+.password-field{position:relative}.password-field input{padding-right:82px}.password-toggle{position:absolute;right:7px;top:50%;transform:translateY(-50%);width:auto!important;margin:0!important;padding:7px 10px!important;background:transparent!important;color:#08704c!important;border:1px solid #cbd5e1;border-radius:8px;font-size:13px;line-height:1;font-weight:800}.password-toggle:hover,.password-toggle:focus-visible{background:#e9f8f2!important;outline:2px solid #19a97433;outline-offset:1px}
+</style>
 </head>
 <body>
 <div id="login" class="login-shell">
@@ -15,7 +18,7 @@
     <p>Seguimiento territorial de gestión de riesgos</p>
     <form id="loginForm">
       <label for="email">Correo</label><input id="email" type="email" autocomplete="username" required>
-      <label for="password">Contraseña</label><input id="password" type="password" autocomplete="current-password" required>
+      <label for="password">Contraseña</label><div class="password-field"><input id="password" type="password" autocomplete="current-password" required><button id="togglePassword" class="password-toggle" type="button" aria-pressed="false" aria-label="Mostrar contraseña">Ver</button></div>
       <button>Ingresar</button><div id="loginError" class="error" role="alert"></div>
     </form>
     <button id="showRecovery" class="link-button" type="button">¿Olvidaste tu contraseña?</button>
@@ -60,6 +63,22 @@
 <script src="v11-cartography-gad-scope.js?v=1.2.0-hierarchical-scope"></script>
 <script src="v11-f03-gad-planning.js?v=1.0.0-f03-geometry-planning"></script>
 <script src="rc13-menu.js?v=1.0.0-piloto-estable&guard=2026.08.25.4"></script>
+<script>
+(() => {
+  const input = document.getElementById("password");
+  const button = document.getElementById("togglePassword");
+  if (!input || !button) return;
+  button.addEventListener("click", () => {
+    const reveal = input.type === "password";
+    input.type = reveal ? "text" : "password";
+    button.textContent = reveal ? "Ocultar" : "Ver";
+    button.setAttribute("aria-pressed", String(reveal));
+    button.setAttribute("aria-label", reveal ? "Ocultar contraseña" : "Mostrar contraseña");
+    input.focus({ preventScroll: true });
+    try { input.setSelectionRange(input.value.length, input.value.length); } catch (_) {}
+  });
+})();
+</script>
 <script src="access-gate.js?v=2026.08.31.4"></script>
 <script src="user-facing-cleanup.js?v=2026.08.27.2"></script>
 <script src="desktop-bootstrap.js?v=2026.08.28.1"></script>
