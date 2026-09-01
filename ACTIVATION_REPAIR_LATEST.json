@@ -1,0 +1,10 @@
+{
+  "projectId": "smartrisk-cz5-produccion",
+  "checkedAt": "2026-09-01T03:05:18.199Z",
+  "candidates": 44,
+  "updated": 44,
+  "verified": 44,
+  "stillForced": 0,
+  "policy": "Correo + clave inicial; sin cambio obligatorio al primer ingreso",
+  "containsPersonalData": false
+}
