@@ -29,7 +29,7 @@
   },
   "publicPath": "./",
   "dataCut": "2026-09-01",
-  "f07SyncedAt": "2026-09-01T15:09:01.482Z",
+  "f07SyncedAt": "2026-09-01T18:33:39.671Z",
   "latestF07SubmissionAt": "2026-09-01T13:05:38",
   "counts": {
     "territories": 56,
@@ -50,7 +50,7 @@
       "name": "Kobo F07 ENOS CZ5",
       "role": "seguimiento operativo",
       "cut": "2026-09-01",
-      "syncedAt": "2026-09-01T15:09:01.482Z",
+      "syncedAt": "2026-09-01T18:33:39.671Z",
       "latestSubmissionAt": "2026-09-01T13:05:38",
       "followups": 167
     },
