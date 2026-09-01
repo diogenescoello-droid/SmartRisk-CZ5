@@ -1,6 +1,7 @@
 (() => {
   "use strict";
 
+  const VERSION = "2026.08.31.2-reconcile-auth-profile";
   const catalog = window.SmartRiskAccessCatalog;
   const normalizeEmail = value => String(value || "").trim().toLowerCase();
   const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
@@ -70,7 +71,7 @@
   }
 
   async function findProfilesByEmail(email) {
-    const snapshot = await db.collection("perfiles").where("correo", "==", email).limit(3).get();
+    const snapshot = await db.collection("perfiles").where("correo", "==", email).limit(10).get();
     return snapshot.docs;
   }
 
@@ -81,54 +82,87 @@
     return app.auth();
   }
 
+  function isCredentialMismatch(error) {
+    return [
+      "auth/invalid-credential",
+      "auth/invalid-login-credentials",
+      "auth/wrong-password",
+      "auth/user-not-found"
+    ].includes(String(error?.code || ""));
+  }
+
+  async function canonicalizeProfile(user, uid, legacyProfiles) {
+    const canonicalRef = db.collection("perfiles").doc(uid);
+    await canonicalRef.set(payloadFor(user), { merge: true });
+    const legacy = legacyProfiles.filter(doc => doc.id !== uid);
+    for (const doc of legacy) await doc.ref.delete();
+    return legacy.length;
+  }
+
+  async function resolveAuthentication(user) {
+    const auxAuth = secondaryAuth();
+    await auxAuth.setPersistence(firebase.auth.Auth.Persistence.NONE);
+    try {
+      try {
+        const credential = await auxAuth.createUserWithEmailAndPassword(user.correo, user.password);
+        return { uid: credential?.user?.uid, authState: "created" };
+      } catch (error) {
+        if (error?.code !== "auth/email-already-in-use") throw error;
+      }
+
+      try {
+        const credential = await auxAuth.signInWithEmailAndPassword(user.correo, user.password);
+        return { uid: credential?.user?.uid, authState: "matched" };
+      } catch (error) {
+        if (isCredentialMismatch(error)) {
+          return { authState: "different-password", authError: error?.code || "auth/invalid-credential" };
+        }
+        throw error;
+      }
+    } finally {
+      try { await auxAuth.signOut(); } catch (_) {}
+    }
+  }
+
   async function provisionOne(user) {
-    const profiles = await findProfilesByEmail(user.correo);
-    if (profiles.length > 1) {
-      return { correo: user.correo, nombre: user.nombre, status: "error", detail: "Correo duplicado en perfiles Firestore; no se modificó." };
+    const legacyProfiles = await findProfilesByEmail(user.correo);
+    const authResult = await resolveAuthentication(user);
+
+    if (authResult.authState === "different-password") {
+      return {
+        correo: user.correo,
+        nombre: user.nombre,
+        status: "manual",
+        detail: `Authentication ya contiene este correo con una clave distinta (${authResult.authError}). No se alteró la contraseña. Use recuperación de contraseña o Admin SDK y luego vuelva a auditar.`
+      };
     }
 
-    if (profiles.length === 1) {
-      const uid = profiles[0].id;
-      await db.collection("perfiles").doc(uid).set(payloadFor(user), { merge: true });
+    const uid = authResult.uid;
+    if (!uid) throw new Error("No se obtuvo UID de Firebase Authentication.");
+    const migrated = await canonicalizeProfile(user, uid, legacyProfiles);
+
+    if (authResult.authState === "created") {
       return {
         correo: user.correo,
         nombre: user.nombre,
         uid,
-        status: "existing",
-        detail: "Perfil existente actualizado. La clave del lote no se aplica a cuentas Authentication ya existentes; conservar su clave actual o tratarla aparte."
+        password: user.password,
+        status: "created",
+        detail: migrated
+          ? `Cuenta Authentication creada y perfil migrado a perfiles/{UID}. Se retiraron ${migrated} perfil(es) heredado(s).`
+          : "Cuenta Authentication y perfil canónico creados. Puede ingresar inmediatamente con la credencial inicial."
       };
     }
-
-    const auxAuth = secondaryAuth();
-    await auxAuth.setPersistence(firebase.auth.Auth.Persistence.NONE);
-    let credential;
-    try {
-      credential = await auxAuth.createUserWithEmailAndPassword(user.correo, user.password);
-    } catch (error) {
-      if (error?.code === "auth/email-already-in-use") {
-        return {
-          correo: user.correo,
-          nombre: user.nombre,
-          status: "manual",
-          detail: "Authentication ya contiene este correo pero no existe perfil. La clave preparada no fue aplicada; recupere el UID y trate esta cuenta aparte."
-        };
-      }
-      throw error;
-    } finally {
-      try { await auxAuth.signOut(); } catch (_) {}
-    }
-
-    const uid = credential?.user?.uid;
-    if (!uid) throw new Error("No se recibió UID al crear Authentication.");
-    await db.collection("perfiles").doc(uid).set(payloadFor(user), { merge: true });
 
     return {
       correo: user.correo,
       nombre: user.nombre,
       uid,
       password: user.password,
-      status: "created",
-      detail: "Cuenta y perfil creados. Puede ingresar inmediatamente con la credencial inicial; no se envió correo de activación."
+      status: "reconciled",
+      detail: migrated
+        ? `Authentication ya existía y la clave preparada fue validada. Perfil reconciliado por UID; se retiraron ${migrated} perfil(es) heredado(s).`
+        : "Authentication ya existía y la clave preparada fue validada. Perfil canónico confirmado por UID."
     };
   }
 
@@ -148,10 +182,10 @@
   function renderResults(results) {
     const box = document.querySelector("#batchResult");
     const created = results.filter(item => item.status === "created").length;
-    const existing = results.filter(item => item.status === "existing").length;
+    const reconciled = results.filter(item => item.status === "reconciled").length;
     const warnings = results.filter(item => item.status === "manual").length;
     const errors = results.filter(item => item.status === "error").length;
-    box.innerHTML = `<div class="status-row"><span class="badge ok">${created} creados</span><span class="badge">${existing} existentes</span><span class="badge ${warnings ? "warn" : "ok"}">${warnings} pendientes</span><span class="badge ${errors ? "bad" : "ok"}">${errors} errores</span></div><div class="table-wrap"><table><thead><tr><th>Usuario</th><th>Resultado</th><th>UID</th></tr></thead><tbody>${results.map(item => `<tr><td><b>${escapeHtml(item.nombre)}</b><br>${escapeHtml(item.correo)}</td><td><span class="badge ${item.status === "created" ? "ok" : item.status === "error" ? "bad" : item.status === "manual" ? "warn" : ""}">${escapeHtml(item.detail)}</span></td><td><span class="small">${escapeHtml(item.uid || "—")}</span></td></tr>`).join("")}</tbody></table></div>`;
+    box.innerHTML = `<div class="status-row"><span class="badge ok">${created} creados</span><span class="badge ok">${reconciled} reconciliados</span><span class="badge ${warnings ? "warn" : "ok"}">${warnings} requieren tratamiento</span><span class="badge ${errors ? "bad" : "ok"}">${errors} errores</span></div><div class="table-wrap"><table><thead><tr><th>Usuario</th><th>Resultado</th><th>UID</th></tr></thead><tbody>${results.map(item => `<tr><td><b>${escapeHtml(item.nombre)}</b><br>${escapeHtml(item.correo)}</td><td><span class="badge ${["created","reconciled"].includes(item.status) ? "ok" : item.status === "error" ? "bad" : "warn"}">${escapeHtml(item.detail)}</span></td><td><span class="small">${escapeHtml(item.uid || "—")}</span></td></tr>`).join("")}</tbody></table></div>`;
   }
 
   async function readBatchFile(event) {
@@ -193,7 +227,7 @@
     }
     button.disabled = true;
     state.results = [];
-    resultBox.innerHTML = "<p>Provisionando usuarios de forma secuencial…</p>";
+    resultBox.innerHTML = "<p>Reconciliando Authentication y perfiles por UID…</p>";
     for (const user of state.users) {
       try {
         state.results.push(await provisionOne(user));
@@ -210,13 +244,14 @@
   function exportResults() {
     if (!state.results.length) return;
     const exportData = {
+      version: VERSION,
       generatedAt: new Date().toISOString(),
       generatedBy: normalizeEmail(auth.currentUser?.email),
-      warning: "El campo password solo aparece para cuentas nuevas creadas correctamente. Custodie este archivo y no lo suba a repositorios.",
+      warning: "El campo password solo aparece cuando la credencial preparada fue creada o validada. Custodie este archivo y no lo suba a repositorios.",
       totals: {
         processed: state.results.length,
         created: state.results.filter(item => item.status === "created").length,
-        existing: state.results.filter(item => item.status === "existing").length,
+        reconciled: state.results.filter(item => item.status === "reconciled").length,
         pending: state.results.filter(item => item.status === "manual").length,
         errors: state.results.filter(item => item.status === "error").length
       },
@@ -224,8 +259,8 @@
     };
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
     const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `smartrisk-provisionamiento-${new Date().toISOString().slice(0, 10)}.json`;
+    link.href = URL.createObjectURL(link.href = URL.createObjectURL(blob));
+    link.download = `smartrisk-reconciliacion-${new Date().toISOString().slice(0, 10)}.json`;
     link.click();
     setTimeout(() => URL.revokeObjectURL(link.href), 1000);
   }
@@ -238,15 +273,13 @@
     section.id = "batchProvisionPanel";
     section.className = "panel";
     section.innerHTML = `
-      <h2>Provisionamiento por lote</h2>
-      <p class="muted">Carga un JSON local con correo, rol, alcance y clave inicial. Para cuentas nuevas SmartRisk crea Authentication y el perfil con esa misma clave, sin enviar correo de activación.</p>
-      <p class="risk-note"><b>Seguridad:</b> las claves no se guardan en Firestore ni en GitHub. Si Authentication ya contiene el correo, el sistema no puede reemplazar su contraseña desde el navegador y lo marcará para tratamiento aparte.</p>
-      <div class="grid">
-        <label class="full">Archivo de provisionamiento JSON<input id="batchProvisionFile" type="file" accept="application/json,.json"></label>
-      </div>
+      <h2>Provisionamiento y reconciliación por lote</h2>
+      <p class="muted">Carga un JSON local con correo, rol, alcance y clave inicial. SmartRisk verifica Authentication, obtiene el UID real y deja el perfil en <b>perfiles/{UID}</b>.</p>
+      <p class="risk-note"><b>Seguridad:</b> las claves no se guardan en Firestore ni en GitHub. Si Authentication ya contiene el correo con una clave distinta, la cuenta se marca para recuperación o tratamiento con Admin SDK; no se altera su contraseña desde el navegador.</p>
+      <div class="grid"><label class="full">Archivo de provisionamiento JSON<input id="batchProvisionFile" type="file" accept="application/json,.json"></label></div>
       <div id="batchSummary" class="status-row"></div>
       <div id="batchPreview" class="table-wrap"></div>
-      <div class="actions"><button id="runBatchProvision" type="button" disabled>Crear cuentas y dejar listas</button><button id="exportBatchResult" type="button" class="secondary" disabled>Exportar resultado</button></div>
+      <div class="actions"><button id="runBatchProvision" type="button" disabled>Reconciliar cuentas y perfiles</button><button id="exportBatchResult" type="button" class="secondary" disabled>Exportar resultado</button></div>
       <div id="batchResult" class="table-wrap"></div>`;
     adminArea.insertBefore(section, auditPanel || null);
     document.querySelector("#batchProvisionFile").addEventListener("change", readBatchFile);
@@ -255,4 +288,5 @@
   }
 
   hydrate();
+  window.SMART_RISK_BATCH_PROVISION = { version: VERSION, mode: "auth-first-uid-canonical-reconciliation" };
 })();
