@@ -1,0 +1,464 @@
+{
+  "product": "SmartRisk CZ5",
+  "projectId": "smartrisk-cz5-produccion",
+  "checkedAt": "2026-09-01T02:35:41.115Z",
+  "sourceCommit": "e7c7b7696ee992b60d97841ab391583e11be7c69",
+  "totals": {
+    "authUsers": 61,
+    "profiles": 62,
+    "uniqueProfileEmails": 62,
+    "passwordHashVisible": 0,
+    "disabledAuth": 0,
+    "authWithoutProfile": 0,
+    "profilesWithoutAuth": 1,
+    "uidMismatch": 0,
+    "duplicateProfileEmails": 0,
+    "inactiveProfiles": 1,
+    "unsupportedRoles": 0,
+    "scopeIssues": 0,
+    "activationIssues": 45,
+    "authWithoutPasswordHash": 61
+  },
+  "incidents": {
+    "disabledAuth": [],
+    "authWithoutProfile": [],
+    "profilesWithoutAuth": [
+      {
+        "emailHash": "d2cd629375c6c8f4",
+        "profileIdHash": "6cfa933ac8f695a7"
+      }
+    ],
+    "uidMismatch": [],
+    "duplicateProfileEmails": [],
+    "inactiveProfiles": [
+      {
+        "emailHash": "d2cd629375c6c8f4"
+      }
+    ],
+    "unsupportedRoles": [],
+    "scopeIssues": [],
+    "activationIssues": [
+      {
+        "emailHash": "d2cd629375c6c8f4",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "e3b0c44298fc1c14"
+      },
+      {
+        "emailHash": "0861eb7334890f39",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "0d609398731715f1",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "0e9582a64f253f89",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "130cd855e1c937b8",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "197cec3195ad7e69",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "1b09d2f332101b87",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "1caadfc7ed4a5757",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "24cc90d3f735be39",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "27b507dfdbd2b7d1",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "299830850cfe17c0",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "2f0478857561b8c1",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "380ec9d28062b829",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "3866a279caf63dfb",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "47428f8c6852817c",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "4e4f4abe95553a01",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "56542be92ed80f6f",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "62a095620b5d9c75",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "653a4baf7606caab",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "65d88f68e6155e04",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "66fd96c8bc5294b1",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "73725c8d090a8a8b",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "78406255b045cce4",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "814e9cf50a7469b3",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "880edcfc8c685e0f",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "896984370aa88a46",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "9783e0d7ebb0a8bc",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "9aa3c7d76d2a5a2f",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "9f0cfbf4a639b2e1",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "a0a90bf4dcc4215d",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "a6c8e614f5aecb18",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "ab76845be12a9aa1",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "afe7edfb3b25ebd3",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "b3613712cd1d5672",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "b56d57abc7bf3b16",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "b9d3727a9c012035",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "c99ce965f4da7123",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "d19b9b69894ecb2b",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "dd1048cbce8881aa",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "e36361b4f5d64f0f",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "ee31aa6912bc88a5",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "ef8cc04a93a52cb9",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "f27a8b67058e0027",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "f37c507c1a8f408b",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      },
+      {
+        "emailHash": "f73932409d34dc8a",
+        "requiereCambioClave": true,
+        "metodoActivacionHash": "2a4e871019c2b44a"
+      }
+    ],
+    "authWithoutPasswordHash": [
+      {
+        "emailHash": "f14b930711867356"
+      },
+      {
+        "emailHash": "78bc636299d154b0"
+      },
+      {
+        "emailHash": "014b0c0f70c3a3d6"
+      },
+      {
+        "emailHash": "192ea6f930ce9d05"
+      },
+      {
+        "emailHash": "43e09ab695fcb2a3"
+      },
+      {
+        "emailHash": "973568fe74c0958f"
+      },
+      {
+        "emailHash": "8f82cf8486518bcd"
+      },
+      {
+        "emailHash": "c167b2245b5d0780"
+      },
+      {
+        "emailHash": "bbd65935b541e8b8"
+      },
+      {
+        "emailHash": "bd36f782f8440d25"
+      },
+      {
+        "emailHash": "bb87ab718569b56e"
+      },
+      {
+        "emailHash": "aa4310815527eca5"
+      },
+      {
+        "emailHash": "b1f8e7c8b6f40be2"
+      },
+      {
+        "emailHash": "cc08ed439e6d9b7a"
+      },
+      {
+        "emailHash": "3209fd50a70dc744"
+      },
+      {
+        "emailHash": "0861eb7334890f39"
+      },
+      {
+        "emailHash": "0d609398731715f1"
+      },
+      {
+        "emailHash": "0e9582a64f253f89"
+      },
+      {
+        "emailHash": "130cd855e1c937b8"
+      },
+      {
+        "emailHash": "197cec3195ad7e69"
+      },
+      {
+        "emailHash": "1b09d2f332101b87"
+      },
+      {
+        "emailHash": "1caadfc7ed4a5757"
+      },
+      {
+        "emailHash": "24cc90d3f735be39"
+      },
+      {
+        "emailHash": "27b507dfdbd2b7d1"
+      },
+      {
+        "emailHash": "299830850cfe17c0"
+      },
+      {
+        "emailHash": "2f0478857561b8c1"
+      },
+      {
+        "emailHash": "380ec9d28062b829"
+      },
+      {
+        "emailHash": "3866a279caf63dfb"
+      },
+      {
+        "emailHash": "47428f8c6852817c"
+      },
+      {
+        "emailHash": "4e4f4abe95553a01"
+      },
+      {
+        "emailHash": "56542be92ed80f6f"
+      },
+      {
+        "emailHash": "62a095620b5d9c75"
+      },
+      {
+        "emailHash": "653a4baf7606caab"
+      },
+      {
+        "emailHash": "65d88f68e6155e04"
+      },
+      {
+        "emailHash": "66fd96c8bc5294b1"
+      },
+      {
+        "emailHash": "73725c8d090a8a8b"
+      },
+      {
+        "emailHash": "78406255b045cce4"
+      },
+      {
+        "emailHash": "814e9cf50a7469b3"
+      },
+      {
+        "emailHash": "880edcfc8c685e0f"
+      },
+      {
+        "emailHash": "896984370aa88a46"
+      },
+      {
+        "emailHash": "9783e0d7ebb0a8bc"
+      },
+      {
+        "emailHash": "9aa3c7d76d2a5a2f"
+      },
+      {
+        "emailHash": "9f0cfbf4a639b2e1"
+      },
+      {
+        "emailHash": "a0a90bf4dcc4215d"
+      },
+      {
+        "emailHash": "a6c8e614f5aecb18"
+      },
+      {
+        "emailHash": "ab76845be12a9aa1"
+      },
+      {
+        "emailHash": "afe7edfb3b25ebd3"
+      },
+      {
+        "emailHash": "b3613712cd1d5672"
+      },
+      {
+        "emailHash": "b56d57abc7bf3b16"
+      },
+      {
+        "emailHash": "b9d3727a9c012035"
+      },
+      {
+        "emailHash": "c99ce965f4da7123"
+      },
+      {
+        "emailHash": "d19b9b69894ecb2b"
+      },
+      {
+        "emailHash": "dd1048cbce8881aa"
+      },
+      {
+        "emailHash": "e36361b4f5d64f0f"
+      },
+      {
+        "emailHash": "ee31aa6912bc88a5"
+      },
+      {
+        "emailHash": "ef8cc04a93a52cb9"
+      },
+      {
+        "emailHash": "f27a8b67058e0027"
+      },
+      {
+        "emailHash": "f37c507c1a8f408b"
+      },
+      {
+        "emailHash": "f73932409d34dc8a"
+      },
+      {
+        "emailHash": "cf1beda60e806b6a"
+      },
+      {
+        "emailHash": "99819428c1103539"
+      }
+    ]
+  },
+  "interpretation": {
+    "canonicalProfilePath": "perfiles/{Authentication UID}",
+    "roleCatalogVersion": "2026.08.24.1",
+    "passwordHashNote": "passwordHash presence is diagnostic only; absence can mean no password credential or insufficient hash visibility.",
+    "privacy": "Only counts and truncated SHA-256 identifiers are stored. No emails, names, UIDs or passwords."
+  },
+  "emailPasswordProvider": {
+    "verified": true,
+    "enabled": true,
+    "passwordRequired": true
+  }
+}
