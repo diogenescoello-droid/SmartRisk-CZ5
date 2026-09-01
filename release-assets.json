@@ -103,6 +103,8 @@
     "v11-authoritative-metrics.js",
     "access-admin.html",
     "access-admin.js",
+    "credential-sync-client.js",
+    "CREDENTIAL_SYNC_PUBLIC_KEY.json",
     "access-batch-provision.js",
     "profile-role-compat.js",
     "RELEASE_MANIFEST.json"
