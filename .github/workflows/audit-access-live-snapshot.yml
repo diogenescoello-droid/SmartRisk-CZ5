@@ -1,0 +1,247 @@
+name: Audit SmartRisk live access snapshot
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - ".github/workflows/audit-access-live-snapshot.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  audit_access:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Authenticate to Firebase production
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_SMARTRISK_CZ5_PRODUCCION }}"
+
+      - name: Prepare Firebase Admin runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/smartrisk-access-live
+          cd /tmp/smartrisk-access-live
+          npm init -y >/dev/null 2>&1
+          npm install --silent firebase-admin@13
+
+      - name: Audit Authentication and Firestore
+        env:
+          FIREBASE_PROJECT_ID: smartrisk-cz5-produccion
+        shell: bash
+        run: |
+          set -euo pipefail
+          export NODE_PATH=/tmp/smartrisk-access-live/node_modules
+          node <<'NODE'
+          const crypto = require('crypto');
+          const fs = require('fs');
+          const admin = require('firebase-admin');
+
+          admin.initializeApp({
+            credential: admin.credential.applicationDefault(),
+            projectId: process.env.FIREBASE_PROJECT_ID
+          });
+
+          const auth = admin.auth();
+          const db = admin.firestore();
+          const norm = v => String(v || '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toLowerCase();
+          const hash = v => crypto.createHash('sha256').update(norm(v)).digest('hex').slice(0,16);
+          const arr = v => Array.isArray(v) ? v.map(String) : [];
+          const supportedRoles = new Set([
+            'administrador',
+            'tecnico zonal',
+            'tecnico provincial',
+            'tecnico territorial',
+            'coordinador coe',
+            'lider mtt/gt',
+            'tomador de decision/control',
+            'visor provincial ame',
+            'visor zonal ame',
+            'consulta provincial ame'
+          ]);
+
+          async function allAuthUsers() {
+            const out = [];
+            let token;
+            do {
+              const page = await auth.listUsers(1000, token);
+              out.push(...page.users);
+              token = page.pageToken;
+            } while (token);
+            return out;
+          }
+
+          (async () => {
+            const [users, snap] = await Promise.all([
+              allAuthUsers(),
+              db.collection('perfiles').get()
+            ]);
+
+            const authByEmail = new Map();
+            for (const u of users) if (u.email) authByEmail.set(norm(u.email), u);
+
+            const profiles = snap.docs.map(d => ({ id:d.id, ...d.data() }));
+            const profilesByEmail = new Map();
+            for (const p of profiles) {
+              const email = norm(p.correo || p.email);
+              if (!email) continue;
+              const list = profilesByEmail.get(email) || [];
+              list.push(p);
+              profilesByEmail.set(email, list);
+            }
+
+            const incidents = {
+              disabledAuth: [],
+              authWithoutProfile: [],
+              profilesWithoutAuth: [],
+              uidMismatch: [],
+              duplicateProfileEmails: [],
+              inactiveProfiles: [],
+              unsupportedRoles: [],
+              scopeIssues: [],
+              activationIssues: [],
+              authWithoutPasswordHash: []
+            };
+
+            let passwordHashVisible = 0;
+            for (const [email, u] of authByEmail) {
+              const ps = profilesByEmail.get(email) || [];
+              if (!ps.length) incidents.authWithoutProfile.push({emailHash:hash(email),uidHash:hash(u.uid)});
+              if (u.disabled) incidents.disabledAuth.push({emailHash:hash(email)});
+              if (u.passwordHash) passwordHashVisible++;
+              else incidents.authWithoutPasswordHash.push({emailHash:hash(email)});
+              for (const p of ps) {
+                if (p.id !== u.uid) incidents.uidMismatch.push({emailHash:hash(email),authUidHash:hash(u.uid),profileIdHash:hash(p.id)});
+              }
+            }
+
+            for (const [email, ps] of profilesByEmail) {
+              if (ps.length > 1) incidents.duplicateProfileEmails.push({emailHash:hash(email),count:ps.length});
+              if (!authByEmail.has(email)) {
+                for (const p of ps) incidents.profilesWithoutAuth.push({emailHash:hash(email),profileIdHash:hash(p.id)});
+              }
+              for (const p of ps) {
+                if (norm(p.estado) !== 'activo') incidents.inactiveProfiles.push({emailHash:hash(email)});
+                const role = norm(p.rol || p.codigoRol || p.rolInstitucional);
+                if (!supportedRoles.has(role)) incidents.unsupportedRoles.push({emailHash:hash(email),roleHash:hash(role)});
+
+                const level = norm(p.nivelAcceso || p.nivel || '');
+                const keys = arr(p.scopeKeys);
+                let scopeOk = true;
+                let reason = '';
+                if (level.includes('zonal')) {
+                  scopeOk = keys.includes('ZONA:CZ5');
+                  if (!scopeOk) reason = 'zonal_scope_missing';
+                } else if (level.includes('prov')) {
+                  scopeOk = keys.length > 0 && keys.some(k => k.startsWith('PROV:'));
+                  if (!scopeOk) reason = 'provincial_scope_missing';
+                } else if (level.includes('cant') || level.includes('territ')) {
+                  scopeOk = keys.length > 0 && keys.some(k => k.startsWith('TER:'));
+                  if (!scopeOk) reason = 'territorial_scope_missing';
+                }
+                if (!scopeOk) incidents.scopeIssues.push({emailHash:hash(email),reason,scopeCount:keys.length});
+
+                const activationOk = p.requiereCambioClave === false &&
+                  ['credencial inicial administrada','recuperacion por correo'].includes(norm(p.metodoActivacion));
+                if (!activationOk) incidents.activationIssues.push({
+                  emailHash:hash(email),
+                  requiereCambioClave:p.requiereCambioClave ?? null,
+                  metodoActivacionHash:hash(p.metodoActivacion || '')
+                });
+              }
+            }
+
+            const totals = {
+              authUsers: users.length,
+              profiles: profiles.length,
+              uniqueProfileEmails: profilesByEmail.size,
+              passwordHashVisible,
+              disabledAuth: incidents.disabledAuth.length,
+              authWithoutProfile: incidents.authWithoutProfile.length,
+              profilesWithoutAuth: incidents.profilesWithoutAuth.length,
+              uidMismatch: incidents.uidMismatch.length,
+              duplicateProfileEmails: incidents.duplicateProfileEmails.length,
+              inactiveProfiles: incidents.inactiveProfiles.length,
+              unsupportedRoles: incidents.unsupportedRoles.length,
+              scopeIssues: incidents.scopeIssues.length,
+              activationIssues: incidents.activationIssues.length,
+              authWithoutPasswordHash: incidents.authWithoutPasswordHash.length
+            };
+
+            const report = {
+              product: 'SmartRisk CZ5',
+              projectId: process.env.FIREBASE_PROJECT_ID,
+              checkedAt: new Date().toISOString(),
+              sourceCommit: process.env.GITHUB_SHA || null,
+              totals,
+              incidents,
+              interpretation: {
+                canonicalProfilePath: 'perfiles/{Authentication UID}',
+                roleCatalogVersion: '2026.08.24.1',
+                passwordHashNote: 'passwordHash presence is diagnostic only; absence can mean no password credential or insufficient hash visibility.',
+                privacy: 'Only counts and truncated SHA-256 identifiers are stored. No emails, names, UIDs or passwords.'
+              }
+            };
+
+            fs.writeFileSync('ACCESS_AUDIT_LATEST.json', JSON.stringify(report,null,2)+'\n');
+            console.log(JSON.stringify(totals));
+          })().catch(err => {
+            console.error('ACCESS_LIVE_AUDIT_FAILED', err && err.code ? err.code : err.message);
+            process.exit(1);
+          });
+          NODE
+
+      - name: Verify Email Password provider
+        env:
+          FIREBASE_PROJECT_ID: smartrisk-cz5-produccion
+        shell: bash
+        run: |
+          set -euo pipefail
+          token="$(gcloud auth application-default print-access-token)"
+          code="$(curl -sS -o /tmp/idp-config.json -w '%{http_code}' -H "Authorization: Bearer ${token}" "https://identitytoolkit.googleapis.com/admin/v2/projects/${FIREBASE_PROJECT_ID}/config")"
+          export HTTP_CODE="$code"
+          node <<'NODE'
+          const fs=require('fs');
+          const report=JSON.parse(fs.readFileSync('ACCESS_AUDIT_LATEST.json','utf8'));
+          let cfg={}; try{cfg=JSON.parse(fs.readFileSync('/tmp/idp-config.json','utf8'));}catch{}
+          const email=cfg.signIn && cfg.signIn.email ? cfg.signIn.email : null;
+          report.emailPasswordProvider=email?{
+            verified:true,
+            enabled:email.enabled===true,
+            passwordRequired:email.passwordRequired!==false
+          }:{verified:false,httpCode:process.env.HTTP_CODE||'unavailable'};
+          fs.writeFileSync('ACCESS_AUDIT_LATEST.json',JSON.stringify(report,null,2)+'\n');
+          console.log(JSON.stringify(report.emailPasswordProvider));
+          NODE
+
+      - name: Commit sanitized audit snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "SmartRisk Audit Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add ACCESS_AUDIT_LATEST.json
+          if git diff --cached --quiet; then
+            echo "No audit changes to commit"
+            exit 0
+          fi
+          git commit -m "Record production access audit snapshot"
+          git push origin HEAD:main
+
+      - name: Upload audit artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smartrisk-access-live-${{ github.run_id }}
+          path: ACCESS_AUDIT_LATEST.json
+          retention-days: 2
+          if-no-files-found: warn
