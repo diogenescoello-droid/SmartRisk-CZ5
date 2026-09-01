@@ -13,7 +13,8 @@ ok(catalog.includes('"tecnico zonal"'), "Variante sin tilde se normaliza al rol 
 ok(gate.includes('catalog.isSupported(profile.rol)'), "La compuerta consulta el catálogo canónico de roles");
 ok(permissions.includes('if (raw.includes("zonal")) return "zonal";'), "Motor de permisos conserva capacidades zonales");
 ok(index.includes('access-role-catalog.js?v=2026.08.24.2'), "El catálogo canónico se carga en la versión publicada");
-ok(index.includes('access-gate.js?v=2026.08.31.4'), "La compuerta mantiene la versión canónica estable");
+ok(index.includes('access-gate.js?v=2026.08.31.5-direct-credentials'), "La compuerta mantiene la política canónica de credencial directa");
+ok(gate.includes('uid-profile-canonical-role-resilient-startup-direct-credentials'), "La compuerta declara acceso directo administrado");
 ok(catalog.includes('rolInstitucional: originalRole'), "Se conserva el rol institucional original para permisos y auditoría");
 
-console.log("PASS acceso Técnico zonal: autenticación compatible, catálogo único y permisos zonales preservados.");
+console.log("PASS acceso Técnico zonal: autenticación compatible, catálogo único, credencial directa y permisos zonales preservados.");
