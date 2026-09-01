@@ -15,7 +15,7 @@
 <section id="loginPanel" class="panel login"><h2>Ingreso de administrador</h2><p class="muted">Use una cuenta administrativa autorizada.</p><form id="loginForm" class="grid"><label class="full">Correo<input id="adminEmail" type="email" autocomplete="username" required></label><label class="full">Contraseña<input id="adminPassword" type="password" autocomplete="current-password" required></label><div class="full actions"><button type="submit">Ingresar</button></div><div id="loginMessage" class="full message hidden"></div></form></section>
 
 <div id="adminArea" class="hidden">
-<section class="panel"><h2>Ruta recomendada para habilitar usuarios</h2><ol class="step-list"><li>Depure primero correo, rol y alcance territorial.</li><li>Para varios usuarios, cargue el JSON en <b>Provisionamiento por lote</b>. Cada cuenta nueva se crea con la clave inicial indicada en el archivo.</li><li>SmartRisk registra Authentication y el perfil con el mismo UID, rol y alcance.</li><li>Las cuentas nuevas quedan listas para ingresar inmediatamente: no se envía correo de activación y no se exige cambio de clave al primer ingreso.</li><li>Si Authentication ya contiene el correo, SmartRisk no puede sustituir su contraseña desde el navegador; esa cuenta se marca para tratamiento aparte.</li><li>Antes de distribuir credenciales, ejecute la auditoría de perfiles.</li></ol><p class="risk-note"><b>Custodia:</b> entregue cada clave solamente a su titular. No publique ni almacene archivos de credenciales en GitHub o repositorios compartidos.</p></section>
+<section class="panel"><h2>Ruta recomendada para habilitar usuarios</h2><ol class="step-list"><li>Depure primero correo, rol y alcance territorial.</li><li>Para varios usuarios, cargue el JSON en <b>Provisionamiento y reconciliación por lote</b>.</li><li>SmartRisk verifica primero Firebase Authentication, recupera el UID real y deja el perfil canónico en <b>perfiles/{UID}</b>.</li><li>Las cuentas nuevas quedan listas para ingresar inmediatamente con la clave inicial indicada; no se envía correo de activación ni se exige cambio de clave al primer ingreso.</li><li>Si Authentication ya contiene el correo, SmartRisk prueba únicamente la clave preparada. Si coincide, reconcilia el perfil por UID; si es distinta, no la modifica y marca la cuenta para recuperación o tratamiento administrativo.</li><li>Antes de distribuir credenciales, ejecute la auditoría de perfiles.</li></ol><p class="risk-note"><b>Custodia:</b> entregue cada clave solamente a su titular. No publique ni almacene archivos de credenciales en GitHub o repositorios compartidos.</p></section>
 
 <section class="panel"><h2>Vincular UID y perfil</h2><form id="profileForm" class="grid">
 <label>UID de Authentication<input name="uid" maxlength="128" required placeholder="Copiar desde Firebase Authentication"></label>
@@ -41,6 +41,6 @@
 <script src="firebase-config.js?v=2026.08.24.2"></script>
 <script src="access-role-catalog.js?v=2026.08.24.2"></script>
 <script src="access-admin.js?v=2026.08.24.2"></script>
-<script src="access-batch-provision.js?v=2026.08.31.1"></script>
+<script src="access-batch-provision.js?v=2026.08.31.2"></script>
 </body>
 </html>
