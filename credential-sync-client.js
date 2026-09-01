@@ -1,12 +1,14 @@
 (() => {
   "use strict";
 
-  const VERSION = "2026.09.01.3-rsa-envelope";
+  const VERSION = "2026.09.01.4-selective-repair";
   const JOB_REF = () => db.collection("migraciones").doc("credential-sync-current");
   const PUBLIC_KEY_URL = "CREDENTIAL_SYNC_PUBLIC_KEY.json";
+  const FIREBASE_WEB_API_KEY = "AIzaSyCAgRRrJMKe0RBhVJxjeblkark8jnMhbIY";
   const $ = selector => document.querySelector(selector);
   const normalizeEmail = value => String(value || "").trim().toLowerCase();
   const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, char => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" })[char]);
+  const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
   const bytesToBase64 = bytes => {
     let binary = "";
     const view = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
@@ -31,6 +33,35 @@
       if (!Array.isArray(user?.scopeKeys) || !user.scopeKeys.length) throw new Error(`Falta el alcance para ${email}.`);
     }
     return users;
+  }
+
+  async function credentialWorks(user) {
+    const email = normalizeEmail(user?.correo);
+    const password = String(user?.claveInicial || user?.password || "").trim();
+    const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${FIREBASE_WEB_API_KEY}`;
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ email, password, returnSecureToken: true })
+    });
+    if (response.ok) return true;
+    const body = await response.json().catch(() => ({}));
+    const code = String(body?.error?.message || `HTTP_${response.status}`);
+    if (["INVALID_LOGIN_CREDENTIALS", "INVALID_PASSWORD", "EMAIL_NOT_FOUND", "USER_DISABLED"].includes(code)) return false;
+    throw new Error(`No se pudo validar ${email}: ${code}`);
+  }
+
+  async function splitWorkingAndPending(users, onProgress) {
+    const working = [];
+    const pending = [];
+    for (let i = 0; i < users.length; i++) {
+      const user = users[i];
+      onProgress?.(i + 1, users.length);
+      const ok = await credentialWorks(user);
+      (ok ? working : pending).push(user);
+      await sleep(120);
+    }
+    return { working, pending };
   }
 
   function pemToDer(pem) {
@@ -103,18 +134,31 @@
     }
     button.disabled = true;
     try {
-      box.classList.add("warn");
-      box.textContent = "Validando lote y obteniendo la llave pública vigente…";
-      const clearText = await file.text();
-      const parsed = JSON.parse(clearText);
+      const sourceText = await file.text();
+      const parsed = JSON.parse(sourceText);
       const users = validateBatch(parsed);
+      box.classList.add("warn");
+      box.textContent = "Comprobando las 46 credenciales contra Firebase sin modificar ninguna cuenta…";
+      const { working, pending } = await splitWorkingAndPending(users, (current, total) => {
+        box.textContent = `Comprobando credenciales ${current}/${total}…`;
+      });
+      if (!pending.length) {
+        $("#secureSyncFile").value = "";
+        box.className = "message ok";
+        box.innerHTML = `<b>No hay credenciales por reparar.</b> Las ${working.length} credenciales del archivo ya ingresan correctamente.`;
+        return;
+      }
+      box.textContent = `${working.length} credenciales funcionan. Preparando reparación segura solo para ${pending.length} pendientes…`;
       const keyDoc = await loadCurrentPublicKey();
+      const clearText = JSON.stringify({ users: pending });
       const envelope = await encryptBatch(clearText, keyDoc);
       await JOB_REF().set({
-        schemaVersion: "2026.09.01.3",
-        type: "credential-sync-46",
+        schemaVersion: "2026.09.01.4",
+        type: "credential-sync-subset",
         status: "pending",
-        recordCount: users.length,
+        recordCount: pending.length,
+        sourceRecordCount: users.length,
+        knownGoodCount: working.length,
         requestedAt: firebase.firestore.FieldValue.serverTimestamp(),
         requestedBy: normalizeEmail(auth.currentUser.email),
         clientVersion: VERSION,
@@ -122,12 +166,12 @@
       });
       $("#secureSyncFile").value = "";
       box.className = "message ok";
-      box.innerHTML = `<b>Lote cifrado recibido.</b> Las 46 credenciales se cifraron localmente con AES-256-GCM y la clave de sesión quedó protegida con RSA-OAEP. Llave de un solo uso: <code>${escapeHtml(String(keyDoc.keyId).slice(0, 8))}…</code>`;
+      box.innerHTML = `<b>Reparación selectiva enviada.</b> ${working.length} credenciales que ya funcionaban quedaron intactas; solo ${pending.length} fueron cifradas y enviadas a reparación. Llave: <code>${escapeHtml(String(keyDoc.keyId).slice(0, 8))}…</code>`;
       await refreshStatus();
     } catch (error) {
       console.error("Secure credential queue failed", error?.message || error);
       box.className = "message bad";
-      box.textContent = error?.message || "No se pudo enviar el lote cifrado.";
+      box.textContent = error?.message || "No se pudo enviar la reparación cifrada.";
     } finally {
       button.disabled = false;
     }
@@ -144,12 +188,13 @@
       }
       const data = snap.data() || {};
       const status = String(data.status || "unknown");
+      const count = Number(data.recordCount || 0);
       const badgeClass = status === "success" ? "ok" : status === "failed" ? "bad" : "warn";
       const detail = status === "success"
-        ? `${Number(data.verified || 0)} de ${Number(data.recordCount || 46)} verificados · ${Number(data.created || 0)} creados · ${Number(data.updated || 0)} actualizados`
+        ? `${Number(data.verified || 0)} de ${count} reparados y verificados · ${Number(data.created || 0)} creados · ${Number(data.updated || 0)} actualizados`
         : status === "failed"
           ? `Error de sincronización. Fallos: ${Number(data.failureCount || 0)}`
-          : `Lote cifrado pendiente de procesamiento · ${Number(data.recordCount || 46)} registros`;
+          : `Reparación cifrada pendiente de procesamiento · ${count} registros`;
       target.innerHTML = `<span class="badge ${badgeClass}">${escapeHtml(status.toUpperCase())}</span><span class="small">${escapeHtml(detail)}</span>`;
     } catch (error) {
       target.innerHTML = '<span class="badge bad">No se pudo consultar el estado</span>';
@@ -165,15 +210,15 @@
     section.innerHTML = `
       <div class="top">
         <div>
-          <h2>Sincronización segura de las 46 credenciales</h2>
-          <p class="muted">Deja Firebase Authentication exactamente con las claves de la matriz privada, incluyendo cuentas existentes y faltantes.</p>
+          <h2>Reparación selectiva de credenciales</h2>
+          <p class="muted">Carga la matriz privada de 46 usuarios. SmartRisk comprueba primero cuáles ya funcionan y solo repara las credenciales rechazadas.</p>
         </div>
         <button id="secureSyncRefresh" type="button" class="secondary">Actualizar estado</button>
       </div>
-      <p class="risk-note"><b>Privacidad:</b> el archivo se cifra localmente con AES-256-GCM; la clave AES se protege con RSA-OAEP usando una llave pública temporal. Las contraseñas no se publican en GitHub ni se guardan en texto claro en Firestore.</p>
+      <p class="risk-note"><b>Protección:</b> las cuentas que ya ingresan no se modifican. Solo las credenciales fallidas se cifran localmente con AES-256-GCM y se envían protegidas con RSA-OAEP.</p>
       <form id="secureSyncForm" class="grid">
         <label class="full">JSON privado consolidado de 46 usuarios<input id="secureSyncFile" type="file" accept="application/json,.json" required></label>
-        <div class="full actions"><button id="secureSyncSubmit" type="submit">Cifrar y enviar sincronización</button></div>
+        <div class="full actions"><button id="secureSyncSubmit" type="submit">Comprobar y reparar pendientes</button></div>
       </form>
       <div id="secureSyncMessage" class="message hidden"></div>
       <div id="secureSyncStatus" class="status-row" style="margin-top:12px"></div>`;
