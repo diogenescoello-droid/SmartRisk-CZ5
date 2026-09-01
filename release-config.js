@@ -6,10 +6,10 @@
     release: "V1.0.0 PILOTO ESTABLE",
     build: "1.0.0-piloto-estable",
     tag: "v1.0.0-piloto-estable",
-    dataCut: "2026-08-27",
-    platformUpdatedAt: "2026-08-27",
-    f07SyncedAt: "2026-09-01T10:30:10.621Z",
-    f07LatestSubmissionAt: "2026-08-27T21:48:10",
+    dataCut: "2026-09-01",
+    platformUpdatedAt: "2026-09-01",
+    f07SyncedAt: "2026-09-01T15:09:01.482Z",
+    f07LatestSubmissionAt: "2026-09-01T13:05:38",
     auditMilestone: "HITO-2026-08-27-AUDITORIA-INTEGRAL",
     channel: "production"
   });
