@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const VERSION = "2026.09.01.1-secure-admin-queue";
+  const VERSION = "2026.09.01.2-secure-admin-queue";
   const JOB_REF = () => db.collection("migraciones").doc("credential-sync-current");
   const $ = selector => document.querySelector(selector);
   const normalizeEmail = value => String(value || "").trim().toLowerCase();
@@ -11,13 +11,6 @@
     const view = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
     for (let i = 0; i < view.length; i += 0x8000) binary += String.fromCharCode(...view.subarray(i, i + 0x8000));
     return btoa(binary);
-  };
-  const pemToArrayBuffer = pem => {
-    const b64 = String(pem || "").replace(/-----BEGIN PUBLIC KEY-----|-----END PUBLIC KEY-----|\s+/g, "");
-    const binary = atob(b64);
-    const bytes = new Uint8Array(binary.length);
-    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-    return bytes.buffer;
   };
 
   function validateBatch(parsed) {
@@ -38,33 +31,15 @@
     return users;
   }
 
-  async function loadPublicKey() {
-    const response = await fetch(`CREDENTIAL_SYNC_PUBLIC_KEY.json?ts=${Date.now()}`, { cache: "no-store" });
-    if (!response.ok) throw new Error("El canal seguro todavía no está habilitado.");
-    const meta = await response.json();
-    if (!meta?.keyId || !meta?.publicKey || meta?.active === false) throw new Error("La llave de sincronización no está activa.");
-    if (meta.expiresAt && Date.parse(meta.expiresAt) <= Date.now()) throw new Error("La llave de sincronización expiró.");
-    return meta;
-  }
-
-  async function encryptBatch(clearText, keyMeta) {
-    const publicKey = await crypto.subtle.importKey(
-      "spki",
-      pemToArrayBuffer(keyMeta.publicKey),
-      { name: "RSA-OAEP", hash: "SHA-256" },
-      false,
-      ["encrypt"]
-    );
+  async function encryptBatch(clearText) {
     const aesKey = await crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt"]);
     const rawAes = await crypto.subtle.exportKey("raw", aesKey);
-    const encryptedKey = await crypto.subtle.encrypt({ name: "RSA-OAEP" }, publicKey, rawAes);
     const iv = crypto.getRandomValues(new Uint8Array(12));
     const clearBytes = new TextEncoder().encode(clearText);
     const ciphertextWithTag = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, aesKey, clearBytes);
     return {
-      keyId: keyMeta.keyId,
-      algorithm: "RSA-OAEP-3072-SHA256 + AES-256-GCM(WebCrypto-tag-appended)",
-      encryptedKey: bytesToBase64(encryptedKey),
+      algorithm: "AES-256-GCM(WebCrypto-tag-appended)",
+      sessionKey: bytesToBase64(rawAes),
       iv: bytesToBase64(iv),
       ciphertext: bytesToBase64(ciphertextWithTag)
     };
@@ -92,10 +67,9 @@
       const clearText = await file.text();
       const parsed = JSON.parse(clearText);
       const users = validateBatch(parsed);
-      const keyMeta = await loadPublicKey();
-      const envelope = await encryptBatch(clearText, keyMeta);
+      const envelope = await encryptBatch(clearText);
       await JOB_REF().set({
-        schemaVersion: "2026.09.01.1",
+        schemaVersion: "2026.09.01.2",
         type: "credential-sync-46",
         status: "pending",
         recordCount: users.length,
@@ -106,7 +80,7 @@
       });
       $("#secureSyncFile").value = "";
       box.classList.add("ok");
-      box.innerHTML = "<b>Lote cifrado recibido.</b> Las 46 contraseñas quedaron cifradas antes de salir de este navegador. El proceso administrativo reemplazará las claves existentes y creará las cuentas faltantes; no se envía correo de activación ni se fuerza cambio al primer ingreso.";
+      box.innerHTML = "<b>Lote cifrado recibido.</b> Las 46 credenciales se cifraron localmente antes de guardarse en el área administrativa de migración. El proceso con Admin SDK reemplazará las claves existentes y creará las cuentas faltantes.";
       await refreshStatus();
     } catch (error) {
       console.error("Secure credential queue failed", error?.message || error);
@@ -136,7 +110,7 @@
           : `Lote cifrado pendiente de procesamiento · ${Number(data.recordCount || 46)} registros`;
       target.innerHTML = `<span class="badge ${badgeClass}">${escapeHtml(status.toUpperCase())}</span><span class="small">${escapeHtml(detail)}</span>`;
     } catch (error) {
-      target.innerHTML = `<span class="badge bad">No se pudo consultar el estado</span>`;
+      target.innerHTML = '<span class="badge bad">No se pudo consultar el estado</span>';
     }
   }
 
@@ -150,11 +124,11 @@
       <div class="top">
         <div>
           <h2>Sincronización segura de las 46 credenciales</h2>
-          <p class="muted">Ruta administrativa para dejar Firebase Authentication exactamente con las claves de la matriz privada, incluyendo cuentas existentes y faltantes.</p>
+          <p class="muted">Deja Firebase Authentication exactamente con las claves de la matriz privada, incluyendo cuentas existentes y faltantes.</p>
         </div>
         <button id="secureSyncRefresh" type="button" class="secondary">Actualizar estado</button>
       </div>
-      <p class="risk-note"><b>Privacidad:</b> el archivo se cifra localmente con AES-256-GCM; la llave AES se protege con RSA-OAEP. El JSON y las contraseñas nunca se escriben en GitHub ni se guardan en texto claro en Firestore.</p>
+      <p class="risk-note"><b>Privacidad:</b> el archivo se cifra localmente con AES-256-GCM antes de guardarse temporalmente en el área administrativa de migración. No se publica en GitHub y, al completar la sincronización, el proceso elimina la carga cifrada y conserva solo el resultado resumido.</p>
       <form id="secureSyncForm" class="grid">
         <label class="full">JSON privado consolidado de 46 usuarios<input id="secureSyncFile" type="file" accept="application/json,.json" required></label>
         <div class="full actions"><button id="secureSyncSubmit" type="submit">Cifrar y enviar sincronización</button></div>
