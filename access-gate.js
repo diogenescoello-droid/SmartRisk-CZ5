@@ -3,7 +3,7 @@
 
   const RELEASE = window.SMART_RISK_RELEASE || { release: "V1.0.0 PILOTO ESTABLE", build: "1.0.0-piloto-estable" };
   const BUILD_VERSION = RELEASE.build;
-  const ACCESS_VERSION = "2026.08.31.4";
+  const ACCESS_VERSION = "2026.08.31.5-direct-credentials";
   const catalog = window.SmartRiskAccessCatalog;
   const SUPPORT_SCRIPTS = [
     "smartrisk-operational-core.js", "data.js", "enos-data.js", "enos-reviews.js",
@@ -146,52 +146,8 @@
     return snap.exists ? normalizeProfile(snap.data()) : null;
   }
 
-  function passwordProblem(value) {
-    if (String(value).length < 12) return "Use al menos 12 caracteres.";
-    if (!/[A-Z]/.test(value)) return "Incluya una letra mayúscula.";
-    if (!/[a-z]/.test(value)) return "Incluya una letra minúscula.";
-    if (!/\d/.test(value)) return "Incluya un número.";
-    if (!/[^\w\s]/.test(value)) return "Incluya un símbolo.";
-    return "";
-  }
-
-  async function requireFirstPasswordChange(user, profile) {
-    const activationMethod = normalizeText(profile.metodoActivacion);
-    const temporaryCredentialFlow = profile.requiereCambioClave === true && ["credencial temporal", "credencial inicial administrada"].includes(activationMethod);
-    if (!temporaryCredentialFlow) return true;
-    if (!pendingLoginPassword) {
-      showAuthenticatedStartupError("Su cuenta está activa, pero requiere completar el cambio de su credencial inicial.", new Error("INITIAL_PASSWORD_REAUTH_REQUIRED"));
-      return false;
-    }
-    return new Promise(resolve => {
-      const dialog = document.createElement("dialog");
-      dialog.innerHTML = `<form class="dialog-body"><h3>Definir contraseña personal</h3><p class="muted">La credencial inicial dejará de funcionar.</p><label>Nueva contraseña</label><input name="newPassword" type="password" autocomplete="new-password" required><label>Confirmar contraseña</label><input name="confirmation" type="password" autocomplete="new-password" required><div class="form-error error" role="alert"></div><div class="dialog-actions"><button type="submit">Actualizar y continuar</button></div></form>`;
-      document.body.append(dialog);
-      dialog.showModal();
-      const form = dialog.querySelector("form");
-      form.onsubmit = async event => {
-        event.preventDefault();
-        const values = Object.fromEntries(new FormData(form));
-        const errorBox = dialog.querySelector(".form-error");
-        const validation = passwordProblem(values.newPassword);
-        if (validation) { errorBox.textContent = validation; return; }
-        if (values.newPassword !== values.confirmation) { errorBox.textContent = "Las contraseñas no coinciden."; return; }
-        if (values.newPassword === pendingLoginPassword) { errorBox.textContent = "La nueva contraseña debe ser diferente de la inicial."; return; }
-        try {
-          const credential = firebase.auth.EmailAuthProvider.credential(user.email, pendingLoginPassword);
-          await user.reauthenticateWithCredential(credential);
-          await user.updatePassword(values.newPassword);
-          await db.collection("perfiles").doc(user.uid).set({ requiereCambioClave: false, claveActualizadaEn: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
-          pendingLoginPassword = "";
-          dialog.close();
-          dialog.remove();
-          resolve(true);
-        } catch (error) {
-          console.error(error);
-          errorBox.textContent = authErrorMessage(error);
-        }
-      };
-    });
+  async function requireFirstPasswordChange() {
+    return true;
   }
 
   async function loadApplication(user, profile) {
@@ -307,7 +263,7 @@
     version: ACCESS_VERSION,
     build: BUILD_VERSION,
     release: RELEASE.release,
-    mode: "uid-profile-canonical-role-resilient-startup",
+    mode: "uid-profile-canonical-role-resilient-startup-direct-credentials",
     provisioning: "Firebase Authentication + perfiles/{UID}",
     support: "diogenes.coello@gestionderiesgos.gob.ec"
   };
