@@ -15,7 +15,7 @@
 <section id="loginPanel" class="panel login"><h2>Ingreso de administrador</h2><p class="muted">Use una cuenta administrativa autorizada.</p><form id="loginForm" class="grid"><label class="full">Correo<input id="adminEmail" type="email" autocomplete="username" required></label><label class="full">Contraseña<input id="adminPassword" type="password" autocomplete="current-password" required></label><div class="full actions"><button type="submit">Ingresar</button></div><div id="loginMessage" class="full message hidden"></div></form></section>
 
 <div id="adminArea" class="hidden">
-<section class="panel"><h2>Ruta recomendada para habilitar usuarios</h2><ol class="step-list"><li>Depure primero correo, rol y alcance territorial.</li><li>Para sincronizar las 46 credenciales oficiales, use <b>Sincronización segura de las 46 credenciales</b>. Ese flujo reemplaza la contraseña de cuentas existentes y crea las faltantes mediante Admin SDK.</li><li>El JSON privado se cifra en el navegador antes de enviarse; las contraseñas no se publican en GitHub ni se almacenan en texto claro en Firestore.</li><li>Las cuentas quedan listas para ingresar inmediatamente con la clave inicial indicada; no se envía correo de activación ni se exige cambio de clave al primer ingreso.</li><li>El panel de provisionamiento por lote inferior queda disponible para validación y reconciliación ordinaria, pero no reemplaza una contraseña distinta ya existente.</li><li>Antes de distribuir credenciales, confirme que el estado de sincronización indique <b>SUCCESS · 46 de 46 verificados</b> y ejecute la auditoría de perfiles.</li></ol><p class="risk-note"><b>Custodia:</b> entregue cada clave solamente a su titular. No publique ni almacene archivos de credenciales en GitHub o repositorios compartidos.</p></section>
+<section class="panel"><h2>Ruta recomendada para habilitar usuarios</h2><ol class="step-list"><li>Depure primero correo, rol y alcance territorial.</li><li>Para regularizar la matriz privada, use <b>Reparación selectiva de credenciales</b>. El sistema comprueba primero las 46 claves y conserva intactas las que ya funcionan.</li><li>Únicamente las credenciales rechazadas se cifran en el navegador y se envían para actualización mediante Admin SDK.</li><li>Las cuentas reparadas quedan listas para ingresar inmediatamente con la clave indicada en la matriz; no se exige cambio de clave al primer ingreso.</li><li>El panel de provisionamiento por lote inferior queda disponible para validación y reconciliación ordinaria.</li><li>Antes de distribuir nuevas credenciales, confirme que el estado de reparación indique <b>SUCCESS</b> para todos los registros enviados a corrección y ejecute la auditoría de perfiles.</li></ol><p class="risk-note"><b>Custodia:</b> entregue cada clave solamente a su titular. No publique ni almacene archivos de credenciales en GitHub o repositorios compartidos.</p></section>
 
 <section class="panel"><h2>Vincular UID y perfil</h2><form id="profileForm" class="grid">
 <label>UID de Authentication<input name="uid" maxlength="128" required placeholder="Copiar desde Firebase Authentication"></label>
@@ -41,7 +41,7 @@
 <script src="firebase-config.js?v=2026.08.24.2"></script>
 <script src="access-role-catalog.js?v=2026.08.24.2"></script>
 <script src="access-admin.js?v=2026.08.24.2"></script>
-<script src="credential-sync-client.js?v=2026.09.01.3"></script>
+<script src="credential-sync-client.js?v=2026.09.01.4"></script>
 <script src="access-batch-provision.js?v=2026.08.31.2"></script>
 </body>
 </html>
