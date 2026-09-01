@@ -19,7 +19,7 @@ new vm.Script(menu, { filename: "rc13-menu.js" });
 
 const rolloutPosition = index.indexOf("v11-rollout.js?v=11.0.0-rc17-operativo-p0");
 const menuPosition = index.indexOf("rc13-menu.js?v=1.0.0-piloto-estable");
-const gatePosition = index.indexOf("access-gate.js?v=2026.08.31.4");
+const gatePosition = index.indexOf("access-gate.js?v=2026.08.31.5-direct-credentials");
 
 ok(rolloutPosition >= 0 && rolloutPosition < gatePosition, "Rollout V11 restaurado antes de la compuerta de acceso");
 ok(menuPosition > rolloutPosition && menuPosition < gatePosition, "Capa RC13 cargada antes de iniciar la aplicación");
@@ -37,4 +37,4 @@ ok(architecture.includes("Mantener activo `v11-rollout.js`") && architecture.inc
 ok(!/\.collection\([^)]*\)\.(add|set|update|delete)\s*\(/.test(menu), "RC13 no introduce escrituras Firestore directas");
 ok(!/\.doc\([^)]*\)\.(set|update|delete)\s*\(/.test(menu), "RC13 conserva la capa de presentación sin escrituras");
 
-console.log("\nTodas las pruebas consolidadas RC13 pasaron sobre P0.");
+console.log("\nTodas las pruebas consolidadas RC13 pasaron sobre P0 y credenciales directas.");
