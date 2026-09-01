@@ -1,8 +1,9 @@
 (() => {
   "use strict";
 
-  const VERSION = "2026.09.01.2-secure-admin-queue";
+  const VERSION = "2026.09.01.3-rsa-envelope";
   const JOB_REF = () => db.collection("migraciones").doc("credential-sync-current");
+  const PUBLIC_KEY_URL = "CREDENTIAL_SYNC_PUBLIC_KEY.json";
   const $ = selector => document.querySelector(selector);
   const normalizeEmail = value => String(value || "").trim().toLowerCase();
   const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, char => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" })[char]);
@@ -12,6 +13,7 @@
     for (let i = 0; i < view.length; i += 0x8000) binary += String.fromCharCode(...view.subarray(i, i + 0x8000));
     return btoa(binary);
   };
+  const base64ToBytes = value => Uint8Array.from(atob(String(value || "")), char => char.charCodeAt(0));
 
   function validateBatch(parsed) {
     const users = Array.isArray(parsed) ? parsed : parsed?.users;
@@ -31,15 +33,52 @@
     return users;
   }
 
-  async function encryptBatch(clearText) {
+  function pemToDer(pem) {
+    const clean = String(pem || "")
+      .replace(/-----BEGIN PUBLIC KEY-----/g, "")
+      .replace(/-----END PUBLIC KEY-----/g, "")
+      .replace(/\s+/g, "");
+    if (!clean) throw new Error("La llave pública de sincronización está vacía.");
+    return base64ToBytes(clean);
+  }
+
+  async function loadCurrentPublicKey() {
+    const separator = PUBLIC_KEY_URL.includes("?") ? "&" : "?";
+    const response = await fetch(`${PUBLIC_KEY_URL}${separator}t=${Date.now()}`, {
+      cache: "no-store",
+      headers: { "Cache-Control": "no-cache" }
+    });
+    if (!response.ok) throw new Error(`No se pudo obtener la llave pública vigente (HTTP ${response.status}).`);
+    const keyDoc = await response.json();
+    if (!keyDoc?.active || !keyDoc?.keyId || !keyDoc?.publicKey) throw new Error("La llave pública vigente no está activa o está incompleta.");
+    const expiresAt = Date.parse(keyDoc.expiresAt || "");
+    if (!Number.isFinite(expiresAt) || expiresAt <= Date.now()) throw new Error("La llave pública de sincronización expiró. Genere una nueva antes de cargar el lote.");
+    if (!String(keyDoc.algorithm || "").includes("RSA-OAEP-3072-SHA256")) throw new Error("La llave pública usa un algoritmo no compatible.");
+    return keyDoc;
+  }
+
+  async function importRsaPublicKey(publicKeyPem) {
+    return crypto.subtle.importKey(
+      "spki",
+      pemToDer(publicKeyPem),
+      { name: "RSA-OAEP", hash: "SHA-256" },
+      false,
+      ["encrypt"]
+    );
+  }
+
+  async function encryptBatch(clearText, keyDoc) {
     const aesKey = await crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt"]);
     const rawAes = await crypto.subtle.exportKey("raw", aesKey);
     const iv = crypto.getRandomValues(new Uint8Array(12));
     const clearBytes = new TextEncoder().encode(clearText);
     const ciphertextWithTag = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, aesKey, clearBytes);
+    const rsaKey = await importRsaPublicKey(keyDoc.publicKey);
+    const encryptedKey = await crypto.subtle.encrypt({ name: "RSA-OAEP" }, rsaKey, rawAes);
     return {
-      algorithm: "AES-256-GCM(WebCrypto-tag-appended)",
-      sessionKey: bytesToBase64(rawAes),
+      keyId: String(keyDoc.keyId),
+      algorithm: "RSA-OAEP-3072-SHA256 + AES-256-GCM(WebCrypto-tag-appended)",
+      encryptedKey: bytesToBase64(encryptedKey),
       iv: bytesToBase64(iv),
       ciphertext: bytesToBase64(ciphertextWithTag)
     };
@@ -64,12 +103,15 @@
     }
     button.disabled = true;
     try {
+      box.classList.add("warn");
+      box.textContent = "Validando lote y obteniendo la llave pública vigente…";
       const clearText = await file.text();
       const parsed = JSON.parse(clearText);
       const users = validateBatch(parsed);
-      const envelope = await encryptBatch(clearText);
+      const keyDoc = await loadCurrentPublicKey();
+      const envelope = await encryptBatch(clearText, keyDoc);
       await JOB_REF().set({
-        schemaVersion: "2026.09.01.2",
+        schemaVersion: "2026.09.01.3",
         type: "credential-sync-46",
         status: "pending",
         recordCount: users.length,
@@ -79,12 +121,12 @@
         ...envelope
       });
       $("#secureSyncFile").value = "";
-      box.classList.add("ok");
-      box.innerHTML = "<b>Lote cifrado recibido.</b> Las 46 credenciales se cifraron localmente antes de guardarse en el área administrativa de migración. El proceso con Admin SDK reemplazará las claves existentes y creará las cuentas faltantes.";
+      box.className = "message ok";
+      box.innerHTML = `<b>Lote cifrado recibido.</b> Las 46 credenciales se cifraron localmente con AES-256-GCM y la clave de sesión quedó protegida con RSA-OAEP. Llave de un solo uso: <code>${escapeHtml(String(keyDoc.keyId).slice(0, 8))}…</code>`;
       await refreshStatus();
     } catch (error) {
       console.error("Secure credential queue failed", error?.message || error);
-      box.classList.add("bad");
+      box.className = "message bad";
       box.textContent = error?.message || "No se pudo enviar el lote cifrado.";
     } finally {
       button.disabled = false;
@@ -128,7 +170,7 @@
         </div>
         <button id="secureSyncRefresh" type="button" class="secondary">Actualizar estado</button>
       </div>
-      <p class="risk-note"><b>Privacidad:</b> el archivo se cifra localmente con AES-256-GCM antes de guardarse temporalmente en el área administrativa de migración. No se publica en GitHub y, al completar la sincronización, el proceso elimina la carga cifrada y conserva solo el resultado resumido.</p>
+      <p class="risk-note"><b>Privacidad:</b> el archivo se cifra localmente con AES-256-GCM; la clave AES se protege con RSA-OAEP usando una llave pública temporal. Las contraseñas no se publican en GitHub ni se guardan en texto claro en Firestore.</p>
       <form id="secureSyncForm" class="grid">
         <label class="full">JSON privado consolidado de 46 usuarios<input id="secureSyncFile" type="file" accept="application/json,.json" required></label>
         <div class="full actions"><button id="secureSyncSubmit" type="submit">Cifrar y enviar sincronización</button></div>
