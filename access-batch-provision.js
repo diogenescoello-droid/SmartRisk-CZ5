@@ -259,7 +259,7 @@
     };
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
     const link = document.createElement("a");
-    link.href = URL.createObjectURL(link.href = URL.createObjectURL(blob));
+    link.href = URL.createObjectURL(blob);
     link.download = `smartrisk-reconciliacion-${new Date().toISOString().slice(0, 10)}.json`;
     link.click();
     setTimeout(() => URL.revokeObjectURL(link.href), 1000);
