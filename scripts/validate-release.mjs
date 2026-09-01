@@ -47,14 +47,15 @@ const completion=read('preview-rc14.4.4/followup-completion-20260730.js');
 
 includes(index,'V1.0.0 PILOTO ESTABLE','index');
 includes(index,'release-config.js?v=1.0.0-piloto-estable','index');
-includes(index,'access-gate.js?v=2026.08.31.4','index');
+includes(index,'access-gate.js?v=2026.08.31.5-direct-credentials','index');
 includes(index,'scope-repository.js?v=11.0.0-rc17-operativo-p0','index');
 includes(index,'v11-rollout.js?v=11.0.0-rc17-operativo-p0','index');
 includes(gate,'const BUILD_VERSION = RELEASE.build','compuerta');
-includes(gate,'uid-profile-canonical-role-resilient-startup','compuerta');
+includes(gate,'uid-profile-canonical-role-resilient-startup-direct-credentials','compuerta');
 includes(gate,'risk-reports-5y-data.js','compuerta');
 includes(gate,'risk-reports-5y-ui.js','compuerta');
-includes(gate,'credencial inicial administrada','compuerta de cambio de clave inicial');
+includes(gate,'async function requireFirstPasswordChange()','compuerta de credencial directa');
+expect(!gate.includes('updatePassword('),'la compuerta no debe cambiar automáticamente la contraseña del usuario');
 
 for(const value of [
   'filterReviews(index)',
@@ -121,5 +122,6 @@ console.log(JSON.stringify({
   scopeGuard:true,
   riskReportsByCanton:true,
   reviewObserverIdempotent:true,
-  packageHashesVerified:true
+  packageHashesVerified:true,
+  accessPolicy:'direct-managed-credentials'
 },null,2));
