@@ -29,15 +29,15 @@
   },
   "publicPath": "./",
   "dataCut": "2026-09-03",
-  "f07SyncedAt": "2026-09-03T15:12:57.778Z",
-  "latestF07SubmissionAt": "2026-09-03T15:06:47",
+  "f07SyncedAt": "2026-09-03T18:43:53.823Z",
+  "latestF07SubmissionAt": "2026-09-03T16:40:36",
   "counts": {
     "territories": 56,
     "plansAvailable": 56,
     "formalPlanDeliveries": 53,
     "validatedPlans": 52,
     "returnedPlans": 4,
-    "followupsMinimum": 186,
+    "followupsMinimum": 189,
     "riskReportsIndexed": 6,
     "cantonsWithRiskReports": 4
   },
@@ -50,9 +50,9 @@
       "name": "Kobo F07 ENOS CZ5",
       "role": "seguimiento operativo",
       "cut": "2026-09-03",
-      "syncedAt": "2026-09-03T15:12:57.778Z",
-      "latestSubmissionAt": "2026-09-03T15:06:47",
-      "followups": 186
+      "syncedAt": "2026-09-03T18:43:53.823Z",
+      "latestSubmissionAt": "2026-09-03T16:40:36",
+      "followups": 189
     },
     {
       "name": "Matriz colaborativa ENOS CZ5 · 56 GAD · Lecturas ejecutivas V4",
