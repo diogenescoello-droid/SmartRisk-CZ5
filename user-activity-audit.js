@@ -1,12 +1,13 @@
 (() => {
   "use strict";
 
-  const VERSION = "2026.09.02.1-user-activity-audit";
+  const VERSION = "2026.09.02.2-user-activity-audit";
   const EVENT_COLLECTION = "auditoria_actividad";
   const ACCESS_COLLECTION = "accesos";
   const SESSION_KEY = "smartrisk.audit.session.v1";
   const LOGIN_MARKER_PREFIX = "smartrisk.audit.login-recorded.";
   const MAX_TEXT = 160;
+  const GENERIC_CONTAINER_IDS = new Set(["app", "content", "main", "nav"]);
   let currentUser = null;
   let currentProfile = null;
 
@@ -53,14 +54,11 @@
   function moduleName(element, explicit = "") {
     if (explicit) return cleanText(explicit, 100);
     const scoped = element?.closest?.("[data-module],[data-view],[data-section],section[id],nav[id]");
-    return cleanText(
-      scoped?.dataset?.module
-      || scoped?.dataset?.view
-      || scoped?.dataset?.section
-      || scoped?.id
-      || pageTitle(),
-      100
-    );
+    const declared = scoped?.dataset?.module || scoped?.dataset?.view || scoped?.dataset?.section || "";
+    if (declared) return cleanText(declared, 100);
+    const scopedId = cleanText(scoped?.id || "", 100);
+    if (scopedId && !GENERIC_CONTAINER_IDS.has(scopedId.toLowerCase())) return scopedId;
+    return pageTitle();
   }
 
   function safeMetadata(input = {}) {
@@ -191,8 +189,8 @@
 
   function clickAction(element) {
     if (element?.id === "logout") return "LOGOUT";
-    if (element?.tagName === "A" || element?.closest?.("nav")) return "NAVIGATE";
     if (element?.hasAttribute?.("download")) return "DOWNLOAD";
+    if (element?.tagName === "A" || element?.closest?.("nav")) return "NAVIGATE";
     return "BUTTON_CLICK";
   }
 
