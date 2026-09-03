@@ -53,6 +53,7 @@
     "v11-f03-gad-planning.css",
     "rc13-menu.js",
     "user-activity-audit.js",
+    "activity-domain-audit.js",
     "access-gate.js",
     "app.js",
     "smartrisk-operational-core.js",
