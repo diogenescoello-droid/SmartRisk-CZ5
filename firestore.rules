@@ -105,6 +105,38 @@ service cloud.firestore {
         && allowedOperationalType(request.resource.data.get('tipo', ''));
     }
 
+    function validActivityEventCreate() {
+      return activeProfile()
+        && request.resource.data.keys().hasAll([
+          'schemaVersion', 'timestamp', 'uid', 'correo', 'nombre', 'rol',
+          'provincia', 'canton', 'sessionId', 'action', 'category', 'module',
+          'route', 'pageTitle', 'elementId', 'elementLabel', 'result',
+          'metadata', 'clientVersion', 'source'
+        ])
+        && request.resource.data.keys().hasOnly([
+          'schemaVersion', 'timestamp', 'uid', 'correo', 'nombre', 'rol',
+          'provincia', 'canton', 'sessionId', 'action', 'category', 'module',
+          'route', 'pageTitle', 'elementId', 'elementLabel', 'result',
+          'metadata', 'clientVersion', 'source'
+        ])
+        && request.resource.data.get('schemaVersion', '') == '1'
+        && request.resource.data.get('uid', '') == request.auth.uid
+        && request.resource.data.get('correo', '') == request.auth.token.email
+        && request.resource.data.get('timestamp', null) == request.time
+        && request.resource.data.get('sessionId', '') is string
+        && request.resource.data.get('action', '') is string
+        && request.resource.data.get('category', '') is string
+        && request.resource.data.get('module', '') is string
+        && request.resource.data.get('route', '') is string
+        && request.resource.data.get('pageTitle', '') is string
+        && request.resource.data.get('elementId', '') is string
+        && request.resource.data.get('elementLabel', '') is string
+        && request.resource.data.get('result', '') is string
+        && request.resource.data.get('metadata', {}) is map
+        && request.resource.data.get('clientVersion', '') is string
+        && request.resource.data.get('source', '') == 'web-client';
+    }
+
     function ownPasswordStateUpdate(uid) {
       return signedIn()
         && request.auth.uid == uid
@@ -131,7 +163,7 @@ service cloud.firestore {
       allow update: if admin() || ownPasswordStateUpdate(uid);
     }
 
-    // Registro mínimo de actividad. Cada cuenta solo puede escribir su propio UID.
+    // Resumen por usuario. Solo la propia cuenta puede actualizar su estado de actividad.
     match /accesos/{uid} {
       allow get: if signedIn() && (request.auth.uid == uid || admin());
       allow list: if admin();
@@ -140,6 +172,14 @@ service cloud.firestore {
         && request.resource.data.get('uid', '') == uid
         && request.resource.data.get('correo', '') == request.auth.token.email;
       allow delete: if admin();
+    }
+
+    // Bitácora de interacción inmutable. El cliente autenticado solo crea eventos propios;
+    // únicamente administradores pueden consultar el historial completo.
+    match /auditoria_actividad/{eventId} {
+      allow read: if admin();
+      allow create: if validActivityEventCreate();
+      allow update, delete: if false;
     }
 
     // Registros operativos segmentados por alcance autorizado.
