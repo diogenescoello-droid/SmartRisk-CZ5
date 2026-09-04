@@ -8,8 +8,8 @@
     tag: "v1.0.0-piloto-estable",
     dataCut: "2026-09-04",
     platformUpdatedAt: "2026-09-04",
-    f07SyncedAt: "2026-09-04T18:26:14.857Z",
-    f07LatestSubmissionAt: "2026-09-04T17:41:22",
+    f07SyncedAt: "2026-09-04T20:58:20.660Z",
+    f07LatestSubmissionAt: "2026-09-04T20:26:47",
     auditMilestone: "HITO-2026-08-27-AUDITORIA-INTEGRAL",
     channel: "production"
   });
